@@ -16,6 +16,7 @@
 
 EventOccurrenceModel::EventOccurrenceModel(QObject *parent)
     : QAbstractItemModel(parent)
+    , m_coreCalendar(nullptr)
 {
     mRefreshTimer.setSingleShot(true);
     QObject::connect(&mRefreshTimer, &QTimer::timeout, this, &EventOccurrenceModel::updateFromSource);
@@ -103,6 +104,8 @@ void EventOccurrenceModel::updateFromSource()
             EventSortField::EventSortStartDate,
             SortDirection::SortDirectionAscending
         ); // get all events
+
+        qDebug() << "All from " << mStart << " to " << mEnd << allEvents;
 
         QMap<QByteArray, KCalendarCore::Event::Ptr> events;
         for (int i = 0; i < allEvents.count(); ++i) {
@@ -256,4 +259,19 @@ QVariant EventOccurrenceModel::data(const QModelIndex &idx, int role) const
             qWarning() << "Unknown role for event:" << QMetaEnum::fromType<Roles>().valueToKey(role);
             return {};
     }
+}
+
+void EventOccurrenceModel::setCalendar(Akonadi::ETMCalendar *calendar)
+{
+    if (m_coreCalendar == calendar) {
+        return;
+    }
+    m_coreCalendar = calendar;
+    updateQuery();
+    Q_EMIT calendarChanged();
+}
+
+Akonadi::ETMCalendar *EventOccurrenceModel::calendar() const
+{
+    return m_coreCalendar;
 }
