@@ -9,8 +9,16 @@ import org.kde.kirigami 2.14 as Kirigami
 
 import "dateutils.js" as DateUtils
 
-FocusScope {
-    id: root
+Kirigami.Page {
+    id: monthPage
+
+    readonly property bool isLarge: width > Kirigami.Units.gridUnit * 30
+
+    padding: 0
+    background: Rectangle {
+        Kirigami.Theme.colorSet: monthPage.isLarge ? Kirigami.Theme.Header : Kirigami.Theme.View
+        color: !monthPage.isLarge ? Kirigami.Theme.alternateBackgroundColor : Kirigami.Theme.backgroundColor
+    }
 
     property alias startDate: dayView.startDate
     property alias currentDate: dayView.currentDate
@@ -25,25 +33,25 @@ FocusScope {
         daysPerRow: 7
         paintGrid: true
         showDayIndicator: true
-        dayHeaderDelegate: Item {
-            height: Kirigami.Units.gridUnit + Kirigami.Units.smallSpacing * 3
-            Column {
-                anchors.centerIn: parent
-                QQC2.Label {
-                    anchors.horizontalCenter: parent.horizontalCenter
-                    font.bold: true
-                    text: day.toLocaleString(Qt.locale(), "dddd")
-                }
+        dayHeaderDelegate: QQC2.Control {
+            Layout.maximumHeight: Kirigami.Units.gridUnit * 2
+            contentItem: Kirigami.Heading {
+                text: day.toLocaleString(Qt.locale(), "dddd")
+                level: 2
+                horizontalAlignment: monthPage.isLarge ? Text.AlignRight : Text.AlignHCenter
+            }
+            background: Rectangle {
+                Kirigami.Theme.colorSet: Kirigami.Theme.View
+                color: Kirigami.Theme.backgroundColor
             }
         }
-        weekHeaderDelegate: Item {
-            width: Kirigami.Units.gridUnit
-            QQC2.Label {
-                anchors.centerIn: parent
-                font.bold: true
-                text: DateUtils.getWeek(startDate, Qt.locale().firstDayOfWeek)
-                color: Kirigami.Theme.disabledTextColor
-            }
+
+        weekHeaderDelegate: QQC2.Label {
+            width: Kirigami.Units.gridUnit * 1.5
+            padding: Kirigami.Units.smallSpacing
+            verticalAlignment: Qt.AlignTop
+            horizontalAlignment: Qt.AlignHCenter
+            text: DateUtils.getWeek(startDate, Qt.locale().firstDayOfWeek)
         }
     }
 }

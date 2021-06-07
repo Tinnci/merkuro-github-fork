@@ -32,15 +32,11 @@ Kirigami.ApplicationWindow {
     Component {
         id: mainPageComponent2
 
-        Kirigami.Page {
+        MonthView {
             title: root.selectedDate.toLocaleDateString(Qt.locale(), "<b>MMMM</b> yyyy")
-            MonthView {
-                visible: monthViewButton.checked
-                anchors.fill: parent
-                currentDate: root.currentDate
-                startDate: DateUtils.getFirstDayOfWeek(DateUtils.getFirstDayOfMonth(root.selectedDate))
-                month: root.selectedDate.getMonth()
-            }
+            currentDate: root.currentDate
+            startDate: DateUtils.getFirstDayOfWeek(DateUtils.getFirstDayOfMonth(root.selectedDate))
+            month: root.selectedDate.getMonth()
         }
     }
 

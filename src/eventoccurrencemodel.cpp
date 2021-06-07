@@ -209,7 +209,7 @@ int EventOccurrenceModel::columnCount(const QModelIndex &) const
     return 1;
 }
 
-QColor EventOccurrenceModel::getColor(const KCalendarCore::Event::Ptr &event) const
+QColor EventOccurrenceModel::getColor(const KCalendarCore::Event::Ptr &event)
 {
     auto item = m_coreCalendar->item(event);
     if (!item.isValid()) {
@@ -226,9 +226,9 @@ QColor EventOccurrenceModel::getColor(const KCalendarCore::Event::Ptr &event) co
     if (collection.hasAttribute<Akonadi::CollectionColorAttribute>()) {
         const auto *colorAttr = collection.attribute<Akonadi::CollectionColorAttribute>();
         if (colorAttr && colorAttr->color().isValid()) {
+            m_colors[id] = colorAttr->color();
             return colorAttr->color();
         }
-
     }
     return {}; // should not happen
 }

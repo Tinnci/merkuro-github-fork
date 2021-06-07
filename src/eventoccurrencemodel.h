@@ -91,7 +91,7 @@ private:
 
     void refreshView();
     void updateFromSource();
-    QColor getColor(const KCalendarCore::Event::Ptr &color) const;
+    QColor getColor(const KCalendarCore::Event::Ptr &color);
 
     QSharedPointer<QAbstractItemModel> mSourceModel;
     QDate mStart;

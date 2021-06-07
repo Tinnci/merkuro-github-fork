@@ -3,7 +3,7 @@
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 import QtQuick 2.4
-import QtQuick.Layouts 1.1
+import QtQuick.Layouts 1.15
 import QtQuick.Controls 2.15 as QQC2
 import org.kde.kirigami 2.14 as Kirigami
 
@@ -14,8 +14,8 @@ Item {
     id: root
     property int daysToShow
     property int daysPerRow: daysToShow
-    property double weekHeaderWidth: 0
-    property double dayWidth: (width - weekHeaderWidth) / daysPerRow
+    property double weekHeaderWidth: Kirigami.Units.gridUnit * 1.5
+    property double dayWidth: (width - weekHeaderWidth - daysPerRow * 2) / daysPerRow
     property date currentDate
     property date startDate
     property var calendarFilter
@@ -36,6 +36,7 @@ Item {
     height: implicitHeight
 
     Column {
+        spacing: 1
         anchors {
             fill: parent
         }
@@ -45,6 +46,9 @@ Item {
             startDate: root.startDate
             dayWidth: root.dayWidth
             daysToShow: root.daysPerRow
+            anchors.leftMargin: Kirigami.Units.gridUnit * 1.5
+            anchors.left: parent.left
+            anchors.right: parent.right
         }
 
         //Weeks
@@ -64,28 +68,29 @@ Item {
                 width: parent.width
                 height: root.dayHeight
                 clip: true
-                Row {
+                RowLayout {
                     width: parent.width
                     height: parent.height
                     Loader {
                         id: weekHeader
-                        height: parent.height
                         sourceComponent: root.weekHeaderDelegate
                         property var startDate: weekStartDate
-                        onStatusChanged: if (weekHeader.status == Loader.Ready) root.weekHeaderWidth = item.width
+                        Layout.preferredWidth: weekHeaderWidth
+                        Layout.fillHeight: true
                     }
                     Item {
                         id: dayDelegate
-                        height: root.dayHeight
-                        width: parent.width - weekHeader.width
+                        Layout.fillWidth: true
+                        Layout.fillHeight: true
                         property var startDate: weekStartDate
                         //Grid
                         Row {
+                            spacing: 1
                             height: parent.height
                             Repeater {
                                 id: gridRepeater
                                 model: root.daysPerRow
-                                Item {
+                                QQC2.Control {
                                     id: gridItem
                                     height: parent.height
                                     width: root.dayWidth
@@ -94,43 +99,22 @@ Item {
                                     property bool isToday: DateUtils.sameDay(root.currentDate, date)
                                     property bool isCurrentMonth: date.getMonth() == root.month
 
-                                    //Grid
-                                    Rectangle {
-                                        anchors.fill: parent
-                                        visible: root.paintGrid
-                                        color: Kirigami.Theme.backgroundColor
+                                    background: Rectangle {
                                         Kirigami.Theme.colorSet: Kirigami.Theme.View
-                                        border.width: 1
-                                        border.color: Kirigami.Theme.disabledTextColor
-
-                                        //Dimm days in the past
-                                        Rectangle {
-                                            anchors.fill: parent
-                                            anchors.margins: 1
-                                            color: Kirigami.Theme.backgroundColor
-                                            Kirigami.Theme.colorSet: Kirigami.Theme.Button
-                                            opacity: 0.2
-                                            visible: gridItem.isInPast
-                                        }
+                                        color: model.sameMonth ? Kirigami.Theme.backgroundColor : Kirigami.Theme.alternateBackgroundColor
                                     }
 
-                                    MouseArea {
-                                        anchors.fill: parent
-                                        //onClicked: Kube.Fabric.postMessage(Kube.Messages.eventEditor, {"start": date, "allDay": true})
-                                    }
+                                    padding: 0
+                                    topPadding: 0
 
-                                    //Day number
-                                    QQC2.Label {
-                                        visible: root.showDayIndicator
-                                        anchors {
-                                            top: parent.top
-                                            left: parent.left
-                                            topMargin: Kirigami.Units.smallSpacing
-                                            leftMargin: Kirigami.Units.smallSpacing
-                                        }
-                                        //We add the month abbrevation to the first of each month
+                                    // Day number
+                                    contentItem: Kirigami.Heading {
+                                        level: 4
                                         text: gridItem.date.toLocaleDateString(Qt.locale(), gridItem.date.getDate() == 1 ? "d MMM" : "d")
-                                        font.bold: true
+                                        horizontalAlignment: Text.AlignRight
+                                        verticalAlignment: Text.AlignTop
+                                        padding: Kirigami.Units.smallSpacing
+                                        visible: root.showDayIndicator
                                         color: gridItem.isToday ? Kirigami.Theme.highlightColor : (!gridItem.isCurrentMonth ? Kirigami.Theme.disabledTextColor : Kirigami.Theme.textColor)
                                     }
                                 }
@@ -140,7 +124,7 @@ Item {
                         Column {
                             anchors {
                                 fill: parent
-                                //Offset for date
+                                // Offset for date
                                 topMargin: root.showDayIndicator ? Kirigami.Units.gridUnit + Kirigami.Units.smallSpacing : 0
                             }
                             Repeater {
