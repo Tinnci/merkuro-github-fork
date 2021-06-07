@@ -72,6 +72,9 @@ public:
     int length() const;
     void setFilter(const QVariantMap &);
 
+    void load();
+    void save() const;
+
     struct Occurrence {
         QDateTime start;
         QDateTime end;

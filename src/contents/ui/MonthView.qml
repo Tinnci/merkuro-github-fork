@@ -47,7 +47,6 @@ Kirigami.Page {
         }
 
         weekHeaderDelegate: QQC2.Label {
-            width: Kirigami.Units.gridUnit * 1.5
             padding: Kirigami.Units.smallSpacing
             verticalAlignment: Qt.AlignTop
             horizontalAlignment: Qt.AlignHCenter

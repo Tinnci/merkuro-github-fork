@@ -15,7 +15,7 @@ Item {
     property int daysToShow
     property int daysPerRow: daysToShow
     property double weekHeaderWidth: Kirigami.Units.gridUnit * 1.5
-    property double dayWidth: (width - weekHeaderWidth - daysPerRow * 2) / daysPerRow
+    property double dayWidth: (width - weekHeaderWidth - daysPerRow) / daysPerRow
     property date currentDate
     property date startDate
     property var calendarFilter
@@ -46,7 +46,7 @@ Item {
             startDate: root.startDate
             dayWidth: root.dayWidth
             daysToShow: root.daysPerRow
-            anchors.leftMargin: Kirigami.Units.gridUnit * 1.5
+            anchors.leftMargin: weekHeaderWidth
             anchors.left: parent.left
             anchors.right: parent.right
         }
@@ -71,6 +71,7 @@ Item {
                 RowLayout {
                     width: parent.width
                     height: parent.height
+                    spacing: 0
                     Loader {
                         id: weekHeader
                         sourceComponent: root.weekHeaderDelegate
@@ -143,7 +144,7 @@ Item {
                                         id: eventsRepeater
                                         model: modelData
                                         Rectangle {
-                                            x: root.dayWidth * modelData.starts
+                                            x: (root.dayWidth + 1) * modelData.starts // +1 because of the spacing
                                             y: 0
                                             width: root.dayWidth * modelData.duration
                                             height: parent.height
@@ -173,24 +174,19 @@ Item {
                                                 id: mouseArea
                                                 anchors.fill: parent
                                                 hoverEnabled: true
-                                                onClicked: eventDetails.createObject(root, {}).open()
+                                                onClicked: eventDetails.createObject(mouseArea, {}).open()
                                                 Component {
                                                     id: eventDetails
                                                     QQC2.Popup {
                                                         id: popup
-                                                        parent: ApplicationWindow.overlay
-                                                        x: Math.round((parent.width - width) / 2)
-                                                        y: Math.round((parent.height - height) / 2)
-                                                        width: eventView.width
-                                                        height: eventView.height
+                                                        width: Kirigami.Units.gridUnit * 10
+                                                        height: Kirigami.Units.gridUnit * 7
+                                                        x: (parent.x + parent.width / 2) - width / 2
+                                                        y: parent.y + parent.height
                                                         padding: 0
-                                                        /*EventView {
-                                                            id: eventView
-                                                            controller: Kube.EventController {
-                                                                eventOccurrence: model.modelData.eventOccurrence
-                                                            }
-                                                            onDone: popup.close()
-                                                        }*/
+                                                        QQC2.Label {
+                                                            text: "TODO :)"
+                                                        }
                                                     }
                                                 }
                                             }
