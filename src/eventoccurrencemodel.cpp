@@ -108,8 +108,6 @@ void EventOccurrenceModel::updateFromSource()
             SortDirection::SortDirectionAscending
         ); // get all events
 
-        qDebug() << "All from " << mStart << " to " << mEnd << allEvents;
-
         QMap<QByteArray, KCalendarCore::Event::Ptr> events;
         for (int i = 0; i < allEvents.count(); ++i) {
             auto &event = allEvents[i];

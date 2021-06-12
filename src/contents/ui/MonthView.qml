@@ -12,18 +12,28 @@ import "dateutils.js" as DateUtils
 Kirigami.Page {
     id: monthPage
 
+    property alias startDate: dayView.startDate
+    property alias currentDate: dayView.currentDate
+    property alias calendarFilter: dayView.calendarFilter
+    property alias month: dayView.month
     readonly property bool isLarge: width > Kirigami.Units.gridUnit * 30
 
     padding: 0
     background: Rectangle {
         Kirigami.Theme.colorSet: monthPage.isLarge ? Kirigami.Theme.Header : Kirigami.Theme.View
-        color: !monthPage.isLarge ? Kirigami.Theme.alternateBackgroundColor : Kirigami.Theme.backgroundColor
+        color: Kirigami.Theme.backgroundColor
     }
 
-    property alias startDate: dayView.startDate
-    property alias currentDate: dayView.currentDate
-    property alias calendarFilter: dayView.calendarFilter
-    property alias month: dayView.month
+    actions {
+        left: Kirigami.Action {
+            text: i18n("Previous")
+            onTriggered: monthPage.startDate = DateUtils.previousMonth(monthPage.startDate)
+        }
+        right: Kirigami.Action {
+            text: i18n("Next")
+            onTriggered: monthPage.startDate = DateUtils.nextMonth(monthPage.startDate)
+        }
+    }
 
     MultiDayView {
         id: dayView
@@ -36,7 +46,7 @@ Kirigami.Page {
         dayHeaderDelegate: QQC2.Control {
             Layout.maximumHeight: Kirigami.Units.gridUnit * 2
             contentItem: Kirigami.Heading {
-                text: day.toLocaleString(Qt.locale(), "dddd")
+                text: day.toLocaleString(Qt.locale(), monthPage.isLarge ? "dddd" : "ddd")
                 level: 2
                 horizontalAlignment: monthPage.isLarge ? Text.AlignRight : Text.AlignHCenter
             }
