@@ -322,8 +322,7 @@ Kirigami.OverlaySheet {
                     Layout.fillWidth: true
 
                     model: event.remindersModel
-
-                    Component.onCompleted: console.log(Object.keys(model))
+                    // All of the alarms are handled within the delegates.
 
                     delegate: RowLayout {
                         Layout.fillWidth: true
@@ -331,7 +330,6 @@ Kirigami.OverlaySheet {
                         Component.onCompleted: console.log(model.index)
 
                         QQC2.ComboBox {
-                            //id: remindersComboBox${buttonIndex}
                             // There is also a chance here to add a feature for the user to pick reminder type.
                             Layout.fillWidth: true
 
