@@ -40,7 +40,7 @@ QVariant RemindersModel::data(const QModelIndex &idx, int role) const
     if (!hasIndex(idx.row(), idx.column())) {
         return {};
     }
-    auto alarm = m_alarms.at(idx.row());
+    auto alarm = m_alarms[idx.row()];
     switch (role) {
         case Type:
             return alarm->type();
@@ -88,7 +88,25 @@ int RemindersModel::columnCount(const QModelIndex &) const
 
 void RemindersModel::addAlarm()
 {
-    beginInsertRows(index(rowCount(), 0), rowCount(), rowCount());
+    QModelIndex indexToUse = index(rowCount(), 0);
+    beginInsertRows(indexToUse, rowCount(), rowCount());
+
+    KCalendarCore::Alarm::Ptr alarm (new KCalendarCore::Alarm(nullptr));
+    m_alarms.append(alarm);
+    Q_EMIT alarmsChanged();
+
     endInsertRows();
+}
+
+void RemindersModel::deleteAlarm(int row)
+{
+    QModelIndex indexToUse = index(row, 0);
+    beginRemoveRows(indexToUse, row, row);
+
+    m_alarms.removeAt(row);
     qDebug() << rowCount();
+    Q_EMIT alarmsChanged();
+
+    endRemoveRows();
+    Q_EMIT layoutChanged();
 }
