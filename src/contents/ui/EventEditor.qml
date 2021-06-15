@@ -56,11 +56,6 @@ Kirigami.OverlaySheet {
                     event.eventEnd = endDate;
                 }
 
-                // There is also a chance here to add a feature for the user to pick reminder type.
-                for (let reminderCombo of remindersColumn.reminderCombos) {
-                    event.addAlarm(reminderCombo.beforeEventSeconds)
-                }
-
                 added(calendarCombo.selectedCollectionId, event);
             }
             eventEditorSheet.close();
@@ -337,6 +332,7 @@ Kirigami.OverlaySheet {
 
                         QQC2.ComboBox {
                             //id: remindersComboBox${buttonIndex}
+                            // There is also a chance here to add a feature for the user to pick reminder type.
                             Layout.fillWidth: true
 
                             property var beforeEventSeconds: 0
@@ -357,7 +353,7 @@ Kirigami.OverlaySheet {
                                     // All these times are in seconds.
                             delegate: Kirigami.BasicListItem {
                                 label: remindersColumn.secondsToReminderLabel(modelData)
-                                onClicked: parent.beforeEventSeconds = modelData
+                                onClicked: event.remindersModel.setAlarmStartOffset(parent.index, modelData * -1) // Negative for before start
                             }
                             popup.z: 1000
                         }
