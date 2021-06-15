@@ -79,3 +79,8 @@ int RemindersModel::rowCount(const QModelIndex &parent) const
     }
     return 0;
 }
+
+int RemindersModel::columnCount(const QModelIndex &) const
+{
+    return 1;
+}

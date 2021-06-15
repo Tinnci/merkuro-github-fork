@@ -24,7 +24,7 @@ public:
     Q_ENUM(Roles);
 
     explicit RemindersModel(QObject *parent = nullptr);
-    ~RemindersModel();
+    ~RemindersModel() = default;
 
     KCalendarCore::Event::Ptr eventPtr();
     void setEventPtr(KCalendarCore::Event::Ptr event);
@@ -33,7 +33,8 @@ public:
     QVariant data(const QModelIndex &idx, int role) const override;
     QModelIndex index(int row, int column, const QModelIndex &parent) const override;
     QModelIndex parent(const QModelIndex &) const override;
-    int rowCount(const QModelIndex &parent) const override;
+    int rowCount(const QModelIndex &parent = {}) const override;
+    int columnCount(const QModelIndex &parent) const override;
 
 Q_SIGNALS:
     void eventPtrChanged();
