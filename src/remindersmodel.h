@@ -9,6 +9,17 @@
 #include <QDebugStateSaver>
 #include <QDebug>
 
+/**
+ * This class provides a QAbstractItemModel for an events' reminders/alarms.
+ * This can be useful for letting users add, modify, or delete events on new or pre-existing events.
+ * It treats the event's list of alarms as the signle source of truth (and it should be kept this way!)
+ *
+ * The data for the model comes from m_event, which is set in the constructor. This is a pointer to the
+ * event this model is getting the alarm info from. All alarm pointers are then added to m_alarms, which
+ * is a list. Elements in this model are therefore accessed through row numbers, as the list is a one-
+ * dimensional data structure.
+ */
+
 class RemindersModel : public QAbstractItemModel
 {
     Q_OBJECT
