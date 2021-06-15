@@ -8,7 +8,8 @@ RemindersModel::RemindersModel(QObject *parent, KCalendarCore::Event::Ptr eventP
     : QAbstractItemModel(parent)
     , m_event(eventPtr)
 {
-    QObject::connect(this, &RemindersModel::eventPtrChanged, this, &RemindersModel::loadReminders);
+    connect(this, &RemindersModel::eventPtrChanged, this, &RemindersModel::loadReminders);
+    connect(this, &RemindersModel::alarmsChanged, this, &RemindersModel::loadReminders);
     loadReminders();
 }
 
@@ -25,6 +26,12 @@ void RemindersModel::setEventPtr(KCalendarCore::Event::Ptr event)
     m_event = event;
     Q_EMIT eventPtrChanged();
 }
+
+KCalendarCore::Alarm::List RemindersModel::alarms()
+{
+    return m_alarms;
+}
+
 
 void RemindersModel::loadReminders()
 {
@@ -90,15 +97,9 @@ int RemindersModel::columnCount(const QModelIndex &) const
 
 void RemindersModel::addAlarm()
 {
-    QModelIndex indexToUse = index(rowCount(), 0);
-    // This should maybe be reimplemented with insertRows()?
-    beginInsertRows(indexToUse, rowCount(), rowCount());
-
     KCalendarCore::Alarm::Ptr alarm (new KCalendarCore::Alarm(nullptr));
-    m_alarms.append(alarm);
+    m_event->addAlarm(alarm);
     Q_EMIT alarmsChanged();
-
-    endInsertRows();
 }
 
 void RemindersModel::deleteAlarm(int row)
@@ -107,14 +108,8 @@ void RemindersModel::deleteAlarm(int row)
         return;
     }
 
-    QModelIndex indexToUse = index(row, 0);
-    beginRemoveRows(indexToUse, row, row);
-
-    m_alarms.removeAt(row);
-    qDebug() << rowCount();
+    m_event->removeAlarm(m_alarms[row]);
     Q_EMIT alarmsChanged();
-
-    endRemoveRows();
     Q_EMIT layoutChanged();
 }
 

@@ -13,6 +13,7 @@ class RemindersModel : public QAbstractItemModel
 {
     Q_OBJECT
     Q_PROPERTY(KCalendarCore::Event::Ptr eventPtr READ eventPtr WRITE setEventPtr NOTIFY eventPtrChanged)
+    Q_PROPERTY(KCalendarCore::Alarm::List alarms READ alarms NOTIFY alarmsChanged)
 
 public:
     enum Roles {
@@ -28,6 +29,7 @@ public:
 
     KCalendarCore::Event::Ptr eventPtr();
     void setEventPtr(KCalendarCore::Event::Ptr event);
+    KCalendarCore::Alarm::List alarms();
     void loadReminders();
 
     QVariant data(const QModelIndex &idx, int role) const override;
