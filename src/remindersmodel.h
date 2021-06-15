@@ -39,6 +39,10 @@ public:
     Q_INVOKABLE void addAlarm();
     Q_INVOKABLE void deleteAlarm(int row);
 
+    Q_INVOKABLE void setAlarmStartOffset(int row, int seconds);
+    Q_INVOKABLE void setAlarmEndOffset(int row, int seconds);
+    Q_INVOKABLE void setAlarmType(int row, KCalendarCore::Alarm::Type type);
+
 Q_SIGNALS:
     void eventPtrChanged();
     void alarmsChanged();

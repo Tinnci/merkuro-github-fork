@@ -51,10 +51,10 @@ public:
     RemindersModel * remindersModel();
 
     Q_INVOKABLE void setAllDay(bool allDay);
-    Q_INVOKABLE void addAlarm(int startOffset, KCalendarCore::Alarm::Type alarmType = KCalendarCore::Alarm::Type::Display);
+    Q_INVOKABLE void addAlarms(KCalendarCore::Alarm::List alarms);
 
 Q_SIGNALS:
-    void eventPtrChanged();
+    void eventPtrChanged(KCalendarCore::Event::Ptr eventPtr);
     void summaryChanged();
     void descriptionChanged();
     void locationChanged();

@@ -83,12 +83,14 @@ int RemindersModel::rowCount(const QModelIndex &parent) const
 
 int RemindersModel::columnCount(const QModelIndex &) const
 {
+    // Our data, m_alarms, is a list -- so it's one dimensional, and only has 1 column.
     return 1;
 }
 
 void RemindersModel::addAlarm()
 {
     QModelIndex indexToUse = index(rowCount(), 0);
+    // This should maybe be reimplemented with insertRows()?
     beginInsertRows(indexToUse, rowCount(), rowCount());
 
     KCalendarCore::Alarm::Ptr alarm (new KCalendarCore::Alarm(nullptr));
@@ -100,6 +102,10 @@ void RemindersModel::addAlarm()
 
 void RemindersModel::deleteAlarm(int row)
 {
+    if (!hasIndex(row, 0)) {
+        return;
+    }
+
     QModelIndex indexToUse = index(row, 0);
     beginRemoveRows(indexToUse, row, row);
 
@@ -109,4 +115,26 @@ void RemindersModel::deleteAlarm(int row)
 
     endRemoveRows();
     Q_EMIT layoutChanged();
+}
+
+void RemindersModel::setAlarmStartOffset(int row, int seconds)
+{
+    // offset can be set in seconds or days, if we want it to be before the event,
+    // it has to be set to a negative value.
+    KCalendarCore::Duration offset(seconds);
+    m_alarms[row]->setStartOffset(offset);
+    Q_EMIT dataChanged(index(row, 0), index(row, 0));
+}
+
+void RemindersModel::setAlarmEndOffset(int row, int seconds)
+{
+    KCalendarCore::Duration offset(seconds);
+    m_alarms[row]->setEndOffset(offset);
+    Q_EMIT dataChanged(index(row, 0), index(row, 0));
+}
+
+void RemindersModel::setAlarmType(int row, KCalendarCore::Alarm::Type type)
+{
+    m_alarms[row]->setType(type);
+    Q_EMIT dataChanged(index(row, 0), index(row, 0));
 }
