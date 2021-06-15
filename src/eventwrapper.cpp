@@ -8,6 +8,7 @@ EventWrapper::EventWrapper(QObject *parent)
     , m_event(new KCalendarCore::Event)
     , m_remindersModel(parent, m_event)
 {
+    // Change event pointer in remindersmodel if changed here
     connect(this, SIGNAL(eventPtrChanged(KCalendarCore::Event::Ptr)),
             &m_remindersModel, SLOT(setEventPtr(KCalendarCore::Event::Ptr)));
 }
