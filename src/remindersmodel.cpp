@@ -4,11 +4,12 @@
 #include <QMetaEnum>
 #include <remindersmodel.h>
 
-RemindersModel::RemindersModel(QObject *parent)
+RemindersModel::RemindersModel(QObject *parent, KCalendarCore::Event::Ptr eventPtr)
     : QAbstractItemModel(parent)
-    , m_event(nullptr)
+    , m_event(eventPtr)
 {
     QObject::connect(this, &RemindersModel::eventPtrChanged, this, &RemindersModel::loadReminders);
+    loadReminders();
 }
 
 KCalendarCore::Event::Ptr RemindersModel::eventPtr()
