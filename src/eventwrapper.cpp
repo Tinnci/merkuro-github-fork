@@ -6,13 +6,10 @@
 EventWrapper::EventWrapper(QObject *parent)
     : QObject(parent)
     , m_event(new KCalendarCore::Event)
+    , m_remindersModel(parent)
 {
-
-}
-
-EventWrapper::~EventWrapper()
-{
-
+    m_remindersModel.setEventPtr(m_event);
+    m_remindersModel.loadReminders();
 }
 
 KCalendarCore::Event::Ptr EventWrapper::eventPtr() const
@@ -91,10 +88,11 @@ KCalendarCore::Attendee::List EventWrapper::attendees() const
     return m_event->attendees();
 }
 
-KCalendarCore::Alarm::List EventWrapper::alarms() const
+RemindersModel * EventWrapper::remindersModel()
 {
-    return m_event->alarms();
+    return &m_remindersModel;
 }
+
 
 void EventWrapper::setAllDay(bool allDay)
 {
@@ -104,13 +102,14 @@ void EventWrapper::setAllDay(bool allDay)
 
 void EventWrapper::addAlarm(int startOffset, KCalendarCore::Alarm::Type alarmType)
 {
-    KCalendarCore::Alarm::Ptr alarm (new KCalendarCore::Alarm(nullptr));
+    /*KCalendarCore::Alarm::Ptr alarm (new KCalendarCore::Alarm(nullptr));
     // offset can be set in seconds or days, if we want it to be before the event,
     // it has to be set to a negative value.
     KCalendarCore::Duration offset(startOffset *= -1);
 
     m_event->addAlarm(alarm);
     alarm ->setType(alarmType);
-    alarm->setStartOffset(offset);
+    alarm->setStartOffset(offset);*/
+    m_remindersModel.addAlarm();
 }
 
