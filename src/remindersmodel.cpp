@@ -8,6 +8,8 @@ RemindersModel::RemindersModel(QObject *parent, KCalendarCore::Event::Ptr eventP
     : QAbstractItemModel(parent)
     , m_event(eventPtr)
 {
+    // These signals ensure that any time the event itself or its alarms change, we are
+    // reloading our store of alarms in teh model too.
     connect(this, &RemindersModel::eventPtrChanged, this, &RemindersModel::loadReminders);
     connect(this, &RemindersModel::alarmsChanged, this, &RemindersModel::loadReminders);
     loadReminders();
@@ -91,7 +93,7 @@ int RemindersModel::rowCount(const QModelIndex &parent) const
 
 int RemindersModel::columnCount(const QModelIndex &) const
 {
-    // Our data, m_alarms, is a list -- so it's one dimensional, and only has 1 column.
+    // Our data, m_alarms, is a list, so it's one dimensional and only has 1 column.
     return 1;
 }
 
