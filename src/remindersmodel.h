@@ -23,7 +23,7 @@ public:
     };
     Q_ENUM(Roles);
 
-    explicit RemindersModel(QObject *parent = nullptr);
+    explicit RemindersModel(QObject *parent = nullptr, KCalendarCore::Event::Ptr eventPtr = nullptr);
     ~RemindersModel() = default;
 
     KCalendarCore::Event::Ptr eventPtr();

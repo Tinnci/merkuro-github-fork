@@ -6,13 +6,10 @@
 EventWrapper::EventWrapper(QObject *parent)
     : QObject(parent)
     , m_event(new KCalendarCore::Event)
-    , m_remindersModel(parent)
+    , m_remindersModel(parent, m_event)
 {
     connect(this, SIGNAL(eventPtrChanged(KCalendarCore::Event::Ptr)),
             this, SLOT(m_remindersModel.setEventPtr(KCalendarCore::Event::Ptr)));
-
-    m_remindersModel.setEventPtr(m_event);
-    m_remindersModel.loadReminders();
 }
 
 KCalendarCore::Event::Ptr EventWrapper::eventPtr() const
