@@ -32,6 +32,7 @@ void RemindersModel::loadReminders()
     }
     beginResetModel();
     m_alarms = m_event->alarms();
+    endResetModel();
 }
 
 QVariant RemindersModel::data(const QModelIndex &idx, int role) const
@@ -83,4 +84,11 @@ int RemindersModel::rowCount(const QModelIndex &parent) const
 int RemindersModel::columnCount(const QModelIndex &) const
 {
     return 1;
+}
+
+void RemindersModel::addAlarm()
+{
+    beginInsertRows(index(rowCount(), 0), rowCount(), rowCount());
+    endInsertRows();
+    qDebug() << rowCount();
 }

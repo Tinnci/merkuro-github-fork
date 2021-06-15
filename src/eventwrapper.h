@@ -7,6 +7,7 @@
 #include <CalendarSupport/KCalPrefs>
 #include <CalendarSupport/Utils>
 #include <AkonadiCore/CollectionIdentificationAttribute>
+#include "remindersmodel.h"
 
 /**
  * This class is a wrapper for a KCalendarCore::Event::Ptr object.
@@ -27,11 +28,11 @@ class EventWrapper : public QObject
     Q_PROPERTY(QDateTime eventEnd READ eventEnd WRITE setEventEnd NOTIFY eventEndChanged)
     Q_PROPERTY(KCalendarCore::Recurrence * recurrence READ recurrence)
     Q_PROPERTY(KCalendarCore::Attendee::List attendees READ attendees)
-    Q_PROPERTY(KCalendarCore::Alarm::List alarms READ alarms)
+    Q_PROPERTY(RemindersModel * remindersModel READ remindersModel NOTIFY remindersModelChanged)
 
 public:
     EventWrapper(QObject *parent = nullptr);
-    ~EventWrapper() override;
+    ~EventWrapper() = default;
 
     KCalendarCore::Event::Ptr eventPtr() const;
     void setEventPtr(KCalendarCore::Event::Ptr eventPtr);
@@ -47,7 +48,7 @@ public:
     void setEventEnd(QDateTime eventEnd);
     KCalendarCore::Recurrence * recurrence() const;
     KCalendarCore::Attendee::List attendees() const;
-    KCalendarCore::Alarm::List alarms() const;
+    RemindersModel * remindersModel();
 
     Q_INVOKABLE void setAllDay(bool allDay);
     Q_INVOKABLE void addAlarm(int startOffset, KCalendarCore::Alarm::Type alarmType = KCalendarCore::Alarm::Type::Display);
@@ -59,7 +60,9 @@ Q_SIGNALS:
     void locationChanged();
     void eventStartChanged();
     void eventEndChanged();
+    void remindersModelChanged();
 
 private:
     KCalendarCore::Event::Ptr m_event;
+    RemindersModel m_remindersModel;
 };
