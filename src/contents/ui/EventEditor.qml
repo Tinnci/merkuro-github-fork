@@ -296,6 +296,20 @@ Kirigami.OverlaySheet {
                 Layout.fillWidth: true
                 id: remindersColumn
 
+                function secondsToReminderLabel(seconds) {
+                    if (seconds) {
+                        var numAndUnit = (
+                            seconds >= 2 * 24 * 60 * 60 ?   Math.round(seconds / (24*60*60)) + " days"  : // 2 days +
+                            seconds >= 1 * 24 * 60 * 60 ?   "1 day"                                     :
+                            seconds >= 2 * 60 * 60      ?   Math.round(seconds / (60*60)) + " hours"    : // 2 hours +
+                            seconds >= 1 * 60 * 60      ?   "1 hour"                                    :
+                                                            Math.round(seconds / 60) + " minutes")
+                        return numAndUnit + " before";
+                    } else {
+                        return "On event start";
+                    }
+                }
+
                 property var reminderCombos: []
 
                 QQC2.Button {
@@ -309,34 +323,25 @@ Kirigami.OverlaySheet {
                 }
 
                 Repeater {
+                    id: remindersRepeater
                     Layout.fillWidth: true
 
                     model: event.remindersModel
 
+                    Component.onCompleted: console.log(Object.keys(model))
+
                     delegate: RowLayout {
                         Layout.fillWidth: true
+
+                        Component.onCompleted: console.log(model.index)
 
                         QQC2.ComboBox {
                             //id: remindersComboBox${buttonIndex}
                             Layout.fillWidth: true
 
-                            function secondsToReminderLabel(seconds) {
-                                if (seconds) {
-                                    var numAndUnit = (
-                                        seconds >= 2 * 24 * 60 * 60 ?   Math.round(seconds / (24*60*60)) + " days"  : // 2 days +
-                                        seconds >= 1 * 24 * 60 * 60 ?   "1 day"                                     :
-                                        seconds >= 2 * 60 * 60      ?   Math.round(seconds / (60*60)) + " hours"    : // 2 hours +
-                                        seconds >= 1 * 60 * 60      ?   "1 hour"                                    :
-                                                                        Math.round(seconds / 60) + " minutes")
-                                    return numAndUnit + " before";
-                                } else {
-                                    return "On event start";
-                                }
-                            }
-
                             property var beforeEventSeconds: 0
 
-                            displayText: secondsToReminderLabel(Number(currentText))
+                            displayText: remindersColumn.secondsToReminderLabel(Number(currentText))
 
                             model: [0,
                                     5 * 60, // 5 minutes
@@ -351,7 +356,7 @@ Kirigami.OverlaySheet {
                                     5 * 24 * 60 * 60]
                                     // All these times are in seconds.
                             delegate: Kirigami.BasicListItem {
-                                label: parent.secondsToReminderLabel(modelData)
+                                label: remindersColumn.secondsToReminderLabel(modelData)
                                 onClicked: parent.beforeEventSeconds = modelData
                             }
                             popup.z: 1000
@@ -359,7 +364,7 @@ Kirigami.OverlaySheet {
 
                         QQC2.Button {
                             icon.name: "edit-delete-remove"
-                            onClicked: parent.destroy()
+                            onClicked: event.remindersModel.deleteAlarm(model.index);
                         }
                     }
                 }

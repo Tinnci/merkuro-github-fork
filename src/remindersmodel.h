@@ -37,9 +37,11 @@ public:
     int columnCount(const QModelIndex &parent) const override;
 
     Q_INVOKABLE void addAlarm();
+    Q_INVOKABLE void deleteAlarm(int row);
 
 Q_SIGNALS:
     void eventPtrChanged();
+    void alarmsChanged();
 
 private:
     KCalendarCore::Event::Ptr m_event;
