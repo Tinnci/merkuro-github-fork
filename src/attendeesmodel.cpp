@@ -96,6 +96,26 @@ int AttendeesModel::columnCount(const QModelIndex &) const
     return 1;
 }
 
+void AttendeesModel::addAttendee()
+{
+    KCalendarCore::Attendee attendee;
+    m_event->addAttendee(attendee);
+    Q_EMIT attendeesChanged();
+    Q_EMIT layoutChanged();
+}
+
+void AttendeesModel::deleteAttendee(int row)
+{
+    if (!hasIndex(row, 0)) {
+        return;
+    }
+
+    m_event->attendees().removeAt(row);
+    Q_EMIT attendeesChanged();
+    Q_EMIT layoutChanged();
+}
+
+
 void AttendeesModel::setAttendeeCuType(int row, KCalendarCore::Attendee::CuType cutype)
 {
     m_event->attendees()[row].setCuType(cutype);

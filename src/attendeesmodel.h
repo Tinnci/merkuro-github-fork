@@ -48,6 +48,9 @@ public:
     int rowCount(const QModelIndex &parent = {}) const override;
     int columnCount(const QModelIndex &parent) const override;
 
+    Q_INVOKABLE void addAttendee();
+    Q_INVOKABLE void deleteAttendee(int row);
+
     Q_INVOKABLE void setAttendeeCuType(int row, KCalendarCore::Attendee::CuType cutype);
     Q_INVOKABLE void setAttendeeDelegate(int row, QString delegate);
     Q_INVOKABLE void setAttendeeDelegator(int row, QString delegator);
