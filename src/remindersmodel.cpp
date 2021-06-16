@@ -51,6 +51,15 @@ QVariant RemindersModel::data(const QModelIndex &idx, int role) const
     }
 }
 
+QHash<int, QByteArray> RemindersModel::roleNames() const
+{
+	QHash<int, QByteArray> roles;
+	for (int i = 0; i < QMetaEnum::fromType<Roles>().keyCount(); i++) {
+		roles.insert(Qt::UserRole + i + 1, QMetaEnum::fromType<Roles>().key(i));
+	}
+	return roles;
+}
+
 QModelIndex RemindersModel::index(int row, int column, const QModelIndex &parent) const
 {
     if (!hasIndex(row, column, parent)) {

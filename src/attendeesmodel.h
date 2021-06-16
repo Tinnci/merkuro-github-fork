@@ -43,6 +43,7 @@ public:
     KCalendarCore::Attendee::List attendees();
 
     QVariant data(const QModelIndex &idx, int role) const override;
+    QHash<int, QByteArray> roleNames() const override;
     QModelIndex index(int row, int column, const QModelIndex &parent = QModelIndex()) const override;
     QModelIndex parent(const QModelIndex &) const override;
     int rowCount(const QModelIndex &parent = {}) const override;
