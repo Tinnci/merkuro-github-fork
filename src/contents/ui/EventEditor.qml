@@ -432,15 +432,13 @@ Kirigami.OverlaySheet {
                                 text: i18n("Status:")
                             }
                             QQC2.ComboBox {
-                                Layout.row: 2
-                                Layout.column: 1
                                 Layout.columnSpan: 2
                             }
                             QQC2.CheckBox {
-                                Layout.row: 2
-                                Layout.column: 3
                                 Layout.columnSpan: 2
                                 text: i18n("Request RSVP")
+                                checked: RSVP
+                                onCheckedChanged: event.attendeesModel.setAttendeeRSVP(index, checked)
                             }
                         }
                     }

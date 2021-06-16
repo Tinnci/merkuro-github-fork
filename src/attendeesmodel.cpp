@@ -107,17 +107,14 @@ int AttendeesModel::columnCount(const QModelIndex &) const
 
 void AttendeesModel::addAttendee(QString name, QString email)
 {
-    qDebug() << roleNames();
     KCalendarCore::Attendee attendee(name, email);
     m_event->addAttendee(attendee);
     Q_EMIT attendeesChanged();
     Q_EMIT layoutChanged();
-    qDebug() << rowCount();
 }
 
 void AttendeesModel::deleteAttendee(int row)
 {
-    qDebug() << row;
     if (!hasIndex(row, 0)) {
         return;
     }
@@ -157,21 +154,17 @@ void AttendeesModel::setAttendeeDelegator(int row, QString delegator)
 
 void AttendeesModel::setAttendeeEmail(int row, QString email)
 {
-    qDebug() << email;
     KCalendarCore::Attendee::List currentAttendees(m_event->attendees());
     currentAttendees[row].setEmail(email);
     m_event->setAttendees(currentAttendees);
-    qDebug() << m_event->attendees()[row].email();
     Q_EMIT dataChanged(index(row, 0), index(row, 0));
 }
 
 void AttendeesModel::setAttendeeName(int row, QString name)
 {
-    qDebug() << name;
     KCalendarCore::Attendee::List currentAttendees(m_event->attendees());
     currentAttendees[row].setName(name);
     m_event->setAttendees(currentAttendees);
-    qDebug() << m_event->attendees()[row].name();
     Q_EMIT dataChanged(index(row, 0), index(row, 0));
 }
 
@@ -185,10 +178,12 @@ void AttendeesModel::setAttendeeRole(int row, KCalendarCore::Attendee::Role role
 
 void AttendeesModel::setAttendeeRSVP(int row, bool rsvp)
 {
+    qDebug() << rsvp;
     KCalendarCore::Attendee::List currentAttendees(m_event->attendees());
     currentAttendees[row].setRSVP(rsvp);
     m_event->setAttendees(currentAttendees);
     Q_EMIT dataChanged(index(row, 0), index(row, 0));
+    qDebug() << m_event->attendees()[row].RSVP();
 }
 
 void AttendeesModel::setAttendeeStatus(int row, KCalendarCore::Attendee::PartStat status)
