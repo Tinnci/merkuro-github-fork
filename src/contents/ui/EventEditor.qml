@@ -291,7 +291,7 @@ Kirigami.OverlaySheet {
                 Layout.fillWidth: true
                 id: remindersColumn
 
-                function secondsToReminderLabel(seconds) {
+                function secondsToReminderLabel(seconds) { // Gives prettified time
 
                     function numAndUnit(secs) {
                         if(secs >= 2 * 24 * 60 * 60)
@@ -382,7 +382,9 @@ Kirigami.OverlaySheet {
                     text: i18n("Add attendee")
                     Layout.fillWidth: true
 
-                    onClicked: event.attendeesModel.addAttendee("name", "email");
+                    onClicked: event.attendeesModel.addAttendee("Enter name", "Enter email");
+                    // With these placeholders, the attendee still won't be added to the event
+                    // but it will show up on the model. Still, this is a little janky.
                 }
 
                 Repeater {
