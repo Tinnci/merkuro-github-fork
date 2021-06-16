@@ -8,11 +8,7 @@ RemindersModel::RemindersModel(QObject *parent, KCalendarCore::Event::Ptr eventP
     : QAbstractItemModel(parent)
     , m_event(eventPtr)
 {
-    // These signals ensure that any time the event itself or its alarms change, we are
-    // reloading our store of alarms in teh model too.
-    connect(this, &RemindersModel::eventPtrChanged, this, &RemindersModel::loadReminders);
-    connect(this, &RemindersModel::alarmsChanged, this, &RemindersModel::loadReminders);
-    loadReminders();
+
 }
 
 KCalendarCore::Event::Ptr RemindersModel::eventPtr()
@@ -31,18 +27,7 @@ void RemindersModel::setEventPtr(KCalendarCore::Event::Ptr event)
 
 KCalendarCore::Alarm::List RemindersModel::alarms()
 {
-    return m_alarms;
-}
-
-
-void RemindersModel::loadReminders()
-{
-    if (!m_event) {
-        return;
-    }
-    beginResetModel();
-    m_alarms = m_event->alarms();
-    endResetModel();
+    return m_event->alarms();
 }
 
 QVariant RemindersModel::data(const QModelIndex &idx, int role) const
@@ -50,7 +35,7 @@ QVariant RemindersModel::data(const QModelIndex &idx, int role) const
     if (!hasIndex(idx.row(), idx.column())) {
         return {};
     }
-    auto alarm = m_alarms[idx.row()];
+    auto alarm = m_event->alarms()[idx.row()];
     switch (role) {
         case Type:
             return alarm->type();
@@ -86,14 +71,14 @@ QModelIndex RemindersModel::parent(const QModelIndex &) const
 int RemindersModel::rowCount(const QModelIndex &parent) const
 {
     if (!parent.isValid()) {
-        return m_alarms.size();
+        return m_event->alarms().size();
     }
     return 0;
 }
 
 int RemindersModel::columnCount(const QModelIndex &) const
 {
-    // Our data, m_alarms, is a list, so it's one dimensional and only has 1 column.
+    // Our data is a list, so it's one dimensional and only has 1 column.
     return 1;
 }
 
@@ -102,6 +87,7 @@ void RemindersModel::addAlarm()
     KCalendarCore::Alarm::Ptr alarm (new KCalendarCore::Alarm(nullptr));
     m_event->addAlarm(alarm);
     Q_EMIT alarmsChanged();
+    Q_EMIT layoutChanged();
 }
 
 void RemindersModel::deleteAlarm(int row)
@@ -110,7 +96,7 @@ void RemindersModel::deleteAlarm(int row)
         return;
     }
 
-    m_event->removeAlarm(m_alarms[row]);
+    m_event->removeAlarm(m_event->alarms()[row]);
     Q_EMIT alarmsChanged();
     Q_EMIT layoutChanged();
 }
@@ -120,19 +106,19 @@ void RemindersModel::setAlarmStartOffset(int row, int seconds)
     // offset can be set in seconds or days, if we want it to be before the event,
     // it has to be set to a negative value.
     KCalendarCore::Duration offset(seconds);
-    m_alarms[row]->setStartOffset(offset);
+    m_event->alarms()[row]->setStartOffset(offset);
     Q_EMIT dataChanged(index(row, 0), index(row, 0));
 }
 
 void RemindersModel::setAlarmEndOffset(int row, int seconds)
 {
     KCalendarCore::Duration offset(seconds);
-    m_alarms[row]->setEndOffset(offset);
+    m_event->alarms()[row]->setEndOffset(offset);
     Q_EMIT dataChanged(index(row, 0), index(row, 0));
 }
 
 void RemindersModel::setAlarmType(int row, KCalendarCore::Alarm::Type type)
 {
-    m_alarms[row]->setType(type);
+    m_event->alarms()[row]->setType(type);
     Q_EMIT dataChanged(index(row, 0), index(row, 0));
 }
