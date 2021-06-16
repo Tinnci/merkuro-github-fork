@@ -312,8 +312,6 @@ Kirigami.OverlaySheet {
                     text: i18n("Add reminder")
                     Layout.fillWidth: true
 
-                    property int buttonIndex: 0
-
                     onClicked: event.remindersModel.addAlarm();
                 }
 
@@ -374,29 +372,24 @@ Kirigami.OverlaySheet {
                     text: i18n("Add attendee")
                     Layout.fillWidth: true
 
-                    property int buttonIndex: 0
+                    onClicked: event.attendeesModel.addAttendee("name", "email");
+                }
 
-                    onClicked: {
-                        var newAttendee = Qt.createQmlObject(`
-                            import QtQuick 2.15
-                            import QtQuick.Controls 2.15 as QQC2
-                            import QtQuick.Layouts 1.15
+                Repeater {
+                    model: event.attendeesModel
+                    // All of the alarms are handled within the delegates.
 
-                            RowLayout {
-                                Layout.fillWidth: true
+                    delegate: RowLayout {
+                        Layout.fillWidth: true
 
-                                QQC2.ComboBox {
-                                    id: attendeesComboBox${buttonIndex}
-                                    Layout.fillWidth: true
-                                    editable: true
-                                }
-                                QQC2.Button {
-                                    icon.name: "edit-delete-remove"
-                                    onClicked: parent.destroy()
-                                }
-                            }
-                            `, this.parent, `attendeesComboBox${buttonIndex}`)
-                        buttonIndex += 1
+                        QQC2.ComboBox {
+                            Layout.fillWidth: true
+                            editable: true
+                        }
+                        QQC2.Button {
+                            icon.name: "edit-delete-remove"
+                            onClicked: event.attendeesModel.deleteAttendee(model.index);
+                        }
                     }
                 }
             }

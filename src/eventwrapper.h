@@ -30,6 +30,7 @@ class EventWrapper : public QObject
     Q_PROPERTY(KCalendarCore::Recurrence * recurrence READ recurrence)
     Q_PROPERTY(KCalendarCore::Attendee::List attendees READ attendees)
     Q_PROPERTY(RemindersModel * remindersModel READ remindersModel NOTIFY remindersModelChanged)
+    Q_PROPERTY(AttendeesModel * attendeesModel READ attendeesModel NOTIFY attendeesModelChanged)
 
 public:
     EventWrapper(QObject *parent = nullptr);
@@ -50,6 +51,7 @@ public:
     KCalendarCore::Recurrence * recurrence() const;
     KCalendarCore::Attendee::List attendees() const;
     RemindersModel * remindersModel();
+    AttendeesModel * attendeesModel();
 
     Q_INVOKABLE void setAllDay(bool allDay);
     Q_INVOKABLE void addAlarms(KCalendarCore::Alarm::List alarms);
@@ -62,6 +64,7 @@ Q_SIGNALS:
     void eventStartChanged();
     void eventEndChanged();
     void remindersModelChanged();
+    void attendeesModelChanged();
 
 private:
     KCalendarCore::Event::Ptr m_event;
