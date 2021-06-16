@@ -391,24 +391,57 @@ Kirigami.OverlaySheet {
                     model: event.attendeesModel
                     // All of the alarms are handled within the delegates.
 
-                    delegate: RowLayout {
-                        Layout.fillWidth: true
+                    delegate: ColumnLayout {
+                        RowLayout {
+                            QQC2.Label {
+                                Layout.fillWidth: true
+                                text: i18n("Attendee " + String(index + 1))
+                            }
+                            QQC2.Button {
+                                icon.name: "edit-delete-remove"
+                                onClicked: event.attendeesModel.deleteAttendee(index);
+                            }
+                        }
 
-                        QQC2.TextField { // When clicked, this combo should show all contacts.
+                        GridLayout {
                             Layout.fillWidth: true
-                            //editText: Name
-                            onTextChanged: event.attendeesModel.setAttendeeName(index, text)
-                            Component.onCompleted: text = Name
-                        }
-                        QQC2.TextField {
-                            Layout.fillWidth: true
-                            //editText: Email
-                            onTextChanged: event.attendeesModel.setAttendeeEmail(index, text)
-                            Component.onCompleted: text = Email
-                        }
-                        QQC2.Button {
-                            icon.name: "edit-delete-remove"
-                            onClicked: event.attendeesModel.deleteAttendee(index);
+                            columns: 5
+
+                            QQC2.Label{
+                                text: i18n("Name:")
+                            }
+                            QQC2.TextField { // When clicked, this combo should show all contacts.
+                                Layout.fillWidth: true
+                                Layout.columnSpan: 4
+                                //editText: Name
+                                onTextChanged: event.attendeesModel.setAttendeeName(index, text)
+                                Component.onCompleted: text = Name
+                            }
+
+                            QQC2.Label {
+                                text: i18n("Email:")
+                            }
+                            QQC2.TextField {
+                                Layout.fillWidth: true
+                                Layout.columnSpan: 4
+                                //editText: Email
+                                onTextChanged: event.attendeesModel.setAttendeeEmail(index, text)
+                                Component.onCompleted: text = Email
+                            }
+                            QQC2.Label {
+                                text: i18n("Status:")
+                            }
+                            QQC2.ComboBox {
+                                Layout.row: 2
+                                Layout.column: 1
+                                Layout.columnSpan: 2
+                            }
+                            QQC2.CheckBox {
+                                Layout.row: 2
+                                Layout.column: 3
+                                Layout.columnSpan: 2
+                                text: i18n("Request RSVP")
+                            }
                         }
                     }
                 }
