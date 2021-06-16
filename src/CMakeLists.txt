@@ -11,6 +11,7 @@ add_executable(kalendar
     multidayeventmodel.cpp
     eventwrapper.cpp
     remindersmodel.cpp
+    attendeesmodel.cpp
 ${kalendar_SRCS})
 target_link_libraries(kalendar
     Qt5::Core

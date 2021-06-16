@@ -8,6 +8,7 @@
 #include <CalendarSupport/Utils>
 #include <AkonadiCore/CollectionIdentificationAttribute>
 #include "remindersmodel.h"
+#include "attendeesmodel.h"
 
 /**
  * This class is a wrapper for a KCalendarCore::Event::Ptr object.
@@ -65,4 +66,5 @@ Q_SIGNALS:
 private:
     KCalendarCore::Event::Ptr m_event;
     RemindersModel m_remindersModel;
+    AttendeesModel m_attendeesModel;
 };
