@@ -392,14 +392,21 @@ Kirigami.OverlaySheet {
                     delegate: RowLayout {
                         Layout.fillWidth: true
 
-                        QQC2.ComboBox { // When clicked, this combo should show all contacts.
+                        QQC2.TextField { // When clicked, this combo should show all contacts.
                             Layout.fillWidth: true
-                            editable: true
-                            editText: Email
+                            //editText: Name
+                            onTextChanged: event.attendeesModel.setAttendeeName(index, text)
+                            Component.onCompleted: text = Name
+                        }
+                        QQC2.TextField {
+                            Layout.fillWidth: true
+                            //editText: Email
+                            onTextChanged: event.attendeesModel.setAttendeeEmail(index, text)
+                            Component.onCompleted: text = Email
                         }
                         QQC2.Button {
                             icon.name: "edit-delete-remove"
-                            onClicked: event.attendeesModel.deleteAttendee(model.index);
+                            onClicked: event.attendeesModel.deleteAttendee(index);
                         }
                     }
                 }
