@@ -85,7 +85,7 @@ QModelIndex AttendeesModel::parent(const QModelIndex &) const
 int AttendeesModel::rowCount(const QModelIndex &parent) const
 {
     if (!parent.isValid()) {
-        return m_event->attendees().size();
+        return m_event->attendeeCount();
     }
     return 0;
 }
@@ -96,21 +96,25 @@ int AttendeesModel::columnCount(const QModelIndex &) const
     return 1;
 }
 
-void AttendeesModel::addAttendee()
+void AttendeesModel::addAttendee(QString name, QString email)
 {
-    KCalendarCore::Attendee attendee;
+    KCalendarCore::Attendee attendee(name, email);
     m_event->addAttendee(attendee);
     Q_EMIT attendeesChanged();
     Q_EMIT layoutChanged();
+    qDebug() << rowCount();
 }
 
 void AttendeesModel::deleteAttendee(int row)
 {
+    qDebug() << row;
     if (!hasIndex(row, 0)) {
         return;
     }
-
-    m_event->attendees().removeAt(row);
+    KCalendarCore::Attendee::List currentAttendees(m_event->attendees());
+    currentAttendees.removeAt(row);
+    m_event->setAttendees(currentAttendees);
+    rowCount();
     Q_EMIT attendeesChanged();
     Q_EMIT layoutChanged();
 }

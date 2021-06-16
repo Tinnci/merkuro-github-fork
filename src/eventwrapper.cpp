@@ -95,6 +95,10 @@ RemindersModel * EventWrapper::remindersModel()
     return &m_remindersModel;
 }
 
+AttendeesModel * EventWrapper::attendeesModel()
+{
+    return &m_attendeesModel;
+}
 
 void EventWrapper::setAllDay(bool allDay)
 {
