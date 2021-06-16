@@ -41,7 +41,6 @@ public:
     KCalendarCore::Event::Ptr eventPtr();
     void setEventPtr(KCalendarCore::Event::Ptr event);
     KCalendarCore::Alarm::List alarms();
-    void loadReminders();
 
     QVariant data(const QModelIndex &idx, int role) const override;
     QModelIndex index(int row, int column, const QModelIndex &parent = QModelIndex()) const override;
@@ -62,5 +61,4 @@ Q_SIGNALS:
 
 private:
     KCalendarCore::Event::Ptr m_event;
-    KCalendarCore::Alarm::List m_alarms;
 };
