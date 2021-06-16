@@ -96,3 +96,56 @@ int AttendeesModel::columnCount(const QModelIndex &) const
     return 1;
 }
 
+void AttendeesModel::setAttendeeCuType(int row, KCalendarCore::Attendee::CuType cutype)
+{
+    m_event->attendees()[row].setCuType(cutype);
+    Q_EMIT dataChanged(index(row, 0), index(row, 0));
+}
+
+void AttendeesModel::setAttendeeDelegate(int row, QString delegate)
+{
+    m_event->attendees()[row].setDelegate(delegate);
+    Q_EMIT dataChanged(index(row, 0), index(row, 0));
+}
+
+void AttendeesModel::setAttendeeDelegator(int row, QString delegator)
+{
+    m_event->attendees()[row].setDelegator(delegator);
+    Q_EMIT dataChanged(index(row, 0), index(row, 0));
+}
+
+void AttendeesModel::setAttendeeEmail(int row, QString email)
+{
+    m_event->attendees()[row].setEmail(email);
+    Q_EMIT dataChanged(index(row, 0), index(row, 0));
+}
+
+void AttendeesModel::setAttendeeName(int row, QString name)
+{
+    m_event->attendees()[row].setName(name);
+    Q_EMIT dataChanged(index(row, 0), index(row, 0));
+}
+
+void AttendeesModel::setAttendeeRole(int row, KCalendarCore::Attendee::Role role)
+{
+    m_event->attendees()[row].setRole(role);
+    Q_EMIT dataChanged(index(row, 0), index(row, 0));
+}
+
+void AttendeesModel::setAttendeeRSVP(int row, bool rsvp)
+{
+    m_event->attendees()[row].setRSVP(rsvp);
+    Q_EMIT dataChanged(index(row, 0), index(row, 0));
+}
+
+void AttendeesModel::setAttendeeStatus(int row, KCalendarCore::Attendee::PartStat status)
+{
+    m_event->attendees()[row].setStatus(status);
+    Q_EMIT dataChanged(index(row, 0), index(row, 0));
+}
+
+void AttendeesModel::setAttendeeUid(int row, QString uid)
+{
+    m_event->attendees()[row].setUid(uid);
+    Q_EMIT dataChanged(index(row, 0), index(row, 0));
+}

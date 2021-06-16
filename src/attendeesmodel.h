@@ -48,6 +48,16 @@ public:
     int rowCount(const QModelIndex &parent = {}) const override;
     int columnCount(const QModelIndex &parent) const override;
 
+    Q_INVOKABLE void setAttendeeCuType(int row, KCalendarCore::Attendee::CuType cutype);
+    Q_INVOKABLE void setAttendeeDelegate(int row, QString delegate);
+    Q_INVOKABLE void setAttendeeDelegator(int row, QString delegator);
+    Q_INVOKABLE void setAttendeeEmail(int row, QString email);
+    Q_INVOKABLE void setAttendeeName(int row, QString name);
+    Q_INVOKABLE void setAttendeeRole(int row, KCalendarCore::Attendee::Role role);
+    Q_INVOKABLE void setAttendeeRSVP(int row, bool rsvp);
+    Q_INVOKABLE void setAttendeeStatus(int row, KCalendarCore::Attendee::PartStat status);
+    Q_INVOKABLE void setAttendeeUid(int row, QString uid);
+
 Q_SIGNALS:
     void eventPtrChanged();
     void attendeesChanged();
