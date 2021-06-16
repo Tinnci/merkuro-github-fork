@@ -292,14 +292,24 @@ Kirigami.OverlaySheet {
                 id: remindersColumn
 
                 function secondsToReminderLabel(seconds) {
-                    if (seconds) {
-                        var numAndUnit = (
-                            seconds >= 2 * 24 * 60 * 60 ?   Math.round(seconds / (24*60*60)) + " days"  : // 2 days +
-                            seconds >= 1 * 24 * 60 * 60 ?   "1 day"                                     :
-                            seconds >= 2 * 60 * 60      ?   Math.round(seconds / (60*60)) + " hours"    : // 2 hours +
-                            seconds >= 1 * 60 * 60      ?   "1 hour"                                    :
-                                                            Math.round(seconds / 60) + " minutes")
-                        return numAndUnit + " before";
+
+                    function numAndUnit(secs) {
+                        if(secs >= 2 * 24 * 60 * 60)
+                            return Math.round(secs / (24*60*60)) + " days"; // 2 days +
+                        else if (secs >= 1 * 24 * 60 * 60)
+                            return "1 day";
+                        else if (secs >= 2 * 60 * 60)
+                            return Math.round(secs / (60*60)) + " hours"; // 2 hours +
+                        else if (secs >= 1 * 60 * 60)
+                            return "1 hour";
+                        else
+                            return Math.round(secs / 60) + " minutes";
+                    }
+
+                    if (seconds < 0) {
+                        return numAndUnit(seconds * -1) + " before";
+                    } else if (seconds < 0) {
+                        return numAndUnit(seconds) + " after";
                     } else {
                         return "On event start";
                     }
@@ -325,7 +335,7 @@ Kirigami.OverlaySheet {
                     delegate: RowLayout {
                         Layout.fillWidth: true
 
-                        Component.onCompleted: console.log(model.index)
+                        Component.onCompleted: console.log(Object.keys(model))
 
                         QQC2.ComboBox {
                             // There is also a chance here to add a feature for the user to pick reminder type.
@@ -333,23 +343,23 @@ Kirigami.OverlaySheet {
 
                             property var beforeEventSeconds: 0
 
-                            displayText: remindersColumn.secondsToReminderLabel(Number(currentText))
+                            displayText: remindersColumn.secondsToReminderLabel(StartOffset)
 
-                            model: [0,
-                                    5 * 60, // 5 minutes
-                                    10 * 60,
-                                    15 * 60,
-                                    30 * 60,
-                                    45 * 60,
-                                    1 * 60 * 60, // 1 hour
-                                    2 * 60 * 60,
-                                    1 * 24 * 60 * 60, // 1 day
-                                    2 * 24 * 60 * 60,
-                                    5 * 24 * 60 * 60]
+                            model: [0, // We times by -1 to make times be before event
+                                    -1 * 5 * 60, // 5 minutes
+                                    -1 * 10 * 60,
+                                    -1 * 15 * 60,
+                                    -1 * 30 * 60,
+                                    -1 * 45 * 60,
+                                    -1 * 1 * 60 * 60, // 1 hour
+                                    -1 * 2 * 60 * 60,
+                                    -1 * 1 * 24 * 60 * 60, // 1 day
+                                    -1 * 2 * 24 * 60 * 60,
+                                    -1 * 5 * 24 * 60 * 60]
                                     // All these times are in seconds.
                             delegate: Kirigami.BasicListItem {
                                 label: remindersColumn.secondsToReminderLabel(modelData)
-                                onClicked: event.remindersModel.setAlarmStartOffset(parent.index, modelData * -1) // Negative for before start
+                                onClicked: event.remindersModel.setAlarmStartOffset(parent.index, modelData)
                             }
                             popup.z: 1000
                         }
@@ -382,9 +392,10 @@ Kirigami.OverlaySheet {
                     delegate: RowLayout {
                         Layout.fillWidth: true
 
-                        QQC2.ComboBox {
+                        QQC2.ComboBox { // When clicked, this combo should show all contacts.
                             Layout.fillWidth: true
                             editable: true
+                            editText: Email
                         }
                         QQC2.Button {
                             icon.name: "edit-delete-remove"

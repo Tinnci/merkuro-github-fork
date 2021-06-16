@@ -65,6 +65,15 @@ QVariant AttendeesModel::data(const QModelIndex &idx, int role) const
     }
 }
 
+QHash<int, QByteArray> AttendeesModel::roleNames() const
+{
+	QHash<int, QByteArray> roles;
+	for (int i = 0; i < QMetaEnum::fromType<Roles>().keyCount(); i++) {
+		roles.insert(Qt::UserRole + i + 1, QMetaEnum::fromType<Roles>().key(i));
+	}
+	return roles;
+}
+
 QModelIndex AttendeesModel::index(int row, int column, const QModelIndex &parent) const
 {
     if (!hasIndex(row, column, parent)) {
@@ -98,6 +107,7 @@ int AttendeesModel::columnCount(const QModelIndex &) const
 
 void AttendeesModel::addAttendee(QString name, QString email)
 {
+    qDebug() << roleNames();
     KCalendarCore::Attendee attendee(name, email);
     m_event->addAttendee(attendee);
     Q_EMIT attendeesChanged();
