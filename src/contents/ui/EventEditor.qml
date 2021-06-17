@@ -434,9 +434,10 @@ Kirigami.OverlaySheet {
                             QQC2.ComboBox {
                                 Layout.columnSpan: 2
                                 model: event.attendeesModel.attendeeStatusModel
-                                Component.onCompleted: console.log(event.attendeesModel.attendeeStatusModel.rowCount());
+                                displayText: currentText
                                 delegate: Kirigami.BasicListItem {
-
+                                    label: DisplayName
+                                    Component.onCompleted: console.log(DisplayName);
                                 }
                             }
                             QQC2.CheckBox {
