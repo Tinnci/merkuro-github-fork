@@ -29,11 +29,7 @@ public:
 
     QVariant data(const QModelIndex &idx, int role) const override;
     QHash<int, QByteArray> roleNames() const override;
-    QModelIndex index(int row, int column, const QModelIndex &parent = QModelIndex()) const override;
-    QModelIndex parent(const QModelIndex &) const override;
-
     int rowCount(const QModelIndex &parent = {}) const override;
-    int columnCount(const QModelIndex &parent) const override;
 
 private:
     QHash<int, QString> m_status;
@@ -75,10 +71,7 @@ public:
 
     QVariant data(const QModelIndex &idx, int role) const override;
     QHash<int, QByteArray> roleNames() const override;
-    QModelIndex index(int row, int column, const QModelIndex &parent = QModelIndex()) const override;
-    QModelIndex parent(const QModelIndex &) const override;
     int rowCount(const QModelIndex &parent = {}) const override;
-    int columnCount(const QModelIndex &parent) const override;
 
     Q_INVOKABLE void addAttendee();
     Q_INVOKABLE void deleteAttendee(int row);
