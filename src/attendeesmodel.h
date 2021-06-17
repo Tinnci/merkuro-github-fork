@@ -12,7 +12,7 @@
 /**
  *
  */
-class AttendeeStatusModel : public QAbstractItemModel
+class AttendeeStatusModel : public QAbstractListModel
 {
     Q_OBJECT
 
