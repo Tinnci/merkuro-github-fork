@@ -384,7 +384,7 @@ Kirigami.OverlaySheet {
                     text: i18n("Add attendee")
                     Layout.fillWidth: true
 
-                    onClicked: event.attendeesModel.addAttendee("Enter name", "Enter email");
+                    onClicked: event.attendeesModel.addAttendee();
                     // With these placeholders, the attendee still won't be added to the event
                     // but it will show up on the model. Still, this is a little janky.
                 }

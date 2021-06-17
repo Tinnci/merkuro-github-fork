@@ -191,9 +191,10 @@ int AttendeesModel::columnCount(const QModelIndex &) const
     return 1;
 }
 
-void AttendeesModel::addAttendee(QString name, QString email)
+void AttendeesModel::addAttendee()
 {
-    KCalendarCore::Attendee attendee(name, email);
+    // QLatin1String is a workaround for QT_NO_CAST_FROM_ASCII
+    KCalendarCore::Attendee attendee(QLatin1String(""), QLatin1String(""));
     m_event->addAttendee(attendee);
     Q_EMIT attendeesChanged();
     Q_EMIT layoutChanged();
