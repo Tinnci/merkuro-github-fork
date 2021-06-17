@@ -195,6 +195,7 @@ void AttendeesModel::addAttendee()
 {
     // QLatin1String is a workaround for QT_NO_CAST_FROM_ASCII
     KCalendarCore::Attendee attendee(QLatin1String(""), QLatin1String(""));
+    // addAttendee won't actually add any attendees without a set name
     m_event->addAttendee(attendee);
     Q_EMIT attendeesChanged();
     Q_EMIT layoutChanged();

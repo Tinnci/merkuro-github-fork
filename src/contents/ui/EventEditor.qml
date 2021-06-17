@@ -385,8 +385,6 @@ Kirigami.OverlaySheet {
                     Layout.fillWidth: true
 
                     onClicked: event.attendeesModel.addAttendee();
-                    // With these placeholders, the attendee still won't be added to the event
-                    // but it will show up on the model. Still, this is a little janky.
                 }
 
                 Repeater {
@@ -394,6 +392,8 @@ Kirigami.OverlaySheet {
                     // All of the alarms are handled within the delegates.
 
                     delegate: ColumnLayout {
+                        Layout.leftMargin: Kirigami.Units.largeSpacing
+
                         RowLayout {
                             QQC2.Label {
                                 Layout.fillWidth: true
