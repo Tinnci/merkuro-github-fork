@@ -5,7 +5,7 @@
 #include <remindersmodel.h>
 
 RemindersModel::RemindersModel(QObject *parent, KCalendarCore::Event::Ptr eventPtr)
-    : QAbstractItemModel(parent)
+    : QAbstractListModel(parent)
     , m_event(eventPtr)
 {
 
@@ -60,35 +60,12 @@ QHash<int, QByteArray> RemindersModel::roleNames() const
 	return roles;
 }
 
-QModelIndex RemindersModel::index(int row, int column, const QModelIndex &parent) const
-{
-    if (!hasIndex(row, column, parent)) {
-        return {};
-    }
-
-    if (!parent.isValid()) {
-        return createIndex(row, column);
-    }
-    return {};
-}
-
-QModelIndex RemindersModel::parent(const QModelIndex &) const
-{
-    return {};
-}
-
 int RemindersModel::rowCount(const QModelIndex &parent) const
 {
     if (!parent.isValid()) {
         return m_event->alarms().size();
     }
     return 0;
-}
-
-int RemindersModel::columnCount(const QModelIndex &) const
-{
-    // Our data is a list, so it's one dimensional and only has 1 column.
-    return 1;
 }
 
 void RemindersModel::addAlarm()

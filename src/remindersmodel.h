@@ -20,7 +20,7 @@
  * dimensional data structure.
  */
 
-class RemindersModel : public QAbstractItemModel
+class RemindersModel : public QAbstractListModel
 {
     Q_OBJECT
     Q_PROPERTY(KCalendarCore::Event::Ptr eventPtr READ eventPtr WRITE setEventPtr NOTIFY eventPtrChanged)
@@ -44,10 +44,7 @@ public:
 
     QVariant data(const QModelIndex &idx, int role) const override;
     QHash<int, QByteArray> roleNames() const override;
-    QModelIndex index(int row, int column, const QModelIndex &parent = QModelIndex()) const override;
-    QModelIndex parent(const QModelIndex &) const override;
     int rowCount(const QModelIndex &parent = {}) const override;
-    int columnCount(const QModelIndex &parent) const override;
 
     Q_INVOKABLE void addAlarm();
     Q_INVOKABLE void deleteAlarm(int row);
