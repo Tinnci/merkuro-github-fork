@@ -52,7 +52,7 @@ public:
         Delegator,
         Email,
         FullName,
-        isNull,
+        IsNull,
         Name,
         Role,
         RSVP,
