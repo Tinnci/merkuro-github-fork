@@ -28,10 +28,10 @@ class RemindersModel : public QAbstractListModel
 
 public:
     enum Roles {
-        Type = Qt::UserRole + 1,
-        Time,
-        StartOffset,
-        EndOffset
+        TypeRole = Qt::UserRole + 1,
+        TimeRole,
+        StartOffsetRole,
+        EndOffsetRole
     };
     Q_ENUM(Roles);
 

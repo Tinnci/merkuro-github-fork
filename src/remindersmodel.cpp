@@ -37,13 +37,13 @@ QVariant RemindersModel::data(const QModelIndex &idx, int role) const
     }
     auto alarm = m_event->alarms()[idx.row()];
     switch (role) {
-        case Type:
+        case TypeRole:
             return alarm->type();
-        case Time:
+        case TimeRole:
             return alarm->time();
-        case StartOffset:
+        case StartOffsetRole:
             return alarm->startOffset().asSeconds();
-        case EndOffset:
+        case EndOffsetRole:
             return alarm->endOffset().asSeconds();
         default:
             qWarning() << "Unknown role for event:" << QMetaEnum::fromType<Roles>().valueToKey(role);
