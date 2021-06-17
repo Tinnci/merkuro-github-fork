@@ -18,9 +18,9 @@ class AttendeeStatusModel : public QAbstractListModel
 
 public:
     enum Roles {
-        EnumName = Qt::UserRole + 1,
-        DisplayName,
-        Value
+        EnumNameRole = Qt::UserRole + 1,
+        DisplayNameRole,
+        ValueRole
     };
     Q_ENUM(Roles);
 
@@ -47,17 +47,17 @@ class AttendeesModel : public QAbstractListModel
 
 public:
     enum Roles {
-        CuType = Qt::UserRole + 1,
-        Delegate,
-        Delegator,
-        Email,
-        FullName,
-        IsNull,
-        Name,
-        Role,
-        RSVP,
-        Status,
-        Uid
+        CuTypeRole = Qt::UserRole + 1,
+        DelegateRole,
+        DelegatorRole,
+        EmailRole,
+        FullNameRole,
+        IsNullRole,
+        NameRole,
+        RoleRole,
+        RSVPRole,
+        StatusRole,
+        UidRole
     };
     Q_ENUM(Roles);
 

@@ -345,7 +345,7 @@ Kirigami.OverlaySheet {
 
                             property var beforeEventSeconds: 0
 
-                            displayText: remindersColumn.secondsToReminderLabel(StartOffset)
+                            displayText: remindersColumn.secondsToReminderLabel(StartOffsetRole)
 
                             model: [0, // We times by -1 to make times be before event
                                     -1 * 5 * 60, // 5 minutes
@@ -417,7 +417,7 @@ Kirigami.OverlaySheet {
                                 Layout.columnSpan: 4
                                 //editText: Name
                                 onTextChanged: event.attendeesModel.setAttendeeName(index, text)
-                                Component.onCompleted: text = Name
+                                Component.onCompleted: text = NameRole
                             }
 
                             QQC2.Label {
@@ -428,7 +428,7 @@ Kirigami.OverlaySheet {
                                 Layout.columnSpan: 4
                                 //editText: Email
                                 onTextChanged: event.attendeesModel.setAttendeeEmail(index, text)
-                                Component.onCompleted: text = Email
+                                Component.onCompleted: text = EmailRole
                             }
                             QQC2.Label {
                                 text: i18n("Status:")
@@ -436,20 +436,20 @@ Kirigami.OverlaySheet {
                             QQC2.ComboBox {
                                 Layout.columnSpan: 2
                                 model: event.attendeesModel.attendeeStatusModel
-                                textRole: "DisplayName"
-                                valueRole: "Value"
-                                currentIndex: Status
+                                textRole: "DisplayNameRole"
+                                valueRole: "ValueRole"
+                                currentIndex: StatusRole
                                 onCurrentValueChanged: event.attendeesModel.setAttendeeStatus(index, currentValue)
 
                                 delegate: Kirigami.BasicListItem {
-                                    label: DisplayName
+                                    label: DisplayNameRole
                                 }
                                 popup.z: 1000
                             }
                             QQC2.CheckBox {
                                 Layout.columnSpan: 2
                                 text: i18n("Request RSVP")
-                                checked: RSVP
+                                checked: RSVPRole
                                 onCheckedChanged: event.attendeesModel.setAttendeeRSVP(index, checked)
                             }
                         }

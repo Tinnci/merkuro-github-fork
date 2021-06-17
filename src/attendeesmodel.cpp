@@ -18,16 +18,22 @@ QVariant AttendeeStatusModel::data(const QModelIndex &idx, int role) const
     }
 
     int value = QMetaEnum::fromType<KCalendarCore::Attendee::PartStat>().value(idx.row());
-    // Workaround for QT_NO_CAST_FROM_ASCII
+    // QLatin1String is a workaround for QT_NO_CAST_FROM_ASCII
     QString enumName = QLatin1String(QMetaEnum::fromType<KCalendarCore::Attendee::PartStat>().valueToKey(value));
 
     switch (role) {
-        case EnumName:
+        case EnumNameRole:
             return enumName;
-        case DisplayName:
-            // Regular expression adds space between every lowercase and Capitalised character
+        case DisplayNameRole:
+        {
+            // Regular expression adds space between every lowercase and Capitalised character then does the same
+            // for capitalised letters together, e.g. ThisIsATest. Not a problem right now, but best to be safe.
+            QString displayName = enumName.replace(QRegularExpression(QLatin1String("Role")), QLatin1String(""));
+            displayName.replace(QRegularExpression(QLatin1String("([a-z])([A-Z])")), QLatin1String("\\1 \\2"));
+            displayName.replace(QRegularExpression(QLatin1String("([A-Z])([A-Z])")), QLatin1String("\\1 \\2"));
             return enumName.replace(QRegularExpression(QLatin1String("([a-z])([A-Z])")), QLatin1String("\\1 \\2"));
-        case Value:
+        }
+        case ValueRole:
             return value;
         default:
             qWarning() << "Unknown role for event:" << QMetaEnum::fromType<Roles>().valueToKey(role);
@@ -99,27 +105,27 @@ QVariant AttendeesModel::data(const QModelIndex &idx, int role) const
     }
     auto attendee = m_event->attendees()[idx.row()];
     switch (role) {
-        case CuType:
+        case CuTypeRole:
             return attendee.cuType();
-        case Delegate:
+        case DelegateRole:
             return attendee.delegate();
-        case Delegator:
+        case DelegatorRole:
             return attendee.delegator();
-        case Email:
+        case EmailRole:
             return attendee.email();
-        case FullName:
+        case FullNameRole:
             return attendee.fullName();
-        case isNull:
+        case IsNullRole:
             return attendee.isNull();
-        case Name:
+        case NameRole:
             return attendee.name();
-        case Role:
+        case RoleRole:
             return attendee.role();
-        case RSVP:
+        case RSVPRole:
             return attendee.RSVP();
-        case Status:
+        case StatusRole:
             return attendee.status();
-        case Uid:
+        case UidRole:
             return attendee.uid();
         default:
             qWarning() << "Unknown role for event:" << QMetaEnum::fromType<Roles>().valueToKey(role);
