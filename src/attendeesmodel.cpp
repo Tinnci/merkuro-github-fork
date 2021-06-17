@@ -6,7 +6,7 @@
 #include "attendeesmodel.h"
 
 AttendeeStatusModel::AttendeeStatusModel(QObject *parent)
-    : QAbstractItemModel(parent)
+    : QAbstractListModel(parent)
 {
 
 }
@@ -44,36 +44,12 @@ QHash<int, QByteArray> AttendeeStatusModel::roleNames() const
     return roles;
 }
 
-QModelIndex AttendeeStatusModel::index(int row, int column, const QModelIndex &parent) const
-{
-
-    if (!hasIndex(row, column, parent)) {
-        qWarning() << "Invalid index: " << row;
-        return {};
-    }
-
-    if (!parent.isValid()) {
-        return createIndex(row, column);
-    }
-    return {};
-}
-
-QModelIndex AttendeeStatusModel::parent(const QModelIndex &) const
-{
-    return {};
-}
-
 int AttendeeStatusModel::rowCount(const QModelIndex &parent) const
 {
     if (!parent.isValid()) {
         return QMetaEnum::fromType<KCalendarCore::Attendee::PartStat>().keyCount();
     }
     return 0;
-}
-
-int AttendeeStatusModel::columnCount(const QModelIndex &) const
-{
-    return 1;
 }
 
 
@@ -84,7 +60,7 @@ int AttendeeStatusModel::columnCount(const QModelIndex &) const
 
 
 AttendeesModel::AttendeesModel(QObject* parent, KCalendarCore::Event::Ptr eventPtr)
-    : QAbstractItemModel(parent)
+    : QAbstractListModel(parent)
     , m_event(eventPtr)
     , m_attendeeStatusModel(parent)
 {
@@ -160,35 +136,12 @@ QHash<int, QByteArray> AttendeesModel::roleNames() const
 	return roles;
 }
 
-QModelIndex AttendeesModel::index(int row, int column, const QModelIndex &parent) const
-{
-    if (!hasIndex(row, column, parent)) {
-        return {};
-    }
-
-    if (!parent.isValid()) {
-        return createIndex(row, column);
-    }
-    return {};
-}
-
-QModelIndex AttendeesModel::parent(const QModelIndex &) const
-{
-    return {};
-}
-
 int AttendeesModel::rowCount(const QModelIndex &parent) const
 {
     if (!parent.isValid()) {
         return m_event->attendeeCount();
     }
     return 0;
-}
-
-int AttendeesModel::columnCount(const QModelIndex &) const
-{
-    // Our data is a list, so it's one dimensional and only has 1 column.
-    return 1;
 }
 
 void AttendeesModel::addAttendee()
