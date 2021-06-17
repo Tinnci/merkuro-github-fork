@@ -2,11 +2,91 @@
 // SPDX-License-Identifier: LGPL-2.1-or-later
 
 #include <QMetaEnum>
+#include <QRegularExpression>
 #include "attendeesmodel.h"
+
+AttendeeStatusModel::AttendeeStatusModel(QObject *parent)
+    : QAbstractItemModel(parent)
+{
+
+}
+
+QVariant AttendeeStatusModel::data(const QModelIndex &idx, int role) const
+{
+    if (!hasIndex(idx.row(), idx.column())) {
+        return {};
+    }
+
+    int value = QMetaEnum::fromType<KCalendarCore::Attendee::PartStat>().value(idx.row());
+    // Workaround for QT_NO_CAST_FROM_ASCII
+    QString enumName = QLatin1String(QMetaEnum::fromType<KCalendarCore::Attendee::PartStat>().valueToKey(value));
+
+    switch (role) {
+        case EnumName:
+            return enumName;
+        case DisplayName:
+            // Regular expression adds space between every lowercase and Capitalised character
+            return enumName.replace(QRegularExpression(QLatin1String("([a-z])([A-Z])")), QLatin1String("\\1 \\2"));
+        case Value:
+            return value;
+        default:
+            qWarning() << "Unknown role for event:" << QMetaEnum::fromType<Roles>().valueToKey(role);
+            return {};
+    }
+}
+
+QHash<int, QByteArray> AttendeeStatusModel::roleNames() const
+{
+    QHash<int, QByteArray> roles;
+    for (int i = 0; i < QMetaEnum::fromType<Roles>().keyCount(); i++) {
+        roles.insert(Qt::UserRole + i + 1, QMetaEnum::fromType<Roles>().key(i));
+    }
+    return roles;
+}
+
+QModelIndex AttendeeStatusModel::index(int row, int column, const QModelIndex &parent) const
+{
+
+    if (!hasIndex(row, column, parent)) {
+        qWarning() << "Invalid index: " << row;
+        return {};
+    }
+
+    if (!parent.isValid()) {
+        return createIndex(row, column);
+    }
+    return {};
+}
+
+QModelIndex AttendeeStatusModel::parent(const QModelIndex &) const
+{
+    return {};
+}
+
+int AttendeeStatusModel::rowCount(const QModelIndex &parent) const
+{
+    if (!parent.isValid()) {
+        return QMetaEnum::fromType<KCalendarCore::Attendee::PartStat>().keyCount();
+    }
+    return 0;
+}
+
+int AttendeeStatusModel::columnCount(const QModelIndex &) const
+{
+    return 1;
+}
+
+
+
+
+
+
+
 
 AttendeesModel::AttendeesModel(QObject* parent, KCalendarCore::Event::Ptr eventPtr)
     : QAbstractItemModel(parent)
     , m_event(eventPtr)
+    , m_attendeeStatusModel(parent)
 {
 
 }
@@ -29,6 +109,12 @@ KCalendarCore::Attendee::List AttendeesModel::attendees()
 {
     return m_event->attendees();
 }
+
+AttendeeStatusModel * AttendeesModel::attendeeStatusModel()
+{
+    return &m_attendeeStatusModel;
+}
+
 
 QVariant AttendeesModel::data(const QModelIndex &idx, int role) const
 {
@@ -178,12 +264,10 @@ void AttendeesModel::setAttendeeRole(int row, KCalendarCore::Attendee::Role role
 
 void AttendeesModel::setAttendeeRSVP(int row, bool rsvp)
 {
-    qDebug() << rsvp;
     KCalendarCore::Attendee::List currentAttendees(m_event->attendees());
     currentAttendees[row].setRSVP(rsvp);
     m_event->setAttendees(currentAttendees);
     Q_EMIT dataChanged(index(row, 0), index(row, 0));
-    qDebug() << m_event->attendees()[row].RSVP();
 }
 
 void AttendeesModel::setAttendeeStatus(int row, KCalendarCore::Attendee::PartStat status)
