@@ -42,7 +42,7 @@ private:
 
 
 
-class AttendeesModel : public QAbstractItemModel
+class AttendeesModel : public QAbstractListModel
 {
     Q_OBJECT
     Q_PROPERTY(KCalendarCore::Event::Ptr eventPtr READ eventPtr WRITE setEventPtr NOTIFY eventPtrChanged)
