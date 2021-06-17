@@ -433,6 +433,11 @@ Kirigami.OverlaySheet {
                             }
                             QQC2.ComboBox {
                                 Layout.columnSpan: 2
+                                model: event.attendeesModel.attendeeStatusModel
+                                Component.onCompleted: console.log(event.attendeesModel.attendeeStatusModel.rowCount());
+                                delegate: Kirigami.BasicListItem {
+
+                                }
                             }
                             QQC2.CheckBox {
                                 Layout.columnSpan: 2

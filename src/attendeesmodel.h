@@ -12,12 +12,42 @@
 /**
  *
  */
+class AttendeeStatusModel : public QAbstractItemModel
+{
+    Q_OBJECT
+
+public:
+    enum Roles {
+        EnumName = Qt::UserRole + 1,
+        DisplayName,
+        Value
+    };
+    Q_ENUM(Roles);
+
+    AttendeeStatusModel(QObject *parent = nullptr);
+    ~AttendeeStatusModel() = default;
+
+    QVariant data(const QModelIndex &idx, int role) const override;
+    QHash<int, QByteArray> roleNames() const override;
+    QModelIndex index(int row, int column, const QModelIndex &parent = QModelIndex()) const override;
+    QModelIndex parent(const QModelIndex &) const override;
+
+    int rowCount(const QModelIndex &parent = {}) const override;
+    int columnCount(const QModelIndex &parent) const override;
+
+private:
+    QHash<int, QString> m_status;
+};
+
+
+
 
 class AttendeesModel : public QAbstractItemModel
 {
     Q_OBJECT
     Q_PROPERTY(KCalendarCore::Event::Ptr eventPtr READ eventPtr WRITE setEventPtr NOTIFY eventPtrChanged)
     Q_PROPERTY(KCalendarCore::Attendee::List attendees READ attendees NOTIFY attendeesChanged)
+    Q_PROPERTY(AttendeeStatusModel * attendeeStatusModel READ attendeeStatusModel NOTIFY attendeeStatusModelChanged)
 
 public:
     enum Roles {
@@ -41,6 +71,7 @@ public:
     KCalendarCore::Event::Ptr eventPtr();
     void setEventPtr(KCalendarCore::Event::Ptr event);
     KCalendarCore::Attendee::List attendees();
+    AttendeeStatusModel * attendeeStatusModel();
 
     QVariant data(const QModelIndex &idx, int role) const override;
     QHash<int, QByteArray> roleNames() const override;
@@ -65,7 +96,9 @@ public:
 Q_SIGNALS:
     void eventPtrChanged();
     void attendeesChanged();
+    void attendeeStatusModelChanged();
 
 private:
     KCalendarCore::Event::Ptr m_event;
+    AttendeeStatusModel m_attendeeStatusModel;
 };
