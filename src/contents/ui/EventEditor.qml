@@ -86,6 +86,8 @@ Kirigami.OverlaySheet {
                 property int selectedCollectionId: null
 
                 displayText: i18n("Please select a calendar...")
+                textRole: "display"
+                valueRole: "collectionId"
 
                 // Should default to default collection
                 // Should also only show *calendars*
@@ -434,11 +436,15 @@ Kirigami.OverlaySheet {
                             QQC2.ComboBox {
                                 Layout.columnSpan: 2
                                 model: event.attendeesModel.attendeeStatusModel
-                                displayText: currentText
+                                textRole: "DisplayName"
+                                valueRole: "Value"
+                                currentIndex: Status
+                                onCurrentValueChanged: event.attendeesModel.setAttendeeStatus(index, currentValue)
+
                                 delegate: Kirigami.BasicListItem {
                                     label: DisplayName
-                                    Component.onCompleted: console.log(DisplayName);
                                 }
+                                popup.z: 1000
                             }
                             QQC2.CheckBox {
                                 Layout.columnSpan: 2
