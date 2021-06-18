@@ -25,6 +25,7 @@ class RemindersModel : public QAbstractListModel
     Q_OBJECT
     Q_PROPERTY(KCalendarCore::Event::Ptr eventPtr READ eventPtr WRITE setEventPtr NOTIFY eventPtrChanged)
     Q_PROPERTY(KCalendarCore::Alarm::List alarms READ alarms NOTIFY alarmsChanged)
+    Q_PROPERTY(QVariantMap dataroles READ dataroles CONSTANT)
 
 public:
     enum Roles {
@@ -41,17 +42,15 @@ public:
     KCalendarCore::Event::Ptr eventPtr();
     void setEventPtr(KCalendarCore::Event::Ptr event);
     KCalendarCore::Alarm::List alarms();
+    QVariantMap dataroles();
 
     QVariant data(const QModelIndex &idx, int role) const override;
+    bool setData(const QModelIndex &idx, const QVariant &value, int role) override;
     QHash<int, QByteArray> roleNames() const override;
     int rowCount(const QModelIndex &parent = {}) const override;
 
     Q_INVOKABLE void addAlarm();
     Q_INVOKABLE void deleteAlarm(int row);
-
-    Q_INVOKABLE void setAlarmStartOffset(int row, int seconds);
-    Q_INVOKABLE void setAlarmEndOffset(int row, int seconds);
-    Q_INVOKABLE void setAlarmType(int row, KCalendarCore::Alarm::Type type);
 
 Q_SIGNALS:
     void eventPtrChanged();
@@ -59,4 +58,5 @@ Q_SIGNALS:
 
 private:
     KCalendarCore::Event::Ptr m_event;
+    QVariantMap m_dataRoles;
 };

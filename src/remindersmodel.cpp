@@ -8,7 +8,11 @@ RemindersModel::RemindersModel(QObject *parent, KCalendarCore::Event::Ptr eventP
     : QAbstractListModel(parent)
     , m_event(eventPtr)
 {
-
+    for(int i = 0; i < QMetaEnum::fromType<RemindersModel::Roles>().keyCount(); i++) {
+        int value = QMetaEnum::fromType<RemindersModel::Roles>().value(i);
+        QLatin1String key(QMetaEnum::fromType<RemindersModel::Roles>().key(i));
+        m_dataRoles[key] = value;
+    }
 }
 
 KCalendarCore::Event::Ptr RemindersModel::eventPtr()
@@ -30,6 +34,11 @@ KCalendarCore::Alarm::List RemindersModel::alarms()
     return m_event->alarms();
 }
 
+QVariantMap RemindersModel::dataroles()
+{
+    return m_dataRoles;
+}
+
 QVariant RemindersModel::data(const QModelIndex &idx, int role) const
 {
     if (!hasIndex(idx.row(), idx.column())) {
@@ -49,6 +58,47 @@ QVariant RemindersModel::data(const QModelIndex &idx, int role) const
             qWarning() << "Unknown role for event:" << QMetaEnum::fromType<Roles>().valueToKey(role);
             return {};
     }
+}
+
+bool RemindersModel::setData(const QModelIndex &idx, const QVariant &value, int role)
+{
+    if (!idx.isValid()) {
+        return false;
+    }
+
+    switch (role) {
+        case TypeRole:
+        {
+            KCalendarCore::Alarm::Type type = static_cast<KCalendarCore::Alarm::Type>(value.toInt());
+            m_event->alarms()[idx.row()]->setType(type);
+            break;
+        }
+        case TimeRole:
+        {
+            QDateTime time = value.toDateTime();
+            m_event->alarms()[idx.row()]->setTime(time);
+            break;
+        }
+        case StartOffsetRole:
+        {
+            // offset can be set in seconds or days, if we want it to be before the event,
+            // it has to be set to a negative value.
+            KCalendarCore::Duration offset(value.toInt());
+            m_event->alarms()[idx.row()]->setStartOffset(offset);
+            break;
+        }
+        case EndOffsetRole:
+        {
+            KCalendarCore::Duration offset(value.toInt());
+            m_event->alarms()[idx.row()]->setEndOffset(offset);
+            break;
+        }
+        default:
+            qWarning() << "Unknown role for event:" << QMetaEnum::fromType<Roles>().valueToKey(role);
+            return false;
+    }
+    emit dataChanged(idx, idx);
+    return true;
 }
 
 QHash<int, QByteArray> RemindersModel::roleNames() const
@@ -85,26 +135,4 @@ void RemindersModel::deleteAlarm(int row)
     m_event->removeAlarm(m_event->alarms()[row]);
     Q_EMIT alarmsChanged();
     Q_EMIT layoutChanged();
-}
-
-void RemindersModel::setAlarmStartOffset(int row, int seconds)
-{
-    // offset can be set in seconds or days, if we want it to be before the event,
-    // it has to be set to a negative value.
-    KCalendarCore::Duration offset(seconds);
-    m_event->alarms()[row]->setStartOffset(offset);
-    Q_EMIT dataChanged(index(row, 0), index(row, 0));
-}
-
-void RemindersModel::setAlarmEndOffset(int row, int seconds)
-{
-    KCalendarCore::Duration offset(seconds);
-    m_event->alarms()[row]->setEndOffset(offset);
-    Q_EMIT dataChanged(index(row, 0), index(row, 0));
-}
-
-void RemindersModel::setAlarmType(int row, KCalendarCore::Alarm::Type type)
-{
-    m_event->alarms()[row]->setType(type);
-    Q_EMIT dataChanged(index(row, 0), index(row, 0));
 }
