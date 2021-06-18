@@ -31,7 +31,7 @@ Kirigami.OverlaySheet {
 
         QQC2.Button {
             text: editMode ? i18n("Done") : i18n("Add")
-            enabled: titleField.text && eventEditorSheet.validDates && calendarCombo.selectedCollectionId
+            enabled: titleField.text && eventEditorSheet.validDates && calendarCombo.currentValue
             QQC2.DialogButtonBox.buttonRole: QQC2.DialogButtonBox.AcceptRole
         }
 
@@ -56,7 +56,7 @@ Kirigami.OverlaySheet {
                     event.eventEnd = endDate;
                 }
 
-                added(calendarCombo.selectedCollectionId, event);
+                added(calendarCombo.currentValue, event);
             }
             eventEditorSheet.close();
         }
@@ -85,7 +85,6 @@ Kirigami.OverlaySheet {
 
                 property int selectedCollectionId: null
 
-                displayText: i18n("Please select a calendar...")
                 textRole: "display"
                 valueRole: "collectionId"
 
@@ -96,7 +95,6 @@ Kirigami.OverlaySheet {
                     leftPadding: Kirigami.Units.largeSpacing * kDescendantLevel
                     label: display
                     icon: decoration
-                    onClicked: calendarCombo.displayText = model.display, calendarCombo.selectedCollectionId = model.collectionId
                 }
                 popup.z: 1000
             }
@@ -363,9 +361,7 @@ Kirigami.OverlaySheet {
                                     -1 * 2 * 24 * 60 * 60,
                                     -1 * 5 * 24 * 60 * 60]
                                     // All these times are in seconds.
-                            delegate: Kirigami.BasicListItem {
-                                label: remindersColumn.secondsToReminderLabel(modelData)
-                            }
+
                             popup.z: 1000
                         }
 
@@ -415,10 +411,9 @@ Kirigami.OverlaySheet {
                             QQC2.Label{
                                 text: i18n("Name:")
                             }
-                            QQC2.TextField { // When clicked, this combo should show all contacts.
+                            QQC2.TextField {
                                 Layout.fillWidth: true
                                 Layout.columnSpan: 4
-                                //editText: Name
                                 onTextChanged: event.attendeesModel.setData(event.attendeesModel.index(index, 0),
                                                                             text,
                                                                             event.attendeesModel.dataroles["NameRole"])
@@ -450,9 +445,6 @@ Kirigami.OverlaySheet {
                                                                                     currentValue,
                                                                                     event.attendeesModel.dataroles["StatusRole"])
 
-                                delegate: Kirigami.BasicListItem {
-                                    label: DisplayNameRole
-                                }
                                 popup.z: 1000
                             }
                             QQC2.CheckBox {
