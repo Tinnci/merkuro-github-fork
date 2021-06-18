@@ -361,6 +361,9 @@ Kirigami.OverlaySheet {
                                     -1 * 2 * 24 * 60 * 60,
                                     -1 * 5 * 24 * 60 * 60]
                                     // All these times are in seconds.
+                            delegate: Kirigami.BasicListItem {
+                                text: remindersColumn.secondsToReminderLabel(modelData)
+                            }
 
                             popup.z: 1000
                         }
