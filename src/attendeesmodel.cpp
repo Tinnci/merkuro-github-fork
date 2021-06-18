@@ -3,11 +3,26 @@
 
 #include <QMetaEnum>
 #include <QRegularExpression>
+#include <KLocalizedString>
 #include "attendeesmodel.h"
 
 AttendeeStatusModel::AttendeeStatusModel(QObject *parent)
     : QAbstractListModel(parent)
 {
+    for(int i = 0; i < QMetaEnum::fromType<KCalendarCore::Attendee::PartStat>().keyCount(); i++) {
+        int value = QMetaEnum::fromType<KCalendarCore::Attendee::PartStat>().value(i);
+
+        // QLatin1String is a workaround for QT_NO_CAST_FROM_ASCII.
+        // Regular expression adds space between every lowercase and Capitalised character then does the same
+        // for capitalised letters together, e.g. ThisIsATest. Not a problem right now, but best to be safe.
+        QString enumName = QLatin1String(QMetaEnum::fromType<KCalendarCore::Attendee::PartStat>().key(i));
+        QString displayName = enumName.replace(QRegularExpression(QLatin1String("Role$")), QLatin1String(""));
+        displayName.replace(QRegularExpression(QLatin1String("([a-z])([A-Z])")), QLatin1String("\\1 \\2"));
+        displayName.replace(QRegularExpression(QLatin1String("([A-Z])([A-Z])")), QLatin1String("\\1 \\2"));
+        displayName.replace(QRegularExpression(QLatin1String("([a-z])([A-Z])")), QLatin1String("\\1 \\2"));
+
+        m_status[value] = i18n(displayName.toStdString().c_str());
+    }
 
 }
 
@@ -18,20 +33,11 @@ QVariant AttendeeStatusModel::data(const QModelIndex &idx, int role) const
     }
 
     int value = QMetaEnum::fromType<KCalendarCore::Attendee::PartStat>().value(idx.row());
-    // QLatin1String is a workaround for QT_NO_CAST_FROM_ASCII
-    QString enumName = QLatin1String(QMetaEnum::fromType<KCalendarCore::Attendee::PartStat>().valueToKey(value));
 
     switch (role) {
-        case EnumNameRole:
-            return enumName;
         case DisplayNameRole:
         {
-            // Regular expression adds space between every lowercase and Capitalised character then does the same
-            // for capitalised letters together, e.g. ThisIsATest. Not a problem right now, but best to be safe.
-            QString displayName = enumName.replace(QRegularExpression(QLatin1String("Role")), QLatin1String(""));
-            displayName.replace(QRegularExpression(QLatin1String("([a-z])([A-Z])")), QLatin1String("\\1 \\2"));
-            displayName.replace(QRegularExpression(QLatin1String("([A-Z])([A-Z])")), QLatin1String("\\1 \\2"));
-            return enumName.replace(QRegularExpression(QLatin1String("([a-z])([A-Z])")), QLatin1String("\\1 \\2"));
+            return m_status[value];
         }
         case ValueRole:
             return value;
@@ -53,7 +59,7 @@ QHash<int, QByteArray> AttendeeStatusModel::roleNames() const
 int AttendeeStatusModel::rowCount(const QModelIndex &parent) const
 {
     if (!parent.isValid()) {
-        return QMetaEnum::fromType<KCalendarCore::Attendee::PartStat>().keyCount();
+        return m_status.size();
     }
     return 0;
 }
