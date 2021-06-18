@@ -70,7 +70,11 @@ AttendeesModel::AttendeesModel(QObject* parent, KCalendarCore::Event::Ptr eventP
     , m_event(eventPtr)
     , m_attendeeStatusModel(parent)
 {
-
+    for(int i = 0; i < QMetaEnum::fromType<AttendeesModel::Roles>().keyCount(); i++) {
+        int value = QMetaEnum::fromType<AttendeesModel::Roles>().value(i);
+        QLatin1String key(QMetaEnum::fromType<AttendeesModel::Roles>().key(i));
+        m_dataRoles[key] = value;
+    }
 }
 
 KCalendarCore::Event::Ptr AttendeesModel::eventPtr()
@@ -97,6 +101,10 @@ AttendeeStatusModel * AttendeesModel::attendeeStatusModel()
     return &m_attendeeStatusModel;
 }
 
+QVariantMap AttendeesModel::dataroles()
+{
+    return m_dataRoles;
+}
 
 QVariant AttendeesModel::data(const QModelIndex &idx, int role) const
 {
@@ -131,6 +139,89 @@ QVariant AttendeesModel::data(const QModelIndex &idx, int role) const
             qWarning() << "Unknown role for event:" << QMetaEnum::fromType<Roles>().valueToKey(role);
             return {};
     }
+}
+
+bool AttendeesModel::setData(const QModelIndex &idx, const QVariant &value, int role)
+{
+    if (!idx.isValid()) {
+        return false;
+    }
+
+    // When modifying attendees, remember you cannot change them directly from m_event->attendees (is a const).
+    KCalendarCore::Attendee::List currentAttendees(m_event->attendees());
+
+    switch (role) {
+        case CuTypeRole:
+        {
+            KCalendarCore::Attendee::CuType cuType = static_cast<KCalendarCore::Attendee::CuType>(value.toInt());
+            currentAttendees[idx.row()].setCuType(cuType);
+            break;
+        }
+        case DelegateRole:
+        {
+            QString delegate = value.toString();
+            currentAttendees[idx.row()].setDelegate(delegate);
+            break;
+        }
+        case DelegatorRole:
+        {
+            QString delegator = value.toString();
+            currentAttendees[idx.row()].setDelegator(delegator);
+            break;
+        }
+        case EmailRole:
+        {
+            QString email = value.toString();
+            currentAttendees[idx.row()].setEmail(email);
+            break;
+        }
+        case FullNameRole:
+        {
+            // Not a writable property
+            return false;
+        }
+        case IsNullRole:
+        {
+            // Not an editable value
+            return false;
+        }
+        case NameRole:
+        {
+            QString name = value.toString();
+            currentAttendees[idx.row()].setName(name);
+            break;
+        }
+        case RoleRole:
+        {
+            KCalendarCore::Attendee::Role role = static_cast<KCalendarCore::Attendee::Role>(value.toInt());
+            currentAttendees[idx.row()].setRole(role);
+            break;
+        }
+        case RSVPRole:
+        {
+            bool rsvp = value.toBool();
+            currentAttendees[idx.row()].setRSVP(rsvp);
+            break;
+        }
+        case StatusRole:
+        {
+            KCalendarCore::Attendee::PartStat status = static_cast<KCalendarCore::Attendee::PartStat>(value.toInt());
+            currentAttendees[idx.row()].setStatus(status);
+            break;
+        }
+        case UidRole:
+        {
+            QString uid = value.toString();
+            currentAttendees[idx.row()].setUid(uid);
+            break;
+        }
+        default:
+            qWarning() << "Unknown role for event:" << QMetaEnum::fromType<Roles>().valueToKey(role);
+            return false;
+    }
+    m_event->setAttendees(currentAttendees);
+    emit dataChanged(idx, idx);
+    return true;
 }
 
 QHash<int, QByteArray> AttendeesModel::roleNames() const
@@ -171,78 +262,4 @@ void AttendeesModel::deleteAttendee(int row)
     rowCount();
     Q_EMIT attendeesChanged();
     Q_EMIT layoutChanged();
-}
-
-// When modifying attendees, remember you cannot change them directly from m_event->attendees (is a const).
-
-void AttendeesModel::setAttendeeCuType(int row, KCalendarCore::Attendee::CuType cutype)
-{
-    KCalendarCore::Attendee::List currentAttendees(m_event->attendees());
-    currentAttendees[row].setCuType(cutype);
-    m_event->setAttendees(currentAttendees);
-    Q_EMIT dataChanged(index(row, 0), index(row, 0));
-}
-
-void AttendeesModel::setAttendeeDelegate(int row, QString delegate)
-{
-    KCalendarCore::Attendee::List currentAttendees(m_event->attendees());
-    currentAttendees[row].setDelegate(delegate);
-    m_event->setAttendees(currentAttendees);
-    Q_EMIT dataChanged(index(row, 0), index(row, 0));
-}
-
-void AttendeesModel::setAttendeeDelegator(int row, QString delegator)
-{
-    KCalendarCore::Attendee::List currentAttendees(m_event->attendees());
-    currentAttendees[row].setDelegator(delegator);
-    m_event->setAttendees(currentAttendees);
-    Q_EMIT dataChanged(index(row, 0), index(row, 0));
-}
-
-void AttendeesModel::setAttendeeEmail(int row, QString email)
-{
-    KCalendarCore::Attendee::List currentAttendees(m_event->attendees());
-    currentAttendees[row].setEmail(email);
-    m_event->setAttendees(currentAttendees);
-    Q_EMIT dataChanged(index(row, 0), index(row, 0));
-}
-
-void AttendeesModel::setAttendeeName(int row, QString name)
-{
-    KCalendarCore::Attendee::List currentAttendees(m_event->attendees());
-    currentAttendees[row].setName(name);
-    m_event->setAttendees(currentAttendees);
-    Q_EMIT dataChanged(index(row, 0), index(row, 0));
-}
-
-void AttendeesModel::setAttendeeRole(int row, KCalendarCore::Attendee::Role role)
-{
-    KCalendarCore::Attendee::List currentAttendees(m_event->attendees());
-    currentAttendees[row].setRole(role);
-    m_event->setAttendees(currentAttendees);
-    Q_EMIT dataChanged(index(row, 0), index(row, 0));
-}
-
-void AttendeesModel::setAttendeeRSVP(int row, bool rsvp)
-{
-    KCalendarCore::Attendee::List currentAttendees(m_event->attendees());
-    currentAttendees[row].setRSVP(rsvp);
-    m_event->setAttendees(currentAttendees);
-    Q_EMIT dataChanged(index(row, 0), index(row, 0));
-}
-
-void AttendeesModel::setAttendeeStatus(int row, KCalendarCore::Attendee::PartStat status)
-{
-    KCalendarCore::Attendee::List currentAttendees(m_event->attendees());
-    currentAttendees[row].setStatus(status);
-    m_event->setAttendees(currentAttendees);
-    Q_EMIT dataChanged(index(row, 0), index(row, 0));
-}
-
-void AttendeesModel::setAttendeeUid(int row, QString uid)
-{
-    KCalendarCore::Attendee::List currentAttendees(m_event->attendees());
-    currentAttendees[row].setUid(uid);
-    m_event->setAttendees(currentAttendees);
-    Q_EMIT dataChanged(index(row, 0), index(row, 0));
 }

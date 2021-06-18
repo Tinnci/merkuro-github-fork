@@ -44,6 +44,7 @@ class AttendeesModel : public QAbstractListModel
     Q_PROPERTY(KCalendarCore::Event::Ptr eventPtr READ eventPtr WRITE setEventPtr NOTIFY eventPtrChanged)
     Q_PROPERTY(KCalendarCore::Attendee::List attendees READ attendees NOTIFY attendeesChanged)
     Q_PROPERTY(AttendeeStatusModel * attendeeStatusModel READ attendeeStatusModel NOTIFY attendeeStatusModelChanged)
+    Q_PROPERTY(QVariantMap dataroles READ dataroles CONSTANT)
 
 public:
     enum Roles {
@@ -68,23 +69,15 @@ public:
     void setEventPtr(KCalendarCore::Event::Ptr event);
     KCalendarCore::Attendee::List attendees();
     AttendeeStatusModel * attendeeStatusModel();
+    QVariantMap dataroles();
 
     QVariant data(const QModelIndex &idx, int role) const override;
+    bool setData(const QModelIndex &idx, const QVariant &value, int role) override;
     QHash<int, QByteArray> roleNames() const override;
     int rowCount(const QModelIndex &parent = {}) const override;
 
     Q_INVOKABLE void addAttendee();
     Q_INVOKABLE void deleteAttendee(int row);
-
-    Q_INVOKABLE void setAttendeeCuType(int row, KCalendarCore::Attendee::CuType cutype);
-    Q_INVOKABLE void setAttendeeDelegate(int row, QString delegate);
-    Q_INVOKABLE void setAttendeeDelegator(int row, QString delegator);
-    Q_INVOKABLE void setAttendeeEmail(int row, QString email);
-    Q_INVOKABLE void setAttendeeName(int row, QString name);
-    Q_INVOKABLE void setAttendeeRole(int row, KCalendarCore::Attendee::Role role);
-    Q_INVOKABLE void setAttendeeRSVP(int row, bool rsvp);
-    Q_INVOKABLE void setAttendeeStatus(int row, KCalendarCore::Attendee::PartStat status);
-    Q_INVOKABLE void setAttendeeUid(int row, QString uid);
 
 Q_SIGNALS:
     void eventPtrChanged();
@@ -94,4 +87,5 @@ Q_SIGNALS:
 private:
     KCalendarCore::Event::Ptr m_event;
     AttendeeStatusModel m_attendeeStatusModel;
+    QVariantMap m_dataRoles;
 };
