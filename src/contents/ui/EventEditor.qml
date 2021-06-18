@@ -96,7 +96,7 @@ Kirigami.OverlaySheet {
                     leftPadding: Kirigami.Units.largeSpacing * kDescendantLevel
                     label: display
                     icon: decoration
-                    onClicked: calendarCombo.displayText = display, calendarCombo.selectedCollectionId = collectionId
+                    onClicked: calendarCombo.displayText = model.display, calendarCombo.selectedCollectionId = model.collectionId
                 }
                 popup.z: 1000
             }
@@ -417,7 +417,7 @@ Kirigami.OverlaySheet {
                                 Layout.columnSpan: 4
                                 //editText: Name
                                 onTextChanged: event.attendeesModel.setAttendeeName(index, text)
-                                Component.onCompleted: text = NameRole
+                                Component.onCompleted: text = model.NameRole
                             }
 
                             QQC2.Label {
@@ -428,7 +428,7 @@ Kirigami.OverlaySheet {
                                 Layout.columnSpan: 4
                                 //editText: Email
                                 onTextChanged: event.attendeesModel.setAttendeeEmail(index, text)
-                                Component.onCompleted: text = EmailRole
+                                Component.onCompleted: text = model.EmailRole
                             }
                             QQC2.Label {
                                 text: i18n("Status:")
@@ -438,7 +438,7 @@ Kirigami.OverlaySheet {
                                 model: event.attendeesModel.attendeeStatusModel
                                 textRole: "DisplayNameRole"
                                 valueRole: "ValueRole"
-                                currentIndex: StatusRole
+                                currentIndex: model.StatusRole
                                 onCurrentValueChanged: event.attendeesModel.setAttendeeStatus(index, currentValue)
 
                                 delegate: Kirigami.BasicListItem {
@@ -449,7 +449,7 @@ Kirigami.OverlaySheet {
                             QQC2.CheckBox {
                                 Layout.columnSpan: 2
                                 text: i18n("Request RSVP")
-                                checked: RSVPRole
+                                checked: model.RSVPRole
                                 onCheckedChanged: event.attendeesModel.setAttendeeRSVP(index, checked)
                             }
                         }
