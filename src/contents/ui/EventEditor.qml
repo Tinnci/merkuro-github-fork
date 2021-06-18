@@ -343,11 +343,11 @@ Kirigami.OverlaySheet {
 
                             property var beforeEventSeconds: 0
 
-                            displayText: remindersColumn.secondsToReminderLabel(StartOffsetRole)
-                            textRole: "DisplayNameRole"
+                            displayText: remindersColumn.secondsToReminderLabel(startOffset)
+                            //textRole: "DisplayNameRole"
                             onCurrentValueChanged: event.remindersModel.setData(event.remindersModel.index(index, 0),
                                                                                 currentValue,
-                                                                                event.remindersModel.dataroles["StartOffsetRole"])
+                                                                                event.remindersModel.dataroles["startOffset"])
 
                             model: [0, // We times by -1 to make times be before event
                                     -1 * 5 * 60, // 5 minutes
@@ -416,7 +416,7 @@ Kirigami.OverlaySheet {
                                 Layout.columnSpan: 4
                                 onTextChanged: event.attendeesModel.setData(event.attendeesModel.index(index, 0),
                                                                             text,
-                                                                            event.attendeesModel.dataroles["NameRole"])
+                                                                            event.attendeesModel.dataroles["name"])
                                 Component.onCompleted: text = model.NameRole
                             }
 
@@ -429,7 +429,7 @@ Kirigami.OverlaySheet {
                                 //editText: Email
                                 onTextChanged: event.attendeesModel.setData(event.attendeesModel.index(index, 0),
                                                                             text,
-                                                                            event.attendeesModel.dataroles["EmailRole"])
+                                                                            event.attendeesModel.dataroles["email"])
                                 Component.onCompleted: text = model.EmailRole
                             }
                             QQC2.Label {
@@ -438,12 +438,12 @@ Kirigami.OverlaySheet {
                             QQC2.ComboBox {
                                 Layout.columnSpan: 2
                                 model: event.attendeesModel.attendeeStatusModel
-                                textRole: "DisplayNameRole"
-                                valueRole: "ValueRole"
+                                textRole: "display"
+                                valueRole: "value"
                                 currentIndex: StatusRole // Of parent
                                 onCurrentValueChanged: event.attendeesModel.setData(event.attendeesModel.index(index, 0),
                                                                                     currentValue,
-                                                                                    event.attendeesModel.dataroles["StatusRole"])
+                                                                                    event.attendeesModel.dataroles["status"])
 
                                 popup.z: 1000
                             }
@@ -453,7 +453,7 @@ Kirigami.OverlaySheet {
                                 checked: model.RSVPRole
                                 onCheckedChanged: event.attendeesModel.setData(event.attendeesModel.index(index, 0),
                                                                                checked,
-                                                                               event.attendeesModel.dataroles["RSVPRole"])
+                                                                               event.attendeesModel.dataroles["rsvp"])
                             }
                         }
                     }

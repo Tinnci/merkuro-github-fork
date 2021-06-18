@@ -78,7 +78,7 @@ AttendeesModel::AttendeesModel(QObject* parent, KCalendarCore::Event::Ptr eventP
 {
     for(int i = 0; i < QMetaEnum::fromType<AttendeesModel::Roles>().keyCount(); i++) {
         int value = QMetaEnum::fromType<AttendeesModel::Roles>().value(i);
-        QLatin1String key(QMetaEnum::fromType<AttendeesModel::Roles>().key(i));
+        QString key = QLatin1String(roleNames()[value]);
         m_dataRoles[key] = value;
     }
 }
