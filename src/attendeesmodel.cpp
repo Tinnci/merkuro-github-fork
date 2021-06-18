@@ -13,7 +13,7 @@ AttendeeStatusModel::AttendeeStatusModel(QObject *parent)
 
 QVariant AttendeeStatusModel::data(const QModelIndex &idx, int role) const
 {
-    if (!hasIndex(idx.row(), idx.column())) {
+    if (!index.isValid()) {
         return {};
     }
 
