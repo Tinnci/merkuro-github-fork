@@ -416,7 +416,7 @@ Kirigami.OverlaySheet {
                                 Layout.fillWidth: true
                                 Layout.columnSpan: 4
                                 //editText: Name
-                                onTextChanged: event.attendeesModel.setAttendeeName(index, text)
+                                onTextChanged: event.attendeesModel.setData(event.attendeesModel.index(index, 0), text, event.attendeesModel.dataroles["NameRole"])
                                 Component.onCompleted: text = model.NameRole
                             }
 
@@ -427,7 +427,7 @@ Kirigami.OverlaySheet {
                                 Layout.fillWidth: true
                                 Layout.columnSpan: 4
                                 //editText: Email
-                                onTextChanged: event.attendeesModel.setAttendeeEmail(index, text)
+                                onTextChanged: event.attendeesModel.setData(event.attendeesModel.index(index, 0), text, event.attendeesModel.dataroles["EmailRole"])
                                 Component.onCompleted: text = model.EmailRole
                             }
                             QQC2.Label {
@@ -438,8 +438,8 @@ Kirigami.OverlaySheet {
                                 model: event.attendeesModel.attendeeStatusModel
                                 textRole: "DisplayNameRole"
                                 valueRole: "ValueRole"
-                                currentIndex: model.StatusRole
-                                onCurrentValueChanged: event.attendeesModel.setAttendeeStatus(index, currentValue)
+                                currentIndex: StatusRole // Of parent
+                                onCurrentValueChanged: event.attendeesModel.setData(event.attendeesModel.index(index, 0), currentValue, event.attendeesModel.dataroles["StatusRole"])
 
                                 delegate: Kirigami.BasicListItem {
                                     label: DisplayNameRole
@@ -450,7 +450,7 @@ Kirigami.OverlaySheet {
                                 Layout.columnSpan: 2
                                 text: i18n("Request RSVP")
                                 checked: model.RSVPRole
-                                onCheckedChanged: event.attendeesModel.setAttendeeRSVP(index, checked)
+                                onCheckedChanged: event.attendeesModel.setData(event.attendeesModel.index(index, 0), checked, event.attendeesModel.dataroles["RSVPRole"])
                             }
                         }
                     }
