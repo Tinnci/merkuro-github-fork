@@ -10,7 +10,7 @@ RemindersModel::RemindersModel(QObject *parent, KCalendarCore::Event::Ptr eventP
 {
     for(int i = 0; i < QMetaEnum::fromType<RemindersModel::Roles>().keyCount(); i++) {
         int value = QMetaEnum::fromType<RemindersModel::Roles>().value(i);
-        QLatin1String key(QMetaEnum::fromType<RemindersModel::Roles>().key(i));
+        QString key = QLatin1String(roleNames()[value]);
         m_dataRoles[key] = value;
     }
 }
@@ -103,11 +103,12 @@ bool RemindersModel::setData(const QModelIndex &idx, const QVariant &value, int 
 
 QHash<int, QByteArray> RemindersModel::roleNames() const
 {
-	QHash<int, QByteArray> roles;
-	for (int i = 0; i < QMetaEnum::fromType<Roles>().keyCount(); i++) {
-		roles.insert(Qt::UserRole + i + 1, QMetaEnum::fromType<Roles>().key(i));
-	}
-	return roles;
+    return {
+        { TypeRole, QByteArrayLiteral("type") },
+        { TimeRole, QByteArrayLiteral("time") },
+        { StartOffsetRole, QByteArrayLiteral("startOffset") },
+        { EndOffsetRole, QByteArrayLiteral("endOffset") }
+    };
 }
 
 int RemindersModel::rowCount(const QModelIndex &parent) const
