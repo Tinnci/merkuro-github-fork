@@ -49,11 +49,11 @@ QVariant AttendeeStatusModel::data(const QModelIndex &idx, int role) const
 
 QHash<int, QByteArray> AttendeeStatusModel::roleNames() const
 {
-    QHash<int, QByteArray> roles;
-    for (int i = 0; i < QMetaEnum::fromType<Roles>().keyCount(); i++) {
-        roles.insert(Qt::UserRole + i + 1, QMetaEnum::fromType<Roles>().key(i));
-    }
-    return roles;
+    return {
+        { DisplayNameRole, QByteArrayLiteral("display") },
+        { ValueRole, QByteArrayLiteral("value") }
+    };
+
 }
 
 int AttendeeStatusModel::rowCount(const QModelIndex &parent) const
@@ -232,11 +232,19 @@ bool AttendeesModel::setData(const QModelIndex &idx, const QVariant &value, int 
 
 QHash<int, QByteArray> AttendeesModel::roleNames() const
 {
-	QHash<int, QByteArray> roles;
-	for (int i = 0; i < QMetaEnum::fromType<Roles>().keyCount(); i++) {
-		roles.insert(Qt::UserRole + i + 1, QMetaEnum::fromType<Roles>().key(i));
-	}
-	return roles;
+	return {
+        { CuTypeRole, QByteArrayLiteral("cuType") },
+        { DelegateRole, QByteArrayLiteral("delegate") },
+        { DelegatorRole, QByteArrayLiteral("delegator") },
+        { EmailRole, QByteArrayLiteral("email") },
+        { FullNameRole, QByteArrayLiteral("fullName") },
+        { IsNullRole, QByteArrayLiteral("isNull") },
+        { NameRole, QByteArrayLiteral("name") },
+        { RoleRole, QByteArrayLiteral("role") },
+        { RSVPRole, QByteArrayLiteral("rsvp") },
+        { StatusRole, QByteArrayLiteral("status") },
+        { UidRole, QByteArrayLiteral("uid") }
+    };
 }
 
 int AttendeesModel::rowCount(const QModelIndex &parent) const
