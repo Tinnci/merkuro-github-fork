@@ -111,12 +111,9 @@ QHash<int, QByteArray> RemindersModel::roleNames() const
     };
 }
 
-int RemindersModel::rowCount(const QModelIndex &parent) const
+int RemindersModel::rowCount(const QModelIndex &) const
 {
-    if (!parent.isValid()) {
-        return m_event->alarms().size();
-    }
-    return 0;
+    return m_event->alarms().size();
 }
 
 void RemindersModel::addAlarm()

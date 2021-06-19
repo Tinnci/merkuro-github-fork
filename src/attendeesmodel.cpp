@@ -56,12 +56,9 @@ QHash<int, QByteArray> AttendeeStatusModel::roleNames() const
 
 }
 
-int AttendeeStatusModel::rowCount(const QModelIndex &parent) const
+int AttendeeStatusModel::rowCount(const QModelIndex &) const
 {
-    if (!parent.isValid()) {
-        return m_status.size();
-    }
-    return 0;
+    return m_status.size();
 }
 
 
@@ -247,12 +244,9 @@ QHash<int, QByteArray> AttendeesModel::roleNames() const
     };
 }
 
-int AttendeesModel::rowCount(const QModelIndex &parent) const
+int AttendeesModel::rowCount(const QModelIndex &) const
 {
-    if (!parent.isValid()) {
-        return m_event->attendeeCount();
-    }
-    return 0;
+    return m_event->attendeeCount();
 }
 
 void AttendeesModel::addAttendee()
