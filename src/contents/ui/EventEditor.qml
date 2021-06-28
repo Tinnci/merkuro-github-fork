@@ -584,21 +584,21 @@ Kirigami.OverlaySheet {
 
                     function numAndUnit(secs) {
                         if(secs >= 2 * 24 * 60 * 60)
-                            return Math.round(secs / (24*60*60)) + i18n(" days"); // 2 days +
+                            return i18nc("%1 is 2 or more", "%1 days", Math.round(secs / (24*60*60))); // 2 days +
                         else if (secs >= 1 * 24 * 60 * 60)
                             return "1 day";
                         else if (secs >= 2 * 60 * 60)
-                            return i18n("%1 is 2 or mores", "%1 hours", Math.round(secs / (60*60))); // 2 hours +
+                            return i18nc("%1 is 2 or mores", "%1 hours", Math.round(secs / (60*60))); // 2 hours +
                         else if (secs >= 1 * 60 * 60)
-                            return "1 hour";
+                            return i18n("1 hour");
                         else
-                            return Math.round(secs / 60) + i18n(" minutes");
+                            return i18n("%1 minutes", Math.round(secs / 60));
                     }
 
                     if (seconds < 0) {
-                        return numAndUnit(seconds * -1) + i18n(" before");
+                        return i18n("%1 before", numAndUnit(seconds * -1));
                     } else if (seconds < 0) {
-                        return numAndUnit(seconds) + i18n(" after");
+                        return i18n("%1 after", numAndUnit(seconds));
                     } else {
                         return i18n("On event start");
                     }
