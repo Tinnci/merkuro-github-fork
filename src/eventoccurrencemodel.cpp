@@ -235,6 +235,7 @@ QVariant EventOccurrenceModel::data(const QModelIndex &idx, int role) const
     }
     auto event = m_events.at(idx.row());
     auto icalEvent = event.event;
+    qDebug() << QVariant::fromValue(event);
     switch (role) {
         case Summary:
             return icalEvent->summary();

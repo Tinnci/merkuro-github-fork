@@ -12,6 +12,9 @@ import "dateutils.js" as DateUtils
 
 Item {
     id: root
+
+    signal edit(int eventId)
+
     property int daysToShow
     property int daysPerRow: daysToShow
     property double weekHeaderWidth: Kirigami.Units.gridUnit * 1.5
@@ -183,9 +186,21 @@ Item {
                                                         height: Kirigami.Units.gridUnit * 7
                                                         x: (parent.x + parent.width / 2) - width / 2
                                                         y: parent.y + parent.height
-                                                        padding: 0
-                                                        QQC2.Label {
-                                                            text: "TODO :)"
+                                                        padding: Kirigami.Units.smallSpacing
+                                                        ColumnLayout {
+                                                            Layout.fillWidth: true
+                                                            Kirigami.Heading {
+                                                                text: modelData.text
+                                                                level: 3
+                                                                Component.onCompleted: console.log(modelData.starts)
+                                                            }
+                                                            QQC2.Label {
+                                                                text: i18n("Duration: ") + modelData.duration
+                                                            }
+                                                            QQC2.Button {
+                                                                text: i18n("Edit")
+                                                                //onClicked: edit(modelData.itemId)
+                                                            }
                                                         }
                                                     }
                                                 }
