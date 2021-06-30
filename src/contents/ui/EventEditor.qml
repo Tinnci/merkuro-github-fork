@@ -298,7 +298,7 @@ Kirigami.OverlaySheet {
                             id: eventEndTimePicker
 
                             Connections {
-                                target: event
+                                target: eventEditorSheet.eventWrapper
                                 function onEventEndChanged() {
                                     eventEndTimePicker.dateTime = eventEditorSheet.eventWrapper.eventEnd
                                 }

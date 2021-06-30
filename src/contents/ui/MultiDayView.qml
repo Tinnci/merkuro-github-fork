@@ -199,11 +199,14 @@ Item {
                                                                 text: i18n("Duration: ") + modelData.duration
                                                             }
                                                             QQC2.Button {
+                                                                property var eventPtr: occurrenceModel.occurrenceEventPtr(modelData.eventOccurrence)
+                                                                property var collectionId: occurrenceModel.occurrenceCollectionId(modelData.eventOccurrence)
+
                                                                 text: i18n("Edit")
+                                                                //enabled: Kalendar.CalendarManager.getCollectionDetails(collectionId)["readOnly"]
                                                                 // Couldn't you just add the event pointer to the model?
                                                                 // Also need to know collection
-                                                                onClicked: editEvent(occurrenceModel.occurrenceEventPtr(modelData.eventOccurrence),
-                                                                                     occurrenceModel.occurrenceCollectionId(modelData.eventOccurrence))
+                                                                onClicked: editEvent(eventPtr, collectionId)
                                                             }
                                                         }
                                                     }

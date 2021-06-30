@@ -124,13 +124,13 @@ void EventOccurrenceModel::updateFromSource()
             //}
             //
             // Collect recurring events and add the rest immediately
-            //if (event->recurs()) {
-            //    recurringEvents.insert(event->uid().toLatin1(), event);
-            //    events.insert(event->instanceIdentifier().toLatin1(), event);
-            //} else if(event->recurrenceId().isValid()) {
-            //    exceptions.insert(event->uid().toLatin1(), event);
-            //    events.insert(event->instanceIdentifier().toLatin1(), event);
-            //} else {
+            if (event->recurs()) {
+                recurringEvents.insert(event->uid().toLatin1(), event);
+                events.insert(event->instanceIdentifier().toLatin1(), event);
+            } else if(event->recurrenceId().isValid()) {
+                exceptions.insert(event->uid().toLatin1(), event);
+                events.insert(event->instanceIdentifier().toLatin1(), event);
+            } else {
                 if (event->dtStart().date() < mEnd && event->dtEnd().date() >= mStart) {
                     m_events.append(Occurrence {
                         event->dtStart(),
@@ -141,13 +141,13 @@ void EventOccurrenceModel::updateFromSource()
                         event->allDay()
                     });
                 }
-            //}
+            }
 
         }
-        /*
+
         // process all recurring events and their exceptions.
         for (const auto &uid : recurringEvents.keys()) {
-            KCalendarCore::MemoryCalendar calendar{QTimeZone::systemTimeZone()};
+            KCalendarCore::MemoryCalendar calendar{ QTimeZone::systemTimeZone() };
             calendar.addIncidence(recurringEvents.value(uid));
             for (const auto &event : exceptions.values(uid)) {
                 calendar.addIncidence(event);
@@ -160,10 +160,10 @@ void EventOccurrenceModel::updateFromSource()
                 const auto start = occurrenceIterator.occurrenceStartDate();
                 const auto end = incidence->endDateForStart(start);
                 if (start.date() < mEnd && end.date() >= mStart) {
-                    m_events.append(Occurrence {start, end, incidence, getColor(event), event->allDay() });
+                    m_events.append(Occurrence {start, end, event, getColor(event), getCollectionId(event), event->allDay() });
                 }
             }
-        }*/
+        }
     }
 
     endResetModel();

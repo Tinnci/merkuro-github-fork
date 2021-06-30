@@ -250,14 +250,14 @@ CalendarManager::CalendarManager(QObject *parent)
     // Kolab
     // Kolab / Inbox
     // Kolab / Inbox / Calendar
-    auto proxyModel = new KDescendantsProxyModel(this);
-    proxyModel->setDisplayAncestorData(true);
-    proxyModel->setSourceModel(collectionFilter);
+    m_allCalendars = new KDescendantsProxyModel(this);
+    m_allCalendars->setDisplayAncestorData(true);
+    m_allCalendars->setSourceModel(collectionFilter);
 
     // Filter it by mimetype again, to only keep
     // Kolab / Inbox / Calendar
     m_mimeTypeFilterModel = new Akonadi::CollectionFilterProxyModel(this);
-    m_mimeTypeFilterModel->setSourceModel(proxyModel);
+    m_mimeTypeFilterModel->setSourceModel(m_allCalendars);
     m_mimeTypeFilterModel->addMimeTypeFilter(QStringLiteral("application/x-vnd.akonadi.calendar.event"));
     // text/calendar mimetype includes todo cals
 
@@ -335,6 +335,11 @@ Akonadi::ETMCalendar *CalendarManager::calendar() const
     return m_calendar;
 }
 
+KDescendantsProxyModel * CalendarManager::allCalendars()
+{
+    return m_allCalendars;
+}
+
 Akonadi::EntityRightsFilterModel * CalendarManager::selectableCalendars() const
 {
     return m_rightsFilterModel;
@@ -374,11 +379,27 @@ void CalendarManager::updateDefaultCalendarSelectableIndex()
 
 void CalendarManager::addEvent(qint64 collectionId, KCalendarCore::Event::Ptr event)
 {
-    Akonadi::Collection::Id collId = collectionId;
-    Akonadi::Collection collection(collId);
+    Akonadi::Collection collection(collectionId);
 
     Akonadi::IncidenceChanger *changer = m_calendar->incidenceChanger();
     qDebug() << changer->createIncidence(event, collection); // This will fritz if you don't choose a valid *calendar*
 }
+
+QVariantMap CalendarManager::getCollectionDetails(qint64 collectionId)
+{
+    QVariantMap collectionDetails;
+    Akonadi::Collection collection(collectionId);
+
+    qDebug() << collection.rights();
+
+    collectionDetails[QLatin1String("id")] = collection.id();
+    collectionDetails[QLatin1String("name")] = collection.name();
+    collectionDetails[QLatin1String("displayName")] = collection.displayName();
+    // All collections have the same flags (??)
+    //collectionDetails[QLatin1String("readOnly")] = collection.rights().testFlag(Collection::ReadOnly);
+
+    return collectionDetails;
+}
+
 
 #include "calendarmanager.moc"
