@@ -10,16 +10,10 @@ import org.kde.kalendar 1.0
 Kirigami.OverlaySheet {
     id: eventEditorSheet
 
-    Item {
-        EventWrapper {
-            id: event
-        }
-    }
-
     signal added(int collectionId, EventWrapper event)
     signal edited(int collectionId, EventWrapper event)
 
-    property var eventWrapper: event
+    property var eventWrapper: EventWrapper {}
     property bool editMode: false
     property bool validDates: eventStartDateCombo.validDate && (eventEndDateCombo.validDate || allDayCheckBox.checked)
 
@@ -42,7 +36,10 @@ Kirigami.OverlaySheet {
                 return
             } else {
                 console.log(calendarCombo.currentValue)
-                added(calendarCombo.currentValue, event);
+                added(calendarCombo.currentValue, eventWrapper);
+                eventWrapper = Qt.createQmlObject('import org.kde.kalendar 1.0; EventWrapper {id: event}',
+                                                  eventEditor,
+                                                  "event");
             }
             eventEditorSheet.close();
         }
@@ -74,9 +71,9 @@ Kirigami.OverlaySheet {
 
                 textRole: "display"
                 valueRole: "collectionId"
-                currentIndex: !event.collectionId || !eventEditorSheet.editMode ?
+                currentIndex: !eventEditorSheet.eventWrapper.collectionId || !eventEditorSheet.editMode ?
                               CalendarManager.defaultCalendarSelectableIndex :
-                              CalendarManager.getCalendarSelectableIndex(event.collectionId)
+                              CalendarManager.getCalendarSelectableIndex(eventEditorSheet.eventWrapper.collectionId)
 
                 // Should default to default collection
                 // Should also only show *calendars*
@@ -92,16 +89,16 @@ Kirigami.OverlaySheet {
 
                 Kirigami.FormData.label: i18n("<b>Title</b>:")
                 placeholderText: i18n("Required")
-                text: event.summary
-                onTextChanged: event.summary = text
+                text: eventEditorSheet.eventWrapper.summary
+                onTextChanged: eventEditorSheet.eventWrapper.summary = text
             }
             QQC2.TextField {
                 id: locationField
 
                 Kirigami.FormData.label: i18n("Location:")
                 placeholderText: i18n("Optional")
-                text: event.location
-                onTextChanged: event.location = text
+                text: eventEditorSheet.eventWrapper.location
+                onTextChanged: eventEditorSheet.eventWrapper.location = text
             }
 
             Kirigami.Separator {
@@ -112,7 +109,7 @@ Kirigami.OverlaySheet {
                 id: allDayCheckBox
 
                 text: i18n("All day event")
-                onCheckedChanged: event.allDay = checked
+                onCheckedChanged: eventEditorSheet.eventWrapper.allDay = checked
             }
             RowLayout {
                 id: eventStartLayout
@@ -125,7 +122,7 @@ Kirigami.OverlaySheet {
                     Layout.fillWidth: true
 
                     editable: true
-                    editText: event.eventStart.toLocaleDateString(Qt.locale(), Locale.NarrowFormat)
+                    editText: eventEditorSheet.eventWrapper.eventStart.toLocaleDateString(Qt.locale(), Locale.NarrowFormat)
 
                     inputMethodHints: Qt.ImhDate
 
@@ -140,7 +137,7 @@ Kirigami.OverlaySheet {
                         if (validDate && activeFocus) {
                             datePicker.selectedDate = dateFromText;
                             datePicker.clickedDate = dateFromText;
-                            event.eventEnd = new Date(dateFromText.setHours(timePicker.hours, timePicker.minutes));
+                            eventEditorSheet.eventWrapper.eventEnd = new Date(dateFromText.setHours(timePicker.hours, timePicker.minutes));
                         }
                     }
 
@@ -157,9 +154,9 @@ Kirigami.OverlaySheet {
                             anchors.fill: parent
                             onDatePicked: {
                                 eventStartDatePopup.close();
-                                let hours = event.eventStart.getHours();
-                                let minutes = event.eventStart.getMinutes();
-                                event.eventStart = new Date(pickedDate.setHours(hours, minutes));
+                                let hours = eventEditorSheet.eventWrapper.eventStart.getHours();
+                                let minutes = eventEditorSheet.eventWrapper.eventStart.getMinutes();
+                                eventEditorSheet.eventWrapper.eventStart = new Date(pickedDate.setHours(hours, minutes));
                             }
                         }
                     }
@@ -170,7 +167,7 @@ Kirigami.OverlaySheet {
                     Layout.fillWidth: true
 
                     editable: true
-                    editText: event.eventStart.toLocaleTimeString(Qt.locale(), Locale.ShortFormat)
+                    editText: eventEditorSheet.eventWrapper.eventStart.toLocaleTimeString(Qt.locale(), Locale.ShortFormat)
                     enabled: !allDayCheckBox.checked
                     visible: !allDayCheckBox.checked
 
@@ -184,7 +181,7 @@ Kirigami.OverlaySheet {
 
                         if (acceptableInput && activeFocus) { // Need to check for activeFocus or on load the text gets reset to 00:00
                             timePicker.setToTimeFromString(editText);
-                            event.eventStart = new Date(event.eventStart.setHours(timePicker.hours, timePicker.minutes));
+                            eventEditorSheet.eventWrapper.eventStart = new Date(eventEditorSheet.eventWrapper.eventStart.setHours(timePicker.hours, timePicker.minutes));
                         }
                     }
 
@@ -198,17 +195,17 @@ Kirigami.OverlaySheet {
                             id: eventStartTimePicker
 
                             Connections {
-                                target: event
+                                target: eventEditorSheet.eventWrapper
                                 function onEventStartChanged() {
-                                    eventStartTimePicker.dateTime = event.eventStart
+                                    eventStartTimePicker.dateTime = eventEditorSheet.eventWrapper.eventStart
                                 }
                             }
 
-                            dateTime: event.eventStart
+                            dateTime: eventEditorSheet.eventWrapper.eventStart
 
                             onDone: {
                                 eventStartTimePopup.close();
-                                event.eventStart = new Date(event.eventStart.setHours(hours, minutes));
+                                eventEditorSheet.eventWrapper.eventStart = new Date(eventEditorSheet.eventWrapper.eventStart.setHours(hours, minutes));
 
                             }
                         }
@@ -231,7 +228,7 @@ Kirigami.OverlaySheet {
                     property bool validDate: !isNaN(dateFromText.getTime())
 
                     editable: true
-                    editText: event.eventEnd.toLocaleDateString(Qt.locale(), Locale.NarrowFormat)
+                    editText: eventEditorSheet.eventWrapper.eventEnd.toLocaleDateString(Qt.locale(), Locale.NarrowFormat)
                     enabled: !allDayCheckBox.checked
 
                     onEditTextChanged: {
@@ -242,9 +239,9 @@ Kirigami.OverlaySheet {
                         if (validDate && activeFocus) {
                             datePicker.selectedDate = dateFromText;
                             datePicker.clickedDate = dateFromText;
-                            let hours = event.eventEnd.getHours();
-                            let minutes = event.eventEnd.getMinutes();
-                            event.eventEnd = new Date(dateFromText.setHours(hours, minutes));
+                            let hours = eventEditorSheet.eventWrapper.eventEnd.getHours();
+                            let minutes = eventEditorSheet.eventWrapper.eventEnd.getMinutes();
+                            eventEditorSheet.eventWrapper.eventEnd = new Date(dateFromText.setHours(hours, minutes));
                         }
                     }
 
@@ -260,9 +257,9 @@ Kirigami.OverlaySheet {
                             anchors.fill: parent
                             onDatePicked: {
                                 eventEndDatePopup.close();
-                                let hours = event.eventEnd.getHours();
-                                let minutes = event.eventEnd.getMinutes();
-                                event.eventEnd = new Date(pickedDate.setHours(hours, minutes));
+                                let hours = eventEditorSheet.eventWrapper.eventEnd.getHours();
+                                let minutes = eventEditorSheet.eventWrapper.eventEnd.getMinutes();
+                                eventEditorSheet.eventWrapper.eventEnd = new Date(pickedDate.setHours(hours, minutes));
                             }
                         }
                     }
@@ -273,7 +270,7 @@ Kirigami.OverlaySheet {
                     Layout.fillWidth: true
 
                     editable: true
-                    editText: event.eventEnd.toLocaleTimeString(Qt.locale(), Locale.ShortFormat)
+                    editText: eventEditorSheet.eventWrapper.eventEnd.toLocaleTimeString(Qt.locale(), Locale.ShortFormat)
                     enabled: !allDayCheckBox.checked
 
                     inputMethodHints: Qt.ImhTime
@@ -286,7 +283,7 @@ Kirigami.OverlaySheet {
 
                         if (acceptableInput && activeFocus) {
                             timePicker.setToTimeFromString(editText);
-                            event.eventEnd = new Date(event.eventEnd.setHours(timePicker.hours, timePicker.minutes));
+                            eventEditorSheet.eventWrapper.eventEnd = new Date(eventEditorSheet.eventWrapper.eventEnd.setHours(timePicker.hours, timePicker.minutes));
                         }
                     }
 
@@ -303,15 +300,15 @@ Kirigami.OverlaySheet {
                             Connections {
                                 target: event
                                 function onEventEndChanged() {
-                                    eventEndTimePicker.dateTime = event.eventEnd
+                                    eventEndTimePicker.dateTime = eventEditorSheet.eventWrapper.eventEnd
                                 }
                             }
 
-                            dateTime: event.eventEnd
+                            dateTime: eventEditorSheet.eventWrapper.eventEnd
 
                             onDone: {
                                 eventEndTimePopup.close();
-                                event.eventEnd = new Date(event.eventEnd.setHours(hours, minutes));
+                                eventEditorSheet.eventWrapper.eventEnd = new Date(eventEditorSheet.eventWrapper.eventEnd.setHours(hours, minutes));
                             }
                         }
                     }
@@ -325,14 +322,14 @@ Kirigami.OverlaySheet {
                 Layout.fillWidth: true
                 textRole: "display"
                 valueRole: "interval"
-                onCurrentIndexChanged: if(currentIndex == 0) { event.clearRecurrences(); } // "Never"
-                onCurrentValueChanged: if(currentValue >= 0) { event.setRegularRecurrence(currentValue); }
+                onCurrentIndexChanged: if(currentIndex == 0) { eventEditorSheet.eventWrapper.clearRecurrences(); } // "Never"
+                onCurrentValueChanged: if(currentValue >= 0) { eventEditorSheet.eventWrapper.setRegularRecurrence(currentValue); }
                 model: [
                     {key: "never", display: i18n("Never"), interval: -1},
-                    {key: "daily", display: i18n("Daily"), interval: event.recurrenceIntervals["Daily"]},
-                    {key: "weekly", display: i18n("Weekly"), interval: event.recurrenceIntervals["Weekly"]},
-                    {key: "monthly", display: i18n("Monthly"), interval: event.recurrenceIntervals["Monthly"]},
-                    {key: "yearly", display: i18n("Yearly"), interval: event.recurrenceIntervals["Yearly"]},
+                    {key: "daily", display: i18n("Daily"), interval: eventEditorSheet.eventWrapper.recurrenceIntervals["Daily"]},
+                    {key: "weekly", display: i18n("Weekly"), interval: eventEditorSheet.eventWrapper.recurrenceIntervals["Weekly"]},
+                    {key: "monthly", display: i18n("Monthly"), interval: eventEditorSheet.eventWrapper.recurrenceIntervals["Monthly"]},
+                    {key: "yearly", display: i18n("Yearly"), interval: eventEditorSheet.eventWrapper.recurrenceIntervals["Yearly"]},
                     {key: "custom", display: i18n("Custom"), interval: -1}
                 ]
                 popup.z: 1000
@@ -347,9 +344,9 @@ Kirigami.OverlaySheet {
                 visible: repeatComboBox.currentIndex > 0 // Not "Never" index
 
                 function setOcurrence() {
-                    event.setRegularRecurrence(recurScaleRuleCombobox.currentValue, recurFreqRuleSpinbox.value);
+                    eventEditorSheet.eventWrapper.setRegularRecurrence(recurScaleRuleCombobox.currentValue, recurFreqRuleSpinbox.value);
 
-                    if(recurScaleRuleCombobox.currentValue === event.recurrenceIntervals["Weekly"]) {
+                    if(recurScaleRuleCombobox.currentValue === eventEditorSheet.eventWrapper.recurrenceIntervals["Weekly"]) {
                         weekdayCheckboxRepeater.setWeekdaysRepeat();
                     }
                 }
@@ -380,10 +377,10 @@ Kirigami.OverlaySheet {
                     onCurrentValueChanged: if(visible) { customRecurrenceLayout.setOcurrence(); }
 
                     model: [
-                        {key: "day", displaySingular: i18n("day"), displayPlural: i18n("days"), interval: event.recurrenceIntervals["Daily"]},
-                        {key: "week", displaySingular: i18n("week"), displayPlural: i18n("weeks"), interval: event.recurrenceIntervals["Weekly"]},
-                        {key: "month", displaySingular: i18n("month"), displayPlural: i18n("months"), interval: event.recurrenceIntervals["Monthly"]},
-                        {key: "year", displaySingular: i18n("year"), displayPlural: i18n("years"), interval: event.recurrenceIntervals["Yearly"]},
+                        {key: "day", displaySingular: i18n("day"), displayPlural: i18n("days"), interval: eventEditorSheet.eventWrapper.recurrenceIntervals["Daily"]},
+                        {key: "week", displaySingular: i18n("week"), displayPlural: i18n("weeks"), interval: eventEditorSheet.eventWrapper.recurrenceIntervals["Weekly"]},
+                        {key: "month", displaySingular: i18n("month"), displayPlural: i18n("months"), interval: eventEditorSheet.eventWrapper.recurrenceIntervals["Monthly"]},
+                        {key: "year", displaySingular: i18n("year"), displayPlural: i18n("years"), interval: eventEditorSheet.eventWrapper.recurrenceIntervals["Yearly"]},
                     ]
                     popup.z: 1000
                 }
@@ -417,7 +414,7 @@ Kirigami.OverlaySheet {
                                 // C++ func takes 7 bit array
                                 selectedDays[checkbox.dayNumber] = checkbox.checked
                             }
-                            event.setWeekdaysRecurrence(selectedDays);
+                            eventEditorSheet.eventWrapper.setWeekdaysRecurrence(selectedDays);
                         }
 
                         model: 7
@@ -484,8 +481,8 @@ Kirigami.OverlaySheet {
                         property string dayOfWeekString: Qt.locale().dayName(eventStartDateCombo.dateFromText.getDay())
 
                         text: i18nc("the weekOfMonth dayOfWeekString of each month", "the %1 %2 of each month", parent.numberToString(weekOfMonth), dayOfWeekString)
-                        onTextChanged: if(checked) { event.setMonthlyPosRecurrence(weekOfMonth, dayOfWeek); }
-                        onClicked: event.setMonthlyPosRecurrence(weekOfMonth, dayOfWeek)
+                        onTextChanged: if(checked) { eventEditorSheet.eventWrapper.setMonthlyPosRecurrence(weekOfMonth, dayOfWeek); }
+                        onClicked: eventEditorSheet.eventWrapper.setMonthlyPosRecurrence(weekOfMonth, dayOfWeek)
                     }
                 }
 
@@ -524,7 +521,7 @@ Kirigami.OverlaySheet {
                             datePicker.clickedDate = dateFromText;
 
                             if (visible) {
-                                event.setRecurrenceEndDateTime(dateFromText);
+                                eventEditorSheet.eventWrapper.setRecurrenceEndDateTime(dateFromText);
                             }
                         }
                     }
@@ -547,13 +544,13 @@ Kirigami.OverlaySheet {
                     Layout.fillWidth: true
                     Layout.columnSpan: 2
                     visible: endRecurType.currentIndex === 2
-                    onVisibleChanged: event.setRecurrenceOcurrences(recurOcurrenceEndSpinbox.value)
+                    onVisibleChanged: eventEditorSheet.eventWrapper.setRecurrenceOcurrences(recurOcurrenceEndSpinbox.value)
 
                     QQC2.SpinBox {
                         id: recurOcurrenceEndSpinbox
                         Layout.fillWidth: true
                         from: 1
-                        onValueChanged: event.setRecurrenceOcurrences(value)
+                        onValueChanged: eventEditorSheet.eventWrapper.setRecurrenceOcurrences(value)
                     }
                     QQC2.Label {
                         text: i18np("ocurrence", "ocurrences", recurOcurrenceEndSpinbox.value)
@@ -571,8 +568,8 @@ Kirigami.OverlaySheet {
                 Kirigami.FormData.label: i18n("Description:")
                 Layout.fillWidth: true
                 placeholderText: i18n("Optional")
-                text: event.description
-                onTextChanged: event.description = text
+                text: eventEditorSheet.eventWrapper.description
+                onTextChanged: eventEditorSheet.eventWrapper.description = text
             }
 
             ColumnLayout {
@@ -613,7 +610,7 @@ Kirigami.OverlaySheet {
                     text: i18n("Add reminder")
                     Layout.fillWidth: true
 
-                    onClicked: event.remindersModel.addAlarm();
+                    onClicked: eventEditorSheet.eventWrapper.remindersModel.addAlarm();
                 }
 
                 Repeater {
@@ -621,7 +618,7 @@ Kirigami.OverlaySheet {
 
                     Layout.fillWidth: true
 
-                    model: event.remindersModel
+                    model: eventEditorSheet.eventWrapper.remindersModel
                     // All of the alarms are handled within the delegates.
 
                     delegate: RowLayout {
@@ -635,9 +632,9 @@ Kirigami.OverlaySheet {
 
                             displayText: remindersColumn.secondsToReminderLabel(startOffset)
                             //textRole: "DisplayNameRole"
-                            onCurrentValueChanged: event.remindersModel.setData(event.remindersModel.index(index, 0),
+                            onCurrentValueChanged: eventEditorSheet.eventWrapper.remindersModel.setData(eventEditorSheet.eventWrapper.remindersModel.index(index, 0),
                                                                                 currentValue,
-                                                                                event.remindersModel.dataroles["startOffset"])
+                                                                                eventEditorSheet.eventWrapper.remindersModel.dataroles["startOffset"])
                             onCountChanged: selectedIndex = currentIndex // Gets called *just* before modelChanged
                             onModelChanged: currentIndex = selectedIndex
 
@@ -662,7 +659,7 @@ Kirigami.OverlaySheet {
 
                         QQC2.Button {
                             icon.name: "edit-delete-remove"
-                            onClicked: event.remindersModel.deleteAlarm(model.index);
+                            onClicked: eventEditorSheet.eventWrapper.remindersModel.deleteAlarm(model.index);
                         }
                     }
                 }
@@ -679,11 +676,11 @@ Kirigami.OverlaySheet {
                     text: i18n("Add attendee")
                     Layout.fillWidth: true
 
-                    onClicked: event.attendeesModel.addAttendee();
+                    onClicked: eventEditorSheet.eventWrapper.attendeesModel.addAttendee();
                 }
 
                 Repeater {
-                    model: event.attendeesModel
+                    model: eventEditorSheet.eventWrapper.attendeesModel
                     // All of the alarms are handled within the delegates.
 
                     delegate: ColumnLayout {
@@ -696,7 +693,7 @@ Kirigami.OverlaySheet {
                             }
                             QQC2.Button {
                                 icon.name: "edit-delete-remove"
-                                onClicked: event.attendeesModel.deleteAttendee(index);
+                                onClicked: eventEditorSheet.eventWrapper.attendeesModel.deleteAttendee(index);
                             }
                         }
 
@@ -710,9 +707,9 @@ Kirigami.OverlaySheet {
                             QQC2.TextField {
                                 Layout.fillWidth: true
                                 Layout.columnSpan: 4
-                                onTextChanged: event.attendeesModel.setData(event.attendeesModel.index(index, 0),
+                                onTextChanged: eventEditorSheet.eventWrapper.attendeesModel.setData(eventEditorSheet.eventWrapper.attendeesModel.index(index, 0),
                                                                             text,
-                                                                            event.attendeesModel.dataroles["name"])
+                                                                            eventEditorSheet.eventWrapper.attendeesModel.dataroles["name"])
                                 Component.onCompleted: text = model.name
                             }
 
@@ -723,9 +720,9 @@ Kirigami.OverlaySheet {
                                 Layout.fillWidth: true
                                 Layout.columnSpan: 4
                                 //editText: Email
-                                onTextChanged: event.attendeesModel.setData(event.attendeesModel.index(index, 0),
+                                onTextChanged: eventEditorSheet.eventWrapper.attendeesModel.setData(eventEditorSheet.eventWrapper.attendeesModel.index(index, 0),
                                                                             text,
-                                                                            event.attendeesModel.dataroles["email"])
+                                                                            eventEditorSheet.eventWrapper.attendeesModel.dataroles["email"])
                                 Component.onCompleted: text = model.email
                             }
                             QQC2.Label {
@@ -733,13 +730,13 @@ Kirigami.OverlaySheet {
                             }
                             QQC2.ComboBox {
                                 Layout.columnSpan: 2
-                                model: event.attendeesModel.attendeeStatusModel
+                                model: eventEditorSheet.eventWrapper.attendeesModel.attendeeStatusModel
                                 textRole: "display"
                                 valueRole: "value"
                                 currentIndex: status // role of parent
-                                onCurrentValueChanged: event.attendeesModel.setData(event.attendeesModel.index(index, 0),
+                                onCurrentValueChanged: eventEditorSheet.eventWrapper.attendeesModel.setData(eventEditorSheet.eventWrapper.attendeesModel.index(index, 0),
                                                                                     currentValue,
-                                                                                    event.attendeesModel.dataroles["status"])
+                                                                                    eventEditorSheet.eventWrapper.attendeesModel.dataroles["status"])
 
                                 popup.z: 1000
                             }
@@ -747,9 +744,9 @@ Kirigami.OverlaySheet {
                                 Layout.columnSpan: 2
                                 text: i18n("Request RSVP")
                                 checked: model.rsvp
-                                onCheckedChanged: event.attendeesModel.setData(event.attendeesModel.index(index, 0),
+                                onCheckedChanged: eventEditorSheet.eventWrapper.attendeesModel.setData(eventEditorSheet.eventWrapper.attendeesModel.index(index, 0),
                                                                                checked,
-                                                                               event.attendeesModel.dataroles["rsvp"])
+                                                                               eventEditorSheet.eventWrapper.attendeesModel.dataroles["rsvp"])
                             }
                         }
                     }

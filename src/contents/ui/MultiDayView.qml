@@ -201,6 +201,7 @@ Item {
                                                             QQC2.Button {
                                                                 text: i18n("Edit")
                                                                 // Couldn't you just add the event pointer to the model?
+                                                                // Also need to know collection
                                                                 onClicked: editEvent(occurrenceModel.occurrenceEventPtr(modelData.eventOccurrence))
                                                             }
                                                         }

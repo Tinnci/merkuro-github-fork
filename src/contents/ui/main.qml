@@ -44,15 +44,27 @@ Kirigami.ApplicationWindow {
             month: root.selectedDate.getMonth()
 
             onEditEventReceived: {
-                eventEditor.eventWrapper.eventPtr = receivedEventPtr
-                eventEditor.open()
+                eventEditor.eventWrapper = Qt.createQmlObject('import org.kde.kalendar 1.0; EventWrapper {id: event}',
+                                                              eventEditor.eventWrapper,
+                                                              "event");
+                eventEditor.eventWrapper.eventPtr = receivedEventPtr;
+                eventEditor.editMode = true;
+                eventEditor.open();
             }
 
             actions.contextualActions: [
                 Kirigami.Action {
                     text: i18n("Add event")
                     icon.name: "list-add"
-                    onTriggered: eventEditor.open()
+                    onTriggered: {
+                        if (eventEditor.editMode) {
+                            eventEditor.eventWrapper = Qt.createQmlObject('import org.kde.kalendar 1.0; EventWrapper {id: event}',
+                                                                          eventEditor,
+                                                                          "event");
+                        }
+                        eventEditor.editMode = false;
+                        eventEditor.open();
+                    }
                 }
             ]
         }

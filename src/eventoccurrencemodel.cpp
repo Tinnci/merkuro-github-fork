@@ -137,6 +137,7 @@ void EventOccurrenceModel::updateFromSource()
                         event->dtEnd(),
                         event,
                         getColor(event),
+                        getCollectionId(event),
                         event->allDay()
                     });
                 }
@@ -198,6 +199,19 @@ int EventOccurrenceModel::columnCount(const QModelIndex &) const
     return 1;
 }
 
+qint64 EventOccurrenceModel::getCollectionId(const KCalendarCore::Event::Ptr &event)
+{
+    auto item = m_coreCalendar->item(event);
+    if (!item.isValid()) {
+        return {};
+    }
+    auto collection = item.parentCollection();
+    if (!collection.isValid()) {
+        return {};
+    }
+    return collection.id();
+}
+
 QColor EventOccurrenceModel::getColor(const KCalendarCore::Event::Ptr &event)
 {
     auto item = m_coreCalendar->item(event);
@@ -246,6 +260,8 @@ QVariant EventOccurrenceModel::data(const QModelIndex &idx, int role) const
             return event.end;
         case Color:
             return event.color;
+        case CollectionId:
+            return event.collectionId;
         case AllDay:
             return event.allDay;
         case EventOccurrence:

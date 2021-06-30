@@ -12,6 +12,7 @@ import "dateutils.js" as DateUtils
 Kirigami.Page {
     id: monthPage
 
+    // More elegant way of sending this up to main.qml?
     signal editEventReceived(var receivedEventPtr)
 
     property alias startDate: dayView.startDate

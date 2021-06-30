@@ -148,9 +148,11 @@ protected:
     };
 };
 
+// Despite the name, this handles the presnetaiton of collections including display text and icons, not just colours.
 class ColorProxyModel : public QSortFilterProxyModel
 {
 public:
+
     explicit ColorProxyModel(QObject *parent = nullptr)
         : QSortFilterProxyModel(parent)
         , mInitDefaultCalendar(false)
