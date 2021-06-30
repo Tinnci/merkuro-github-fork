@@ -235,7 +235,6 @@ QVariant EventOccurrenceModel::data(const QModelIndex &idx, int role) const
     }
     auto event = m_events.at(idx.row());
     auto icalEvent = event.event;
-    qDebug() << QVariant::fromValue(event);
     switch (role) {
         case Summary:
             return icalEvent->summary();
@@ -293,5 +292,10 @@ void EventOccurrenceModel::save() const
         rColorsConfig.writeEntry(it.key(), it.value());
     }
     config->sync();
+}
+
+KCalendarCore::Event::Ptr EventOccurrenceModel::occurrenceEventPtr(EventOccurrenceModel::Occurrence occurrence)
+{
+    return occurrence.event;
 }
 

@@ -83,6 +83,8 @@ public:
         bool allDay;
     };
 
+    Q_INVOKABLE KCalendarCore::Event::Ptr occurrenceEventPtr(EventOccurrenceModel::Occurrence occurrence);
+
 Q_SIGNALS:
     void startChanged();
     void lengthChanged();

@@ -12,6 +12,8 @@ import "dateutils.js" as DateUtils
 Kirigami.Page {
     id: monthPage
 
+    signal editEventReceived(var receivedEventPtr)
+
     property alias startDate: dayView.startDate
     property alias currentDate: dayView.currentDate
     property alias calendarFilter: dayView.calendarFilter
@@ -62,6 +64,9 @@ Kirigami.Page {
             horizontalAlignment: Qt.AlignHCenter
             text: DateUtils.getWeek(startDate, Qt.locale().firstDayOfWeek)
         }
+
+        onEditEvent: editEventReceived(eventPtr)
+
     }
 }
 

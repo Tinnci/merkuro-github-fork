@@ -42,6 +42,12 @@ Kirigami.ApplicationWindow {
             currentDate: root.currentDate
             startDate: DateUtils.getFirstDayOfWeek(DateUtils.getFirstDayOfMonth(root.selectedDate))
             month: root.selectedDate.getMonth()
+
+            onEditEventReceived: {
+                eventEditor.eventWrapper.eventPtr = receivedEventPtr
+                eventEditor.open()
+            }
+
             actions.contextualActions: [
                 Kirigami.Action {
                     text: i18n("Add event")

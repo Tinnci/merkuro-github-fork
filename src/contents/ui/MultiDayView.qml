@@ -13,7 +13,7 @@ import "dateutils.js" as DateUtils
 Item {
     id: root
 
-    signal edit(int eventId)
+    signal editEvent(var eventPtr)
 
     property int daysToShow
     property int daysPerRow: daysToShow
@@ -58,6 +58,7 @@ Item {
         Repeater {
             model: Kalendar.MultiDayEventModel {
                 model: Kalendar.EventOccurrenceModel {
+                    id: occurrenceModel
                     objectName: "eventOccurrenceModel"
                     start: root.startDate
                     length: root.daysToShow
@@ -187,19 +188,20 @@ Item {
                                                         x: (parent.x + parent.width / 2) - width / 2
                                                         y: parent.y + parent.height
                                                         padding: Kirigami.Units.smallSpacing
+
                                                         ColumnLayout {
                                                             Layout.fillWidth: true
                                                             Kirigami.Heading {
                                                                 text: modelData.text
                                                                 level: 3
-                                                                Component.onCompleted: console.log(modelData.starts)
                                                             }
                                                             QQC2.Label {
                                                                 text: i18n("Duration: ") + modelData.duration
                                                             }
                                                             QQC2.Button {
                                                                 text: i18n("Edit")
-                                                                //onClicked: edit(modelData.itemId)
+                                                                // Couldn't you just add the event pointer to the model?
+                                                                onClicked: editEvent(occurrenceModel.occurrenceEventPtr(modelData.eventOccurrence))
                                                             }
                                                         }
                                                     }

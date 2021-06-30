@@ -19,6 +19,7 @@ Kirigami.OverlaySheet {
     signal added(int collectionId, EventWrapper event)
     signal edited(int collectionId, EventWrapper event)
 
+    property var eventWrapper: event
     property bool editMode: false
     property bool validDates: eventStartDateCombo.validDate && (eventEndDateCombo.validDate || allDayCheckBox.checked)
 

@@ -34,8 +34,17 @@ KCalendarCore::Event::Ptr EventWrapper::eventPtr() const
 
 void EventWrapper::setEventPtr(KCalendarCore::Event::Ptr eventPtr)
 {
+    qDebug() << eventPtr->summary();
     m_event = eventPtr;
     Q_EMIT eventPtrChanged(m_event);
+    Q_EMIT summaryChanged();
+    Q_EMIT descriptionChanged();
+    Q_EMIT locationChanged();
+    Q_EMIT eventStartChanged();
+    Q_EMIT eventEndChanged();
+    Q_EMIT allDayChanged();
+    Q_EMIT remindersModelChanged();
+    Q_EMIT attendeesModelChanged();
 }
 
 QString EventWrapper::summary() const
