@@ -48,6 +48,7 @@ Kirigami.ApplicationWindow {
                                                               eventEditor.eventWrapper,
                                                               "event");
                 eventEditor.eventWrapper.eventPtr = receivedEventPtr;
+                eventEditor.eventWrapper.collectionId = receivedCollectionId;
                 eventEditor.editMode = true;
                 eventEditor.open();
             }

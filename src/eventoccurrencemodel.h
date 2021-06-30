@@ -87,6 +87,7 @@ public:
     };
 
     Q_INVOKABLE KCalendarCore::Event::Ptr occurrenceEventPtr(EventOccurrenceModel::Occurrence occurrence);
+    Q_INVOKABLE qint64 occurrenceCollectionId(EventOccurrenceModel::Occurrence occurrence);
 
 Q_SIGNALS:
     void startChanged();

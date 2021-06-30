@@ -47,6 +47,17 @@ void EventWrapper::setEventPtr(KCalendarCore::Event::Ptr eventPtr)
     Q_EMIT attendeesModelChanged();
 }
 
+qint64 EventWrapper::collectionId()
+{
+    return m_collectionId;
+}
+
+void EventWrapper::setCollectionId(qint64 collectionId)
+{
+    m_collectionId = collectionId;
+    Q_EMIT collectionIdChanged();
+}
+
 QString EventWrapper::summary() const
 {
     return m_event->summary();

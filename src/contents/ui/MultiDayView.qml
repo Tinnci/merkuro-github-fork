@@ -13,7 +13,7 @@ import "dateutils.js" as DateUtils
 Item {
     id: root
 
-    signal editEvent(var eventPtr)
+    signal editEvent(var eventPtr, var collectionId)
 
     property int daysToShow
     property int daysPerRow: daysToShow
@@ -202,7 +202,8 @@ Item {
                                                                 text: i18n("Edit")
                                                                 // Couldn't you just add the event pointer to the model?
                                                                 // Also need to know collection
-                                                                onClicked: editEvent(occurrenceModel.occurrenceEventPtr(modelData.eventOccurrence))
+                                                                onClicked: editEvent(occurrenceModel.occurrenceEventPtr(modelData.eventOccurrence),
+                                                                                     occurrenceModel.occurrenceCollectionId(modelData.eventOccurrence))
                                                             }
                                                         }
                                                     }

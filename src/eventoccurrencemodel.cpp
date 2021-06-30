@@ -315,3 +315,8 @@ KCalendarCore::Event::Ptr EventOccurrenceModel::occurrenceEventPtr(EventOccurren
     return occurrence.event;
 }
 
+qint64 EventOccurrenceModel::occurrenceCollectionId(EventOccurrenceModel::Occurrence occurrence)
+{
+    return occurrence.collectionId;
+}
+

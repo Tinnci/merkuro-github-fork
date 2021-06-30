@@ -22,6 +22,7 @@ class EventWrapper : public QObject
 {
     Q_OBJECT
     Q_PROPERTY(KCalendarCore::Event::Ptr eventPtr READ eventPtr WRITE setEventPtr NOTIFY eventPtrChanged)
+    Q_PROPERTY(qint64 collectionId READ collectionId WRITE setCollectionId NOTIFY collectionIdChanged)
     Q_PROPERTY(QString summary READ summary WRITE setSummary NOTIFY summaryChanged)
     Q_PROPERTY(QString description READ description WRITE setDescription NOTIFY descriptionChanged)
     Q_PROPERTY(QString location READ location WRITE setLocation NOTIFY locationChanged)
@@ -48,6 +49,8 @@ public:
 
     KCalendarCore::Event::Ptr eventPtr() const;
     void setEventPtr(KCalendarCore::Event::Ptr eventPtr);
+    qint64 collectionId();
+    void setCollectionId(qint64 collectionId);
     QString summary() const;
     void setSummary(QString summary);
     QString description() const;
@@ -76,6 +79,7 @@ public:
 
 Q_SIGNALS:
     void eventPtrChanged(KCalendarCore::Event::Ptr eventPtr);
+    void collectionIdChanged();
     void summaryChanged();
     void descriptionChanged();
     void locationChanged();
@@ -87,6 +91,7 @@ Q_SIGNALS:
 
 private:
     KCalendarCore::Event::Ptr m_event;
+    qint64 m_collectionId;
     RemindersModel m_remindersModel;
     AttendeesModel m_attendeesModel;
     QVariantMap m_recurrenceIntervals;

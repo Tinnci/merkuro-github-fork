@@ -13,7 +13,7 @@ Kirigami.Page {
     id: monthPage
 
     // More elegant way of sending this up to main.qml?
-    signal editEventReceived(var receivedEventPtr)
+    signal editEventReceived(var receivedEventPtr, var receivedCollectionId)
 
     property alias startDate: dayView.startDate
     property alias currentDate: dayView.currentDate
@@ -66,7 +66,7 @@ Kirigami.Page {
             text: DateUtils.getWeek(startDate, Qt.locale().firstDayOfWeek)
         }
 
-        onEditEvent: editEventReceived(eventPtr)
+        onEditEvent: editEventReceived(eventPtr, collectionId)
 
     }
 }
