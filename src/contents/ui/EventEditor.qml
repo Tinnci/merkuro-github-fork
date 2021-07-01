@@ -35,7 +35,6 @@ Kirigami.OverlaySheet {
             if (editMode) {
                 return
             } else {
-                console.log(calendarCombo.currentValue)
                 added(calendarCombo.currentValue, eventWrapper);
                 eventWrapper = Qt.createQmlObject('import org.kde.kalendar 1.0; EventWrapper {id: event}',
                                                   eventEditor,
@@ -324,6 +323,25 @@ Kirigami.OverlaySheet {
                 valueRole: "interval"
                 onCurrentIndexChanged: if(currentIndex == 0) { eventEditorSheet.eventWrapper.clearRecurrences(); } // "Never"
                 onCurrentValueChanged: if(currentValue >= 0) { eventEditorSheet.eventWrapper.setRegularRecurrence(currentValue); }
+                currentIndex: {
+                    console.log(eventEditorSheet.eventWrapper.recurrenceType)
+                    switch(eventEditorSheet.eventWrapper.recurrenceType) {
+                        case 0:
+                            return eventEditorSheet.eventWrapper.recurrenceType;
+                        case 3: // Daily
+                        case 4: // Weekly
+                            return eventEditorSheet.eventWrapper.recurrenceType - 2;
+                        case 5: // Monthly on position (e.g. third Monday)
+                        case 7: // Yearly on month
+                        case 9: // Yearly on position
+                        case 10: // Other
+                            return 5;
+                        case 6: // Monthly on day (1st of month)
+                            return 3;
+                        case 8: // Yearly on day
+                            return 4;
+                    }
+                }
                 model: [
                     {key: "never", display: i18n("Never"), interval: -1},
                     {key: "daily", display: i18n("Daily"), interval: eventEditorSheet.eventWrapper.recurrenceIntervals["Daily"]},
