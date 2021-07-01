@@ -32,6 +32,7 @@ class EventWrapper : public QObject
     Q_PROPERTY(KCalendarCore::Recurrence * recurrence READ recurrence)
     Q_PROPERTY(QList<bool> recurrenceWeekDays READ recurrenceWeekDays WRITE setRecurrenceWeekDays NOTIFY recurrenceWeekDaysChanged)
     Q_PROPERTY(int recurrenceDuration READ recurrenceDuration WRITE setRecurrenceDuration NOTIFY recurrenceDurationChanged)
+    Q_PROPERTY(int recurrenceFrequency READ recurrenceFrequency WRITE setRecurrenceFrequency NOTIFY recurrenceFrequencyChanged)
     Q_PROPERTY(QDateTime recurrenceEndDateTime READ recurrenceEndDateTime WRITE setRecurrenceEndDateTime NOTIFY recurrenceEndDateTimeChanged)
     Q_PROPERTY(ushort recurrenceType READ recurrenceType NOTIFY recurrenceTypeChanged)
     Q_PROPERTY(KCalendarCore::Attendee::List attendees READ attendees)
@@ -73,6 +74,8 @@ public:
     void setRecurrenceWeekDays(const QList<bool> recurrenceWeekDays);
     int recurrenceDuration();
     void setRecurrenceDuration(int recurrenceDuration);
+    int recurrenceFrequency();
+    void setRecurrenceFrequency(int recurrenceFrequency);
     QDateTime recurrenceEndDateTime();
     void setRecurrenceEndDateTime(QDateTime recurrenceEndDateTime);
     ushort recurrenceType();
@@ -100,6 +103,7 @@ Q_SIGNALS:
     void remindersModelChanged();
     void recurrenceWeekDaysChanged();
     void recurrenceDurationChanged();
+    void recurrenceFrequencyChanged();
     void recurrenceEndDateTimeChanged();
     void recurrenceTypeChanged();
     void attendeesModelChanged();

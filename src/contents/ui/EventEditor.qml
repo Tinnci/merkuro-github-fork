@@ -324,13 +324,13 @@ Kirigami.OverlaySheet {
                 onCurrentIndexChanged: if(currentIndex == 0) { eventEditorSheet.eventWrapper.clearRecurrences(); } // "Never"
                 onCurrentValueChanged: if(currentValue >= 0) { eventEditorSheet.eventWrapper.setRegularRecurrence(currentValue); }
                 currentIndex: {
-                    console.log(eventEditorSheet.eventWrapper.recurrenceType)
                     switch(eventEditorSheet.eventWrapper.recurrenceType) {
                         case 0:
                             return eventEditorSheet.eventWrapper.recurrenceType;
                         case 3: // Daily
                         case 4: // Weekly
-                            return eventEditorSheet.eventWrapper.recurrenceType - 2;
+                            return eventEditorSheet.eventWrapper.recurrenceFrequency == 1 ?
+                                   eventEditorSheet.eventWrapper.recurrenceType - 2 : 5
                         case 5: // Monthly on position (e.g. third Monday)
                         case 7: // Yearly on month
                         case 9: // Yearly on position
@@ -382,7 +382,11 @@ Kirigami.OverlaySheet {
                     Layout.columnSpan: 2
                     visible: repeatComboBox.currentIndex === 5
                     from: 1
-                    onValueChanged: if(visible) { customRecurrenceLayout.setOcurrence(); }
+                    value: eventEditorSheet.eventWrapper.recurrenceFrequency
+                    onValueChanged: {
+                        console.log(eventEditorSheet.eventWrapper.recurrenceFrequency)
+                        if(visible) { eventEditorSheet.eventWrapper.recurrenceFrequency = value }
+                    }
                 }
                 QQC2.ComboBox {
                     id: recurScaleRuleCombobox
@@ -393,7 +397,20 @@ Kirigami.OverlaySheet {
                     textRole: recurFreqRuleSpinbox.value > 1 ? "displayPlural" : "displaySingular"
                     valueRole: "interval"
                     onCurrentValueChanged: if(visible) { customRecurrenceLayout.setOcurrence(); }
-                    onCurrentIndexChanged: console.log(eventEditorSheet.eventWrapper.recurrenceType)
+                    currentIndex: {
+                        switch(eventEditorSheet.eventWrapper.recurrenceType) {
+                            case 3: // Daily
+                            case 4: // Weekly
+                                return eventEditorSheet.eventWrapper.recurrenceType - 3
+                            case 5: // Monthly on position (e.g. third Monday)
+                            case 6: // Monthly on day (1st of month)
+                                return 2;
+                            case 7: // Yearly on month
+                            case 8: // Yearly on day
+                            case 9: // Yearly on position
+                                return 3;
+                        }
+                    }
 
                     model: [
                         {key: "day", displaySingular: i18n("day"), displayPlural: i18n("days"), interval: eventEditorSheet.eventWrapper.recurrenceIntervals["Daily"]},
@@ -401,6 +418,10 @@ Kirigami.OverlaySheet {
                         {key: "month", displaySingular: i18n("month"), displayPlural: i18n("months"), interval: eventEditorSheet.eventWrapper.recurrenceIntervals["Monthly"]},
                         {key: "year", displaySingular: i18n("year"), displayPlural: i18n("years"), interval: eventEditorSheet.eventWrapper.recurrenceIntervals["Yearly"]},
                     ]
+                    delegate: Kirigami.BasicListItem {
+                        text: recurFreqRuleSpinbox.value > 1 ? modelData.displayPlural : modelData.displaySingular
+                        onClicked: eventEditorSheet.eventWrapper.setRegularRecurrence(modelData.interval, recurFreqRuleSpinbox.value);
+                    }
                     popup.z: 1000
                 }
 

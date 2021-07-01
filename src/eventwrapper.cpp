@@ -37,6 +37,7 @@ void EventWrapper::setEventPtr(KCalendarCore::Event::Ptr eventPtr)
     qDebug() << eventPtr->summary();
     m_event = eventPtr;
     Q_EMIT eventPtrChanged(m_event);
+    Q_EMIT collectionIdChanged();
     Q_EMIT summaryChanged();
     Q_EMIT descriptionChanged();
     Q_EMIT locationChanged();
@@ -47,6 +48,7 @@ void EventWrapper::setEventPtr(KCalendarCore::Event::Ptr eventPtr)
     Q_EMIT attendeesModelChanged();
     Q_EMIT recurrenceWeekDaysChanged();
     Q_EMIT recurrenceDurationChanged();
+    Q_EMIT recurrenceFrequencyChanged();
     Q_EMIT recurrenceEndDateTimeChanged();
     Q_EMIT recurrenceTypeChanged();
 }
@@ -172,6 +174,16 @@ void EventWrapper::setRecurrenceDuration(int recurrenceDuration)
     Q_EMIT recurrenceDurationChanged();
 }
 
+int EventWrapper::recurrenceFrequency()
+{
+    return m_event->recurrence()->frequency();
+}
+
+void EventWrapper::setRecurrenceFrequency(int recurrenceFrequency)
+{
+    m_event->recurrence()->setFrequency(recurrenceFrequency);
+    Q_EMIT recurrenceFrequencyChanged();
+}
 
 QDateTime EventWrapper::recurrenceEndDateTime()
 {
@@ -222,15 +234,19 @@ void EventWrapper::setRegularRecurrence(EventWrapper::RecurrenceIntervals interv
     switch(interval) {
         case Daily:
             m_event->recurrence()->setDaily(freq);
+            Q_EMIT recurrenceFrequencyChanged();
             return;
         case Weekly:
             m_event->recurrence()->setWeekly(freq);
+            Q_EMIT recurrenceFrequencyChanged();
             return;
         case Monthly:
             m_event->recurrence()->setMonthly(freq);
+            Q_EMIT recurrenceFrequencyChanged();
             return;
         case Yearly:
             m_event->recurrence()->setYearly(freq);
+            Q_EMIT recurrenceFrequencyChanged();
             return;
         default:
             qWarning() << "Unknown interval for recurrence" << interval;
