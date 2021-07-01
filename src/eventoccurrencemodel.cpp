@@ -264,6 +264,8 @@ QVariant EventOccurrenceModel::data(const QModelIndex &idx, int role) const
             return event.collectionId;
         case AllDay:
             return event.allDay;
+        case EventPtr:
+            return QVariant::fromValue(event.event);
         case EventOccurrence:
             return QVariant::fromValue(event);
         default:
@@ -309,14 +311,3 @@ void EventOccurrenceModel::save() const
     }
     config->sync();
 }
-
-KCalendarCore::Event::Ptr EventOccurrenceModel::occurrenceEventPtr(EventOccurrenceModel::Occurrence occurrence)
-{
-    return occurrence.event;
-}
-
-qint64 EventOccurrenceModel::occurrenceCollectionId(EventOccurrenceModel::Occurrence occurrence)
-{
-    return occurrence.collectionId;
-}
-
