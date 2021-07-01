@@ -30,6 +30,10 @@ class EventWrapper : public QObject
     Q_PROPERTY(QDateTime eventEnd READ eventEnd WRITE setEventEnd NOTIFY eventEndChanged)
     Q_PROPERTY(bool allDay READ allDay WRITE setAllDay NOTIFY allDayChanged)
     Q_PROPERTY(KCalendarCore::Recurrence * recurrence READ recurrence)
+    Q_PROPERTY(QList<bool> recurrenceWeekDays READ recurrenceWeekDays WRITE setRecurrenceWeekDays NOTIFY recurrenceWeekDaysChanged)
+    Q_PROPERTY(int recurrenceDuration READ recurrenceDuration WRITE setRecurrenceDuration NOTIFY recurrenceDurationChanged)
+    Q_PROPERTY(QDateTime recurrenceEndDateTime READ recurrenceEndDateTime WRITE setRecurrenceEndDateTime NOTIFY recurrenceEndDateTimeChanged)
+    Q_PROPERTY(ushort recurrenceType READ recurrenceType NOTIFY recurrenceTypeChanged)
     Q_PROPERTY(KCalendarCore::Attendee::List attendees READ attendees)
     Q_PROPERTY(RemindersModel * remindersModel READ remindersModel NOTIFY remindersModelChanged)
     Q_PROPERTY(AttendeesModel * attendeesModel READ attendeesModel NOTIFY attendeesModelChanged)
@@ -63,7 +67,16 @@ public:
     void setEventEnd(QDateTime eventEnd);
     bool allDay() const;
     void setAllDay(bool allDay);
+
     KCalendarCore::Recurrence * recurrence() const;
+    QList<bool> recurrenceWeekDays();
+    void setRecurrenceWeekDays(const QList<bool> recurrenceWeekDays);
+    int recurrenceDuration();
+    void setRecurrenceDuration(int recurrenceDuration);
+    QDateTime recurrenceEndDateTime();
+    void setRecurrenceEndDateTime(QDateTime recurrenceEndDateTime);
+    ushort recurrenceType();
+
     KCalendarCore::Attendee::List attendees() const;
     RemindersModel * remindersModel();
     AttendeesModel * attendeesModel();
@@ -72,8 +85,6 @@ public:
     Q_INVOKABLE void addAlarms(KCalendarCore::Alarm::List alarms);
     Q_INVOKABLE void setRegularRecurrence(RecurrenceIntervals interval, int freq = 1);
     Q_INVOKABLE void setMonthlyPosRecurrence(short pos, int day);
-    Q_INVOKABLE void setWeekdaysRecurrence(const QList<bool> days);
-    Q_INVOKABLE void setRecurrenceEndDateTime(QDateTime endDateTime);
     Q_INVOKABLE void setRecurrenceOcurrences(int ocurrences);
     Q_INVOKABLE void clearRecurrences();
 
@@ -87,6 +98,10 @@ Q_SIGNALS:
     void eventEndChanged();
     void allDayChanged();
     void remindersModelChanged();
+    void recurrenceWeekDaysChanged();
+    void recurrenceDurationChanged();
+    void recurrenceEndDateTimeChanged();
+    void recurrenceTypeChanged();
     void attendeesModelChanged();
 
 private:

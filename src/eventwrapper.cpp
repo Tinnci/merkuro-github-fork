@@ -45,6 +45,10 @@ void EventWrapper::setEventPtr(KCalendarCore::Event::Ptr eventPtr)
     Q_EMIT allDayChanged();
     Q_EMIT remindersModelChanged();
     Q_EMIT attendeesModelChanged();
+    Q_EMIT recurrenceWeekDaysChanged();
+    Q_EMIT recurrenceDurationChanged();
+    Q_EMIT recurrenceEndDateTimeChanged();
+    Q_EMIT recurrenceTypeChanged();
 }
 
 qint64 EventWrapper::collectionId()
@@ -134,6 +138,57 @@ KCalendarCore::Recurrence * EventWrapper::recurrence() const
     return recurrence;
 }
 
+QList<bool> EventWrapper::recurrenceWeekDays()
+{
+    QBitArray weekDaysBits = m_event->recurrence()->days();
+    QList<bool> weekDaysBools;
+
+    for(int i = 0; i < weekDaysBits.size(); i++) {
+        weekDaysBools[i] = weekDaysBits[i];
+    }
+
+    return weekDaysBools;
+}
+
+void EventWrapper::setRecurrenceWeekDays(const QList<bool> recurrenceWeekDays)
+{
+    QBitArray daysBitArray(7);
+
+    for(int i = 0; i < recurrenceWeekDays.size(); i++) {
+        daysBitArray[i] = recurrenceWeekDays[i];
+    }
+    m_event->recurrence()->addWeeklyDays(daysBitArray);
+    Q_EMIT recurrenceWeekDaysChanged();
+}
+
+int EventWrapper::recurrenceDuration()
+{
+    return m_event->recurrence()->duration();
+}
+
+void EventWrapper::setRecurrenceDuration(int recurrenceDuration)
+{
+    m_event->recurrence()->setDuration(recurrenceDuration);
+    Q_EMIT recurrenceDurationChanged();
+}
+
+
+QDateTime EventWrapper::recurrenceEndDateTime()
+{
+    return m_event->recurrence()->endDateTime();
+}
+
+void EventWrapper::setRecurrenceEndDateTime(QDateTime endDateTime)
+{
+    m_event->recurrence()->setEndDateTime(endDateTime);
+    Q_EMIT recurrenceEndDateTimeChanged();
+}
+
+ushort EventWrapper::recurrenceType()
+{
+    return m_event->recurrence()->recurrenceType();
+}
+
 KCalendarCore::Attendee::List EventWrapper::attendees() const
 {
     return m_event->attendees();
@@ -164,7 +219,6 @@ void EventWrapper::addAlarms(KCalendarCore::Alarm::List alarms)
 
 void EventWrapper::setRegularRecurrence(EventWrapper::RecurrenceIntervals interval, int freq)
 {
-    qDebug() << interval;
     switch(interval) {
         case Daily:
             m_event->recurrence()->setDaily(freq);
@@ -191,30 +245,15 @@ void EventWrapper::setMonthlyPosRecurrence(short pos, int day)
     m_event->recurrence()->addMonthlyPos(pos, daysBitArray);
 }
 
-
-void EventWrapper::setWeekdaysRecurrence(const QList<bool> days)
-{
-    QBitArray daysBitArray(7);
-
-    for(int i = 0; i < days.size(); i++) {
-        daysBitArray[i] = days[i];
-    }
-    m_event->recurrence()->addWeeklyDays(daysBitArray);
-}
-
-void EventWrapper::setRecurrenceEndDateTime(QDateTime endDateTime)
-{
-    qDebug() << endDateTime;
-    m_event->recurrence()->setEndDateTime(endDateTime);
-}
-
 void EventWrapper::setRecurrenceOcurrences(int ocurrences)
 {
     m_event->recurrence()->setDuration(ocurrences);
+    Q_EMIT recurrenceDurationChanged();
 }
 
 void EventWrapper::clearRecurrences()
 {
     m_event->recurrence()->clear();
+    Q_EMIT recurrenceDurationChanged();
 }
 

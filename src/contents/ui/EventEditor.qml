@@ -375,6 +375,7 @@ Kirigami.OverlaySheet {
                     textRole: recurFreqRuleSpinbox.value > 1 ? "displayPlural" : "displaySingular"
                     valueRole: "interval"
                     onCurrentValueChanged: if(visible) { customRecurrenceLayout.setOcurrence(); }
+                    onCurrentIndexChanged: console.log(eventEditorSheet.eventWrapper.recurrenceType)
 
                     model: [
                         {key: "day", displaySingular: i18n("day"), displayPlural: i18n("days"), interval: eventEditorSheet.eventWrapper.recurrenceIntervals["Daily"]},
@@ -425,7 +426,6 @@ Kirigami.OverlaySheet {
                                                     Qt.locale().firstDayOfWeek + index - 1 - 7 :
                                                     Qt.locale().firstDayOfWeek + index - 1
                             onClicked: weekdayCheckboxRepeater.setWeekdaysRepeat()
-                            Component.onCompleted: weekdayCheckboxRepeater.checkboxes.push(this)
                         }
                     }
                 }
@@ -497,7 +497,15 @@ Kirigami.OverlaySheet {
 
                     Layout.fillWidth: true
                     Layout.columnSpan: 2
+                    // onCurrentIndexChanged: eventEditorSheet.eventWrapper.recurrenceDuration = currentIndex - 1 // Need to click twice to get 'After' to change?
+                    currentIndex: eventEditorSheet.eventWrapper.recurrenceDuration <= 0 ? // Recurrence duration returns -1 for never ending and 0 when the recurrence
+                                  eventEditorSheet.eventWrapper.recurrenceDuration + 1 :  // end date is set. Any number larger is the set number of recurrences
+                                  2
                     model: [i18n("Never"), i18n("On"), i18n("After")]
+                    delegate: Kirigami.BasicListItem {
+                        text: modelData
+                        onClicked: eventEditorSheet.eventWrapper.recurrenceDuration = index - 1
+                    }
                     popup.z: 1000
                 }
                 QQC2.ComboBox {
@@ -507,7 +515,7 @@ Kirigami.OverlaySheet {
                     Layout.columnSpan: 2
                     visible: endRecurType.currentIndex == 1
                     editable: true
-                    editText: recurEndDatePicker.clickedDate.toLocaleDateString(Qt.locale(), Locale.NarrowFormat);
+                    editText: eventEditorSheet.eventWrapper.recurrenceEndDateTime.toLocaleDateString(Qt.locale(), Locale.NarrowFormat);
 
                     inputMethodHints: Qt.ImhDate
 
@@ -521,7 +529,7 @@ Kirigami.OverlaySheet {
                             datePicker.clickedDate = dateFromText;
 
                             if (visible) {
-                                eventEditorSheet.eventWrapper.setRecurrenceEndDateTime(dateFromText);
+                                eventEditorSheet.eventWrapper.recurrenceEndDateTime = dateFromText
                             }
                         }
                     }
@@ -536,7 +544,10 @@ Kirigami.OverlaySheet {
                         DatePicker {
                             id: recurEndDatePicker
                             anchors.fill: parent
-                            onDatePicked: recurEndDatePopup.close()
+                            onDatePicked: {
+                                eventEditorSheet.eventWrapper.recurrenceEndDateTime = pickedDate
+                                recurEndDatePopup.close()
+                            }
                         }
                     }
                 }
@@ -550,6 +561,7 @@ Kirigami.OverlaySheet {
                         id: recurOcurrenceEndSpinbox
                         Layout.fillWidth: true
                         from: 1
+                        value: eventEditorSheet.eventWrapper.recurrenceDuration
                         onValueChanged: eventEditorSheet.eventWrapper.setRecurrenceOcurrences(value)
                     }
                     QQC2.Label {
@@ -633,8 +645,8 @@ Kirigami.OverlaySheet {
                             displayText: remindersColumn.secondsToReminderLabel(startOffset)
                             //textRole: "DisplayNameRole"
                             onCurrentValueChanged: eventEditorSheet.eventWrapper.remindersModel.setData(eventEditorSheet.eventWrapper.remindersModel.index(index, 0),
-                                                                                currentValue,
-                                                                                eventEditorSheet.eventWrapper.remindersModel.dataroles["startOffset"])
+                                                                                                        currentValue,
+                                                                                                        eventEditorSheet.eventWrapper.remindersModel.dataroles["startOffset"])
                             onCountChanged: selectedIndex = currentIndex // Gets called *just* before modelChanged
                             onModelChanged: currentIndex = selectedIndex
 
@@ -707,10 +719,10 @@ Kirigami.OverlaySheet {
                             QQC2.TextField {
                                 Layout.fillWidth: true
                                 Layout.columnSpan: 4
+                                text: model.name
                                 onTextChanged: eventEditorSheet.eventWrapper.attendeesModel.setData(eventEditorSheet.eventWrapper.attendeesModel.index(index, 0),
-                                                                            text,
-                                                                            eventEditorSheet.eventWrapper.attendeesModel.dataroles["name"])
-                                Component.onCompleted: text = model.name
+                                                                                                    text,
+                                                                                                    eventEditorSheet.eventWrapper.attendeesModel.dataroles["name"])
                             }
 
                             QQC2.Label {
@@ -719,11 +731,10 @@ Kirigami.OverlaySheet {
                             QQC2.TextField {
                                 Layout.fillWidth: true
                                 Layout.columnSpan: 4
-                                //editText: Email
+                                text: model.email
                                 onTextChanged: eventEditorSheet.eventWrapper.attendeesModel.setData(eventEditorSheet.eventWrapper.attendeesModel.index(index, 0),
-                                                                            text,
-                                                                            eventEditorSheet.eventWrapper.attendeesModel.dataroles["email"])
-                                Component.onCompleted: text = model.email
+                                                                                                    text,
+                                                                                                    eventEditorSheet.eventWrapper.attendeesModel.dataroles["email"])
                             }
                             QQC2.Label {
                                 text: i18n("Status:")
@@ -735,8 +746,8 @@ Kirigami.OverlaySheet {
                                 valueRole: "value"
                                 currentIndex: status // role of parent
                                 onCurrentValueChanged: eventEditorSheet.eventWrapper.attendeesModel.setData(eventEditorSheet.eventWrapper.attendeesModel.index(index, 0),
-                                                                                    currentValue,
-                                                                                    eventEditorSheet.eventWrapper.attendeesModel.dataroles["status"])
+                                                                                                            currentValue,
+                                                                                                            eventEditorSheet.eventWrapper.attendeesModel.dataroles["status"])
 
                                 popup.z: 1000
                             }
@@ -745,8 +756,8 @@ Kirigami.OverlaySheet {
                                 text: i18n("Request RSVP")
                                 checked: model.rsvp
                                 onCheckedChanged: eventEditorSheet.eventWrapper.attendeesModel.setData(eventEditorSheet.eventWrapper.attendeesModel.index(index, 0),
-                                                                               checked,
-                                                                               eventEditorSheet.eventWrapper.attendeesModel.dataroles["rsvp"])
+                                                                                                       checked,
+                                                                                                       eventEditorSheet.eventWrapper.attendeesModel.dataroles["rsvp"])
                             }
                         }
                     }
