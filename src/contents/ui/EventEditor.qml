@@ -32,9 +32,7 @@ Kirigami.OverlaySheet {
 
         onRejected: eventEditorSheet.close()
         onAccepted: {
-            if (editMode) {
-                return
-            } else {
+            if (!editMode) {
                 added(calendarCombo.currentValue, eventWrapper);
                 eventWrapper = Qt.createQmlObject('import org.kde.kalendar 1.0; EventWrapper {id: event}',
                                                   eventEditor,
@@ -328,9 +326,12 @@ Kirigami.OverlaySheet {
                         case 0:
                             return eventEditorSheet.eventWrapper.recurrenceType;
                         case 3: // Daily
-                        case 4: // Weekly
-                            return eventEditorSheet.eventWrapper.recurrenceFrequency == 1 ?
+                            return eventEditorSheet.eventWrapper.recurrenceFrequency === 1 ?
                                    eventEditorSheet.eventWrapper.recurrenceType - 2 : 5
+                        case 4: // Weekly
+                            return eventEditorSheet.eventWrapper.recurrenceFrequency === 1 ?
+                                   (eventEditorSheet.eventWrapper.recurrenceWeekDays.filter(x => x === true).length === 0 ?
+                                   eventEditorSheet.eventWrapper.recurrenceType - 2 : 5) : 5
                         case 5: // Monthly on position (e.g. third Monday)
                         case 7: // Yearly on month
                         case 9: // Yearly on position
@@ -454,7 +455,7 @@ Kirigami.OverlaySheet {
                                 // C++ func takes 7 bit array
                                 selectedDays[checkbox.dayNumber] = checkbox.checked
                             }
-                            eventEditorSheet.eventWrapper.setWeekdaysRecurrence(selectedDays);
+                            eventEditorSheet.eventWrapper.recurrenceWeekDays = selectedDays;
                         }
 
                         model: 7
@@ -464,7 +465,9 @@ Kirigami.OverlaySheet {
                             property int dayNumber: Qt.locale().firstDayOfWeek + index > 7 ?
                                                     Qt.locale().firstDayOfWeek + index - 1 - 7 :
                                                     Qt.locale().firstDayOfWeek + index - 1
-                            onClicked: weekdayCheckboxRepeater.setWeekdaysRepeat()
+
+                            checked: eventEditorSheet.eventWrapper.recurrenceWeekDays[dayNumber]
+                            onClicked: eventEditorSheet.eventWrapper.recurrenceWeekDays[dayNumber] = !eventEditorSheet.eventWrapper.recurrenceWeekDays[dayNumber]
                         }
                     }
                 }
@@ -509,6 +512,7 @@ Kirigami.OverlaySheet {
 
                     QQC2.RadioButton {
                         property int dateOfMonth: eventStartDateCombo.dateFromText.getDate()
+
                         text: i18nc("%1 is the day number of month", "the %1 of each month", parent.numberToString(dateOfMonth))
                         checked: eventEditorSheet.eventWrapper.recurrenceType == 6
                         onClicked: customRecurrenceLayout.setOcurrence()

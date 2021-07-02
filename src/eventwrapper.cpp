@@ -140,10 +140,10 @@ KCalendarCore::Recurrence * EventWrapper::recurrence() const
     return recurrence;
 }
 
-QList<bool> EventWrapper::recurrenceWeekDays()
+QVector<bool> EventWrapper::recurrenceWeekDays()
 {
     QBitArray weekDaysBits = m_event->recurrence()->days();
-    QList<bool> weekDaysBools;
+    QVector<bool> weekDaysBools(7);
 
     for(int i = 0; i < weekDaysBits.size(); i++) {
         weekDaysBools[i] = weekDaysBits[i];
@@ -152,14 +152,29 @@ QList<bool> EventWrapper::recurrenceWeekDays()
     return weekDaysBools;
 }
 
-void EventWrapper::setRecurrenceWeekDays(const QList<bool> recurrenceWeekDays)
+void EventWrapper::setRecurrenceWeekDays(const QVector<bool> recurrenceWeekDays)
 {
-    QBitArray daysBitArray(7);
+    qDebug() << recurrenceWeekDays;
+    QBitArray days(7);
 
     for(int i = 0; i < recurrenceWeekDays.size(); i++) {
-        daysBitArray[i] = recurrenceWeekDays[i];
+        days[i] = recurrenceWeekDays[i];
     }
-    m_event->recurrence()->addWeeklyDays(daysBitArray);
+
+    KCalendarCore::RecurrenceRule *rrule = m_event->recurrence()->defaultRRule();
+    QList<KCalendarCore::RecurrenceRule::WDayPos> positions;
+
+    for (int i = 0; i < 7; ++i) {
+        if (days.testBit(i)) {
+            KCalendarCore::RecurrenceRule::WDayPos p(0, i + 1);
+            positions.append(p);
+        }
+    }
+
+    rrule->setByDays(positions);
+    m_event->recurrence()->updated();
+
+    qDebug() << m_event->recurrence()->days();
     Q_EMIT recurrenceWeekDaysChanged();
 }
 

@@ -202,7 +202,6 @@ Item {
                                                                 text: i18n("Edit")
                                                                 //enabled: Kalendar.CalendarManager.getCollectionDetails(collectionId)["readOnly"]
                                                                 onClicked: editEvent(modelData.eventPtr, modelData.collectionId)
-                                                                Component.onCompleted: console.log(Object.keys(modelData))
                                                             }
                                                         }
                                                     }
