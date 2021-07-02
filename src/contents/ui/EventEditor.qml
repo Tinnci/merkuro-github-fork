@@ -11,7 +11,7 @@ Kirigami.OverlaySheet {
     id: eventEditorSheet
 
     signal added(int collectionId, EventWrapper event)
-    signal edited(int collectionId, EventWrapper event)
+    signal edited(EventWrapper event)
 
     property var eventWrapper: EventWrapper {}
     property bool editMode: false
@@ -25,19 +25,21 @@ Kirigami.OverlaySheet {
         standardButtons: QQC2.DialogButtonBox.Cancel
 
         QQC2.Button {
-            text: editMode ? i18n("Done") : i18n("Add")
+            text: editMode ? i18n("Save") : i18n("Add")
             enabled: titleField.text && eventEditorSheet.validDates && calendarCombo.currentValue
             QQC2.DialogButtonBox.buttonRole: QQC2.DialogButtonBox.AcceptRole
         }
 
         onRejected: eventEditorSheet.close()
         onAccepted: {
-            if (!editMode) {
+            if (editMode) {
+                edited(eventWrapper);
+            } else {
                 added(calendarCombo.currentValue, eventWrapper);
-                eventWrapper = Qt.createQmlObject('import org.kde.kalendar 1.0; EventWrapper {id: event}',
-                                                  eventEditor,
-                                                  "event");
             }
+            eventWrapper = Qt.createQmlObject('import org.kde.kalendar 1.0; EventWrapper {id: event}',
+                                              eventEditor,
+                                              "event");
             eventEditorSheet.close();
         }
     }

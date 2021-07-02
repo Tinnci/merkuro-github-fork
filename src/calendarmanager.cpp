@@ -215,7 +215,7 @@ CalendarManager::CalendarManager(QObject *parent)
     : QObject(parent)
     , m_calendar(nullptr)
 {
-    auto currentDate = QDate::currentDate();
+    //auto currentDate = QDate::currentDate();
     if (!Akonadi::Control::start() ) {
         qApp->exit(-1);
         return;
@@ -384,6 +384,13 @@ void CalendarManager::addEvent(qint64 collectionId, KCalendarCore::Event::Ptr ev
     Akonadi::IncidenceChanger *changer = m_calendar->incidenceChanger();
     qDebug() << changer->createIncidence(event, collection); // This will fritz if you don't choose a valid *calendar*
 }
+
+// Replicates IncidenceDialogPrivate::save
+void CalendarManager::editEvent(KCalendarCore::Event::Ptr editedEvent)
+{
+    m_calendar->modifyIncidence(editedEvent);
+}
+
 
 QVariantMap CalendarManager::getCollectionDetails(qint64 collectionId)
 {
