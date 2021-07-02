@@ -510,6 +510,7 @@ Kirigami.OverlaySheet {
                     QQC2.RadioButton {
                         property int dateOfMonth: eventStartDateCombo.dateFromText.getDate()
                         text: i18nc("%1 is the day number of month", "the %1 of each month", parent.numberToString(dateOfMonth))
+                        checked: eventEditorSheet.eventWrapper.recurrenceType == 6
                         onClicked: customRecurrenceLayout.setOcurrence()
                     }
                     QQC2.RadioButton {
@@ -520,6 +521,7 @@ Kirigami.OverlaySheet {
                         property string dayOfWeekString: Qt.locale().dayName(eventStartDateCombo.dateFromText.getDay())
 
                         text: i18nc("the weekOfMonth dayOfWeekString of each month", "the %1 %2 of each month", parent.numberToString(weekOfMonth), dayOfWeekString)
+                        checked: eventEditorSheet.eventWrapper.recurrenceType == 5
                         onTextChanged: if(checked) { eventEditorSheet.eventWrapper.setMonthlyPosRecurrence(weekOfMonth, dayOfWeek); }
                         onClicked: eventEditorSheet.eventWrapper.setMonthlyPosRecurrence(weekOfMonth, dayOfWeek)
                     }
