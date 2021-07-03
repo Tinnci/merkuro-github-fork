@@ -543,7 +543,7 @@ Kirigami.OverlaySheet {
                     id: endRecurType
 
                     Layout.fillWidth: true
-                    Layout.columnSpan: 2
+                    Layout.columnSpan: currentIndex == 0 ? 4 : 2
                     currentIndex: eventEditorSheet.eventWrapper.recurrenceDuration <= 0 ? // Recurrence duration returns -1 for never ending and 0 when the recurrence
                                   eventEditorSheet.eventWrapper.recurrenceDuration + 1 :  // end date is set. Any number larger is the set number of recurrences
                                   2
@@ -597,6 +597,7 @@ Kirigami.OverlaySheet {
                         }
                     }
                 }
+
                 RowLayout {
                     Layout.fillWidth: true
                     Layout.columnSpan: 2
@@ -612,6 +613,43 @@ Kirigami.OverlaySheet {
                     }
                     QQC2.Label {
                         text: i18np("ocurrence", "ocurrences", recurOcurrenceEndSpinbox.value)
+                    }
+                }
+
+                QQC2.Label {
+                    Layout.columnSpan: 1
+                    text: i18n("Exceptions:")
+                }
+                ColumnLayout {
+                    Layout.columnSpan: 4
+                    QQC2.Button {
+                        Layout.fillWidth: true
+                        text: i18n("Add recurrence exception")
+                        onClicked: recurExceptionPopup.open()
+                    }
+                    QQC2.Popup {
+                        id: recurExceptionPopup
+
+                        width: Kirigami.Units.gridUnit * 18
+                        height: Kirigami.Units.gridUnit * 18
+                        z: 1000
+
+                        DatePicker {
+                            id: recurExceptionPicker
+                            anchors.fill: parent
+                            selectedDate: eventStartDateCombo.dateFromText
+                            onDatePicked: {
+                                eventEditorSheet.eventWrapper.recurrenceExceptionsModel.addExceptionDateTime(pickedDate)
+                                recurExceptionPopup.close()
+                            }
+                        }
+                    }
+                    Repeater {
+                        id: exceptionsRepeater
+                        model: eventEditorSheet.eventWrapper.recurrenceExceptionsModel
+                        delegate: QQC2.Label {
+                            text: date.toLocaleDateString(Qt.locale())
+                        }
                     }
                 }
             }

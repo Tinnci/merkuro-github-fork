@@ -50,6 +50,7 @@ Kirigami.ApplicationWindow {
                                                               "event");
                 eventEditor.eventWrapper.eventPtr = receivedEventPtr;
                 eventEditor.eventWrapper.collectionId = receivedCollectionId;
+                console.log(eventEditor.eventWrapper.recurrenceExceptionsModel.rowCount())
                 eventEditor.editMode = true;
                 eventEditor.open();
             }

@@ -27,11 +27,13 @@ void RecurrenceExceptionsModel::setEventPtr(KCalendarCore::Event::Ptr event)
     }
     m_event = event;
     Q_EMIT eventPtrChanged();
+    Q_EMIT exceptionsChanged();
+    Q_EMIT layoutChanged();
 }
 
-KCalendarCore::RecurrenceRule::List RecurrenceExceptionsModel::exceptions()
+QList<QDateTime> RecurrenceExceptionsModel::exceptions()
 {
-    return m_event->recurrence()->exRules();
+    return m_event->recurrence()->exDateTimes();
 }
 
 QVariantMap RecurrenceExceptionsModel::dataroles()
@@ -44,12 +46,11 @@ QVariant RecurrenceExceptionsModel::data(const QModelIndex &idx, int role) const
     if (!hasIndex(idx.row(), idx.column())) {
         return {};
     }
-    KCalendarCore::RecurrenceRule *exception = m_event->recurrence()->exRules()[idx.row()];
+    QDateTime exception = m_event->recurrence()->exDateTimes()[idx.row()];
+    qDebug() << exception;
     switch (role) {
-        case RecurrenceExceptionRuleRole:
-            return QVariant::fromValue(exception);
         case DateRole:
-            return exception->startDt();
+            return exception;
         default:
             qWarning() << "Unknown role for event:" << QMetaEnum::fromType<Roles>().valueToKey(role);
             return {};
@@ -59,29 +60,28 @@ QVariant RecurrenceExceptionsModel::data(const QModelIndex &idx, int role) const
 QHash<int, QByteArray> RecurrenceExceptionsModel::roleNames() const
 {
 	return {
-        { RecurrenceExceptionRuleRole, QByteArrayLiteral("recurrenceExceptionRule") },
-        { DateRole, QByteArrayLiteral("date") },
+        { DateRole, QByteArrayLiteral("date") }
     };
 }
 
 int RecurrenceExceptionsModel::rowCount(const QModelIndex &) const
 {
-    return m_event->recurrence()->exRules().size();
+    qDebug() << m_event->recurrence()->exDateTimes().size();
+    return m_event->recurrence()->exDateTimes().size();
 }
 
-void RecurrenceExceptionsModel::addExceptionDate(QDateTime date)
+void RecurrenceExceptionsModel::addExceptionDateTime(QDateTime date)
 {
-    m_event->recurrence()->addExDate(date.date());
+    m_event->recurrence()->addExDateTime(date);
+    Q_EMIT exceptionsChanged();
+    Q_EMIT layoutChanged();
 }
 
-void RecurrenceExceptionsModel::addExceptionRule(KCalendarCore::RecurrenceRule *rrule)
+void RecurrenceExceptionsModel::deleteExceptionDateTime(QDateTime date)
 {
-    m_event->recurrence()->addExRule(rrule);
+    auto dateTimes = m_event->recurrence()->exDateTimes();
+    dateTimes.removeAt(dateTimes.indexOf(date));
+    m_event->recurrence()->setExDateTimes(dateTimes);
+    Q_EMIT exceptionsChanged();
+    Q_EMIT layoutChanged();
 }
-
-void RecurrenceExceptionsModel::deleteExceptionRule(KCalendarCore::RecurrenceRule *rrule)
-{
-    m_event->recurrence()->deleteExRule(rrule);
-}
-
-Q_DECLARE_METATYPE(KCalendarCore::RecurrenceRule*)

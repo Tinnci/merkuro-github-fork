@@ -13,13 +13,12 @@ class RecurrenceExceptionsModel : public QAbstractListModel
 {
     Q_OBJECT
     Q_PROPERTY(KCalendarCore::Event::Ptr eventPtr READ eventPtr WRITE setEventPtr NOTIFY eventPtrChanged)
-    Q_PROPERTY(KCalendarCore::RecurrenceRule::List exceptions READ exceptions NOTIFY exceptionsChanged)
+    Q_PROPERTY(QList<QDateTime> exceptions READ exceptions NOTIFY exceptionsChanged)
     Q_PROPERTY(QVariantMap dataroles READ dataroles CONSTANT)
 
 public:
     enum Roles {
-        RecurrenceExceptionRuleRole = Qt::UserRole + 1,
-        DateRole
+        DateRole = Qt::UserRole + 1,
     };
     Q_ENUM(Roles);
 
@@ -28,16 +27,15 @@ public:
 
     KCalendarCore::Event::Ptr eventPtr();
     void setEventPtr(KCalendarCore::Event::Ptr event);
-    KCalendarCore::RecurrenceRule::List exceptions();
+    QList<QDateTime> exceptions();
     QVariantMap dataroles();
 
     QVariant data(const QModelIndex &idx, int role) const override;
     QHash<int, QByteArray> roleNames() const override;
     int rowCount(const QModelIndex &parent = {}) const override;
 
-    Q_INVOKABLE void addExceptionDate(QDateTime date);
-    Q_INVOKABLE void addExceptionRule(KCalendarCore::RecurrenceRule *rrule);
-    Q_INVOKABLE void deleteExceptionRule(KCalendarCore::RecurrenceRule *rrule);
+    Q_INVOKABLE void addExceptionDateTime(QDateTime date);
+    Q_INVOKABLE void deleteExceptionDateTime(QDateTime date);
 
 Q_SIGNALS:
     void eventPtrChanged();
