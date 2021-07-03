@@ -401,7 +401,7 @@ QVariantMap CalendarManager::getCollectionDetails(qint64 collectionId)
     QVariantMap collectionDetails;
     Akonadi::Collection collection(collectionId);
 
-    qDebug() << collection.rights();
+    qDebug() << collection.name();
 
     collectionDetails[QLatin1String("id")] = collection.id();
     collectionDetails[QLatin1String("name")] = collection.name();

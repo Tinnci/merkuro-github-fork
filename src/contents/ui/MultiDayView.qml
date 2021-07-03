@@ -176,10 +176,14 @@ Item {
 
                                             MouseArea {
                                                 id: mouseArea
+
+                                                property double clickX
+
                                                 anchors.fill: parent
                                                 hoverEnabled: true
                                                 acceptedButtons: Qt.LeftButton | Qt.RightButton
                                                 onPressed: {
+                                                    clickX = mouseX
                                                     if(pressedButtons & Qt.LeftButton) {
                                                         eventDetails.createObject(mouseArea, {}).open()
                                                     } else if (pressedButtons & Qt.RightButton) {
@@ -199,8 +203,10 @@ Item {
                                                         ColumnLayout {
                                                             Layout.fillWidth: true
                                                             Kirigami.Heading {
+                                                                Layout.fillWidth: true
                                                                 text: modelData.text
                                                                 level: 3
+                                                                wrapMode: Text.WrapAnywhere
                                                             }
                                                             QQC2.Label {
                                                                 text: i18n("Duration: ") + modelData.duration
@@ -213,9 +219,8 @@ Item {
                                                     id: eventActions
                                                     QQC2.Menu {
                                                         id: actionsPopup
-                                                        x: (parent.x + parent.width / 2) - width / 2
                                                         y: parent.y + parent.height
-                                                        padding: Kirigami.Units.smallSpacing
+                                                        x: parent.x + mouseArea.clickX
 
                                                         QQC2.MenuItem {
                                                             icon.name: "edit-entry"
