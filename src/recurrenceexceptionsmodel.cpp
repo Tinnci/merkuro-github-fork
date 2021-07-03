@@ -40,6 +40,8 @@ QList<QDate> RecurrenceExceptionsModel::exceptions()
 
 void RecurrenceExceptionsModel::updateExceptions()
 {
+    m_exceptions.clear();
+
     for(const QDateTime &dt : m_event->recurrence()->exDateTimes()) {
         m_exceptions.append(dt.date());
     }
@@ -63,7 +65,6 @@ QVariant RecurrenceExceptionsModel::data(const QModelIndex &idx, int role) const
         return {};
     }
     QDate exception = m_exceptions[idx.row()];
-    qDebug() << exception;
     switch (role) {
         case DateRole:
             return exception;
@@ -91,6 +92,7 @@ void RecurrenceExceptionsModel::addExceptionDateTime(QDateTime date)
         return;
     }
 
+    // I don't know why, but different types take different date formats
     if (m_event->recurrence()->allDay()) {
         m_event->recurrence()->addExDateTime(date);
     } else {
@@ -102,8 +104,36 @@ void RecurrenceExceptionsModel::addExceptionDateTime(QDateTime date)
 
 void RecurrenceExceptionsModel::deleteExceptionDateTime(QDateTime date)
 {
-    auto dateTimes = m_event->recurrence()->exDateTimes();
-    dateTimes.removeAt(dateTimes.indexOf(date));
-    m_event->recurrence()->setExDateTimes(dateTimes);
+    if(!date.isValid()) {
+        return;
+    }
+
+    qDebug() << date;
+
+    if (m_event->recurrence()->allDay()) {
+        auto dateTimes = m_event->recurrence()->exDateTimes();
+        dateTimes.removeAt(dateTimes.indexOf(date));
+        m_event->recurrence()->setExDateTimes(dateTimes);
+    } else {
+        auto dates = m_event->recurrence()->exDates();
+        int removeIndex = dates.indexOf(date.date());
+
+        if (removeIndex >= 0) {
+            dates.removeAt(dates.indexOf(date.date()));
+            m_event->recurrence()->setExDates(dates);
+            updateExceptions();
+            return;
+        }
+
+        auto dateTimes = m_event->recurrence()->exDateTimes();
+
+        for(int i = 0; i < dateTimes.size(); i++) {
+            if (dateTimes[i].date() == date.date()) {
+                dateTimes.removeAt(i);
+            }
+        }
+        m_event->recurrence()->setExDateTimes(dateTimes);
+    }
+
     updateExceptions();
 }

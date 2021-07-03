@@ -544,10 +544,16 @@ Kirigami.OverlaySheet {
                     currentIndex: eventEditorSheet.eventWrapper.recurrenceDuration <= 0 ? // Recurrence duration returns -1 for never ending and 0 when the recurrence
                                   eventEditorSheet.eventWrapper.recurrenceDuration + 1 :  // end date is set. Any number larger is the set number of recurrences
                                   2
-                    model: [i18n("Never"), i18n("On"), i18n("After")]
+                    textRole: "display"
+                    valueRole: "duration"
+                    model: [
+                        {display: i18n("Never"), duration: -1},
+                        {display: i18n("On"), duration: 0},
+                        {display: i18n("After"), duration: 1}
+                    ]
                     delegate: Kirigami.BasicListItem {
-                        text: modelData
-                        onClicked: eventEditorSheet.eventWrapper.recurrenceDuration = index - 1
+                        text: modelData.display
+                        onClicked: eventEditorSheet.eventWrapper.recurrenceDuration = modelData.duration
                     }
                     popup.z: 1000
                 }
@@ -644,8 +650,15 @@ Kirigami.OverlaySheet {
                     Repeater {
                         id: exceptionsRepeater
                         model: eventEditorSheet.eventWrapper.recurrenceExceptionsModel
-                        delegate: QQC2.Label {
-                            text: date.toLocaleDateString(Qt.locale())
+                        delegate: RowLayout {
+                            QQC2.Label {
+                                Layout.fillWidth: true
+                                text: date.toLocaleDateString(Qt.locale())
+                            }
+                            QQC2.Button {
+                                icon.name: "edit-delete-remove"
+                                onClicked: eventEditorSheet.eventWrapper.recurrenceExceptionsModel.deleteExceptionDateTime(date)
+                            }
                         }
                     }
                 }
