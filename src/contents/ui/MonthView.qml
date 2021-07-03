@@ -30,11 +30,11 @@ Kirigami.Page {
     actions {
         left: Kirigami.Action {
             text: i18n("Previous")
-            onTriggered: monthPage.startDate = DateUtils.previousMonth(monthPage.startDate)
+            onTriggered: monthPage.startDate = DateUtils.getFirstDayOfWeek(DateUtils.previousMonth(monthPage.startDate))
         }
         right: Kirigami.Action {
             text: i18n("Next")
-            onTriggered: monthPage.startDate = DateUtils.nextMonth(monthPage.startDate)
+            onTriggered: monthPage.startDate = DateUtils.getFirstDayOfWeek(DateUtils.nextMonth(monthPage.startDate))
         }
     }
 
