@@ -386,10 +386,7 @@ Kirigami.OverlaySheet {
                     visible: repeatComboBox.currentIndex === 5
                     from: 1
                     value: eventEditorSheet.eventWrapper.recurrenceFrequency
-                    onValueChanged: {
-                        console.log(eventEditorSheet.eventWrapper.recurrenceFrequency)
-                        if(visible) { eventEditorSheet.eventWrapper.recurrenceFrequency = value }
-                    }
+                    onValueChanged: if(visible) { eventEditorSheet.eventWrapper.recurrenceFrequency = value
                 }
                 QQC2.ComboBox {
                     id: recurScaleRuleCombobox
@@ -602,7 +599,7 @@ Kirigami.OverlaySheet {
                     Layout.fillWidth: true
                     Layout.columnSpan: 2
                     visible: endRecurType.currentIndex === 2
-                    onVisibleChanged: eventEditorSheet.eventWrapper.setRecurrenceOcurrences(recurOcurrenceEndSpinbox.value)
+                    onVisibleChanged: if (visible) { eventEditorSheet.eventWrapper.setRecurrenceOcurrences(recurOcurrenceEndSpinbox.value) }
 
                     QQC2.SpinBox {
                         id: recurOcurrenceEndSpinbox
