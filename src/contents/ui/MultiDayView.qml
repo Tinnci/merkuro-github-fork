@@ -178,6 +178,7 @@ Item {
                                                 id: mouseArea
 
                                                 property double clickX
+                                                property var collectionDetails: Kalendar.CalendarManager.getCollectionDetails(modelData.collectionId)
 
                                                 anchors.fill: parent
                                                 hoverEnabled: true
@@ -194,8 +195,8 @@ Item {
                                                     id: eventDetails
                                                     QQC2.Popup {
                                                         id: detailsPopup
-                                                        width: Kirigami.Units.gridUnit * 10
-                                                        height: Kirigami.Units.gridUnit * 7
+                                                        width: Kirigami.Units.gridUnit * 12
+                                                        height: Kirigami.Units.gridUnit * 9
                                                         x: (parent.x + parent.width / 2) - width / 2
                                                         y: parent.y + parent.height
                                                         padding: Kirigami.Units.smallSpacing
@@ -203,13 +204,25 @@ Item {
                                                         ColumnLayout {
                                                             Layout.fillWidth: true
                                                             Kirigami.Heading {
-                                                                Layout.fillWidth: true
-                                                                text: modelData.text
+                                                                text: "<b>" + modelData.text + "</b>"
                                                                 level: 3
                                                                 wrapMode: Text.WrapAnywhere
                                                             }
-                                                            QQC2.Label {
-                                                                text: i18n("Duration: ") + modelData.duration
+                                                            GridLayout {
+                                                                Layout.fillWidth: true
+
+                                                                columns:2
+
+                                                                QQC2.Label {
+                                                                    text: i18n("<b>Calendar:</b>")
+                                                                }
+                                                                QQC2.Label {
+                                                                    text: mouseArea.collectionDetails["displayName"]
+                                                                }
+
+                                                                /*QQC2.Label {
+                                                                    text: i18n("Duration: ") + modelData.duration
+                                                                }*/
                                                             }
                                                         }
                                                     }
@@ -225,11 +238,13 @@ Item {
                                                         QQC2.MenuItem {
                                                             icon.name: "edit-entry"
                                                             text:i18n("Edit")
+                                                            enabled: !mouseArea.collectionDetails["readOnly"]
                                                             onClicked: editEvent(modelData.eventPtr, modelData.collectionId)
                                                         }
                                                         QQC2.MenuItem {
                                                             icon.name: "edit-delete"
                                                             text:i18n("Delete")
+                                                            enabled: !mouseArea.collectionDetails["readOnly"]
                                                             onClicked: Kalendar.CalendarManager.deleteEvent(modelData.eventPtr)
                                                         }
                                                     }
