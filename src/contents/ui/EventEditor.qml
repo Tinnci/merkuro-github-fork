@@ -386,7 +386,7 @@ Kirigami.OverlaySheet {
                     visible: repeatComboBox.currentIndex === 5
                     from: 1
                     value: eventEditorSheet.eventWrapper.recurrenceFrequency
-                    onValueChanged: if(visible) { eventEditorSheet.eventWrapper.recurrenceFrequency = value
+                    onValueChanged: if(visible) { eventEditorSheet.eventWrapper.recurrenceFrequency = value }
                 }
                 QQC2.ComboBox {
                     id: recurScaleRuleCombobox
