@@ -178,11 +178,18 @@ Item {
                                                 id: mouseArea
                                                 anchors.fill: parent
                                                 hoverEnabled: true
-                                                onClicked: eventDetails.createObject(mouseArea, {}).open()
+                                                acceptedButtons: Qt.LeftButton | Qt.RightButton
+                                                onPressed: {
+                                                    if(pressedButtons & Qt.LeftButton) {
+                                                        eventDetails.createObject(mouseArea, {}).open()
+                                                    } else if (pressedButtons & Qt.RightButton) {
+                                                        eventActions.createObject(mouseArea, {}).open()
+                                                    }
+                                                }
                                                 Component {
                                                     id: eventDetails
                                                     QQC2.Popup {
-                                                        id: popup
+                                                        id: detailsPopup
                                                         width: Kirigami.Units.gridUnit * 10
                                                         height: Kirigami.Units.gridUnit * 7
                                                         x: (parent.x + parent.width / 2) - width / 2
@@ -198,11 +205,27 @@ Item {
                                                             QQC2.Label {
                                                                 text: i18n("Duration: ") + modelData.duration
                                                             }
-                                                            QQC2.Button {
-                                                                text: i18n("Edit")
-                                                                //enabled: Kalendar.CalendarManager.getCollectionDetails(collectionId)["readOnly"]
-                                                                onClicked: editEvent(modelData.eventPtr, modelData.collectionId)
-                                                            }
+                                                        }
+                                                    }
+                                                }
+
+                                                Component {
+                                                    id: eventActions
+                                                    QQC2.Menu {
+                                                        id: actionsPopup
+                                                        x: (parent.x + parent.width / 2) - width / 2
+                                                        y: parent.y + parent.height
+                                                        padding: Kirigami.Units.smallSpacing
+
+                                                        QQC2.MenuItem {
+                                                            icon.name: "edit-entry"
+                                                            text:i18n("Edit")
+                                                            onClicked: editEvent(modelData.eventPtr, modelData.collectionId)
+                                                        }
+                                                        QQC2.MenuItem {
+                                                            icon.name: "edit-delete"
+                                                            text:i18n("Delete")
+                                                            onClicked: Kalendar.CalendarManager.deleteEvent(modelData.eventPtr)
                                                         }
                                                     }
                                                 }

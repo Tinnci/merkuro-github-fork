@@ -391,6 +391,10 @@ void CalendarManager::editEvent(KCalendarCore::Event::Ptr editedEvent)
     m_calendar->modifyIncidence(editedEvent);
 }
 
+void CalendarManager::deleteEvent(KCalendarCore::Event::Ptr event)
+{
+    m_calendar->deleteEvent(event);
+}
 
 QVariantMap CalendarManager::getCollectionDetails(qint64 collectionId)
 {
