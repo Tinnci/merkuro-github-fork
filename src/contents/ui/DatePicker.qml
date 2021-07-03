@@ -148,7 +148,7 @@ Item {
                         // Stop days overflowing from the grid by creating an adjusted offset
                         property int firstDayOfWeekOffset: Qt.locale().firstDayOfWeek >= 4 ? Qt.locale().firstDayOfWeek - 7 : Qt.locale().firstDayOfWeek
                         // add locale offset for correct firstDayOfWeek
-                        property int dateToUse: index + firstDayOfWeekOffset - datepicker.firstDay
+                        property int dateToUse: index + 1 + firstDayOfWeekOffset - datepicker.firstDay
                         property date date: new Date(datepicker.year, datepicker.month, dateToUse)
                         property bool sameMonth: date.getMonth() === month
                         property bool isToday: date.getDate() === datepicker.today.getDate() &&

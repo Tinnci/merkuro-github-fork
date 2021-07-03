@@ -13,7 +13,7 @@ class RecurrenceExceptionsModel : public QAbstractListModel
 {
     Q_OBJECT
     Q_PROPERTY(KCalendarCore::Event::Ptr eventPtr READ eventPtr WRITE setEventPtr NOTIFY eventPtrChanged)
-    Q_PROPERTY(QList<QDateTime> exceptions READ exceptions NOTIFY exceptionsChanged)
+    Q_PROPERTY(QList<QDate> exceptions READ exceptions NOTIFY exceptionsChanged)
     Q_PROPERTY(QVariantMap dataroles READ dataroles CONSTANT)
 
 public:
@@ -27,7 +27,8 @@ public:
 
     KCalendarCore::Event::Ptr eventPtr();
     void setEventPtr(KCalendarCore::Event::Ptr event);
-    QList<QDateTime> exceptions();
+    QList<QDate> exceptions();
+    void updateExceptions();
     QVariantMap dataroles();
 
     QVariant data(const QModelIndex &idx, int role) const override;
@@ -43,6 +44,6 @@ Q_SIGNALS:
 
 private:
     KCalendarCore::Event::Ptr m_event;
-
+    QList<QDate> m_exceptions;
     QVariantMap m_dataRoles;
 };

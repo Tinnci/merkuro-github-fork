@@ -13,6 +13,8 @@ RecurrenceExceptionsModel::RecurrenceExceptionsModel(QObject* parent, KCalendarC
         QString key = QLatin1String(roleNames()[value]);
         m_dataRoles[key] = value;
     }
+
+    connect(this, &RecurrenceExceptionsModel::eventPtrChanged, this, &RecurrenceExceptionsModel::updateExceptions);
 }
 
 KCalendarCore::Event::Ptr RecurrenceExceptionsModel::eventPtr()
@@ -31,10 +33,24 @@ void RecurrenceExceptionsModel::setEventPtr(KCalendarCore::Event::Ptr event)
     Q_EMIT layoutChanged();
 }
 
-QList<QDateTime> RecurrenceExceptionsModel::exceptions()
+QList<QDate> RecurrenceExceptionsModel::exceptions()
 {
-    return m_event->recurrence()->exDateTimes();
+    return m_exceptions;
 }
+
+void RecurrenceExceptionsModel::updateExceptions()
+{
+    for(const QDateTime &dt : m_event->recurrence()->exDateTimes()) {
+        m_exceptions.append(dt.date());
+    }
+
+    for(const QDate &dt : m_event->recurrence()->exDates()) {
+        m_exceptions.append(dt);
+    }
+    Q_EMIT exceptionsChanged();
+    Q_EMIT layoutChanged();
+}
+
 
 QVariantMap RecurrenceExceptionsModel::dataroles()
 {
@@ -46,7 +62,7 @@ QVariant RecurrenceExceptionsModel::data(const QModelIndex &idx, int role) const
     if (!hasIndex(idx.row(), idx.column())) {
         return {};
     }
-    QDateTime exception = m_event->recurrence()->exDateTimes()[idx.row()];
+    QDate exception = m_exceptions[idx.row()];
     qDebug() << exception;
     switch (role) {
         case DateRole:
@@ -66,15 +82,22 @@ QHash<int, QByteArray> RecurrenceExceptionsModel::roleNames() const
 
 int RecurrenceExceptionsModel::rowCount(const QModelIndex &) const
 {
-    qDebug() << m_event->recurrence()->exDateTimes().size();
-    return m_event->recurrence()->exDateTimes().size();
+    return m_exceptions.size();
 }
 
 void RecurrenceExceptionsModel::addExceptionDateTime(QDateTime date)
 {
-    m_event->recurrence()->addExDateTime(date);
-    Q_EMIT exceptionsChanged();
-    Q_EMIT layoutChanged();
+    if(!date.isValid()) {
+        return;
+    }
+
+    if (m_event->recurrence()->allDay()) {
+        m_event->recurrence()->addExDateTime(date);
+    } else {
+        m_event->recurrence()->addExDate(date.date());
+    }
+
+    updateExceptions();
 }
 
 void RecurrenceExceptionsModel::deleteExceptionDateTime(QDateTime date)
@@ -82,6 +105,5 @@ void RecurrenceExceptionsModel::deleteExceptionDateTime(QDateTime date)
     auto dateTimes = m_event->recurrence()->exDateTimes();
     dateTimes.removeAt(dateTimes.indexOf(date));
     m_event->recurrence()->setExDateTimes(dateTimes);
-    Q_EMIT exceptionsChanged();
-    Q_EMIT layoutChanged();
+    updateExceptions();
 }
