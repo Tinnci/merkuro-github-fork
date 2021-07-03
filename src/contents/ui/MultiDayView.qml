@@ -195,34 +195,87 @@ Item {
                                                     id: eventDetails
                                                     QQC2.Popup {
                                                         id: detailsPopup
-                                                        width: Kirigami.Units.gridUnit * 12
+                                                        width: Kirigami.Units.gridUnit * 18
                                                         height: Kirigami.Units.gridUnit * 9
                                                         x: (parent.x + parent.width / 2) - width / 2
                                                         y: parent.y + parent.height
-                                                        padding: Kirigami.Units.smallSpacing
+                                                        padding: Kirigami.Units.largeSpacing
 
-                                                        ColumnLayout {
-                                                            Layout.fillWidth: true
-                                                            Kirigami.Heading {
-                                                                text: "<b>" + modelData.text + "</b>"
-                                                                level: 3
-                                                                wrapMode: Text.WrapAnywhere
-                                                            }
-                                                            GridLayout {
-                                                                Layout.fillWidth: true
+                                                        QQC2.ScrollView {
+                                                            anchors.fill: parent
 
-                                                                columns:2
-
-                                                                QQC2.Label {
-                                                                    text: i18n("<b>Calendar:</b>")
+                                                            // The sizing for these elements is questionable, but preventing horizontal overflow
+                                                            // on a scrollview is an absolute pain in the neck.
+                                                            ColumnLayout {
+                                                                id: detailsColumn
+                                                                Layout.maximumWidth: detailsPopup.width - (detailsPopup.padding * 2)
+                                                                Kirigami.Heading {
+                                                                    Layout.maximumWidth: detailsPopup.width - (detailsPopup.padding * 2)
+                                                                    text: "<b>" + modelData.text + "</b>"
+                                                                    level: 3
+                                                                    wrapMode: Text.Wrap
                                                                 }
-                                                                QQC2.Label {
-                                                                    text: mouseArea.collectionDetails["displayName"]
-                                                                }
+                                                                GridLayout {
+                                                                    Layout.maximumWidth: detailsPopup.width - (detailsPopup.padding * 5)
 
-                                                                /*QQC2.Label {
-                                                                    text: i18n("Duration: ") + modelData.duration
-                                                                }*/
+                                                                    columns:2
+
+                                                                    QQC2.Label {
+                                                                        Layout.alignment: Qt.AlignTop
+                                                                        text: i18n("<b>Calendar:</b>")
+                                                                    }
+                                                                    QQC2.Label {
+                                                                        Layout.alignment: Qt.AlignTop
+                                                                        Layout.fillWidth: true
+                                                                        text: mouseArea.collectionDetails["displayName"]
+                                                                        wrapMode: Text.Wrap
+                                                                    }
+
+                                                                    QQC2.Label {
+                                                                        Layout.alignment: Qt.AlignTop
+                                                                        text: i18n("<b>Date:</b>")
+                                                                    }
+                                                                    QQC2.Label {
+                                                                        Layout.alignment: Qt.AlignTop
+                                                                        Layout.fillWidth: true
+                                                                        text: modelData.startTime.toDateString() == modelData.endTime.toDateString() ?
+                                                                              modelData.startTime.toLocaleDateString(Qt.locale()) :
+                                                                              modelData.startTime.toLocaleDateString(Qt.locale()) + " - " + modelData.endTime.toLocaleDateString(Qt.locale())
+                                                                        wrapMode: Text.Wrap
+                                                                    }
+
+                                                                    QQC2.Label {
+                                                                        Layout.alignment: Qt.AlignTop
+                                                                        text: i18n("<b>Time: </b>")
+                                                                        visible: !modelData.allDay &&
+                                                                                 modelData.startTime.toDateString() == modelData.endTime.toDateString()
+                                                                    }
+                                                                    QQC2.Label {
+                                                                        Layout.alignment: Qt.AlignTop
+                                                                        Layout.fillWidth: true
+                                                                        text: {
+                                                                            if(modelData.startTime.toTimeString() != modelData.endTime.toTimeString()) {
+                                                                                modelData.startTime.toLocaleTimeString(Qt.locale(), Locale.ShortFormat) + " - " + modelData.endTime.toLocaleTimeString(Qt.locale(), Locale.ShortFormat)
+                                                                            }
+                                                                        }
+                                                                        wrapMode: Text.Wrap
+                                                                        visible: !modelData.allDay &&
+                                                                                 modelData.startTime.toDateString() == modelData.endTime.toDateString()
+                                                                    }
+
+                                                                    QQC2.Label {
+                                                                        Layout.alignment: Qt.AlignTop
+                                                                        text: i18n("<b>Description: </b>")
+                                                                        visible: modelData.description
+                                                                    }
+                                                                    QQC2.Label {
+                                                                        Layout.alignment: Qt.AlignTop
+                                                                        Layout.fillWidth: true
+                                                                        text: modelData.description
+                                                                        wrapMode: Text.Wrap
+                                                                        visible: modelData.description
+                                                                    }
+                                                                }
                                                             }
                                                         }
                                                     }
