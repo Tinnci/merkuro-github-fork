@@ -374,7 +374,7 @@ Kirigami.OverlaySheet {
 
                 // Custom controls
                 QQC2.Label {
-                    visible: repeatComboBox.currentIndex === 5
+                    visible: repeatComboBox.currentIndex === 5 // "Custom"
                     Layout.columnSpan: 1
                     text: i18n("Every:")
                 }
@@ -516,7 +516,7 @@ Kirigami.OverlaySheet {
                         property int dateOfMonth: eventStartDateCombo.dateFromText.getDate()
 
                         text: i18nc("%1 is the day number of month", "the %1 of each month", parent.numberToString(dateOfMonth))
-                        checked: eventEditorSheet.eventWrapper.recurrenceType == 6
+                        checked: eventEditorSheet.eventWrapper.recurrenceType == 6 // Monthly on day (1st of month)
                         onClicked: customRecurrenceLayout.setOcurrence()
                     }
                     QQC2.RadioButton {
@@ -527,7 +527,7 @@ Kirigami.OverlaySheet {
                         property string dayOfWeekString: Qt.locale().dayName(eventStartDateCombo.dateFromText.getDay())
 
                         text: i18nc("the weekOfMonth dayOfWeekString of each month", "the %1 %2 of each month", parent.numberToString(weekOfMonth), dayOfWeekString)
-                        checked: eventEditorSheet.eventWrapper.recurrenceType == 5
+                        checked: eventEditorSheet.eventWrapper.recurrenceType == 5 // Monthly on position
                         onTextChanged: if(checked) { eventEditorSheet.eventWrapper.setMonthlyPosRecurrence(weekOfMonth, dayOfWeek); }
                         onClicked: eventEditorSheet.eventWrapper.setMonthlyPosRecurrence(weekOfMonth, dayOfWeek)
                     }
@@ -544,7 +544,6 @@ Kirigami.OverlaySheet {
 
                     Layout.fillWidth: true
                     Layout.columnSpan: 2
-                    // onCurrentIndexChanged: eventEditorSheet.eventWrapper.recurrenceDuration = currentIndex - 1 // Need to click twice to get 'After' to change?
                     currentIndex: eventEditorSheet.eventWrapper.recurrenceDuration <= 0 ? // Recurrence duration returns -1 for never ending and 0 when the recurrence
                                   eventEditorSheet.eventWrapper.recurrenceDuration + 1 :  // end date is set. Any number larger is the set number of recurrences
                                   2

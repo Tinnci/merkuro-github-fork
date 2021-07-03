@@ -9,6 +9,7 @@
 #include <AkonadiCore/CollectionIdentificationAttribute>
 #include "remindersmodel.h"
 #include "attendeesmodel.h"
+#include "recurrenceexceptionsmodel.h"
 
 /**
  * This class is a wrapper for a KCalendarCore::Event::Ptr object.
@@ -38,6 +39,7 @@ class EventWrapper : public QObject
     Q_PROPERTY(KCalendarCore::Attendee::List attendees READ attendees)
     Q_PROPERTY(RemindersModel * remindersModel READ remindersModel NOTIFY remindersModelChanged)
     Q_PROPERTY(AttendeesModel * attendeesModel READ attendeesModel NOTIFY attendeesModelChanged)
+    Q_PROPERTY(RecurrenceExceptionsModel * recurrenceExceptionsModel READ recurrenceExceptionsModel NOTIFY recurrenceExceptionsModelChanged)
     Q_PROPERTY(QVariantMap recurrenceIntervals READ recurrenceIntervals CONSTANT)
 
 public:
@@ -83,6 +85,7 @@ public:
     KCalendarCore::Attendee::List attendees() const;
     RemindersModel * remindersModel();
     AttendeesModel * attendeesModel();
+    RecurrenceExceptionsModel * recurrenceExceptionsModel();
     QVariantMap recurrenceIntervals();
 
     Q_INVOKABLE void addAlarms(KCalendarCore::Alarm::List alarms);
@@ -107,11 +110,13 @@ Q_SIGNALS:
     void recurrenceEndDateTimeChanged();
     void recurrenceTypeChanged();
     void attendeesModelChanged();
+    void recurrenceExceptionsModelChanged();
 
 private:
     KCalendarCore::Event::Ptr m_event;
     qint64 m_collectionId;
     RemindersModel m_remindersModel;
     AttendeesModel m_attendeesModel;
+    RecurrenceExceptionsModel m_recurrenceExceptionsModel;
     QVariantMap m_recurrenceIntervals;
 };
