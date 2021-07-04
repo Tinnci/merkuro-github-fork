@@ -39,7 +39,7 @@ Kirigami.ApplicationWindow {
         id: monthViewComponent
 
         MonthView {
-            title: root.selectedDate.toLocaleDateString(Qt.locale(), "<b>MMMM</b> yyyy")
+            title: DateUtils.nextMonth(startDate).toLocaleDateString(Qt.locale(), "<b>MMMM</b> yyyy")
             currentDate: root.currentDate
             startDate: DateUtils.getFirstDayOfWeek(DateUtils.getFirstDayOfMonth(root.selectedDate))
             month: root.selectedDate.getMonth()

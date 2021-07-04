@@ -30,11 +30,39 @@ Kirigami.Page {
     actions {
         left: Kirigami.Action {
             text: i18n("Previous")
-            onTriggered: monthPage.startDate = DateUtils.getFirstDayOfWeek(DateUtils.previousMonth(monthPage.startDate))
+            onTriggered: {
+                dayView.month -= 1
+                var newDate = DateUtils.getFirstDayOfWeek(DateUtils.previousMonth(startDate))
+                newDate = DateUtils.addDaysToDate(newDate, 7)
+
+                if (newDate.getMonth() === dayView.month) {
+                    newDate = DateUtils.addDaysToDate(newDate, - 7)
+
+                    if (newDate.getDate() === 1) {
+                        newDate = DateUtils.addDaysToDate(newDate, - 7)
+                    }
+                }
+
+                startDate = newDate
+            }
         }
         right: Kirigami.Action {
             text: i18n("Next")
-            onTriggered: monthPage.startDate = DateUtils.getFirstDayOfWeek(DateUtils.nextMonth(monthPage.startDate))
+            onTriggered: {
+                dayView.month += 1
+                var newDate = DateUtils.getFirstDayOfWeek(DateUtils.nextMonth(startDate))
+                newDate = DateUtils.addDaysToDate(newDate, 7)
+
+                if (newDate.getMonth() === dayView.month) {
+                    newDate = DateUtils.addDaysToDate(newDate, - 7)
+
+                    if (newDate.getDate() === 1) {
+                        newDate = DateUtils.addDaysToDate(newDate, - 7)
+                    }
+                }
+
+                startDate = newDate
+            }
         }
     }
 
