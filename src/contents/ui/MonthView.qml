@@ -37,10 +37,9 @@ Kirigami.Page {
 
                 if (newDate.getMonth() === dayView.month) {
                     newDate = DateUtils.addDaysToDate(newDate, - 7)
-
-                    if (newDate.getDate() === 1) {
-                        newDate = DateUtils.addDaysToDate(newDate, - 7)
-                    }
+                }
+                while (newDate.getDate() < 14) {
+                    newDate = DateUtils.addDaysToDate(newDate, - 7)
                 }
 
                 startDate = newDate
@@ -55,10 +54,9 @@ Kirigami.Page {
 
                 if (newDate.getMonth() === dayView.month) {
                     newDate = DateUtils.addDaysToDate(newDate, - 7)
-
-                    if (newDate.getDate() === 1) {
-                        newDate = DateUtils.addDaysToDate(newDate, - 7)
-                    }
+                }
+                while (newDate.getDate() < 14) {
+                    newDate = DateUtils.addDaysToDate(newDate, - 7)
                 }
 
                 startDate = newDate
