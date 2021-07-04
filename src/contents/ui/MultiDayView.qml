@@ -1,5 +1,6 @@
 // Copyright (C) 2018 Michael Bohlender, <bohlender@kolabsys.com>
 // Copyright (C) 2018 Christian Mollekopf, <mollekopf@kolabsys.com>
+// SPDX-FileCopyrightText: 2021 Claudio Cambra <claudio.cambra@gmail.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 import QtQuick 2.4

@@ -1,4 +1,6 @@
 // SPDX-FileCopyrightText: 2021 Carl Schwan <carlschwan@kde.org>
+// SPDX-FileCopyrightText: 2021 Claudio Cambra <claudio.cambra@gmail.com>
+
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import QtQuick 2.15
@@ -51,7 +53,6 @@ Kirigami.ApplicationWindow {
                                                               "event");
                 eventEditor.eventWrapper.eventPtr = receivedEventPtr;
                 eventEditor.eventWrapper.collectionId = receivedCollectionId;
-                console.log(eventEditor.eventWrapper.recurrenceExceptionsModel.rowCount())
                 eventEditor.editMode = true;
                 eventEditor.open();
             }

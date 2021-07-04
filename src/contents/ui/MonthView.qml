@@ -1,5 +1,6 @@
 // Copyright (C) 2018 Michael Bohlender, <bohlender@kolabsys.com>
 // Copyright (C) 2018 Christian Mollekopf, <mollekopf@kolabsys.com>
+// SPDX-FileCopyrightText: 2021 Claudio Cambra <claudio.cambra@gmail.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 import QtQuick 2.4
@@ -31,31 +32,34 @@ Kirigami.Page {
         left: Kirigami.Action {
             text: i18n("Previous")
             onTriggered: {
-                dayView.month -= 1
+                dayView.month - 1 < 0 ? dayView.month = 11 : dayView.month -= 1
                 var newDate = DateUtils.getFirstDayOfWeek(DateUtils.previousMonth(startDate))
+
+                // Handling adding and subtracting months in Javascript can get *really* messy.
                 newDate = DateUtils.addDaysToDate(newDate, 7)
 
                 if (newDate.getMonth() === dayView.month) {
                     newDate = DateUtils.addDaysToDate(newDate, - 7)
                 }
-                while (newDate.getDate() < 14) {
+                if (newDate.getDate() < 14) {
                     newDate = DateUtils.addDaysToDate(newDate, - 7)
                 }
 
+                console.log(dayView.month)
                 startDate = newDate
             }
         }
         right: Kirigami.Action {
             text: i18n("Next")
             onTriggered: {
-                dayView.month += 1
+                dayView.month = (dayView.month + 1) % 12
                 var newDate = DateUtils.getFirstDayOfWeek(DateUtils.nextMonth(startDate))
                 newDate = DateUtils.addDaysToDate(newDate, 7)
 
                 if (newDate.getMonth() === dayView.month) {
                     newDate = DateUtils.addDaysToDate(newDate, - 7)
                 }
-                while (newDate.getDate() < 14) {
+                if (newDate.getDate() < 14) {
                     newDate = DateUtils.addDaysToDate(newDate, - 7)
                 }
 
