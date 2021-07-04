@@ -267,11 +267,13 @@ Item {
                                                                     QQC2.Label {
                                                                         Layout.alignment: Qt.AlignTop
                                                                         text: i18n("<b>Duration: </b>")
+                                                                        visible: modelData.durationString
                                                                     }
                                                                     QQC2.Label {
                                                                         Layout.alignment: Qt.AlignTop
                                                                         Layout.fillWidth: true
                                                                         text: modelData.durationString
+                                                                        visible: modelData.durationString
                                                                         wrapMode: Text.Wrap
                                                                     }
 
