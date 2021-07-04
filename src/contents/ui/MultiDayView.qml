@@ -209,15 +209,15 @@ Item {
                                                             // on a scrollview is an absolute pain in the neck.
                                                             ColumnLayout {
                                                                 id: detailsColumn
-                                                                Layout.maximumWidth: detailsPopup.width - (detailsPopup.padding * 2)
+                                                                Layout.maximumWidth: detailsPopup.width - (detailsPopup.padding * 3)
                                                                 Kirigami.Heading {
-                                                                    Layout.maximumWidth: detailsPopup.width - (detailsPopup.padding * 2)
+                                                                    Layout.maximumWidth: detailsPopup.width - (detailsPopup.padding * 3)
                                                                     text: "<b>" + modelData.text + "</b>"
                                                                     level: 3
                                                                     wrapMode: Text.Wrap
                                                                 }
                                                                 GridLayout {
-                                                                    Layout.maximumWidth: detailsPopup.width - (detailsPopup.padding * 6)
+                                                                    Layout.maximumWidth: detailsPopup.width - (detailsPopup.padding * 5)
 
                                                                     columns:2
 
@@ -255,8 +255,11 @@ Item {
                                                                         Layout.alignment: Qt.AlignTop
                                                                         Layout.fillWidth: true
                                                                         text: {
+                                                                            console.log(modelData.endTime.toTimeString())
                                                                             if(modelData.startTime.toTimeString() != modelData.endTime.toTimeString()) {
                                                                                 modelData.startTime.toLocaleTimeString(Qt.locale(), Locale.ShortFormat) + " - " + modelData.endTime.toLocaleTimeString(Qt.locale(), Locale.ShortFormat)
+                                                                            } else if (modelData.startTime.toTimeString() == modelData.endTime.toTimeString()) {
+                                                                                modelData.startTime.toLocaleTimeString(Qt.locale(), Locale.ShortFormat)
                                                                             }
                                                                         }
                                                                         wrapMode: Text.Wrap
