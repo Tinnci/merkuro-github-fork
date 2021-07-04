@@ -143,8 +143,9 @@ Kirigami.OverlaySheet {
                     popup: QQC2.Popup {
                         id: eventStartDatePopup
 
-                        width: parent.width*2
+                        width: Kirigami.Units.gridUnit * 18
                         height: Kirigami.Units.gridUnit * 18
+                        y: parent.y + parent.height
                         z: 1000
 
                         DatePicker {
@@ -188,6 +189,7 @@ Kirigami.OverlaySheet {
                         id: eventStartTimePopup
                         width: parent.width
                         height: parent.width * 2
+                        y: parent.y + parent.height
                         z: 1000
 
                         TimePicker {
@@ -247,8 +249,9 @@ Kirigami.OverlaySheet {
                     popup: QQC2.Popup {
                         id: eventEndDatePopup
 
-                        width: parent.width*2
+                        width: Kirigami.Units.gridUnit * 18
                         height: Kirigami.Units.gridUnit * 18
+                        y: parent.y + parent.height
                         z: 1000
 
                         DatePicker {
@@ -291,6 +294,7 @@ Kirigami.OverlaySheet {
 
                         width: parent.width
                         height: parent.width * 2
+                        y: parent.y + parent.height
                         z: 1000
 
                         TimePicker {
@@ -586,8 +590,9 @@ Kirigami.OverlaySheet {
                     popup: QQC2.Popup {
                         id: recurEndDatePopup
 
-                        width: parent.width*2
+                        width: Kirigami.Units.gridUnit * 18
                         height: Kirigami.Units.gridUnit * 18
+                        y: parent.y + parent.height
                         z: 1000
 
                         DatePicker {
@@ -626,6 +631,7 @@ Kirigami.OverlaySheet {
                 ColumnLayout {
                     Layout.columnSpan: 4
                     QQC2.Button {
+                        id: exceptionAddButton
                         Layout.fillWidth: true
                         text: i18n("Add recurrence exception")
                         onClicked: recurExceptionPopup.open()
@@ -635,6 +641,7 @@ Kirigami.OverlaySheet {
 
                         width: Kirigami.Units.gridUnit * 18
                         height: Kirigami.Units.gridUnit * 18
+                        y: exceptionAddButton.y + exceptionAddButton.height
                         z: 1000
 
                         DatePicker {

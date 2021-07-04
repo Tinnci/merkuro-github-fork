@@ -217,7 +217,7 @@ Item {
                                                                     wrapMode: Text.Wrap
                                                                 }
                                                                 GridLayout {
-                                                                    Layout.maximumWidth: detailsPopup.width - (detailsPopup.padding * 5)
+                                                                    Layout.maximumWidth: detailsPopup.width - (detailsPopup.padding * 6)
 
                                                                     columns:2
 
