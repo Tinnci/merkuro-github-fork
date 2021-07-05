@@ -88,7 +88,7 @@ Kirigami.ApplicationWindow {
                     text: i18n("Add event")
                     icon.name: "list-add"
                     onTriggered: {
-                        if (eventEditor.editMode) {
+                        if (eventEditor.editMode || !eventEditor.eventWrapper) {
                             eventEditor.eventWrapper = Qt.createQmlObject('import org.kde.kalendar 1.0; EventWrapper {id: event}',
                                                                           eventEditor,
                                                                           "event");

@@ -13,7 +13,9 @@ Kirigami.OverlaySheet {
     signal added(int collectionId, EventWrapper event)
     signal edited(EventWrapper event)
 
-    property var eventWrapper: EventWrapper {}
+    // Setting the eventWrapper here and now causes some *really* weird behaviour.
+    // Set it after this component has already been instantiated.
+    property var eventWrapper
     property bool editMode: false
     property bool validDates: eventStartDateCombo.validDate &&
                               (eventEndDateCombo.validDate || allDayCheckBox.checked) &&
@@ -40,9 +42,6 @@ Kirigami.OverlaySheet {
             } else {
                 added(calendarCombo.currentValue, eventWrapper);
             }
-            eventWrapper = Qt.createQmlObject('import org.kde.kalendar 1.0; EventWrapper {id: event}',
-                                              eventEditor,
-                                              "event");
             eventEditorSheet.close();
         }
     }
@@ -139,9 +138,10 @@ Kirigami.OverlaySheet {
                         let datePicker = eventStartDatePicker
 
                         if (validDate && activeFocus) {
+                            var timePicker = eventStartTimePicker
                             datePicker.selectedDate = dateFromText;
                             datePicker.clickedDate = dateFromText;
-                            eventEditorSheet.eventWrapper.eventEnd = new Date(dateFromText.setHours(timePicker.hours, timePicker.minutes));
+                            eventEditorSheet.eventWrapper.eventStart = new Date(dateFromText.setHours(timePicker.hours, timePicker.minutes));
                         }
                     }
 
@@ -243,11 +243,10 @@ Kirigami.OverlaySheet {
                         let datePicker = eventEndDatePicker;
 
                         if (validDate && activeFocus) {
+                            var timePicker = eventEndTimePicker
                             datePicker.selectedDate = dateFromText;
                             datePicker.clickedDate = dateFromText;
-                            let hours = eventEditorSheet.eventWrapper.eventEnd.getHours();
-                            let minutes = eventEditorSheet.eventWrapper.eventEnd.getMinutes();
-                            eventEditorSheet.eventWrapper.eventEnd = new Date(dateFromText.setHours(hours, minutes));
+                            eventEditorSheet.eventWrapper.eventEnd = new Date(dateFromText.setHours(timePicker.hours, timePicker.minutes));
                         }
                     }
 

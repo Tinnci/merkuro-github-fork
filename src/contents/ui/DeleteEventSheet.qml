@@ -14,7 +14,7 @@ Kirigami.OverlaySheet {
     signal addRecurrenceEndDate(date endDate, var eventWrapper)
     signal deleteEvent(var eventPtr)
 
-    property var eventWrapper: EventWrapper {}
+    property var eventWrapper
     property date deleteDate
     property bool recurringEvent: eventWrapper.recurrenceType > 0
 
