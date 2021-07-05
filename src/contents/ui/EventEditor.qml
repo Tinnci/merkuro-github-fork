@@ -15,7 +15,9 @@ Kirigami.OverlaySheet {
 
     property var eventWrapper: EventWrapper {}
     property bool editMode: false
-    property bool validDates: eventStartDateCombo.validDate && (eventEndDateCombo.validDate || allDayCheckBox.checked)
+    property bool validDates: eventStartDateCombo.validDate &&
+                              (eventEndDateCombo.validDate || allDayCheckBox.checked) &&
+                              eventWrapper.eventStart < eventWrapper.eventEnd
 
     header: Kirigami.Heading {
         text: editMode ? i18n("Edit event") : i18n("Add event")
@@ -54,7 +56,9 @@ Kirigami.OverlaySheet {
             Layout.fillWidth: true
             visible: !eventEditorSheet.validDates
             type: Kirigami.MessageType.Error
-            text: i18n("Invalid dates provided.")
+            // Specify what the problem is to aid user
+            text: eventEditorSheet.eventWrapper.eventStart < eventEditorSheet.eventWrapper.eventEnd ?
+                  i18n("Invalid dates provided.") : i18n("End date cannot be before start date.")
         }
 
         Kirigami.FormLayout {
