@@ -25,12 +25,14 @@ Kirigami.OverlaySheet {
     footer: QQC2.DialogButtonBox {
 
         QQC2.Button {
+            icon.name: "deletecell"
             text: i18n("Only delete current")
             visible: recurringEvent
             onClicked: addException(deleteDate, eventWrapper)
         }
 
         QQC2.Button {
+            icon.name: "edit-table-delete-row"
             text: i18n("Also delete future")
             visible: recurringEvent
             onClicked: {
@@ -44,11 +46,13 @@ Kirigami.OverlaySheet {
         }
 
         QQC2.Button {
+            icon.name: "delete"
             text: recurringEvent ? i18n("Delete all") : i18n("Delete")
             onClicked: deleteEvent(eventWrapper.eventPtr)
         }
 
         QQC2.Button {
+            icon.name: "dialog-cancel"
             text: i18n("Cancel")
             onClicked: deleteEventSheet.close()
         }
@@ -58,17 +62,33 @@ Kirigami.OverlaySheet {
         onRejected: deleteEventSheet.close()
     }
 
-    QQC2.Label {
+    RowLayout {
         Layout.maximumWidth: Kirigami.Units.gridUnit * 30
-        text: i18n("Do you really want to delete item: ") + `"${eventWrapper.summary}"?`
-        visible: !recurringEvent
-        wrapMode: Text.WordWrap
-    }
 
-    QQC2.Label {
-        Layout.maximumWidth: Kirigami.Units.gridUnit * 30
-        text: i18n("The calendar item ") + `"${eventWrapper.summary}"` +  i18n(" recurs over multiple dates. Do you want to delete the current one on %1 , also future occurrences, or all its occurrences?", deleteDate.toLocaleDateString(Qt.locale()))
-        visible: recurringEvent
-        wrapMode: Text.WordWrap
+        // I am 100% sure there is a better way of showing the warning icon than this.
+        QQC2.ToolButton {
+            Layout.minimumHeight: Kirigami.Units.gridUnit * 4
+            Layout.minimumWidth: Kirigami.Units.gridUnit * 4
+            highlighted: false
+            icon.name: "dialog-warning"
+            icon.width: 76
+            icon.height: 76
+            focusPolicy: Qt.NoFocus
+            hoverEnabled: false
+        }
+
+        QQC2.Label {
+            Layout.fillWidth: true
+            text: i18n("Do you really want to delete item: ") + `"${eventWrapper.summary}"?`
+            visible: !recurringEvent
+            wrapMode: Text.WordWrap
+        }
+
+        QQC2.Label {
+            Layout.fillWidth: true
+            text: i18n("The calendar item ") + `"${eventWrapper.summary}"` +  i18n(" recurs over multiple dates. Do you want to delete the current one on %1, also future occurrences, or all its occurrences?", deleteDate.toLocaleDateString(Qt.locale()))
+            visible: recurringEvent
+            wrapMode: Text.WordWrap
+        }
     }
 }
