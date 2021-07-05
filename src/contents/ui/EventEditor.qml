@@ -630,30 +630,31 @@ Kirigami.OverlaySheet {
                 }
                 ColumnLayout {
                     Layout.columnSpan: 4
-                    QQC2.Button {
+                    QQC2.ComboBox {
                         id: exceptionAddButton
                         Layout.fillWidth: true
-                        text: i18n("Add recurrence exception")
-                        onClicked: recurExceptionPopup.open()
-                    }
-                    QQC2.Popup {
-                        id: recurExceptionPopup
+                        displayText: i18n("Add recurrence exception")
 
-                        width: Kirigami.Units.gridUnit * 18
-                        height: Kirigami.Units.gridUnit * 18
-                        y: exceptionAddButton.y + exceptionAddButton.height
-                        z: 1000
+                        popup: QQC2.Popup {
+                            id: recurExceptionPopup
 
-                        DatePicker {
-                            id: recurExceptionPicker
-                            anchors.fill: parent
-                            selectedDate: eventStartDateCombo.dateFromText
-                            onDatePicked: {
-                                eventEditorSheet.eventWrapper.recurrenceExceptionsModel.addExceptionDateTime(pickedDate)
-                                recurExceptionPopup.close()
+                            width: Kirigami.Units.gridUnit * 18
+                            height: Kirigami.Units.gridUnit * 18
+                            y: parent.y + parent.height
+                            z: 1000
+
+                            DatePicker {
+                                id: recurExceptionPicker
+                                anchors.fill: parent
+                                selectedDate: eventStartDateCombo.dateFromText
+                                onDatePicked: {
+                                    eventEditorSheet.eventWrapper.recurrenceExceptionsModel.addExceptionDateTime(pickedDate)
+                                    recurExceptionPopup.close()
+                                }
                             }
                         }
                     }
+
                     Repeater {
                         id: exceptionsRepeater
                         model: eventEditorSheet.eventWrapper.recurrenceExceptionsModel
