@@ -27,6 +27,7 @@ Kirigami.OverlaySheet {
         standardButtons: QQC2.DialogButtonBox.Cancel
 
         QQC2.Button {
+            icon.name: editMode ? "document-save" : "list-add"
             text: editMode ? i18n("Save") : i18n("Add")
             enabled: titleField.text && eventEditorSheet.validDates && calendarCombo.currentValue
             QQC2.DialogButtonBox.buttonRole: QQC2.DialogButtonBox.AcceptRole

@@ -39,18 +39,20 @@ Item {
 
     function setToTimeFromString(timeString) { // Accepts in format HH:MM:SS
         var splitTimeString = timeString.split(":");
+        console.log(splitTimeString)
         switch (splitTimeString.length) {
             case 3:
-                dateTime = new Date (dateTime.setHours(Number(splitTimeString[2]),
+                dateTime = new Date (dateTime.setHours(Number(splitTimeString[0]),
                                                        Number(splitTimeString[1]),
-                                                       Number(splitTimeString[0])));
+                                                       Number(splitTimeString[2])));
                 break;
             case 2:
-                dateTime = new Date (dateTime.setHours(Number(splitTimeString[2]),
+                dateTime = new Date (dateTime.setHours(Number(splitTimeString[0]),
                                                        Number(splitTimeString[1])));
+                console.log(dateTime.getHours())
                 break;
             case 1:
-                dateTime = new Date (dateTime.setHours(Number(splitTimeString[2])));
+                dateTime = new Date (dateTime.setHours(Number(splitTimeString[0])));
                 break;
             case 0:
                 return;
