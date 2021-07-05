@@ -15,6 +15,7 @@ Item {
     id: root
 
     signal editEvent(var eventPtr, var collectionId)
+    signal deleteEvent(var eventPtr, date deleteDate)
 
     property int daysToShow
     property int daysPerRow: daysToShow
@@ -315,7 +316,7 @@ Item {
                                                             icon.name: "edit-delete"
                                                             text:i18n("Delete")
                                                             enabled: !mouseArea.collectionDetails["readOnly"]
-                                                            onClicked: Kalendar.CalendarManager.deleteEvent(modelData.eventPtr)
+                                                            onClicked: deleteEvent(modelData.eventPtr, modelData.startTime)
                                                         }
                                                     }
                                                 }

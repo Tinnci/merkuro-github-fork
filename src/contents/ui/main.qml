@@ -27,6 +27,24 @@ Kirigami.ApplicationWindow {
         onEdited: CalendarManager.editEvent(event.eventPtr)
     }
 
+    DeleteEventSheet {
+        id: deleteEventSheet
+        onAddException: {
+            eventWrapper.recurrenceExceptionsModel.addExceptionDateTime(exceptionDate);
+            CalendarManager.editEvent(eventWrapper.eventPtr);
+            deleteEventSheet.close();
+        }
+        onAddRecurrenceEndDate: {
+            eventWrapper.recurrenceEndDateTime = endDate;
+            CalendarManager.editEvent(eventWrapper.eventPtr);
+            deleteEventSheet.close();
+        }
+        onDeleteEvent: {
+            CalendarManager.deleteEvent(eventPtr);
+            deleteEventSheet.close();
+        }
+    }
+
     globalDrawer: Kirigami.GlobalDrawer {
         isMenu: true
         actions: [
@@ -55,6 +73,14 @@ Kirigami.ApplicationWindow {
                 eventEditor.eventWrapper.collectionId = receivedCollectionId;
                 eventEditor.editMode = true;
                 eventEditor.open();
+            }
+            onDeleteEventReceived: {
+                deleteEventSheet.eventWrapper = Qt.createQmlObject('import org.kde.kalendar 1.0; EventWrapper {id: event}',
+                                                              deleteEventSheet.eventWrapper,
+                                                              "event");
+                deleteEventSheet.eventWrapper.eventPtr = receivedEventPtr
+                deleteEventSheet.deleteDate = receivedDeleteDate
+                deleteEventSheet.open()
             }
 
             actions.contextualActions: [

@@ -15,6 +15,7 @@ Kirigami.Page {
 
     // More elegant way of sending this up to main.qml?
     signal editEventReceived(var receivedEventPtr, var receivedCollectionId)
+    signal deleteEventReceived(var receivedEventPtr, date receivedDeleteDate)
 
     property alias startDate: dayView.startDate
     property alias currentDate: dayView.currentDate
@@ -97,6 +98,7 @@ Kirigami.Page {
         }
 
         onEditEvent: editEventReceived(eventPtr, collectionId)
+        onDeleteEvent: deleteEventReceived(eventPtr, deleteDate)
 
     }
 }
