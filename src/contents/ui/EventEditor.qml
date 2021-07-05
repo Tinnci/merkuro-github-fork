@@ -675,15 +675,20 @@ Kirigami.OverlaySheet {
             Kirigami.Separator {
                 Kirigami.FormData.isSection: true
             }
-
-            QQC2.TextArea {
-                id: descriptionTextArea
-
-                Kirigami.FormData.label: i18n("Description:")
+            // Restrain the descriptionTextArea from getting too chonky
+            ColumnLayout {
                 Layout.fillWidth: true
-                placeholderText: i18n("Optional")
-                text: eventEditorSheet.eventWrapper.description
-                onTextChanged: eventEditorSheet.eventWrapper.description = text
+                Layout.maximumWidth: eventForm.wideMode ? Kirigami.Units.gridUnit * 25 : -1
+                Kirigami.FormData.label: i18n("Description:")
+
+                QQC2.TextArea {
+                    id: descriptionTextArea
+
+                    Layout.fillWidth: true
+                    placeholderText: i18n("Optional")
+                    text: eventEditorSheet.eventWrapper.description
+                    onTextChanged: eventEditorSheet.eventWrapper.description = text
+                }
             }
 
             ColumnLayout {
