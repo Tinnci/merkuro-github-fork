@@ -59,12 +59,16 @@ Kirigami.OverlaySheet {
     }
 
     QQC2.Label {
+        Layout.maximumWidth: Kirigami.Units.gridUnit * 30
         text: i18n("Do you really want to delete item: ") + `"${eventWrapper.summary}"?`
         visible: !recurringEvent
+        wrapMode: Text.WordWrap
     }
 
     QQC2.Label {
+        Layout.maximumWidth: Kirigami.Units.gridUnit * 30
         text: i18n("The calendar item ") + `"${eventWrapper.summary}"` +  i18n(" recurs over multiple dates. Do you want to delete the current one on %1 , also future occurrences, or all its occurrences?", deleteDate.toLocaleDateString(Qt.locale()))
         visible: recurringEvent
+        wrapMode: Text.WordWrap
     }
 }
