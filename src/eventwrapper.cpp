@@ -37,7 +37,6 @@ KCalendarCore::Event::Ptr EventWrapper::eventPtr() const
 
 void EventWrapper::setEventPtr(KCalendarCore::Event::Ptr eventPtr)
 {
-    qDebug() << eventPtr->summary();
     m_event = eventPtr;
     Q_EMIT eventPtrChanged(m_event);
     Q_EMIT collectionIdChanged();
@@ -158,7 +157,6 @@ QVector<bool> EventWrapper::recurrenceWeekDays()
 
 void EventWrapper::setRecurrenceWeekDays(const QVector<bool> recurrenceWeekDays)
 {
-    qDebug() << recurrenceWeekDays;
     QBitArray days(7);
 
     for(int i = 0; i < recurrenceWeekDays.size(); i++) {
@@ -178,7 +176,6 @@ void EventWrapper::setRecurrenceWeekDays(const QVector<bool> recurrenceWeekDays)
     rrule->setByDays(positions);
     m_event->recurrence()->updated();
 
-    qDebug() << m_event->recurrence()->days();
     Q_EMIT recurrenceWeekDaysChanged();
 }
 
