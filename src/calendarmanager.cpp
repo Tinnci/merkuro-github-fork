@@ -148,7 +148,7 @@ protected:
     };
 };
 
-// Despite the name, this handles the presnetaiton of collections including display text and icons, not just colours.
+/// Despite the name, this handles the presentation of collections including display text and icons, not just colors.
 class ColorProxyModel : public QSortFilterProxyModel
 {
 public:
