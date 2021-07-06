@@ -108,7 +108,6 @@ void RecurrenceExceptionsModel::deleteExceptionDateTime(QDateTime date)
         return;
     }
 
-    qDebug() << date;
 
     if (m_event->recurrence()->allDay()) {
         auto dateTimes = m_event->recurrence()->exDateTimes();
