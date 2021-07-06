@@ -56,6 +56,7 @@ Kirigami.OverlaySheet {
             icon.name: "dialog-cancel"
             text: i18n("Cancel")
             onClicked: deleteEventSheet.close()
+            QQC2.DialogButtonBox.buttonRole: QQC2.DialogButtonBox.DestructiveRole
         }
 
         //standardButtons: QQC2.DialogButtonBox.Cancel // Out of order?
