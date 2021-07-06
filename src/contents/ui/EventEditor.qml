@@ -21,6 +21,11 @@ Kirigami.OverlaySheet {
                               (eventEndDateCombo.validDate || allDayCheckBox.checked) &&
                               eventWrapper.eventStart < eventWrapper.eventEnd
 
+    Component.onCompleted: eventWrapper = Qt.createQmlObject('import org.kde.kalendar 1.0; EventWrapper {id: event}',
+                                                            eventWrapper,
+                                                            "event");
+
+
     header: Kirigami.Heading {
         text: editMode ? i18n("Edit event") : i18n("Add event")
     }

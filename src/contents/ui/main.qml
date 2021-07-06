@@ -67,7 +67,7 @@ Kirigami.ApplicationWindow {
 
             onEditEventReceived: {
                 eventEditor.eventWrapper = Qt.createQmlObject('import org.kde.kalendar 1.0; EventWrapper {id: event}',
-                                                              eventEditor.eventWrapper,
+                                                              eventEditor,
                                                               "event");
                 eventEditor.eventWrapper.eventPtr = receivedEventPtr;
                 eventEditor.eventWrapper.collectionId = receivedCollectionId;
@@ -76,8 +76,8 @@ Kirigami.ApplicationWindow {
             }
             onDeleteEventReceived: {
                 deleteEventSheet.eventWrapper = Qt.createQmlObject('import org.kde.kalendar 1.0; EventWrapper {id: event}',
-                                                              deleteEventSheet.eventWrapper,
-                                                              "event");
+                                                                    deleteEventSheet,
+                                                                    "event");
                 deleteEventSheet.eventWrapper.eventPtr = receivedEventPtr
                 deleteEventSheet.deleteDate = receivedDeleteDate
                 deleteEventSheet.open()
