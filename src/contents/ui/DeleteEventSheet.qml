@@ -29,6 +29,7 @@ Kirigami.OverlaySheet {
             text: i18n("Only delete current")
             visible: recurringEvent
             onClicked: addException(deleteDate, eventWrapper)
+            QQC2.DialogButtonBox.buttonRole: QQC2.DialogButtonBox.AcceptRole
         }
 
         QQC2.Button {
@@ -43,6 +44,7 @@ Kirigami.OverlaySheet {
                 dateBeforeDeleteDate.setDate(deleteDate.getDate() - 1);
                 addRecurrenceEndDate(dateBeforeDeleteDate, eventWrapper)
             }
+            QQC2.DialogButtonBox.buttonRole: QQC2.DialogButtonBox.AcceptRole
         }
 
         QQC2.Button {
@@ -59,24 +61,17 @@ Kirigami.OverlaySheet {
             QQC2.DialogButtonBox.buttonRole: QQC2.DialogButtonBox.DestructiveRole
         }
 
-        //standardButtons: QQC2.DialogButtonBox.Cancel // Out of order?
-
         onRejected: deleteEventSheet.close()
     }
 
     RowLayout {
         Layout.maximumWidth: Kirigami.Units.gridUnit * 30
 
-        // I am 100% sure there is a better way of showing the warning icon than this.
-        QQC2.ToolButton {
+        Kirigami.Icon {
+            Layout.fillHeight: true
             Layout.minimumHeight: Kirigami.Units.gridUnit * 4
-            Layout.minimumWidth: Kirigami.Units.gridUnit * 4
-            highlighted: false
-            icon.name: "dialog-warning"
-            icon.width: 76
-            icon.height: 76
-            focusPolicy: Qt.NoFocus
-            hoverEnabled: false
+            Layout.minimumWidth: height
+            source: "dialog-warning"
         }
 
         QQC2.Label {
