@@ -54,7 +54,7 @@ Kirigami.Page {
             text: i18n("Next")
             onTriggered: {
                 dayView.month = (dayView.month + 1) % 12
-                var newDate = DateUtils.getFirstDayOfWeek(DateUtils.nextMonth(startDate))
+                let newDate = DateUtils.getFirstDayOfWeek(DateUtils.nextMonth(startDate))
                 newDate = DateUtils.addDaysToDate(newDate, 7)
 
                 if (newDate.getMonth() === dayView.month) {
