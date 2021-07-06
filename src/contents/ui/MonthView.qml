@@ -34,7 +34,7 @@ Kirigami.Page {
             text: i18n("Previous")
             onTriggered: {
                 dayView.month - 1 < 0 ? dayView.month = 11 : dayView.month -= 1
-                var newDate = DateUtils.getFirstDayOfWeek(DateUtils.previousMonth(startDate))
+                let newDate = DateUtils.getFirstDayOfWeek(DateUtils.previousMonth(startDate))
 
                 // Handling adding and subtracting months in Javascript can get *really* messy.
                 newDate = DateUtils.addDaysToDate(newDate, 7)
