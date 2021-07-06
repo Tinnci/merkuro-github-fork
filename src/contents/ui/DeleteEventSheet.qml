@@ -49,6 +49,7 @@ Kirigami.OverlaySheet {
             icon.name: "delete"
             text: recurringEvent ? i18n("Delete all") : i18n("Delete")
             onClicked: deleteEvent(eventWrapper.eventPtr)
+            QQC2.DialogButtonBox.buttonRole: QQC2.DialogButtonBox.AcceptRole
         }
 
         QQC2.Button {
