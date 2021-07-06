@@ -40,7 +40,7 @@ Kirigami.OverlaySheet {
                 // We want to include the delete date in the deletion
                 // Setting the last recurrence day is not inclusive
                 // (i.e. occurrence on that day is not deleted)
-                var dateBeforeDeleteDate = new Date(deleteDate);
+                let dateBeforeDeleteDate = new Date(deleteDate);
                 dateBeforeDeleteDate.setDate(deleteDate.getDate() - 1);
                 addRecurrenceEndDate(dateBeforeDeleteDate, eventWrapper)
             }
