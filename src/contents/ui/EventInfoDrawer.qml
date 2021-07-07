@@ -11,7 +11,7 @@ Kirigami.OverlayDrawer {
 
     edge: Qt.RightEdge
     modal: true
-    handleVisible: false
+    handleVisible: this.visible
 
     contentItem: QQC2.ScrollView {
         id: contentView
