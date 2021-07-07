@@ -83,7 +83,7 @@ Kirigami.ApplicationWindow {
         }
     }
 
-    EventInfoDrawer {
+    EventInfoPage {
         id: eventInfo
     }
 
@@ -110,7 +110,7 @@ Kirigami.ApplicationWindow {
             onViewEventReceived: {
                 eventInfo.eventData = receivedModelData
                 eventInfo.collectionData = receivedCollectionData
-                eventInfo.open()
+                pageStack.push(eventInfo)
             }
             onEditEventReceived: {
                 let editorToUse = root.editorToUse();
