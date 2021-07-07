@@ -21,6 +21,27 @@ Kirigami.ApplicationWindow {
 
     pageStack.initialPage: monthViewComponent
 
+    globalDrawer: Kirigami.GlobalDrawer {
+        isMenu: true
+        actions: [
+            Kirigami.Action {
+                text: i18n("Settings")
+                onTriggered: pageStack.layers.push("qrc:/SettingsPage.qml")
+            }
+        ]
+    }
+
+    contextDrawer: EventInfo {
+        id: eventInfo
+
+        contentItem.implicitWidth: Kirigami.Units.gridUnit * 25
+        modal: !root.wideScreen || !enabled
+        onEnabledChanged: drawerOpen = enabled && !modal
+        onModalChanged: drawerOpen = !modal
+        enabled: eventData != undefined && pageStack.layers.depth < 2 && pageStack.depth < 3
+        handleVisible: enabled && pageStack.layers.depth < 2 && pageStack.depth < 3
+    }
+
     EventEditor {
         id: eventEditor
         onAdded: CalendarManager.addEvent(collectionId, event.eventPtr)
@@ -83,20 +104,6 @@ Kirigami.ApplicationWindow {
         }
     }
 
-    EventInfoPage {
-        id: eventInfo
-    }
-
-    globalDrawer: Kirigami.GlobalDrawer {
-        isMenu: true
-        actions: [
-            Kirigami.Action {
-                text: i18n("Settings")
-                onTriggered: pageStack.layers.push("qrc:/SettingsPage.qml")
-            }
-        ]
-    }
-
     Component {
         id: monthViewComponent
 
@@ -107,10 +114,12 @@ Kirigami.ApplicationWindow {
             startDate: DateUtils.getFirstDayOfWeek(DateUtils.getFirstDayOfMonth(root.selectedDate))
             month: root.selectedDate.getMonth()
 
+            Layout.minimumWidth: applicationWindow().width * 0.66
+
             onViewEventReceived: {
                 eventInfo.eventData = receivedModelData
                 eventInfo.collectionData = receivedCollectionData
-                pageStack.push(eventInfo)
+                eventInfo.open()
             }
             onEditEventReceived: {
                 let editorToUse = root.editorToUse();

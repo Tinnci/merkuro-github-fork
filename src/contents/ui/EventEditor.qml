@@ -23,7 +23,7 @@ Kirigami.ScrollablePage {
                               eventWrapper.eventStart < eventWrapper.eventEnd
 
     Component.onCompleted: eventWrapper = Qt.createQmlObject('import org.kde.kalendar 1.0; EventWrapper {id: event}',
-                                                            eventWrapper,
+                                                            eventEditorSheet,
                                                             "event");
 
 
