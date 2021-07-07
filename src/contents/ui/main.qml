@@ -5,7 +5,7 @@
 
 import QtQuick 2.15
 import org.kde.kirigami 2.14 as Kirigami
-import QtQuick.Controls 2.15 as Controls
+import QtQuick.Controls 2.15 as QQC2
 import QtQuick.Layouts 1.15 
 import org.kde.kalendar 1.0
 import QtQml.Models 2.15
@@ -55,6 +55,7 @@ Kirigami.ApplicationWindow {
     }
 
     function editorToUse() {
+        // Should ideally check if PlaMo or chonk Plasma
         if (applicationWindow().wideScreen) {
             editorWindowedLoader.active = true
             return editorWindowedLoader.item.eventEditor
@@ -82,6 +83,10 @@ Kirigami.ApplicationWindow {
         }
     }
 
+    EventInfoDrawer {
+        id: eventInfo
+    }
+
     globalDrawer: Kirigami.GlobalDrawer {
         isMenu: true
         actions: [
@@ -102,6 +107,11 @@ Kirigami.ApplicationWindow {
             startDate: DateUtils.getFirstDayOfWeek(DateUtils.getFirstDayOfMonth(root.selectedDate))
             month: root.selectedDate.getMonth()
 
+            onViewEventReceived: {
+                eventInfo.eventData = receivedModelData
+                eventInfo.collectionData = receivedCollectionData
+                eventInfo.open()
+            }
             onEditEventReceived: {
                 let editorToUse = root.editorToUse();
                 editorToUse.eventWrapper = Qt.createQmlObject('import org.kde.kalendar 1.0; EventWrapper {id: event}',
