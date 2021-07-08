@@ -4,7 +4,7 @@ import QtQuick.Controls 2.15 as QQC2
 import QtQuick.Layouts 1.15
 
 Kirigami.OverlayDrawer {
-    id: eventInfoDrawer
+    id: eventInfo
 
     signal editEvent(var eventPtr, var collectionId)
     signal deleteEvent(var eventPtr, date deleteDate)
@@ -23,11 +23,12 @@ Kirigami.OverlayDrawer {
     Kirigami.Theme.colorSet: Kirigami.Theme.View
 
     contentItem: Loader {
-        active: eventInfoDrawer.drawerOpen
+        active: eventInfo.drawerOpen
         sourceComponent: QQC2.ScrollView {
             id: contentsView
             Layout.fillWidth: true
             Layout.fillHeight: true
+            Layout.rightMargin: Kirigami.Units.largeSpacing *5
             contentWidth: this.availableWidth
 
             ColumnLayout {
@@ -40,7 +41,7 @@ Kirigami.OverlayDrawer {
                     Layout.fillWidth: true
                     topPadding: Kirigami.Units.smallSpacing / 2;
                     bottomPadding: Kirigami.Units.smallSpacing / 2;
-                    rightPadding: Kirigami.Units.largeSpacing * 2; // Otherwise button gets clipped
+                    rightPadding: Kirigami.Units.smallSpacing
                     leftPadding: Kirigami.Units.smallSpacing
 
 
@@ -56,14 +57,14 @@ Kirigami.OverlayDrawer {
                         QQC2.ToolButton {
                             icon.name: "edit-entry"
                             text:i18n("Edit")
-                            enabled: !eventInfoDrawer.collectionData["readOnly"]
-                            onClicked: editEvent(eventInfoDrawer.eventData.eventPtr, eventInfoDrawer.eventData.collectionId)
+                            enabled: !eventInfo.collectionData["readOnly"]
+                            onClicked: editEvent(eventInfo.eventData.eventPtr, eventInfo.eventData.collectionId)
                         }
                         QQC2.ToolButton {
                             icon.name: "edit-delete"
                             text:i18n("Delete")
-                            enabled: !eventInfoDrawer.collectionData["readOnly"]
-                            onClicked: deleteEvent(eventInfoDrawer.eventData.eventPtr, eventInfoDrawer.eventData.startTime)
+                            enabled: !eventInfo.collectionData["readOnly"]
+                            onClicked: deleteEvent(eventInfo.eventData.eventPtr, eventInfo.eventData.startTime)
                         }
                     }
                 }
@@ -71,20 +72,27 @@ Kirigami.OverlayDrawer {
                 GridLayout {
                     Layout.margins: Kirigami.Units.largeSpacing
                     Layout.fillWidth: true
-                    Layout.maximumWidth: contentsView.availableWidth
-                    Layout.minimumWidth: contentsView.availableWidth
+                    Layout.maximumWidth: contentsView.availableWidth - (Kirigami.Units.largeSpacing * 2)
+                    Layout.minimumWidth: contentsView.availableWidth - (Kirigami.Units.largeSpacing * 2)
 
                     columns:2
 
                     Kirigami.Heading {
                         Layout.columnSpan: 2
                         Layout.fillWidth: true
-                        Layout.maximumWidth: contentsView.availableWidth
-                        Layout.minimumWidth: contentsView.availableWidth
+                        Layout.maximumWidth: contentsView.availableWidth - (Kirigami.Units.largeSpacing * 2)
+                        Layout.minimumWidth: contentsView.availableWidth - (Kirigami.Units.largeSpacing * 2)
 
                         text: "<b>" + eventInfo.eventData.text + "</b>"
                         level: 1
                         wrapMode: Text.Wrap
+                    }
+                    Rectangle {
+                        Layout.columnSpan: 2
+                        Layout.fillWidth: true
+                        height: Kirigami.Units.gridUnit / 2
+
+                        color: eventInfo.eventData.color
                     }
 
                     QQC2.Label {
