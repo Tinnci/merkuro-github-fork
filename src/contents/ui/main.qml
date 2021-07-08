@@ -40,6 +40,7 @@ Kirigami.ApplicationWindow {
         onModalChanged: drawerOpen = !modal
         enabled: eventData != undefined && pageStack.layers.depth < 2 && pageStack.depth < 3
         handleVisible: enabled && pageStack.layers.depth < 2 && pageStack.depth < 3
+        interactive: Kirigami.Settings.isMobile
 
         onEditEvent: {
             setUpEdit(eventPtr, collectionId);
