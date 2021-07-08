@@ -84,7 +84,6 @@ Kirigami.OverlayDrawer {
                         Layout.minimumWidth: contentsView.availableWidth - (Kirigami.Units.largeSpacing * 2)
 
                         text: "<b>" + eventInfo.eventData.text + "</b>"
-                        level: 1
                         wrapMode: Text.Wrap
                     }
                     Rectangle {
