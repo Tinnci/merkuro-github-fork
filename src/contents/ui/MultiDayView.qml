@@ -194,17 +194,6 @@ Item {
                                                         eventActions.createObject(mouseArea, {}).open()
                                                     }
                                                 }
-                                                Component {
-                                                    id: eventDetails
-                                                    QQC2.Popup {
-                                                        id: detailsPopup
-                                                        width: Kirigami.Units.gridUnit * 18
-                                                        height: Kirigami.Units.gridUnit * 9
-                                                        x: (parent.x + parent.width / 2) - width / 2
-                                                        y: parent.y + parent.height
-                                                        padding: Kirigami.Units.largeSpacing
-                                                    }
-                                                }
 
                                                 Component {
                                                     id: eventActions
