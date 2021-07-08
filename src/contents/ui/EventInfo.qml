@@ -84,7 +84,6 @@ Kirigami.OverlayDrawer {
                         Layout.minimumWidth: contentsView.availableWidth - (Kirigami.Units.largeSpacing * 2)
 
                         text: "<b>" + eventInfo.eventData.text + "</b>"
-                        level: 1
                         wrapMode: Text.Wrap
                     }
                     Rectangle {
@@ -123,7 +122,7 @@ Kirigami.OverlayDrawer {
 
                     QQC2.Label {
                         Layout.alignment: Qt.AlignTop
-                        text: i18n("<b>Time: </b>")
+                        text: i18n("<b>Time:</b>")
                         visible: !eventInfo.eventData.allDay &&
                         eventInfo.eventData.startTime.toDateString() == eventInfo.eventData.endTime.toDateString()
                     }
