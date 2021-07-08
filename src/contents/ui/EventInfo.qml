@@ -122,7 +122,7 @@ Kirigami.OverlayDrawer {
 
                     QQC2.Label {
                         Layout.alignment: Qt.AlignTop
-                        text: i18n("<b>Time: </b>")
+                        text: i18n("<b>Time:</b>")
                         visible: !eventInfo.eventData.allDay &&
                         eventInfo.eventData.startTime.toDateString() == eventInfo.eventData.endTime.toDateString()
                     }
