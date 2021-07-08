@@ -40,13 +40,22 @@ Kirigami.ApplicationWindow {
         onModalChanged: drawerOpen = !modal
         enabled: eventData != undefined && pageStack.layers.depth < 2 && pageStack.depth < 3
         handleVisible: enabled && pageStack.layers.depth < 2 && pageStack.depth < 3
+
+        onEditEvent: {
+            setUpEdit(eventPtr, collectionId);
+            if (modal) { eventInfo.close() }
+        }
+        onDeleteEvent: {
+            setUpDelete(eventPtr, deleteDate)
+            if (modal) { eventInfo.close() }
+        }
     }
 
     EventEditor {
         id: eventEditor
         onAdded: CalendarManager.addEvent(collectionId, event.eventPtr)
         onEdited: CalendarManager.editEvent(event.eventPtr)
-        onCancel: pageStack.pop(root)
+        onCancel: pageStack.pop(monthViewComponent)
     }
 
     Loader {
@@ -86,6 +95,41 @@ Kirigami.ApplicationWindow {
         }
     }
 
+    function setUpAdd() {
+        let editorToUse = root.editorToUse();
+        if (editorToUse.editMode || !editorToUse.eventWrapper) {
+            editorToUse.eventWrapper = Qt.createQmlObject('import org.kde.kalendar 1.0; EventWrapper {id: event}',
+                                                          editorToUse,
+                                                          "event");
+        }
+        editorToUse.editMode = false;
+    }
+
+    function setUpView(modelData, collectionData) {
+        eventInfo.eventData = modelData
+        eventInfo.collectionData = collectionData
+        eventInfo.open()
+    }
+
+    function setUpEdit(eventPtr, collectionId) {
+        let editorToUse = root.editorToUse();
+        editorToUse.eventWrapper = Qt.createQmlObject('import org.kde.kalendar 1.0; EventWrapper {id: event}',
+                                                      editorToUse,
+                                                      "event");
+        editorToUse.eventWrapper.eventPtr = eventPtr;
+        editorToUse.eventWrapper.collectionId = collectionId;
+        editorToUse.editMode = true;
+    }
+
+    function setUpDelete(eventPtr, deleteDate) {
+        deleteEventSheet.eventWrapper = Qt.createQmlObject('import org.kde.kalendar 1.0; EventWrapper {id: event}',
+                                                           deleteEventSheet,
+                                                           "event");
+        deleteEventSheet.eventWrapper.eventPtr = eventPtr
+        deleteEventSheet.deleteDate = deleteDate
+        deleteEventSheet.open()
+    }
+
     DeleteEventSheet {
         id: deleteEventSheet
         onAddException: {
@@ -116,42 +160,15 @@ Kirigami.ApplicationWindow {
 
             Layout.minimumWidth: applicationWindow().width * 0.66
 
-            onViewEventReceived: {
-                eventInfo.eventData = receivedModelData
-                eventInfo.collectionData = receivedCollectionData
-                eventInfo.open()
-            }
-            onEditEventReceived: {
-                let editorToUse = root.editorToUse();
-                editorToUse.eventWrapper = Qt.createQmlObject('import org.kde.kalendar 1.0; EventWrapper {id: event}',
-                                                              editorToUse,
-                                                              "event");
-                editorToUse.eventWrapper.eventPtr = receivedEventPtr;
-                editorToUse.eventWrapper.collectionId = receivedCollectionId;
-                editorToUse.editMode = true;
-            }
-            onDeleteEventReceived: {
-                deleteEventSheet.eventWrapper = Qt.createQmlObject('import org.kde.kalendar 1.0; EventWrapper {id: event}',
-                                                                    deleteEventSheet,
-                                                                    "event");
-                deleteEventSheet.eventWrapper.eventPtr = receivedEventPtr
-                deleteEventSheet.deleteDate = receivedDeleteDate
-                deleteEventSheet.open()
-            }
+            onViewEventReceived: root.setUpView(receivedModelData, receivedCollectionData)
+            onEditEventReceived: root.setUpEdit(receivedEventPtr, receivedCollectionData)
+            onDeleteEventReceived: root.setUpDelete(receivedEventPtr, receivedDeleteDate)
 
             actions.contextualActions: [
                 Kirigami.Action {
                     text: i18n("Add event")
                     icon.name: "list-add"
-                    onTriggered: {
-                        let editorToUse = root.editorToUse();
-                        if (editorToUse.editMode || !editorToUse.eventWrapper) {
-                            editorToUse.eventWrapper = Qt.createQmlObject('import org.kde.kalendar 1.0; EventWrapper {id: event}',
-                                                                          editorToUse,
-                                                                          "event");
-                        }
-                        editorToUse.editMode = false;
-                    }
+                    onTriggered: root.setUpAdd();
                 }
             ]
         }
