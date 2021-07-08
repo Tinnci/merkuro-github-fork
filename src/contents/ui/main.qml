@@ -87,7 +87,7 @@ Kirigami.ApplicationWindow {
 
     function editorToUse() {
         // Should ideally check if PlaMo or chonk Plasma
-        if (applicationWindow().wideScreen) {
+        if (!Kirigami.Settings.isMobile) {
             editorWindowedLoader.active = true
             return editorWindowedLoader.item.eventEditor
         } else {
