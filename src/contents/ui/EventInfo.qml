@@ -144,7 +144,7 @@ Kirigami.OverlayDrawer {
 
                     QQC2.Label {
                         Layout.alignment: Qt.AlignTop
-                        text: i18n("<b>Duration: </b>")
+                        text: i18n("<b>Duration:</b>")
                         visible: eventInfo.eventData.durationString
                     }
                     QQC2.Label {
@@ -157,9 +157,23 @@ Kirigami.OverlayDrawer {
                     }
 
                     QQC2.Label {
+                        Layout.alignment: Qt.AlignTop
+                        text: i18n("<b>Location:</b>")
+                        visible: eventInfo.eventData.location
+                    }
+                    QQC2.Label {
+                        Layout.alignment: Qt.AlignTop
+                        Layout.fillWidth: true
+
+                        text: eventInfo.eventData.location
+                        wrapMode: Text.Wrap
+                        visible: eventInfo.eventData.location
+                    }
+
+                    QQC2.Label {
                         id: descriptionLabel
                         Layout.alignment: Qt.AlignTop
-                        text: i18n("<b>Description: </b>")
+                        text: i18n("<b>Description:</b>")
                         visible: eventInfo.eventData.description
                     }
                     QQC2.Label {
