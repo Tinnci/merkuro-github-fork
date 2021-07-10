@@ -282,15 +282,6 @@ QVariant EventOccurrenceModel::data(const QModelIndex &idx, int role) const
             return event.collectionId;
         case AllDay:
             return event.allDay;
-        case AlarmsStartOffsets:
-        {
-            QVariantList alarmStartOffsets;
-            for(auto alarm : icalEvent->alarms()) {
-                alarmStartOffsets.append(alarm->startOffset().asSeconds());
-            }
-
-            return alarmStartOffsets;
-        }
         case EventPtr:
             return QVariant::fromValue(event.event);
         case EventOccurrence:

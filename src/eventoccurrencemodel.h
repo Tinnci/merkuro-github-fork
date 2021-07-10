@@ -50,7 +50,6 @@ public:
         Color,
         CollectionId,
         AllDay,
-        AlarmsStartOffsets,
         EventPtr,
         EventOccurrence,
         LastRole

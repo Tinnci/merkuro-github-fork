@@ -10,8 +10,24 @@ Kirigami.OverlayDrawer {
     signal editEvent(var eventPtr, var collectionId)
     signal deleteEvent(var eventPtr, date deleteDate)
 
+    /**
+     * We use both eventData and eventWrapper to get info about the occurrence.
+     * EventData contains information about the specific occurrence (i.e. date of occurrence)
+     * as well as some general data about the event such as summary and description.
+     *
+     * The eventWrapper contains more indepth data about reminders, attendees, etc. that is
+     * general to the event as a whole, not a specific occurrence.
+     **/
     property var eventData
+    property var eventWrapper
     property var collectionData
+
+    onEventDataChanged: {
+        eventWrapper = Qt.createQmlObject('import org.kde.kalendar 1.0; EventWrapper {id: event}',
+                                          eventInfo,
+                                          "event");
+        eventWrapper.eventPtr = eventData.eventPtr
+    }
 
     enabled: true
     interactive: enabled
@@ -160,22 +176,22 @@ Kirigami.OverlayDrawer {
                     QQC2.Label {
                         Layout.alignment: Qt.AlignTop
                         text: i18n("<b>Location:</b>")
-                        visible: eventInfo.eventData.location
+                        visible: eventInfo.eventWrapper.location
                     }
                     QQC2.Label {
                         Layout.alignment: Qt.AlignTop
                         Layout.fillWidth: true
 
-                        text: eventInfo.eventData.location
+                        text: eventInfo.eventWrapper.location
                         wrapMode: Text.Wrap
-                        visible: eventInfo.eventData.location
+                        visible: eventInfo.eventWrapper.location
                     }
 
                     QQC2.Label {
                         id: descriptionLabel
                         Layout.alignment: Qt.AlignTop
                         text: i18n("<b>Description:</b>")
-                        visible: eventInfo.eventData.description
+                        visible: eventInfo.eventWrapper.description
                     }
                     QQC2.Label {
                         id: descriptionText
@@ -185,31 +201,32 @@ Kirigami.OverlayDrawer {
                         textFormat: Text.MarkdownText
                         text: {
                             var regexp = /^(?:(?:https?|ftp):\/\/)(?:\S+(?::\S*)?@)?(?:(?!(?:10|127)(?:\.\d{1,3}){3})(?!(?:169\.254|192\.168)(?:\.\d{1,3}){2})(?!172\.(?:1[6-9]|2\d|3[0-1])(?:\.\d{1,3}){2})(?:[1-9]\d?|1\d\d|2[01]\d|22[0-3])(?:\.(?:1?\d{1,2}|2[0-4]\d|25[0-5])){2}(?:\.(?:[1-9]\d?|1\d\d|2[0-4]\d|25[0-4]))|(?:(?:[a-z\u00a1-\uffff0-9]-*)*[a-z\u00a1-\uffff0-9]+)(?:\.(?:[a-z\u00a1-\uffff0-9]-*)*[a-z\u00a1-\uffff0-9]+)*(?:\.(?:[a-z\u00a1-\uffff]{2,}))\.?)(?::\d{2,5})?(?:[/?#]\S*)?$/ig
-                            eventInfo.eventData.description.replace(regexp, (match) => {
+                            eventInfo.eventWrapper.description.replace(regexp, (match) => {
                                 return `[${match}](${match})`;
                             })
                         }
                         onLinkActivated: Qt.openUrlExternally(link)
                         wrapMode: Text.Wrap
-                        visible: eventInfo.eventData.description
+                        visible: eventInfo.eventWrapper.description
                     }
 
                     QQC2.Label {
                         Layout.alignment: Qt.AlignTop
                         text: i18n("<b>Reminders:</b>")
-                        visible: eventInfo.eventData.alarmsStartOffsets.length > 0
+                        visible: eventInfo.eventWrapper.remindersModel.rowCount() > 0
                     }
+
                     ColumnLayout {
                         Layout.fillWidth: true
                         Repeater {
                             Layout.fillWidth: true
-                            visible: eventInfo.eventData.alarmsStartOffsets.length > 0
+                            visible: eventInfo.eventWrapper.remindersModel.rowCount() > 0
 
-                            model: eventInfo.eventData.alarmsStartOffsets
+                            model: eventInfo.eventWrapper.remindersModel
 
                             delegate: QQC2.Label {
                                 Layout.fillWidth: true
-                                text: LabelUtils.secondsToReminderLabel(modelData) + i18n(" start of event")
+                                text: LabelUtils.secondsToReminderLabel(startOffset) + i18n(" start of event")
                             }
                         }
                     }
