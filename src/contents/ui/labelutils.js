@@ -44,3 +44,43 @@ function secondsToReminderLabel(seconds) { // Gives prettified time
         return i18n("On event start");
     }
 }
+
+function recurrenceToString(recurrenceData) {
+    let returnString = i18n("Every");
+
+    switch(recurrenceData.type) {
+        case 0:
+            return i18n("Never");
+        case 3: // Daily
+            returnString += i18np(" day", " %1 days", recurrenceData.frequency);
+            break;
+        case 4: // Weekly
+            returnString += i18np(" week", " %1 weeks", recurrenceData.frequency);
+
+            if (recurrenceData.weekdays.filter(x => x === true).length > 0) {
+                returnString += i18n(" on");
+
+                for(let i = 0; i < recurrenceData.weekdays.length; i++) {
+                    console.log(Qt.locale().dayName(i + Qt.locale().firstDayOfWeek, Locale.ShortFormat))
+
+                    if(recurrenceData.weekdays[i]) {
+                        returnString += ` ${Qt.locale().dayName(i + Qt.locale().firstDayOfWeek, Locale.ShortFormat)},`;
+                    }
+                }
+                // Delete last comma
+                returnString = returnString.slice(0, -1);
+            }
+            break;
+        case 5: // Monthly on position (e.g. third Monday)
+        case 6: // Monthly on day (1st of month)
+            returnString += i18np(" month", " %1 months", recurrenceData.frequency);
+        case 7: // Yearly on month
+        case 8: // Yearly on day
+        case 9: // Yearly on position
+            returnString += i18np(" year", " %1 years", recurrenceData.frequency);
+    }
+
+    return returnString;
+
+
+}

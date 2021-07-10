@@ -175,6 +175,20 @@ Kirigami.OverlayDrawer {
 
                     QQC2.Label {
                         Layout.alignment: Qt.AlignTop
+                        text: i18n("<b>Recurrence:</b>")
+                        visible: eventInfo.eventWrapper.recurrenceData["type"]
+                    }
+                    QQC2.Label {
+                        Layout.alignment: Qt.AlignTop
+                        Layout.fillWidth: true
+
+                        text: LabelUtils.recurrenceToString(eventInfo.eventWrapper.recurrenceData)
+                        visible: eventInfo.eventWrapper.recurrenceData["type"]
+                        wrapMode: Text.Wrap
+                    }
+
+                    QQC2.Label {
+                        Layout.alignment: Qt.AlignTop
                         text: i18n("<b>Location:</b>")
                         visible: eventInfo.eventWrapper.location
                     }

@@ -49,6 +49,7 @@ void EventWrapper::setEventPtr(KCalendarCore::Event::Ptr eventPtr)
     Q_EMIT remindersModelChanged();
     Q_EMIT organizerChanged();
     Q_EMIT attendeesModelChanged();
+    Q_EMIT recurrenceDataChanged();
     Q_EMIT recurrenceWeekDaysChanged();
     Q_EMIT recurrenceDurationChanged();
     Q_EMIT recurrenceFrequencyChanged();
@@ -142,6 +143,39 @@ KCalendarCore::Recurrence * EventWrapper::recurrence() const
 {
     KCalendarCore::Recurrence *recurrence = m_event->recurrence();
     return recurrence;
+}
+
+QVariantMap EventWrapper::recurrenceData()
+{
+    QBitArray weekDaysBits = m_event->recurrence()->days();
+    QVector<bool> weekDaysBools(7);
+
+    for(int i = 0; i < weekDaysBits.size(); i++) {
+        weekDaysBools[i] = weekDaysBits[i];
+    }
+
+    return QVariantMap {
+        {QStringLiteral("weekdays"), QVariant::fromValue(weekDaysBools)},
+        {QStringLiteral("duration"), m_event->recurrence()->duration()},
+        {QStringLiteral("frequency"), m_event->recurrence()->frequency()},
+        {QStringLiteral("endDateTime"), m_event->recurrence()->endDateTime()},
+        {QStringLiteral("type"), m_event->recurrence()->recurrenceType()}
+    };
+}
+
+void EventWrapper::setRecurrenceData(QVariantMap recurrenceData)
+{
+    QVector<bool> newWeekdays = recurrenceData[QStringLiteral("weekdays")].value<QVector<bool>>();
+    int newDuration = recurrenceData[QStringLiteral("duration")].toInt();
+    int newFrequency = recurrenceData[QStringLiteral("frequency")].toInt();
+    QDateTime newEndDateTime = recurrenceData[QStringLiteral("endDateTime")].toDateTime();
+
+    setRecurrenceWeekDays(newWeekdays);
+    setRecurrenceDuration(newDuration);
+    setRecurrenceFrequency(newFrequency);
+    setRecurrenceEndDateTime(newEndDateTime);
+
+    Q_EMIT recurrenceDataChanged();
 }
 
 QVector<bool> EventWrapper::recurrenceWeekDays()
