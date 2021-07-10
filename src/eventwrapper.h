@@ -36,6 +36,7 @@ class EventWrapper : public QObject
     Q_PROPERTY(int recurrenceFrequency READ recurrenceFrequency WRITE setRecurrenceFrequency NOTIFY recurrenceFrequencyChanged)
     Q_PROPERTY(QDateTime recurrenceEndDateTime READ recurrenceEndDateTime WRITE setRecurrenceEndDateTime NOTIFY recurrenceEndDateTimeChanged)
     Q_PROPERTY(ushort recurrenceType READ recurrenceType NOTIFY recurrenceTypeChanged)
+    Q_PROPERTY(QVariantMap organizer READ organizer NOTIFY organizerChanged)
     Q_PROPERTY(KCalendarCore::Attendee::List attendees READ attendees)
     Q_PROPERTY(RemindersModel * remindersModel READ remindersModel NOTIFY remindersModelChanged)
     Q_PROPERTY(AttendeesModel * attendeesModel READ attendeesModel NOTIFY attendeesModelChanged)
@@ -81,6 +82,7 @@ public:
     QDateTime recurrenceEndDateTime();
     void setRecurrenceEndDateTime(QDateTime recurrenceEndDateTime);
     ushort recurrenceType();
+    QVariantMap organizer();
 
     KCalendarCore::Attendee::List attendees() const;
     RemindersModel * remindersModel();
@@ -109,6 +111,7 @@ Q_SIGNALS:
     void recurrenceFrequencyChanged();
     void recurrenceEndDateTimeChanged();
     void recurrenceTypeChanged();
+    void organizerChanged();
     void attendeesModelChanged();
     void recurrenceExceptionsModelChanged();
 

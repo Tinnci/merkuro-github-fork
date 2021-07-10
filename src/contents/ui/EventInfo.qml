@@ -234,6 +234,25 @@ Kirigami.OverlayDrawer {
 
                     QQC2.Label {
                         Layout.alignment: Qt.AlignTop
+                        text: i18n("<b>Organizer:</b>")
+                        visible: eventInfo.eventWrapper.attendeesModel.rowCount() > 0
+                    }
+                    QQC2.Label {
+                        Layout.fillWidth: true
+
+                        property var organizer: eventInfo.eventWrapper.organizer
+
+                        textFormat: Text.MarkdownText
+                        text: organizer.name ?
+                              `[${organizer.name}](mailto:${organizer.email})` :
+                              `[${organizer.email}](mailto:${organizer.email})`
+                        onLinkActivated: Qt.openUrlExternally(link)
+                        wrapMode: Text.Wrap
+                        visible: eventInfo.eventWrapper.attendeesModel.rowCount() > 0
+                    }
+
+                    QQC2.Label {
+                        Layout.alignment: Qt.AlignTop
                         text: i18n("<b>Guests:</b>")
                         visible: eventInfo.eventWrapper.attendeesModel.rowCount() > 0
                     }

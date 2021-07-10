@@ -47,6 +47,7 @@ void EventWrapper::setEventPtr(KCalendarCore::Event::Ptr eventPtr)
     Q_EMIT eventEndChanged();
     Q_EMIT allDayChanged();
     Q_EMIT remindersModelChanged();
+    Q_EMIT organizerChanged();
     Q_EMIT attendeesModelChanged();
     Q_EMIT recurrenceWeekDaysChanged();
     Q_EMIT recurrenceDurationChanged();
@@ -215,6 +216,16 @@ void EventWrapper::setRecurrenceEndDateTime(QDateTime endDateTime)
 ushort EventWrapper::recurrenceType()
 {
     return m_event->recurrence()->recurrenceType();
+}
+
+QVariantMap EventWrapper::organizer()
+{
+    auto organizerPerson = m_event->organizer();
+    return QVariantMap {
+        {QStringLiteral("name"), organizerPerson.name()},
+        {QStringLiteral("email"), organizerPerson.email()},
+        {QStringLiteral("fullName"), organizerPerson.fullName()}
+    };
 }
 
 KCalendarCore::Attendee::List EventWrapper::attendees() const
