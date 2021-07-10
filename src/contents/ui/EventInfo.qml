@@ -2,6 +2,7 @@ import QtQuick 2.15
 import org.kde.kirigami 2.14 as Kirigami
 import QtQuick.Controls 2.15 as QQC2
 import QtQuick.Layouts 1.15
+import "labelutils.js" as LabelUtils
 
 Kirigami.OverlayDrawer {
     id: eventInfo
@@ -191,6 +192,26 @@ Kirigami.OverlayDrawer {
                         onLinkActivated: Qt.openUrlExternally(link)
                         wrapMode: Text.Wrap
                         visible: eventInfo.eventData.description
+                    }
+
+                    QQC2.Label {
+                        Layout.alignment: Qt.AlignTop
+                        text: i18n("<b>Reminders:</b>")
+                        visible: eventInfo.eventData.alarmsStartOffsets.length > 0
+                    }
+                    ColumnLayout {
+                        Layout.fillWidth: true
+                        Repeater {
+                            Layout.fillWidth: true
+                            visible: eventInfo.eventData.alarmsStartOffsets.length > 0
+
+                            model: eventInfo.eventData.alarmsStartOffsets
+
+                            delegate: QQC2.Label {
+                                Layout.fillWidth: true
+                                text: LabelUtils.secondsToReminderLabel(modelData) + i18n(" start of event")
+                            }
+                        }
                     }
                 }
             }

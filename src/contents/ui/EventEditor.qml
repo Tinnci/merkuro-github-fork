@@ -6,6 +6,7 @@ import QtQuick.Controls 2.15 as QQC2
 import QtQuick.Layouts 1.15
 import org.kde.kirigami 2.15 as Kirigami
 import org.kde.kalendar 1.0
+import "labelutils.js" as LabelUtils
 
 Kirigami.ScrollablePage {
     id: eventEditorSheet
@@ -501,30 +502,10 @@ Kirigami.ScrollablePage {
                     Layout.columnSpan: 4
                     visible: recurScaleRuleCombobox.currentIndex === 2 && repeatComboBox.currentIndex === 5 // "month/months" index
 
-                    function numberToString(number) {
-                        // The code in here was adapted from an article by Johnathan Wood, see:
-                        // http://www.blackbeltcoder.com/Articles/strings/converting-numbers-to-ordinal-strings
-
-                        let numSuffixes = [ "th",
-                                            "st",
-                                            "nd",
-                                            "rd",
-                                            "th",
-                                            "th",
-                                            "th",
-                                            "th",
-                                            "th",
-                                            "th" ];
-
-                        let i = (number % 100);
-                        let j = (i > 10 && i < 20) ? 0 : (number % 10);
-                        return i18n(number + numSuffixes[j]);
-                    }
-
                     QQC2.RadioButton {
                         property int dateOfMonth: eventStartDateCombo.dateFromText.getDate()
 
-                        text: i18nc("%1 is the day number of month", "the %1 of each month", parent.numberToString(dateOfMonth))
+                        text: i18nc("%1 is the day number of month", "the %1 of each month", LabelUtils.numberToString(dateOfMonth))
                         checked: eventEditorSheet.eventWrapper.recurrenceType == 6 // Monthly on day (1st of month)
                         onClicked: customRecurrenceLayout.setOcurrence()
                     }
@@ -535,7 +516,7 @@ Kirigami.ScrollablePage {
                         property int weekOfMonth: Math.ceil((eventStartDateCombo.dateFromText.getDate() + 6 - eventStartDateCombo.dateFromText.getDay())/7);
                         property string dayOfWeekString: Qt.locale().dayName(eventStartDateCombo.dateFromText.getDay())
 
-                        text: i18nc("the weekOfMonth dayOfWeekString of each month", "the %1 %2 of each month", parent.numberToString(weekOfMonth), dayOfWeekString)
+                        text: i18nc("the weekOfMonth dayOfWeekString of each month", "the %1 %2 of each month", LabelUtils.numberToString(weekOfMonth), dayOfWeekString)
                         checked: eventEditorSheet.eventWrapper.recurrenceType == 5 // Monthly on position
                         onTextChanged: if(checked) { eventEditorSheet.eventWrapper.setMonthlyPosRecurrence(weekOfMonth, dayOfWeek); }
                         onClicked: eventEditorSheet.eventWrapper.setMonthlyPosRecurrence(weekOfMonth, dayOfWeek)
@@ -705,30 +686,6 @@ Kirigami.ScrollablePage {
                 Kirigami.FormData.label: i18n("Reminder:")
                 Layout.fillWidth: true
 
-                function secondsToReminderLabel(seconds) { // Gives prettified time
-
-                    function numAndUnit(secs) {
-                        if(secs >= 2 * 24 * 60 * 60)
-                            return i18nc("%1 is 2 or more", "%1 days", Math.round(secs / (24*60*60))); // 2 days +
-                        else if (secs >= 1 * 24 * 60 * 60)
-                            return "1 day";
-                        else if (secs >= 2 * 60 * 60)
-                            return i18nc("%1 is 2 or mores", "%1 hours", Math.round(secs / (60*60))); // 2 hours +
-                        else if (secs >= 1 * 60 * 60)
-                            return i18n("1 hour");
-                        else
-                            return i18n("%1 minutes", Math.round(secs / 60));
-                    }
-
-                    if (seconds < 0) {
-                        return i18n("%1 before", numAndUnit(seconds * -1));
-                    } else if (seconds < 0) {
-                        return i18n("%1 after", numAndUnit(seconds));
-                    } else {
-                        return i18n("On event start");
-                    }
-                }
-
                 property var reminderCombos: []
 
                 QQC2.Button {
@@ -757,7 +714,7 @@ Kirigami.ScrollablePage {
 
                             property var selectedIndex: 0
 
-                            displayText: remindersColumn.secondsToReminderLabel(startOffset)
+                            displayText: LabelUtils.secondsToReminderLabel(startOffset)
                             //textRole: "DisplayNameRole"
                             onCurrentValueChanged: eventEditorSheet.eventWrapper.remindersModel.setData(eventEditorSheet.eventWrapper.remindersModel.index(index, 0),
                                                                                                         currentValue,
@@ -778,7 +735,7 @@ Kirigami.ScrollablePage {
                                     -1 * 5 * 24 * 60 * 60]
                                     // All these times are in seconds.
                             delegate: Kirigami.BasicListItem {
-                                text: remindersColumn.secondsToReminderLabel(modelData)
+                                text: LabelUtils.secondsToReminderLabel(modelData)
                             }
 
                             popup.z: 1000
