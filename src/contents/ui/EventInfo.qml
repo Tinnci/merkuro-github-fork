@@ -247,7 +247,9 @@ Kirigami.OverlayDrawer {
 
                             delegate: QQC2.Label {
                                 Layout.fillWidth: true
-                                text: fullName
+                                textFormat: Text.MarkdownText
+                                text: name ? `[${name}](mailto:${email})` : `[${email}](mailto:${email})`
+                                onLinkActivated: Qt.openUrlExternally(link)
                                 wrapMode: Text.Wrap
                             }
                         }
