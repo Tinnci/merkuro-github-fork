@@ -227,6 +227,28 @@ Kirigami.OverlayDrawer {
                             delegate: QQC2.Label {
                                 Layout.fillWidth: true
                                 text: LabelUtils.secondsToReminderLabel(startOffset) + i18n(" start of event")
+                                wrapMode: Text.Wrap
+                            }
+                        }
+                    }
+
+                    QQC2.Label {
+                        Layout.alignment: Qt.AlignTop
+                        text: i18n("<b>Guests:</b>")
+                        visible: eventInfo.eventWrapper.attendeesModel.rowCount() > 0
+                    }
+                    ColumnLayout {
+                        Layout.fillWidth: true
+                        Repeater {
+                            Layout.fillWidth: true
+                            visible: eventInfo.eventWrapper.attendeesModel.rowCount() > 0
+
+                            model: eventInfo.eventWrapper.attendeesModel
+
+                            delegate: QQC2.Label {
+                                Layout.fillWidth: true
+                                text: fullName
+                                wrapMode: Text.Wrap
                             }
                         }
                     }
