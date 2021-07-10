@@ -154,12 +154,25 @@ QVariantMap EventWrapper::recurrenceData()
         weekDaysBools[i] = weekDaysBits[i];
     }
 
+    QVariantList monthPositions;
+    for(auto pos : m_event->recurrence()->monthPositions()) {
+        QVariantMap positionToAdd;
+        positionToAdd[QStringLiteral("day")] = pos.day();
+        positionToAdd[QStringLiteral("pos")] = pos.pos();
+        monthPositions.append(positionToAdd);
+    }
+
+    qDebug() << m_event->recurrence()->monthDays();
+
     return QVariantMap {
         {QStringLiteral("weekdays"), QVariant::fromValue(weekDaysBools)},
         {QStringLiteral("duration"), m_event->recurrence()->duration()},
         {QStringLiteral("frequency"), m_event->recurrence()->frequency()},
+        {QStringLiteral("startDateTime"), m_event->recurrence()->startDateTime()},
         {QStringLiteral("endDateTime"), m_event->recurrence()->endDateTime()},
-        {QStringLiteral("type"), m_event->recurrence()->recurrenceType()}
+        {QStringLiteral("type"), m_event->recurrence()->recurrenceType()},
+        {QStringLiteral("monthDays"), QVariant::fromValue(m_event->recurrence()->monthDays())},
+        {QStringLiteral("monthPositions"), monthPositions}
     };
 }
 

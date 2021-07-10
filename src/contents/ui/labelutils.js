@@ -64,7 +64,7 @@ function recurrenceToString(recurrenceData) {
                     console.log(Qt.locale().dayName(i + Qt.locale().firstDayOfWeek, Locale.ShortFormat))
 
                     if(recurrenceData.weekdays[i]) {
-                        returnString += ` ${Qt.locale().dayName(i + Qt.locale().firstDayOfWeek, Locale.ShortFormat)},`;
+                        returnString += ` ${Qt.locale().dayName(i + 1, Locale.ShortFormat)},`; // C++ Qt weekdays go Mon->Sun, JS goes Sun->Sat
                     }
                 }
                 // Delete last comma
@@ -72,12 +72,22 @@ function recurrenceToString(recurrenceData) {
             }
             break;
         case 5: // Monthly on position (e.g. third Monday)
+            returnString += i18np(" month on the", " %1 months on the", recurrenceData.frequency);
+
+            for(let position of recurrenceData.monthPositions) {
+                returnString += ` ${numberToString(position.pos)} ${Qt.locale().dayName(position.day)},`
+            }
+
+            returnString = returnString.slice(0, -1);
+            break;
         case 6: // Monthly on day (1st of month)
-            returnString += i18np(" month", " %1 months", recurrenceData.frequency);
+            returnString += i18np(" month on the %2", " %1 months on the %2", recurrenceData.frequency, numberToString(recurrenceData.startDateTime.getDate()));
+            break;
         case 7: // Yearly on month
         case 8: // Yearly on day
         case 9: // Yearly on position
             returnString += i18np(" year", " %1 years", recurrenceData.frequency);
+            break;
     }
 
     return returnString;
