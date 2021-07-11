@@ -162,14 +162,6 @@ QVariantMap EventWrapper::recurrenceData()
         monthPositions.append(positionToAdd);
     }
 
-    qDebug() << m_event->recurrence()->yearDays();
-    qDebug() << m_event->recurrence()->yearDates();
-    qDebug() << m_event->recurrence()->yearMonths();
-
-    for(auto pos : m_event->recurrence()->monthPositions()) {
-        qDebug() << pos.pos() << pos.day();
-    }
-
     // FYI: yearPositions() just calls monthPositions(), so we're cutting out the middleman
     return QVariantMap {
         {QStringLiteral("weekdays"), QVariant::fromValue(weekDaysBools)},

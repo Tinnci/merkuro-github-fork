@@ -266,9 +266,6 @@ CalendarManager::CalendarManager(QObject *parent)
     m_rightsFilterModel->setSourceModel(m_mimeTypeFilterModel);
     m_rightsFilterModel->sort(0);
 
-    connect(m_rightsFilterModel, &Akonadi::EntityRightsFilterModel::rowsInserted,
-            this, &CalendarManager::updateDefaultCalendarSelectableIndex);
-
     Q_EMIT entityTreeModelChanged();
     Q_EMIT loadingChanged();
 }
@@ -362,18 +359,6 @@ int CalendarManager::getCalendarSelectableIndex(qint64 collectionId)
             return i;
     }
     return -1;
-}
-
-int CalendarManager::defaultCalendarSelectableIndex()
-{
-    return m_defaultCalendarSelectableIndex;
-}
-
-void CalendarManager::updateDefaultCalendarSelectableIndex()
-{
-    qint64 calId = defaultCalendarId();
-    m_defaultCalendarSelectableIndex = getCalendarSelectableIndex(calId);
-    Q_EMIT defaultCalendarSelectableIndexChanged();
 }
 
 void CalendarManager::addEvent(qint64 collectionId, KCalendarCore::Event::Ptr event)

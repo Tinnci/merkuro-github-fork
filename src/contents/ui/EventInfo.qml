@@ -18,6 +18,7 @@ Kirigami.OverlayDrawer {
      * The eventWrapper contains more indepth data about reminders, attendees, etc. that is
      * general to the event as a whole, not a specific occurrence.
      **/
+
     property var eventData
     property var eventWrapper
     property var collectionData
@@ -40,6 +41,9 @@ Kirigami.OverlayDrawer {
     Kirigami.Theme.colorSet: Kirigami.Theme.View
 
     contentItem: Loader {
+        Layout.fillWidth: true
+        Layout.fillHeight: true
+
         active: eventInfo.drawerOpen
         sourceComponent: QQC2.ScrollView {
             id: contentsView

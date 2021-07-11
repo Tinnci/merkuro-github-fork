@@ -16,7 +16,9 @@ Kirigami.OverlaySheet {
 
     property var eventWrapper
     property date deleteDate
-    property bool recurringEvent: eventWrapper.recurrenceType > 0
+    property bool recurringEvent
+
+    onEventWrapperChanged: recurringEvent = eventWrapper.recurrenceType > 0
 
     header: Kirigami.Heading {
         text: i18n("Delete event")
@@ -64,28 +66,33 @@ Kirigami.OverlaySheet {
         onRejected: deleteEventSheet.close()
     }
 
-    RowLayout {
+    Loader {
         Layout.maximumWidth: Kirigami.Units.gridUnit * 30
 
-        Kirigami.Icon {
-            Layout.fillHeight: true
-            Layout.minimumHeight: Kirigami.Units.gridUnit * 4
-            Layout.minimumWidth: height
-            source: "dialog-warning"
-        }
+        active: eventWrapper !== undefined
+        sourceComponent: RowLayout {
+            Layout.maximumWidth: Kirigami.Units.gridUnit * 30
 
-        QQC2.Label {
-            Layout.fillWidth: true
-            text: i18n("Do you really want to delete item: ") + `"${eventWrapper.summary}"?`
-            visible: !recurringEvent
-            wrapMode: Text.WordWrap
-        }
+            Kirigami.Icon {
+                Layout.fillHeight: true
+                Layout.minimumHeight: Kirigami.Units.gridUnit * 4
+                Layout.minimumWidth: height
+                source: "dialog-warning"
+            }
 
-        QQC2.Label {
-            Layout.fillWidth: true
-            text: i18n("The calendar item ") + `"${eventWrapper.summary}"` +  i18n(" recurs over multiple dates. Do you want to delete the current one on %1, also future occurrences, or all its occurrences?", deleteDate.toLocaleDateString(Qt.locale()))
-            visible: recurringEvent
-            wrapMode: Text.WordWrap
+            QQC2.Label {
+                Layout.fillWidth: true
+                text: i18n("Do you really want to delete item: ") + `"${eventWrapper.summary}"?`
+                visible: !recurringEvent
+                wrapMode: Text.WordWrap
+            }
+
+            QQC2.Label {
+                Layout.fillWidth: true
+                text: i18n("The calendar item ") + `"${eventWrapper.summary}"` +  i18n(" recurs over multiple dates. Do you want to delete the current one on %1, also future occurrences, or all its occurrences?", deleteDate.toLocaleDateString(Qt.locale()))
+                visible: recurringEvent
+                wrapMode: Text.WordWrap
+            }
         }
     }
 }

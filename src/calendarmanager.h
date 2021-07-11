@@ -28,7 +28,6 @@ class CalendarManager : public QObject
     Q_PROPERTY(KDescendantsProxyModel *allCalendars READ allCalendars CONSTANT)
     Q_PROPERTY(Akonadi::EntityRightsFilterModel *selectableCalendars READ selectableCalendars CONSTANT)
     Q_PROPERTY(qint64 defaultCalendarId READ defaultCalendarId CONSTANT)
-    Q_PROPERTY(int defaultCalendarSelectableIndex READ defaultCalendarSelectableIndex NOTIFY defaultCalendarSelectableIndexChanged)
     Q_PROPERTY(Akonadi::ETMCalendar *calendar READ calendar CONSTANT)
 public:
     CalendarManager(QObject *parent = nullptr);
@@ -45,8 +44,6 @@ public:
     Akonadi::EntityRightsFilterModel *selectableCalendars() const;
     qint64 defaultCalendarId();
     Q_INVOKABLE int getCalendarSelectableIndex(qint64 collectionId);
-    int defaultCalendarSelectableIndex();
-    void updateDefaultCalendarSelectableIndex();
 
     Q_INVOKABLE void addEvent(qint64 collectionId, KCalendarCore::Event::Ptr event);
     Q_INVOKABLE void editEvent(KCalendarCore::Event::Ptr editedEvent);
@@ -59,7 +56,6 @@ private Q_SLOTS:
 Q_SIGNALS:
     void loadingChanged();
     void entityTreeModelChanged();
-    void defaultCalendarSelectableIndexChanged();
 
 private:
     Akonadi::ETMCalendar *m_calendar = nullptr;
@@ -70,5 +66,4 @@ private:
     KDescendantsProxyModel *m_allCalendars = nullptr;
     Akonadi::CollectionFilterProxyModel *m_mimeTypeFilterModel = nullptr;
     Akonadi::EntityRightsFilterModel *m_rightsFilterModel = nullptr;
-    int m_defaultCalendarSelectableIndex;
 };
