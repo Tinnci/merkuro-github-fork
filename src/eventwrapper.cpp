@@ -162,8 +162,15 @@ QVariantMap EventWrapper::recurrenceData()
         monthPositions.append(positionToAdd);
     }
 
-    qDebug() << m_event->recurrence()->monthDays();
+    qDebug() << m_event->recurrence()->yearDays();
+    qDebug() << m_event->recurrence()->yearDates();
+    qDebug() << m_event->recurrence()->yearMonths();
 
+    for(auto pos : m_event->recurrence()->monthPositions()) {
+        qDebug() << pos.pos() << pos.day();
+    }
+
+    // FYI: yearPositions() just calls monthPositions(), so we're cutting out the middleman
     return QVariantMap {
         {QStringLiteral("weekdays"), QVariant::fromValue(weekDaysBools)},
         {QStringLiteral("duration"), m_event->recurrence()->duration()},
@@ -172,7 +179,10 @@ QVariantMap EventWrapper::recurrenceData()
         {QStringLiteral("endDateTime"), m_event->recurrence()->endDateTime()},
         {QStringLiteral("type"), m_event->recurrence()->recurrenceType()},
         {QStringLiteral("monthDays"), QVariant::fromValue(m_event->recurrence()->monthDays())},
-        {QStringLiteral("monthPositions"), monthPositions}
+        {QStringLiteral("monthPositions"), monthPositions},
+        {QStringLiteral("yearDays"), QVariant::fromValue(m_event->recurrence()->yearDays())},
+        {QStringLiteral("yearDates"), QVariant::fromValue(m_event->recurrence()->yearDates())},
+        {QStringLiteral("yearMonths"), QVariant::fromValue(m_event->recurrence()->yearMonths())}
     };
 }
 

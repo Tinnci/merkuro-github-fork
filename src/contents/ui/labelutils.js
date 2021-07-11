@@ -45,52 +45,98 @@ function secondsToReminderLabel(seconds) { // Gives prettified time
     }
 }
 
-function recurrenceToString(recurrenceData) {
-    let returnString = i18n("Every");
+function weeklyRecurrenceToString(recurrenceData) {
+    let returnString = i18np("Every week", "Every %1 weeks", recurrenceData.frequency);
 
-    switch(recurrenceData.type) {
-        case 0:
-            return i18n("Never");
-        case 3: // Daily
-            returnString += i18np(" day", " %1 days", recurrenceData.frequency);
-            break;
-        case 4: // Weekly
-            returnString += i18np(" week", " %1 weeks", recurrenceData.frequency);
+    if (recurrenceData.weekdays.filter(x => x === true).length > 0) {
+        returnString += i18n(" on");
 
-            if (recurrenceData.weekdays.filter(x => x === true).length > 0) {
-                returnString += i18n(" on");
+        for(let i = 0; i < recurrenceData.weekdays.length; i++) {
+            console.log(Qt.locale().dayName(i + Qt.locale().firstDayOfWeek, Locale.ShortFormat))
 
-                for(let i = 0; i < recurrenceData.weekdays.length; i++) {
-                    console.log(Qt.locale().dayName(i + Qt.locale().firstDayOfWeek, Locale.ShortFormat))
-
-                    if(recurrenceData.weekdays[i]) {
-                        returnString += ` ${Qt.locale().dayName(i + 1, Locale.ShortFormat)},`; // C++ Qt weekdays go Mon->Sun, JS goes Sun->Sat
-                    }
-                }
-                // Delete last comma
-                returnString = returnString.slice(0, -1);
+            if(recurrenceData.weekdays[i]) {
+                returnString += ` ${Qt.locale().dayName(i + 1, Locale.ShortFormat)},`; // C++ Qt weekdays go Mon->Sun, JS goes Sun->Sat
             }
-            break;
-        case 5: // Monthly on position (e.g. third Monday)
-            returnString += i18np(" month on the", " %1 months on the", recurrenceData.frequency);
-
-            for(let position of recurrenceData.monthPositions) {
-                returnString += ` ${numberToString(position.pos)} ${Qt.locale().dayName(position.day)},`
-            }
-
-            returnString = returnString.slice(0, -1);
-            break;
-        case 6: // Monthly on day (1st of month)
-            returnString += i18np(" month on the %2", " %1 months on the %2", recurrenceData.frequency, numberToString(recurrenceData.startDateTime.getDate()));
-            break;
-        case 7: // Yearly on month
-        case 8: // Yearly on day
-        case 9: // Yearly on position
-            returnString += i18np(" year", " %1 years", recurrenceData.frequency);
-            break;
+        }
+        // Delete last comma
+        returnString = returnString.slice(0, -1);
     }
 
     return returnString;
+}
 
+function monthPositionsToString(recurrenceData) {
+    let returnString = "";
+
+    for(let position of recurrenceData.monthPositions) {
+        returnString += `${numberToString(position.pos)} ${Qt.locale().dayName(position.day)}, `
+    }
+    console.log(returnString)
+
+    return returnString.slice(0, -2);
+}
+
+function yearlyPosRecurrenceToString(recurrenceData) {
+    let months = "";
+
+    for(let i = 0; i < recurrenceData.yearMonths.length; i++) {
+        months += `${Qt.locale().monthName(recurrenceData.yearMonths[i])}, `;
+    }
+    months = months.slice(0, -2); // Remove space and comma
+
+    return i18np("Every year on the %2 of %3", "Every %1 years on the %2 of %3",
+                 recurrenceData.frequency, monthPositionsToString(recurrenceData), months);
+}
+
+function yearlyDaysRecurrenceToString(recurrenceData) {
+    let dayNumsString = "";
+
+    for(let dayNum of recurrenceData.yearDays) {
+        dayNumsString += `${numberToString(dayNum)}, `;
+    }
+    return dayNumsString.slice(0, -2); // Remove space and comma
+}
+
+function recurrenceToString(recurrenceData) {
+    switch(recurrenceData.type) {
+        case 0:
+            return i18n("Never");
+
+        case 1:
+            return i18np("Every minute", "Every %1 minutes", recurrenceData.frequency);
+
+        case 2:
+            return i18np("Every hour", "Every %1 hours", recurrenceData.frequency);
+
+        case 3: // Daily
+            return i18np("Every day", "Every %1 days", recurrenceData.frequency);
+
+        case 4: // Weekly
+            return weeklyRecurrenceToString(recurrenceData);
+
+        case 5: // Monthly on position (e.g. third Monday)
+            return i18np("Every month on the %2", "Every %1 months on the %2",
+                  recurrenceData.frequency, monthPositionsToString(recurrenceData));
+
+        case 6: // Monthly on day (1st of month)
+            return i18np("Every month on the %2", "Every %1 months on the %2",
+                         recurrenceData.frequency, numberToString(recurrenceData.startDateTime.getDate()));
+
+        case 7: // Yearly on month (e.g. every April 15th)
+            return i18np("Every year on the %2 of %3", "Every %1 years on the %2 of %3", recurrenceData.frequency,
+                         numberToString(recurrenceData.startDateTime.getDate()), Qt.locale().monthName(recurrenceData.startDateTime.getMonth()));
+
+        case 8: // Yearly on day (e.g. 192nd day of the year)
+            return i18np("Every year on the %2 day of the year", "Every %1 years on the %2 day of the year", recurrenceData.frequency,
+                         yearlyDaysRecurrenceToString(recurrenceData));
+        case 9: // Yearly on position
+            return yearlyPosRecurrenceToString(recurrenceData);
+
+        case 10:
+            return i18n("Complex recurrence rule");
+
+        default:
+            return i18n("Unknown");
+    }
 
 }
