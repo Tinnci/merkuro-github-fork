@@ -18,9 +18,13 @@ Kirigami.OverlayDrawer {
      * The eventWrapper contains more indepth data about reminders, attendees, etc. that is
      * general to the event as a whole, not a specific occurrence.
      **/
+
     property var eventData
     property var eventWrapper
     property var collectionData
+
+    // This regex detects URLs in the description text, so we can turn them into links
+    readonly property string urlRegex: /^(?:(?:https?|ftp):\/\/)(?:\S+(?::\S*)?@)?(?:(?!(?:10|127)(?:\.\d{1,3}){3})(?!(?:169\.254|192\.168)(?:\.\d{1,3}){2})(?!172\.(?:1[6-9]|2\d|3[0-1])(?:\.\d{1,3}){2})(?:[1-9]\d?|1\d\d|2[01]\d|22[0-3])(?:\.(?:1?\d{1,2}|2[0-4]\d|25[0-5])){2}(?:\.(?:[1-9]\d?|1\d\d|2[0-4]\d|25[0-4]))|(?:(?:[a-z\u00a1-\uffff0-9]-*)*[a-z\u00a1-\uffff0-9]+)(?:\.(?:[a-z\u00a1-\uffff0-9]-*)*[a-z\u00a1-\uffff0-9]+)*(?:\.(?:[a-z\u00a1-\uffff]{2,}))\.?)(?::\d{2,5})?(?:[/?#]\S*)?$/ig
 
     onEventDataChanged: {
         eventWrapper = Qt.createQmlObject('import org.kde.kalendar 1.0; EventWrapper {id: event}',
@@ -40,6 +44,9 @@ Kirigami.OverlayDrawer {
     Kirigami.Theme.colorSet: Kirigami.Theme.View
 
     contentItem: Loader {
+        Layout.fillWidth: true
+        Layout.fillHeight: true
+
         active: eventInfo.drawerOpen
         sourceComponent: QQC2.ScrollView {
             id: contentsView
@@ -74,13 +81,13 @@ Kirigami.OverlayDrawer {
                         QQC2.ToolButton {
                             icon.name: "edit-entry"
                             text:i18n("Edit")
-                            enabled: !eventInfo.collectionData["readOnly"]
+                            enabled: !eventInfo.collectionData.readOnly
                             onClicked: editEvent(eventInfo.eventData.eventPtr, eventInfo.eventData.collectionId)
                         }
                         QQC2.ToolButton {
                             icon.name: "edit-delete"
                             text:i18n("Delete")
-                            enabled: !eventInfo.collectionData["readOnly"]
+                            enabled: !eventInfo.collectionData.readOnly
                             onClicked: deleteEvent(eventInfo.eventData.eventPtr, eventInfo.eventData.startTime)
                         }
                     }
@@ -108,7 +115,7 @@ Kirigami.OverlayDrawer {
                         }
                         Kirigami.Icon {
                             source: "tag-events"
-                            // This will need dynamic changing with implementation of to-dos/journals
+                            // TODO: This will need dynamic changing with implementation of to-dos/journals
                         }
                         Kirigami.Icon {
                             source: "appointment-recurring"
@@ -135,7 +142,7 @@ Kirigami.OverlayDrawer {
                         Layout.alignment: Qt.AlignTop
                         Layout.fillWidth: true
 
-                        text: eventInfo.collectionData["displayName"]
+                        text: eventInfo.collectionData.displayName
                         wrapMode: Text.Wrap
                     }
 
@@ -250,7 +257,9 @@ Kirigami.OverlayDrawer {
                         Layout.alignment: Qt.AlignTop
                         Layout.fillWidth: true
 
-                        text: eventInfo.eventWrapper.location
+                        textFormat: Text.MarkdownText
+                        text: eventInfo.eventWrapper.location.replace(eventInfo.urlRegexp, (match) => `[${match}](${match})`)
+                        onLinkActivated: Qt.openUrlExternally(link)
                         wrapMode: Text.Wrap
                         visible: eventInfo.eventWrapper.location
                     }
@@ -268,13 +277,7 @@ Kirigami.OverlayDrawer {
                         Layout.fillWidth: true
 
                         textFormat: Text.MarkdownText
-                        text: {
-                            const regexp = /^(?:(?:https?|ftp):\/\/)(?:\S+(?::\S*)?@)?(?:(?!(?:10|127)(?:\.\d{1,3}){3})(?!(?:169\.254|192\.168)(?:\.\d{1,3}){2})(?!172\.(?:1[6-9]|2\d|3[0-1])(?:\.\d{1,3}){2})(?:[1-9]\d?|1\d\d|2[01]\d|22[0-3])(?:\.(?:1?\d{1,2}|2[0-4]\d|25[0-5])){2}(?:\.(?:[1-9]\d?|1\d\d|2[0-4]\d|25[0-4]))|(?:(?:[a-z\u00a1-\uffff0-9]-*)*[a-z\u00a1-\uffff0-9]+)(?:\.(?:[a-z\u00a1-\uffff0-9]-*)*[a-z\u00a1-\uffff0-9]+)*(?:\.(?:[a-z\u00a1-\uffff]{2,}))\.?)(?::\d{2,5})?(?:[/?#]\S*)?$/ig
-
-                            eventInfo.eventWrapper.description.replace(regexp, (match) => {
-                                return `[${match}](${match})`;
-                            })
-                        }
+                        text: eventInfo.eventWrapper.description.replace(eventInfo.urlRegexp, (match) => `[${match}](${match})`)
                         onLinkActivated: Qt.openUrlExternally(link)
                         wrapMode: Text.Wrap
                         visible: eventInfo.eventWrapper.description
@@ -297,7 +300,7 @@ Kirigami.OverlayDrawer {
                             delegate: QQC2.Label {
                                 Layout.fillWidth: true
                                 // This didn't work in Markdown format
-                                text: `<a href="${uri}">${label}</a>`
+                                text: `<a href="${uri}">${attachmentLabel}</a>`
                                 onLinkActivated: Qt.openUrlExternally(link)
                                 wrapMode: Text.Wrap
                             }
@@ -312,15 +315,16 @@ Kirigami.OverlayDrawer {
 
                     ColumnLayout {
                         Layout.fillWidth: true
+                        visible: eventInfo.eventWrapper.remindersModel.rowCount() > 0
+
                         Repeater {
                             Layout.fillWidth: true
-                            visible: eventInfo.eventWrapper.remindersModel.rowCount() > 0
 
                             model: eventInfo.eventWrapper.remindersModel
 
                             delegate: QQC2.Label {
                                 Layout.fillWidth: true
-                                text: LabelUtils.secondsToReminderLabel(startOffset) + i18n(" start of event")
+                                text: LabelUtils.secondsToReminderLabel(startOffset)
                                 wrapMode: Text.Wrap
                             }
                         }
@@ -329,7 +333,7 @@ Kirigami.OverlayDrawer {
                     QQC2.Label {
                         Layout.alignment: Qt.AlignTop
                         text: i18n("<b>Organizer:</b>")
-                        visible: eventInfo.eventWrapper.attendeesModel.rowCount() > 0
+                        visible: eventInfo.eventWrapper.organizer.fullName
                     }
                     QQC2.Label {
                         Layout.fillWidth: true
@@ -342,7 +346,7 @@ Kirigami.OverlayDrawer {
                               `[${organizer.email}](mailto:${organizer.email})`
                         onLinkActivated: Qt.openUrlExternally(link)
                         wrapMode: Text.Wrap
-                        visible: eventInfo.eventWrapper.attendeesModel.rowCount() > 0
+                        visible: eventInfo.eventWrapper.organizer.fullName
                     }
 
                     QQC2.Label {
@@ -366,7 +370,6 @@ Kirigami.OverlayDrawer {
                                 wrapMode: Text.Wrap
                             }
                         }
-
                     }
                 }
             }
