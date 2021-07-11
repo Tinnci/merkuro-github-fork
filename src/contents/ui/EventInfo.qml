@@ -178,13 +178,26 @@ Kirigami.OverlayDrawer {
                         text: i18n("<b>Recurrence:</b>")
                         visible: eventInfo.eventWrapper.recurrenceData["type"]
                     }
-                    QQC2.Label {
-                        Layout.alignment: Qt.AlignTop
+                    ColumnLayout {
                         Layout.fillWidth: true
-
-                        text: LabelUtils.recurrenceToString(eventInfo.eventWrapper.recurrenceData)
                         visible: eventInfo.eventWrapper.recurrenceData["type"]
-                        wrapMode: Text.Wrap
+
+                        QQC2.Label {
+                            Layout.alignment: Qt.AlignTop
+                            Layout.fillWidth: true
+
+                            text: LabelUtils.recurrenceToString(eventInfo.eventWrapper.recurrenceData)
+                            wrapMode: Text.Wrap
+                        }
+
+                        QQC2.Label {
+                            Layout.alignment: Qt.AlignTop
+                            Layout.fillWidth: true
+                            visible: eventInfo.eventWrapper.recurrenceData.duration > -1
+
+                            text: LabelUtils.recurrenceEndToString(eventInfo.eventWrapper.recurrenceData)
+                            wrapMode: Text.Wrap
+                        }
                     }
 
                     QQC2.Label {

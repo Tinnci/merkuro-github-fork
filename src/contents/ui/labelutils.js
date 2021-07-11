@@ -140,3 +140,14 @@ function recurrenceToString(recurrenceData) {
     }
 
 }
+
+function recurrenceEndToString(recurrenceData) {
+    switch(recurrenceData.duration) {
+        case -1:
+            return i18n("Never ends");
+        case 0:
+            return i18n("Ends on %1", recurrenceData.endDateTime.toLocaleDateString(Qt.locale()))
+        default:
+            return i18n("Ends after %1 occurrences", recurrenceData.duration);
+    }
+}
