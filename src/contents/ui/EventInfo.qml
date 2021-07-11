@@ -190,6 +190,31 @@ Kirigami.OverlayDrawer {
                             wrapMode: Text.Wrap
                         }
 
+                        RowLayout {
+                            Layout.fillWidth: true
+                            visible: exceptionsRepeater.count
+
+                            QQC2.Label {
+                                Layout.alignment: Qt.AlignTop
+                                visible: exceptionsRepeater.count
+
+                                text: i18n("Except on:")
+
+                            }
+                            ColumnLayout {
+                                Layout.fillWidth: true
+
+                                Repeater {
+                                    id: exceptionsRepeater
+                                    model: eventInfo.eventWrapper.recurrenceExceptionsModel
+                                    delegate: QQC2.Label {
+                                        Layout.fillWidth: true
+                                        text: date.toLocaleDateString(Qt.locale())
+                                    }
+                                }
+                            }
+                        }
+
                         QQC2.Label {
                             Layout.alignment: Qt.AlignTop
                             Layout.fillWidth: true
