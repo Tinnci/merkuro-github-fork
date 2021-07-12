@@ -98,14 +98,29 @@ Kirigami.OverlayDrawer {
 
                     columns:2
 
-                    Kirigami.Heading {
+                    RowLayout {
                         Layout.columnSpan: 2
                         Layout.fillWidth: true
                         Layout.maximumWidth: contentsView.availableWidth - (Kirigami.Units.largeSpacing * 2)
                         Layout.minimumWidth: contentsView.availableWidth - (Kirigami.Units.largeSpacing * 2)
 
-                        text: "<b>" + eventInfo.eventData.text + "</b>"
-                        wrapMode: Text.Wrap
+                        Kirigami.Heading {
+                            Layout.fillWidth: true
+
+                            text: "<b>" + eventInfo.eventData.text + "</b>"
+                            wrapMode: Text.Wrap
+                        }
+                        Kirigami.Icon {
+                            source: "tag-events"
+                        }
+                        Kirigami.Icon {
+                            source: "appointment-recurring"
+                            visible: eventInfo.eventWrapper.recurrenceData["type"]
+                        }
+                        Kirigami.Icon {
+                            source: "appointment-reminder"
+                            visible: eventInfo.eventWrapper.remindersModel.rowCount() > 0
+                        }
                     }
                     Rectangle {
                         Layout.columnSpan: 2
