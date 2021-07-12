@@ -21,7 +21,7 @@ Kirigami.ScrollablePage {
     property bool editMode: false
     property bool validDates: eventWrapper !== undefined &&
                               editorLoader.item.validFormDates &&
-                              eventWrapper.eventStart < eventWrapper.eventEnd
+                              eventWrapper.eventStart <= eventWrapper.eventEnd
 
     onEventWrapperChanged: if(!editMode) { eventWrapper.collectionId = CalendarManager.defaultCalendarId }
 
@@ -69,7 +69,7 @@ Kirigami.ScrollablePage {
                 visible: !eventEditorSheet.validDates
                 type: Kirigami.MessageType.Error
                 // Specify what the problem is to aid user
-                text: eventEditorSheet.eventWrapper.eventStart < eventEditorSheet.eventWrapper.eventEnd ?
+                text: eventEditorSheet.eventWrapper.eventStart <= eventEditorSheet.eventWrapper.eventEnd ?
                       i18n("Invalid dates provided.") : i18n("End date cannot be before start date.")
             }
 
@@ -123,6 +123,7 @@ Kirigami.ScrollablePage {
                     id: allDayCheckBox
 
                     text: i18n("All day event")
+                    checked: eventEditorSheet.eventWrapper.allDay
                     onCheckedChanged: eventEditorSheet.eventWrapper.allDay = checked
                 }
                 RowLayout {
@@ -343,16 +344,16 @@ Kirigami.ScrollablePage {
                     onCurrentIndexChanged: if(currentIndex == 0) { eventEditorSheet.eventWrapper.clearRecurrences(); } // "Never"
                     onCurrentValueChanged: if(currentValue >= 0) { eventEditorSheet.eventWrapper.setRegularRecurrence(currentValue); }
                     currentIndex: {
-                        switch(eventEditorSheet.eventWrapper.recurrenceType) {
+                        switch(eventEditorSheet.eventWrapper.recurrenceData["type"]) {
                             case 0:
-                                return eventEditorSheet.eventWrapper.recurrenceType;
+                                return eventEditorSheet.eventWrapper.recurrenceData["type"];
                             case 3: // Daily
-                                return eventEditorSheet.eventWrapper.recurrenceFrequency === 1 ?
-                                    eventEditorSheet.eventWrapper.recurrenceType - 2 : 5
+                                return eventEditorSheet.eventWrapper.recurrenceData["frequency"] === 1 ?
+                                    eventEditorSheet.eventWrapper.recurrenceData["type"] - 2 : 5
                             case 4: // Weekly
-                                return eventEditorSheet.eventWrapper.recurrenceFrequency === 1 ?
-                                    (eventEditorSheet.eventWrapper.recurrenceWeekDays.filter(x => x === true).length === 0 ?
-                                    eventEditorSheet.eventWrapper.recurrenceType - 2 : 5) : 5
+                                return eventEditorSheet.eventWrapper.recurrenceData["frequency"] === 1 ?
+                                    (eventEditorSheet.eventWrapper.recurrenceData["weekdays"].filter(x => x === true).length === 0 ?
+                                    eventEditorSheet.eventWrapper.recurrenceData["type"] - 2 : 5) : 5
                             case 5: // Monthly on position (e.g. third Monday)
                             case 7: // Yearly on month
                             case 9: // Yearly on position
@@ -404,8 +405,8 @@ Kirigami.ScrollablePage {
                         Layout.columnSpan: 2
                         visible: repeatComboBox.currentIndex === 5
                         from: 1
-                        value: eventEditorSheet.eventWrapper.recurrenceFrequency
-                        onValueChanged: if(visible) { eventEditorSheet.eventWrapper.recurrenceFrequency = value }
+                        value: eventEditorSheet.eventWrapper.recurrenceData["frequency"]
+                        onValueChanged: if(visible) { eventEditorSheet.eventWrapper.recurrenceData["frequency"] = value }
                     }
                     QQC2.ComboBox {
                         id: recurScaleRuleCombobox
@@ -417,14 +418,14 @@ Kirigami.ScrollablePage {
                         valueRole: "interval"
                         onCurrentValueChanged: if(visible) { customRecurrenceLayout.setOcurrence(); }
                         currentIndex: {
-                            if(eventEditorSheet.eventWrapper.recurrenceType === undefined) {
+                            if(eventEditorSheet.eventWrapper.recurrenceData["type"] === undefined) {
                                 return -1;
                             }
 
-                            switch(eventEditorSheet.eventWrapper.recurrenceType) {
+                            switch(eventEditorSheet.eventWrapper.recurrenceData["type"]) {
                                 case 3: // Daily
                                 case 4: // Weekly
-                                    return eventEditorSheet.eventWrapper.recurrenceType - 3
+                                    return eventEditorSheet.eventWrapper.recurrenceData["type"] - 3
                                 case 5: // Monthly on position (e.g. third Monday)
                                 case 6: // Monthly on day (1st of month)
                                     return 2;
@@ -479,7 +480,7 @@ Kirigami.ScrollablePage {
                                     // C++ func takes 7 bit array
                                     selectedDays[checkbox.dayNumber] = checkbox.checked
                                 }
-                                eventEditorSheet.eventWrapper.recurrenceWeekDays = selectedDays;
+                                eventEditorSheet.eventWrapper.recurrenceData["weekdays"] = selectedDays;
                             }
 
                             model: 7
@@ -490,8 +491,8 @@ Kirigami.ScrollablePage {
                                                         Qt.locale().firstDayOfWeek + index - 1 - 7 :
                                                         Qt.locale().firstDayOfWeek + index - 1
 
-                                checked: eventEditorSheet.eventWrapper.recurrenceWeekDays[dayNumber]
-                                onClicked: eventEditorSheet.eventWrapper.recurrenceWeekDays[dayNumber] = !eventEditorSheet.eventWrapper.recurrenceWeekDays[dayNumber]
+                                checked: eventEditorSheet.eventWrapper.recurrenceData["weekdays"][dayNumber]
+                                onClicked: eventEditorSheet.eventWrapper.recurrenceData["weekdays"][dayNumber] = !eventEditorSheet.eventWrapper.recurrenceData["weekdays"][dayNumber]
                             }
                         }
                     }
@@ -518,7 +519,7 @@ Kirigami.ScrollablePage {
                             property int dateOfMonth: eventStartDateCombo.dateFromText.getDate()
 
                             text: i18nc("%1 is the day number of month", "the %1 of each month", LabelUtils.numberToString(dateOfMonth))
-                            checked: eventEditorSheet.eventWrapper.recurrenceType == 6 // Monthly on day (1st of month)
+                            checked: eventEditorSheet.eventWrapper.recurrenceData["type"] == 6 // Monthly on day (1st of month)
                             onClicked: customRecurrenceLayout.setOcurrence()
                         }
                         QQC2.RadioButton {
@@ -529,7 +530,7 @@ Kirigami.ScrollablePage {
                             property string dayOfWeekString: Qt.locale().dayName(eventStartDateCombo.dateFromText.getDay())
 
                             text: i18nc("the weekOfMonth dayOfWeekString of each month", "the %1 %2 of each month", LabelUtils.numberToString(weekOfMonth), dayOfWeekString)
-                            checked: eventEditorSheet.eventWrapper.recurrenceType == 5 // Monthly on position
+                            checked: eventEditorSheet.eventWrapper.recurrenceData["type"] == 5 // Monthly on position
                             onTextChanged: if(checked) { eventEditorSheet.eventWrapper.setMonthlyPosRecurrence(weekOfMonth, dayOfWeek); }
                             onClicked: eventEditorSheet.eventWrapper.setMonthlyPosRecurrence(weekOfMonth, dayOfWeek)
                         }
@@ -546,8 +547,8 @@ Kirigami.ScrollablePage {
 
                         Layout.fillWidth: true
                         Layout.columnSpan: currentIndex == 0 ? 4 : 2
-                        currentIndex: eventEditorSheet.eventWrapper.recurrenceDuration <= 0 ? // Recurrence duration returns -1 for never ending and 0 when the recurrence
-                                    eventEditorSheet.eventWrapper.recurrenceDuration + 1 :  // end date is set. Any number larger is the set number of recurrences
+                        currentIndex: eventEditorSheet.eventWrapper.recurrenceData["duration"] <= 0 ? // Recurrence duration returns -1 for never ending and 0 when the recurrence
+                                    eventEditorSheet.eventWrapper.recurrenceData["duration"] + 1 :  // end date is set. Any number larger is the set number of recurrences
                                     2
                         textRole: "display"
                         valueRole: "duration"
@@ -558,7 +559,7 @@ Kirigami.ScrollablePage {
                         ]
                         delegate: Kirigami.BasicListItem {
                             text: modelData.display
-                            onClicked: eventEditorSheet.eventWrapper.recurrenceDuration = modelData.duration
+                            onClicked: eventEditorSheet.eventWrapper.recurrenceData["duration"] = modelData.duration
                         }
                         popup.z: 1000
                     }
@@ -569,7 +570,7 @@ Kirigami.ScrollablePage {
                         Layout.columnSpan: 2
                         visible: endRecurType.currentIndex == 1
                         editable: true
-                        editText: eventEditorSheet.eventWrapper.recurrenceEndDateTime.toLocaleDateString(Qt.locale(), Locale.NarrowFormat);
+                        editText: eventEditorSheet.eventWrapper.recurrenceData["endDateTime"].toLocaleDateString(Qt.locale(), Locale.NarrowFormat);
 
                         inputMethodHints: Qt.ImhDate
 
@@ -583,7 +584,7 @@ Kirigami.ScrollablePage {
                                 datePicker.clickedDate = dateFromText;
 
                                 if (visible) {
-                                    eventEditorSheet.eventWrapper.recurrenceEndDateTime = dateFromText
+                                    eventEditorSheet.eventWrapper.recurrenceData["endDateTime"] = dateFromText
                                 }
                             }
                         }
@@ -600,7 +601,7 @@ Kirigami.ScrollablePage {
                                 id: recurEndDatePicker
                                 anchors.fill: parent
                                 onDatePicked: {
-                                    eventEditorSheet.eventWrapper.recurrenceEndDateTime = pickedDate
+                                    eventEditorSheet.eventWrapper.recurrenceData["endDateTime"] = pickedDate
                                     recurEndDatePopup.close()
                                 }
                             }
@@ -617,7 +618,7 @@ Kirigami.ScrollablePage {
                             id: recurOcurrenceEndSpinbox
                             Layout.fillWidth: true
                             from: 1
-                            value: eventEditorSheet.eventWrapper.recurrenceDuration
+                            value: eventEditorSheet.eventWrapper.recurrenceData["duration"]
                             onValueChanged: eventEditorSheet.eventWrapper.setRecurrenceOcurrences(value)
                         }
                         QQC2.Label {

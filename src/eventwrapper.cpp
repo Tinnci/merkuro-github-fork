@@ -49,12 +49,7 @@ void EventWrapper::setEventPtr(KCalendarCore::Event::Ptr eventPtr)
     Q_EMIT remindersModelChanged();
     Q_EMIT organizerChanged();
     Q_EMIT attendeesModelChanged();
-    Q_EMIT recurrenceDataChanged();
-    Q_EMIT recurrenceWeekDaysChanged();
-    Q_EMIT recurrenceDurationChanged();
-    Q_EMIT recurrenceFrequencyChanged();
-    Q_EMIT recurrenceEndDateTimeChanged();
-    Q_EMIT recurrenceTypeChanged();
+    Q_EMIT recurrenceDataChanged();;
     Q_EMIT recurrenceExceptionsModelChanged();
 }
 
@@ -186,23 +181,11 @@ void EventWrapper::setRecurrenceData(QVariantMap recurrenceData)
     QDateTime newEndDateTime = recurrenceData[QStringLiteral("endDateTime")].toDateTime();
 
     setRecurrenceWeekDays(newWeekdays);
-    setRecurrenceDuration(newDuration);
-    setRecurrenceFrequency(newFrequency);
-    setRecurrenceEndDateTime(newEndDateTime);
+    m_event->recurrence()->setDuration(newDuration);
+    m_event->recurrence()->setFrequency(newFrequency);
+    m_event->recurrence()->setEndDateTime(newEndDateTime);
 
     Q_EMIT recurrenceDataChanged();
-}
-
-QVector<bool> EventWrapper::recurrenceWeekDays()
-{
-    QBitArray weekDaysBits = m_event->recurrence()->days();
-    QVector<bool> weekDaysBools(7);
-
-    for(int i = 0; i < weekDaysBits.size(); i++) {
-        weekDaysBools[i] = weekDaysBits[i];
-    }
-
-    return weekDaysBools;
 }
 
 void EventWrapper::setRecurrenceWeekDays(const QVector<bool> recurrenceWeekDays)
@@ -225,46 +208,6 @@ void EventWrapper::setRecurrenceWeekDays(const QVector<bool> recurrenceWeekDays)
 
     rrule->setByDays(positions);
     m_event->recurrence()->updated();
-
-    Q_EMIT recurrenceWeekDaysChanged();
-}
-
-int EventWrapper::recurrenceDuration()
-{
-    return m_event->recurrence()->duration();
-}
-
-void EventWrapper::setRecurrenceDuration(int recurrenceDuration)
-{
-    m_event->recurrence()->setDuration(recurrenceDuration);
-    Q_EMIT recurrenceDurationChanged();
-}
-
-int EventWrapper::recurrenceFrequency()
-{
-    return m_event->recurrence()->frequency();
-}
-
-void EventWrapper::setRecurrenceFrequency(int recurrenceFrequency)
-{
-    m_event->recurrence()->setFrequency(recurrenceFrequency);
-    Q_EMIT recurrenceFrequencyChanged();
-}
-
-QDateTime EventWrapper::recurrenceEndDateTime()
-{
-    return m_event->recurrence()->endDateTime();
-}
-
-void EventWrapper::setRecurrenceEndDateTime(QDateTime endDateTime)
-{
-    m_event->recurrence()->setEndDateTime(endDateTime);
-    Q_EMIT recurrenceEndDateTimeChanged();
-}
-
-ushort EventWrapper::recurrenceType()
-{
-    return m_event->recurrence()->recurrenceType();
 }
 
 QVariantMap EventWrapper::organizer()
@@ -316,19 +259,19 @@ void EventWrapper::setRegularRecurrence(EventWrapper::RecurrenceIntervals interv
     switch(interval) {
         case Daily:
             m_event->recurrence()->setDaily(freq);
-            Q_EMIT recurrenceFrequencyChanged();
+            Q_EMIT recurrenceDataChanged();
             return;
         case Weekly:
             m_event->recurrence()->setWeekly(freq);
-            Q_EMIT recurrenceFrequencyChanged();
+            Q_EMIT recurrenceDataChanged();
             return;
         case Monthly:
             m_event->recurrence()->setMonthly(freq);
-            Q_EMIT recurrenceFrequencyChanged();
+            Q_EMIT recurrenceDataChanged();
             return;
         case Yearly:
             m_event->recurrence()->setYearly(freq);
-            Q_EMIT recurrenceFrequencyChanged();
+            Q_EMIT recurrenceDataChanged();
             return;
         default:
             qWarning() << "Unknown interval for recurrence" << interval;
@@ -346,12 +289,12 @@ void EventWrapper::setMonthlyPosRecurrence(short pos, int day)
 void EventWrapper::setRecurrenceOcurrences(int ocurrences)
 {
     m_event->recurrence()->setDuration(ocurrences);
-    Q_EMIT recurrenceDurationChanged();
+    Q_EMIT recurrenceDataChanged();
 }
 
 void EventWrapper::clearRecurrences()
 {
     m_event->recurrence()->clear();
-    Q_EMIT recurrenceDurationChanged();
+    Q_EMIT recurrenceDataChanged();
 }
 
