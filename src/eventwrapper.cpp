@@ -11,6 +11,7 @@ EventWrapper::EventWrapper(QObject *parent)
     , m_remindersModel(parent, m_event)
     , m_attendeesModel(parent, m_event)
     , m_recurrenceExceptionsModel(parent, m_event)
+    , m_attachmentsModel(parent, m_event)
 {
     for(int i = 0; i < QMetaEnum::fromType<EventWrapper::RecurrenceIntervals>().keyCount(); i++) {
         int value = QMetaEnum::fromType<EventWrapper::RecurrenceIntervals>().value(i);
@@ -28,6 +29,8 @@ EventWrapper::EventWrapper(QObject *parent)
             &m_attendeesModel, [=](KCalendarCore::Event::Ptr eventPtr){ m_attendeesModel.setEventPtr(eventPtr); });
     connect(this, &EventWrapper::eventPtrChanged,
             &m_recurrenceExceptionsModel, [=](KCalendarCore::Event::Ptr eventPtr){ m_recurrenceExceptionsModel.setEventPtr(eventPtr); });
+    connect(this, &EventWrapper::eventPtrChanged,
+            &m_attachmentsModel, [=](KCalendarCore::Event::Ptr eventPtr){ m_attachmentsModel.setEventPtr(eventPtr); });
 }
 
 KCalendarCore::Event::Ptr EventWrapper::eventPtr() const
@@ -51,6 +54,7 @@ void EventWrapper::setEventPtr(KCalendarCore::Event::Ptr eventPtr)
     Q_EMIT attendeesModelChanged();
     Q_EMIT recurrenceDataChanged();;
     Q_EMIT recurrenceExceptionsModelChanged();
+    Q_EMIT attachmentsModelChanged();
 }
 
 qint64 EventWrapper::collectionId()
@@ -239,6 +243,12 @@ RecurrenceExceptionsModel * EventWrapper::recurrenceExceptionsModel()
 {
     return &m_recurrenceExceptionsModel;
 }
+
+AttachmentsModel * EventWrapper::attachmentsModel()
+{
+    return &m_attachmentsModel;
+}
+
 
 
 QVariantMap EventWrapper::recurrenceIntervals()

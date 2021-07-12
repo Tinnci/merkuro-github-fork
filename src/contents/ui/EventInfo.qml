@@ -283,6 +283,30 @@ Kirigami.OverlayDrawer {
 
                     QQC2.Label {
                         Layout.alignment: Qt.AlignTop
+                        text: i18np("<b>Attachment:</b>", "<b>Attachments:</b>", eventInfo.eventWrapper.attachmentsModel.rowCount())
+                        visible: eventInfo.eventWrapper.attachmentsModel.rowCount() > 0
+                    }
+
+                    ColumnLayout {
+                        Layout.fillWidth: true
+                        Repeater {
+                            Layout.fillWidth: true
+                            visible: eventInfo.eventWrapper.attachmentsModel.rowCount() > 0
+
+                            model: eventInfo.eventWrapper.attachmentsModel
+
+                            delegate: QQC2.Label {
+                                Layout.fillWidth: true
+                                // This didn't work in Markdown format
+                                text: `<a href="${uri}">${label}</a>`
+                                onLinkActivated: Qt.openUrlExternally(link)
+                                wrapMode: Text.Wrap
+                            }
+                        }
+                    }
+
+                    QQC2.Label {
+                        Layout.alignment: Qt.AlignTop
                         text: i18n("<b>Reminders:</b>")
                         visible: eventInfo.eventWrapper.remindersModel.rowCount() > 0
                     }
