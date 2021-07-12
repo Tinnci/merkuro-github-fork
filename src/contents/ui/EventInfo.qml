@@ -215,8 +215,6 @@ Kirigami.OverlayDrawer {
 
                             QQC2.Label {
                                 Layout.alignment: Qt.AlignTop
-                                visible: exceptionsRepeater.count
-
                                 text: i18n("Except on:")
 
                             }
