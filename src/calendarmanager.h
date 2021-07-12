@@ -46,7 +46,7 @@ public:
     Q_INVOKABLE int getCalendarSelectableIndex(qint64 collectionId);
 
     Q_INVOKABLE void addEvent(qint64 collectionId, KCalendarCore::Event::Ptr event);
-    Q_INVOKABLE void editEvent(KCalendarCore::Event::Ptr editedEvent);
+    Q_INVOKABLE void editEvent(qint64 collectionId, KCalendarCore::Event::Ptr editedEvent);
     Q_INVOKABLE void deleteEvent(KCalendarCore::Event::Ptr event);
     Q_INVOKABLE QVariantMap getCollectionDetails(qint64 collectionId);
 

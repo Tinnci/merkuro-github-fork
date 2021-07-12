@@ -25,6 +25,7 @@
 #include <AkonadiCore/AgentInstanceModel>
 #include <Akonadi/Calendar/IncidenceChanger>
 #include <AkonadiCore/CollectionIdentificationAttribute>
+#include <AkonadiCore/ItemMoveJob>
 #include <KCheckableProxyModel>
 #include <KDescendantsProxyModel>
 #include <QTimer>
@@ -369,10 +370,22 @@ void CalendarManager::addEvent(qint64 collectionId, KCalendarCore::Event::Ptr ev
     qDebug() << changer->createIncidence(event, collection); // This will fritz if you don't choose a valid *calendar*
 }
 
-// Replicates IncidenceDialogPrivate::save
-void CalendarManager::editEvent(KCalendarCore::Event::Ptr editedEvent)
+// Replicates IncidenceDialogPrivate::save + adds collection moving
+void CalendarManager::editEvent(qint64 collectionId, KCalendarCore::Event::Ptr editedEvent)
 {
     m_calendar->modifyIncidence(editedEvent);
+
+    Akonadi::Item eventItem = m_calendar->item(editedEvent);
+
+    if (eventItem.parentCollection().id() == collectionId) {
+        return;
+    }
+
+    Akonadi::Collection newCollection(collectionId);
+    eventItem.setParentCollection(newCollection);
+    Akonadi::ItemMoveJob *job = new Akonadi::ItemMoveJob(eventItem, newCollection);
+    // Add some type of check here?
+    connect(job, &KJob::result, job, [=]() {qDebug() << job->error();});
 }
 
 void CalendarManager::deleteEvent(KCalendarCore::Event::Ptr event)

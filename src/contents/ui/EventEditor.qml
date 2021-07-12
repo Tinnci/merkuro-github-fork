@@ -12,7 +12,7 @@ Kirigami.ScrollablePage {
     id: eventEditorSheet
 
     signal added(int collectionId, EventWrapper event)
-    signal edited(EventWrapper event)
+    signal edited(int collectionId, EventWrapper event)
     signal cancel
 
     // Setting the eventWrapper here and now causes some *really* weird behaviour.
@@ -41,7 +41,7 @@ Kirigami.ScrollablePage {
         onRejected: cancel()
         onAccepted: {
             if (editMode) {
-                edited(eventWrapper);
+                edited(eventWrapper.collectionId, eventWrapper);
             } else {
                 added(eventWrapper.collectionId, eventWrapper);
             }
