@@ -289,9 +289,10 @@ Kirigami.OverlayDrawer {
 
                     ColumnLayout {
                         Layout.fillWidth: true
+                        visible: eventInfo.eventWrapper.attachmentsModel.rowCount() > 0
+
                         Repeater {
                             Layout.fillWidth: true
-                            visible: eventInfo.eventWrapper.attachmentsModel.rowCount() > 0
 
                             model: eventInfo.eventWrapper.attachmentsModel
 
@@ -353,9 +354,10 @@ Kirigami.OverlayDrawer {
                     }
                     ColumnLayout {
                         Layout.fillWidth: true
+                        visible: eventInfo.eventWrapper.attendeesModel.rowCount() > 0
+
                         Repeater {
                             Layout.fillWidth: true
-                            visible: eventInfo.eventWrapper.attendeesModel.rowCount() > 0
 
                             model: eventInfo.eventWrapper.attendeesModel
 

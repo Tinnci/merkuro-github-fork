@@ -159,8 +159,6 @@ Kirigami.ApplicationWindow {
             startDate: DateUtils.getFirstDayOfWeek(DateUtils.getFirstDayOfMonth(root.selectedDate))
             month: root.selectedDate.getMonth()
 
-            Layout.minimumWidth: applicationWindow().width * 0.66
-
             onViewEventReceived: root.setUpView(receivedModelData, receivedCollectionData)
             onEditEventReceived: root.setUpEdit(receivedEventPtr, receivedCollectionId)
             onDeleteEventReceived: root.setUpDelete(receivedEventPtr, receivedDeleteDate)
