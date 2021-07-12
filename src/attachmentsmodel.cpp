@@ -85,3 +85,33 @@ int AttachmentsModel::rowCount(const QModelIndex &) const
     return m_event->attachments().size();
 }
 
+void AttachmentsModel::addAttachment(QString uri)
+{
+    KCalendarCore::Attachment attachment(uri);
+    attachment.setLabel(QUrl(uri).fileName());
+    m_event->addAttachment(attachment);
+
+    Q_EMIT attachmentsChanged();
+    Q_EMIT layoutChanged();
+}
+
+void AttachmentsModel::deleteAttachment(QString uri)
+{
+    KCalendarCore::Attachment::List attachments = m_event->attachments();
+
+    for(auto attachment : attachments) {
+        if(attachment.uri() == uri) {
+            attachments.removeAll(attachment);
+            break;
+        }
+    }
+
+    m_event->clearAttachments();
+
+    for(auto attachment : attachments) {
+        m_event->addAttachment(attachment);
+    }
+
+    Q_EMIT attachmentsChanged();
+    Q_EMIT layoutChanged();
+}

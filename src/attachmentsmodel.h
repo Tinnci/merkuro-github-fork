@@ -39,6 +39,9 @@ public:
     QHash<int, QByteArray> roleNames() const override;
     int rowCount(const QModelIndex &parent = {}) const override;
 
+    Q_INVOKABLE void addAttachment(QString uri);
+    Q_INVOKABLE void deleteAttachment(QString uri);
+
 Q_SIGNALS:
     void eventPtrChanged();
     void attachmentsChanged();
