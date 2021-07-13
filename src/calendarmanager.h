@@ -31,8 +31,7 @@ class CalendarManager : public QObject
     Q_PROPERTY(qint64 defaultCalendarId READ defaultCalendarId CONSTANT)
     Q_PROPERTY(int defaultCalendarSelectableIndex READ defaultCalendarSelectableIndex NOTIFY defaultCalendarSelectableIndexChanged)
     Q_PROPERTY(Akonadi::ETMCalendar *calendar READ calendar CONSTANT)
-    Q_PROPERTY(bool undoAvailable READ undoAvailable NOTIFY undoAvailableChanged)
-    Q_PROPERTY(bool redoAvailable READ redoAvailable NOTIFY redoAvailableChanged)
+    Q_PROPERTY(QVariantMap undoRedoData READ undoRedoData NOTIFY undoRedoDataChanged)
 
 public:
     CalendarManager(QObject *parent = nullptr);
@@ -51,8 +50,7 @@ public:
     Q_INVOKABLE int getCalendarSelectableIndex(qint64 collectionId);
     int defaultCalendarSelectableIndex();
     void updateDefaultCalendarSelectableIndex();
-    bool undoAvailable();
-    bool redoAvailable();
+    QVariantMap undoRedoData();
 
     Q_INVOKABLE void addEvent(qint64 collectionId, KCalendarCore::Event::Ptr event);
     Q_INVOKABLE void editEvent(KCalendarCore::Event::Ptr originalEvent, KCalendarCore::Event::Ptr editedEvent);
@@ -68,8 +66,7 @@ Q_SIGNALS:
     void loadingChanged();
     void entityTreeModelChanged();
     void defaultCalendarSelectableIndexChanged();
-    void undoAvailableChanged();
-    void redoAvailableChanged();
+    void undoRedoDataChanged();
 
 private:
     Akonadi::ETMCalendar *m_calendar = nullptr;
