@@ -403,10 +403,14 @@ void CalendarManager::addEvent(qint64 collectionId, KCalendarCore::Event::Ptr ev
 void CalendarManager::editEvent(KCalendarCore::Event::Ptr originalEvent, KCalendarCore::Event::Ptr editedEvent)
 {
     // We need to use the incidenceChanger manually to get the change recorded in the history
-    Akonadi::Item modifiedItem = m_calendar->item(editedEvent->instanceIdentifier());
-    modifiedItem.setPayload<KCalendarCore::Incidence::Ptr>(editedEvent);
+    // For undo/redo to work properly we need to change the ownership of the event pointers
+    KCalendarCore::Event::Ptr changedEvent(editedEvent->clone());
+    KCalendarCore::Event::Ptr originalPayload(originalEvent->clone());
 
-    m_changer->modifyIncidence(modifiedItem, originalEvent);
+    Akonadi::Item modifiedItem = m_calendar->item(changedEvent->instanceIdentifier());
+    modifiedItem.setPayload<KCalendarCore::Incidence::Ptr>(changedEvent);
+
+    m_changer->modifyIncidence(modifiedItem, originalPayload);
 }
 
 void CalendarManager::deleteEvent(KCalendarCore::Event::Ptr event)
