@@ -397,13 +397,17 @@ void CalendarManager::addEvent(qint64 collectionId, KCalendarCore::Event::Ptr ev
 {
     Akonadi::Collection collection(collectionId);
     m_changer->createIncidence(event, collection); // This will fritz if you don't choose a valid *calendar*
-    //m_changer->history()->recordCreation( m_calendar->item(event), QStringLiteral("Added event") );
 }
 
 // Replicates IncidenceDialogPrivate::save
-void CalendarManager::editEvent(KCalendarCore::Event::Ptr editedEvent)
+void CalendarManager::editEvent(KCalendarCore::Event::Ptr originalEvent, KCalendarCore::Event::Ptr editedEvent)
 {
-    m_calendar->modifyIncidence(editedEvent);
+    KCalendarCore::Incidence::Ptr originalPayload = originalEvent;
+    qDebug() << originalEvent->summary();
+    Akonadi::Item modifiedItem = m_calendar->item(editedEvent->instanceIdentifier());
+    modifiedItem.setPayload<KCalendarCore::Incidence::Ptr>(editedEvent);
+
+    m_changer->modifyIncidence(modifiedItem, originalEvent);
 }
 
 void CalendarManager::deleteEvent(KCalendarCore::Event::Ptr event)

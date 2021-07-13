@@ -74,7 +74,7 @@ Kirigami.ApplicationWindow {
     EventEditor {
         id: eventEditor
         onAdded: CalendarManager.addEvent(collectionId, event.eventPtr)
-        onEdited: CalendarManager.editEvent(event.eventPtr)
+        onEdited: CalendarManager.editEvent(event.originalPtr, event.eventPtr)
         onCancel: pageStack.pop(monthViewComponent)
     }
 
@@ -95,7 +95,7 @@ Kirigami.ApplicationWindow {
             EventEditor {
                 id: eventEditorInLoader
                 onAdded: CalendarManager.addEvent(collectionId, event.eventPtr)
-                onEdited: CalendarManager.editEvent(event.eventPtr)
+                onEdited: CalendarManager.editEvent(event.originalPtr, event.eventPtr)
                 onCancel: root.close()
             }
 
