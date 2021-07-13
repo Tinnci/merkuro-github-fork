@@ -26,16 +26,20 @@ Kirigami.ApplicationWindow {
         actions: [
             Kirigami.Action {
                 icon.name: "edit-undo"
-                text: i18n("Undo")
+                text: CalendarManager.undoRedoData["undoAvailable"] ?
+                      i18n("Undo: ") + CalendarManager.undoRedoData["nextUndoDescription"] :
+                      i18n("Undo")
                 shortcut: StandardKey.Undo
-                enabled: CalendarManager.undoAvailable
+                enabled: CalendarManager.undoRedoData["undoAvailable"]
                 onTriggered: CalendarManager.undoAction();
             },
             Kirigami.Action {
                 icon.name: "edit-redo"
-                text: i18n("Redo")
+                text: CalendarManager.undoRedoData["redoAvailable"] ?
+                      i18n("Redo: ") + CalendarManager.undoRedoData["nextRedoDescription"] :
+                      i18n("Redo")
                 shortcut: StandardKey.Redo
-                enabled: CalendarManager.redoAvailable
+                enabled: CalendarManager.undoRedoData["redoAvailable"]
                 onTriggered: CalendarManager.redoAction();
             },
             Kirigami.Action {

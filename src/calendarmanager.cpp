@@ -239,8 +239,7 @@ CalendarManager::CalendarManager(QObject *parent)
 
     m_changer = m_calendar->incidenceChanger();
     m_changer->setHistoryEnabled(true);
-    connect(m_changer->history(), &Akonadi::History::changed, this, &CalendarManager::undoAvailableChanged);
-    connect(m_changer->history(), &Akonadi::History::changed, this, &CalendarManager::redoAvailableChanged);
+    connect(m_changer->history(), &Akonadi::History::changed, this, &CalendarManager::undoRedoDataChanged);
 
     KSharedConfig::Ptr config = KSharedConfig::openConfig();
     mCollectionSelectionModelStateSaver = new Akonadi::ETMViewStateSaver(); // not a leak
@@ -382,14 +381,14 @@ void CalendarManager::updateDefaultCalendarSelectableIndex()
     Q_EMIT defaultCalendarSelectableIndexChanged();
 }
 
-bool CalendarManager::undoAvailable()
+QVariantMap CalendarManager::undoRedoData()
 {
-    return m_changer->history()->undoAvailable();
-}
-
-bool CalendarManager::redoAvailable()
-{
-    return m_changer->history()->redoAvailable();
+    return QVariantMap {
+        {QStringLiteral("undoAvailable"), m_changer->history()->undoAvailable()},
+        {QStringLiteral("redoAvailable"), m_changer->history()->redoAvailable()},
+        {QStringLiteral("nextUndoDescription"), m_changer->history()->nextUndoDescription()},
+        {QStringLiteral("nextRedoDescription"), m_changer->history()->nextRedoDescription()}
+    };
 }
 
 
