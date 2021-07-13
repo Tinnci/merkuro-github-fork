@@ -38,7 +38,11 @@ KCalendarCore::Event::Ptr EventWrapper::eventPtr() const
 void EventWrapper::setEventPtr(KCalendarCore::Event::Ptr eventPtr)
 {
     m_event = eventPtr;
+    KCalendarCore::Event::Ptr original(eventPtr->clone());
+    m_original = original;
+
     Q_EMIT eventPtrChanged(m_event);
+    Q_EMIT originalPtrChanged();
     Q_EMIT collectionIdChanged();
     Q_EMIT summaryChanged();
     Q_EMIT descriptionChanged();
@@ -55,6 +59,12 @@ void EventWrapper::setEventPtr(KCalendarCore::Event::Ptr eventPtr)
     Q_EMIT recurrenceTypeChanged();
     Q_EMIT recurrenceExceptionsModelChanged();
 }
+
+KCalendarCore::Event::Ptr EventWrapper::originalPtr()
+{
+    return m_original;
+}
+
 
 qint64 EventWrapper::collectionId()
 {
