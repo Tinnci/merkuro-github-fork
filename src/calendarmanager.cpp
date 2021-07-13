@@ -24,6 +24,7 @@
 #include <AkonadiCore/AgentManager>
 #include <AkonadiCore/AgentInstanceModel>
 #include <Akonadi/Calendar/IncidenceChanger>
+#include <Akonadi/Calendar/History>
 #include <AkonadiCore/CollectionIdentificationAttribute>
 #include <KCheckableProxyModel>
 #include <KDescendantsProxyModel>
@@ -236,6 +237,11 @@ CalendarManager::CalendarManager(QObject *parent)
     m_calendar = new Akonadi::ETMCalendar(this);
     setCollectionSelectionProxyModel(m_calendar->checkableProxyModel());
 
+    m_changer = m_calendar->incidenceChanger();
+    m_changer->setHistoryEnabled(true);
+    connect(m_changer->history(), &Akonadi::History::changed, this, &CalendarManager::undoAvailableChanged);
+    connect(m_changer->history(), &Akonadi::History::changed, this, &CalendarManager::redoAvailableChanged);
+
     KSharedConfig::Ptr config = KSharedConfig::openConfig();
     mCollectionSelectionModelStateSaver = new Akonadi::ETMViewStateSaver(); // not a leak
     KConfigGroup selectionGroup = config->group("GlobalCollectionSelection");
@@ -376,12 +382,22 @@ void CalendarManager::updateDefaultCalendarSelectableIndex()
     Q_EMIT defaultCalendarSelectableIndexChanged();
 }
 
+bool CalendarManager::undoAvailable()
+{
+    return m_changer->history()->undoAvailable();
+}
+
+bool CalendarManager::redoAvailable()
+{
+    return m_changer->history()->redoAvailable();
+}
+
+
 void CalendarManager::addEvent(qint64 collectionId, KCalendarCore::Event::Ptr event)
 {
     Akonadi::Collection collection(collectionId);
-
-    Akonadi::IncidenceChanger *changer = m_calendar->incidenceChanger();
-    qDebug() << changer->createIncidence(event, collection); // This will fritz if you don't choose a valid *calendar*
+    m_changer->createIncidence(event, collection); // This will fritz if you don't choose a valid *calendar*
+    //m_changer->history()->recordCreation( m_calendar->item(event), QStringLiteral("Added event") );
 }
 
 // Replicates IncidenceDialogPrivate::save
@@ -406,6 +422,16 @@ QVariantMap CalendarManager::getCollectionDetails(qint64 collectionId)
     collectionDetails[QLatin1String("readOnly")] = collection.rights().testFlag(Collection::ReadOnly);
 
     return collectionDetails;
+}
+
+void CalendarManager::undoAction()
+{
+    m_changer->history()->undo();
+}
+
+void CalendarManager::redoAction()
+{
+    m_changer->history()->redo();
 }
 
 
