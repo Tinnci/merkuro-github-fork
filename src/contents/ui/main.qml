@@ -27,12 +27,14 @@ Kirigami.ApplicationWindow {
             Kirigami.Action {
                 icon.name: "edit-undo"
                 text: i18n("Undo")
+                shortcut: StandardKey.Undo
                 enabled: CalendarManager.undoAvailable
                 onTriggered: CalendarManager.undoAction();
             },
             Kirigami.Action {
                 icon.name: "edit-redo"
                 text: i18n("Redo")
+                shortcut: StandardKey.Redo
                 enabled: CalendarManager.redoAvailable
                 onTriggered: CalendarManager.redoAction();
             },
@@ -44,6 +46,7 @@ Kirigami.ApplicationWindow {
             Kirigami.Action {
                 icon.name: "application-exit"
                 text: i18n("Quit")
+                shortcut: StandardKey.Quit
                 onTriggered: Qt.quit()
                 visible: !Kirigami.Settings.isMobile
             }
