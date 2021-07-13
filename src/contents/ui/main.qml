@@ -25,8 +25,27 @@ Kirigami.ApplicationWindow {
         isMenu: true
         actions: [
             Kirigami.Action {
+                icon.name: "edit-undo"
+                text: i18n("Undo")
+                enabled: CalendarManager.undoAvailable
+                onTriggered: CalendarManager.undoAction();
+            },
+            Kirigami.Action {
+                icon.name: "edit-redo"
+                text: i18n("Redo")
+                enabled: CalendarManager.redoAvailable
+                onTriggered: CalendarManager.redoAction();
+            },
+            Kirigami.Action {
+                icon.name: "settings-configure"
                 text: i18n("Settings")
                 onTriggered: pageStack.layers.push("qrc:/SettingsPage.qml")
+            },
+            Kirigami.Action {
+                icon.name: "application-exit"
+                text: i18n("Quit")
+                onTriggered: Qt.quit()
+                visible: !Kirigami.Settings.isMobile
             }
         ]
     }
