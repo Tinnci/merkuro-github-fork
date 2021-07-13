@@ -403,8 +403,6 @@ void CalendarManager::addEvent(qint64 collectionId, KCalendarCore::Event::Ptr ev
 void CalendarManager::editEvent(KCalendarCore::Event::Ptr originalEvent, KCalendarCore::Event::Ptr editedEvent)
 {
     // We need to use the incidenceChanger manually to get the change recorded in the history
-    KCalendarCore::Incidence::Ptr originalPayload = originalEvent;
-    qDebug() << originalEvent->summary();
     Akonadi::Item modifiedItem = m_calendar->item(editedEvent->instanceIdentifier());
     modifiedItem.setPayload<KCalendarCore::Incidence::Ptr>(editedEvent);
 
