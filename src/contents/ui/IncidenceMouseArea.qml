@@ -14,6 +14,7 @@ MouseArea {
     signal deleteClicked(var eventPtr, date deleteDate)
 
     property double clickX
+    property double clickY
     property var eventData
     property var collectionDetails
 
@@ -22,6 +23,7 @@ MouseArea {
     acceptedButtons: Qt.LeftButton | Qt.RightButton
     onPressed: {
         clickX = mouseX
+        clickY = mouseY
         if(pressedButtons & Qt.LeftButton) {
             viewClicked(eventData, collectionDetails)
         } else if (pressedButtons & Qt.RightButton) {
@@ -33,7 +35,7 @@ MouseArea {
         id: eventActions
         QQC2.Menu {
             id: actionsPopup
-            y: parent.y + parent.height
+            y: parent.y + mouseArea.clickY
             x: parent.x + mouseArea.clickX
 
             QQC2.MenuItem {
