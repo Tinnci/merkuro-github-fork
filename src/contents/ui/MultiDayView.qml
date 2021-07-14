@@ -177,45 +177,13 @@ Item {
                                                 elide: Text.ElideRight
                                             }
 
-                                            MouseArea {
-                                                id: mouseArea
+                                            IncidenceMouseArea {
+                                                eventData: modelData
+                                                collectionDetails: Kalendar.CalendarManager.getCollectionDetails(modelData.collectionId)
 
-                                                property double clickX
-                                                property var collectionDetails: Kalendar.CalendarManager.getCollectionDetails(modelData.collectionId)
-
-                                                anchors.fill: parent
-                                                hoverEnabled: true
-                                                acceptedButtons: Qt.LeftButton | Qt.RightButton
-                                                onPressed: {
-                                                    clickX = mouseX
-                                                    if(pressedButtons & Qt.LeftButton) {
-                                                        viewEvent(modelData, collectionDetails)
-                                                    } else if (pressedButtons & Qt.RightButton) {
-                                                        eventActions.createObject(mouseArea, {}).open()
-                                                    }
-                                                }
-
-                                                Component {
-                                                    id: eventActions
-                                                    QQC2.Menu {
-                                                        id: actionsPopup
-                                                        y: parent.y + parent.height
-                                                        x: parent.x + mouseArea.clickX
-
-                                                        QQC2.MenuItem {
-                                                            icon.name: "edit-entry"
-                                                            text:i18n("Edit")
-                                                            enabled: !mouseArea.collectionDetails["readOnly"]
-                                                            onClicked: editEvent(modelData.eventPtr, modelData.collectionId)
-                                                        }
-                                                        QQC2.MenuItem {
-                                                            icon.name: "edit-delete"
-                                                            text:i18n("Delete")
-                                                            enabled: !mouseArea.collectionDetails["readOnly"]
-                                                            onClicked: deleteEvent(modelData.eventPtr, modelData.startTime)
-                                                        }
-                                                    }
-                                                }
+                                                onViewClicked: viewEvent(modelData, collectionData)
+                                                onEditClicked: editEvent(eventPtr, collectionId)
+                                                onDeleteClicked: deleteEvent(eventPtr, deleteDate)
                                             }
                                         }
                                     }

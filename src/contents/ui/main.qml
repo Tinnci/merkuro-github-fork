@@ -174,7 +174,9 @@ Kirigami.ApplicationWindow {
             ]
         }*/
         ScheduleView {
-
+            onViewEvent: root.setUpView(modelData, collectionData)
+            onEditEvent: root.setUpEdit(eventPtr, collectionData)
+            onDeleteEvent: root.setUpDelete(eventPtr, deleteDate)
         }
     }
 }

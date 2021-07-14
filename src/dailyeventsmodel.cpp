@@ -90,15 +90,6 @@ QList<QModelIndex> DailyEventsModel::sortedEventsFromSourceModel(const QDate &ro
     return sorted;
 }
 
-/*
-* Layout the lines:
-*
-* The line grouping algorithm then always picks the first event,
-* and tries to add more to the same line.
-*
-* We never mix all-day and non-all day, and otherwise try to fit as much as possible
-* on the same line. Same day time-order should be preserved because of the sorting.
-*/
 QVariantList DailyEventsModel::eventsOnDay(const QDate &rowStart) const
 {
     auto getStart = [&rowStart] (const QDate &start) {
