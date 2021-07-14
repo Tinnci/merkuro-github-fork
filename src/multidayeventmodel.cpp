@@ -37,7 +37,7 @@ int MultiDayEventModel::rowCount(const QModelIndex &parent) const
 {
     //Number of weeks
     if (!parent.isValid() && mSourceModel) {
-        return qMax(mSourceModel->length() / 7, 1);
+        return qMax(mSourceModel->length() / mPeriodLength, 1);
     }
     return 0;
 }
@@ -57,7 +57,7 @@ static long long getDuration(const QDate &start, const QDate &end)
 // and then the rest sorted by start-date.
 QList<QModelIndex> MultiDayEventModel::sortedEventsFromSourceModel(const QDate &rowStart) const
 {
-    const auto rowEnd = rowStart.addDays(7);
+    const auto rowEnd = rowStart.addDays(mPeriodLength);
     QList<QModelIndex> sorted;
     sorted.reserve(mSourceModel->rowCount());
     for (int row = 0; row < mSourceModel->rowCount(); row++) {
@@ -193,7 +193,7 @@ QVariant MultiDayEventModel::data(const QModelIndex &idx, int role) const
     if (!mSourceModel) {
         return {};
     }
-    const auto rowStart = mSourceModel->start().addDays(idx.row() * 7);
+    const auto rowStart = mSourceModel->start().addDays(idx.row() * mPeriodLength);
     switch (role) {
         case WeekStartDate:
             return rowStart;

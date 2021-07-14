@@ -137,24 +137,10 @@ QVariantList DailyEventsModel::eventsOnDay(const QDate &rowStart) const
         addToDay(srcIdx, start, duration);
         const bool allDayEvent = srcIdx.data(EventOccurrenceModel::AllDay).toBool();
 
-        //Fill line with events that fit
-        int lastStart = start;
-        int lastDuration = duration;
-        auto doesIntersect = [&] (int start, int end) {
-            const auto lastEnd = lastStart + lastDuration;
-            if (((start <= lastStart) && (end >= lastStart)) ||
-                ((start < lastEnd) && (end > lastStart))) {
-                // qWarning() << "Found intersection " << start << end;
-                return true;
-            }
-            return false;
-        };
-
         for (auto it = sorted.begin(); it != sorted.end();) {
             const auto idx = *it;
             const auto start = getStart(idx.data(EventOccurrenceModel::StartTime).toDateTime().date());
             const auto duration = qMin(getDuration(idx.data(EventOccurrenceModel::StartTime).toDateTime().date(), idx.data(EventOccurrenceModel::EndTime).toDateTime().date()), mPeriodLength - start);
-            const auto end = start + duration;
 
             // qWarning() << "Checking " << idx.data(EventOccurrenceModel::StartTime).toDateTime() << duration << idx.data(EventOccurrenceModel::Summary).toString();
             //Avoid mixing all-day and other events
@@ -162,14 +148,9 @@ QVariantList DailyEventsModel::eventsOnDay(const QDate &rowStart) const
                 break;
             }
 
-            /*if (doesIntersect(start, end)) {
-                it++;
-            } else {*/
-                addToDay(idx, start, duration);
-                lastStart = start;
-                lastDuration = duration;
-                it = sorted.erase(it);
-            //}
+            addToDay(idx, start, duration);
+            it = sorted.erase(it);
+
         }
         // qWarning() << "Appending line " << currentLine;
         result.append(QVariant::fromValue(currentDay));
