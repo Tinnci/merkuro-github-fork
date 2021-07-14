@@ -13,5 +13,6 @@
     <file alias="TimePicker.qml">contents/ui/TimePicker.qml</file>
     <file alias="labelutils.js">contents/ui/labelutils.js</file>
     <file alias="ScheduleView.qml">contents/ui/ScheduleView.qml</file>
+    <file alias="IncidenceMouseArea.qml">contents/ui/IncidenceMouseArea.qml</file>
   </qresource>
 </RCC>
