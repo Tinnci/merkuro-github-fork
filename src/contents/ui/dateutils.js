@@ -104,6 +104,11 @@ function getFirstDayOfWeek(date) {
     return new Date(date.getFullYear(), date.getMonth(), date.getDate() - offset)
 }
 
+function getLastDayOfWeek(date) {
+    let firstOfWeek = getFirstDayOfWeek(date);
+    return new Date(firstOfWeek.getFullYear(), firstOfWeek.getMonth(), firstOfWeek.getDate() - 1)
+}
+
 function getFirstDayOfMonth(date) {
     var d = date
     d.setDate(1)
