@@ -178,7 +178,7 @@ Kirigami.ApplicationWindow {
     Component {
         id: monthViewComponent
 
-        MonthView {
+        /*MonthView {
             // Make sure we get day from correct date, that is in the month we want
             title: DateUtils.addDaysToDate(startDate, 7).toLocaleDateString(Qt.locale(), "<b>MMMM</b> yyyy")
             currentDate: root.currentDate
@@ -198,6 +198,9 @@ Kirigami.ApplicationWindow {
                     onTriggered: root.setUpAdd();
                 }
             ]
+        }*/
+        ScheduleView {
+
         }
     }
 }
