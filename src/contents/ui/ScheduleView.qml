@@ -14,53 +14,28 @@ Kirigami.ScrollablePage {
 
     property date currentDate: new Date()
     property date startDate: DateUtils.getFirstDayOfMonth(currentDate)
-    property int month: currentDate.getMonth()
+    property int month: startDate.getMonth()
     property int daysInMonth: new Date(currentDate.getFullYear(), currentDate.getMonth(), 0).getDate()
 
     actions {
         left: Kirigami.Action {
             text: i18n("Previous")
-            onTriggered: {
-                month - 1 < 0 ? month = 11 : month -= 1
-                let newDate = DateUtils.getFirstDayOfWeek(DateUtils.previousMonth(startDate))
-
-                // Handling adding and subtracting months in Javascript can get *really* messy.
-                newDate = DateUtils.addDaysToDate(newDate, 7)
-
-                if (newDate.getMonth() === month) {
-                    newDate = DateUtils.addDaysToDate(newDate, - 7)
-                }
-                if (newDate.getDate() < 14) {
-                    newDate = DateUtils.addDaysToDate(newDate, - 7)
-                }
-
-                console.log(month)
-                startDate = newDate
-            }
+            onTriggered: startDate = DateUtils.previousMonth(startDate)
         }
         right: Kirigami.Action {
             text: i18n("Next")
-            onTriggered: {
-                month = (month + 1) % 12
-                let newDate = DateUtils.getFirstDayOfWeek(DateUtils.nextMonth(startDate))
-                newDate = DateUtils.addDaysToDate(newDate, 7)
-
-                if (newDate.getMonth() === month) {
-                    newDate = DateUtils.addDaysToDate(newDate, - 7)
-                }
-                if (newDate.getDate() < 14) {
-                    newDate = DateUtils.addDaysToDate(newDate, - 7)
-                }
-
-                startDate = newDate
-            }
+            onTriggered: startDate = DateUtils.nextMonth(startDate)
         }
     }
 
-    ListView {
-        Column {
-            Repeater {
-                model: Kalendar.MultiDayEventModel {
+            ListView {
+                headerPositioning: ListView.OverlayHeader
+                header: Kirigami.ItemViewHeader {
+                    //backgroundImage.source: "../banner.jpg"
+                    title: Qt.locale().monthName(root.month)
+                }
+
+                model: Kalendar.DailyEventsModel {
                     model: Kalendar.EventOccurrenceModel {
                         id: occurrenceModel
                         objectName: "eventOccurrenceModel"
@@ -72,21 +47,30 @@ Kirigami.ScrollablePage {
                 }
 
                 delegate: Column {
+                    id: dayColumn
                     // Header
 
-                    Repeater {
-                        model: events
+                    Kirigami.ListSectionHeader {
+                        property date listDate: date
+                        text: listDate.toLocaleDateString(Qt.locale())
+                        visible: events.length
+                    }
+
+                    ColumnLayout {
                         Repeater {
-                            model: modelData
-                            QQC2.Label {
-                                Component.onCompleted: console.log(Object.keys(modelData))
-                                text: modelData.text
+                            model: events
+                            Repeater {
+                                id: eventsRepeater
+                                model: modelData
+
+                                QQC2.Label {
+                                    text: modelData.text
+                                }
                             }
                         }
                     }
                 }
             }
-        }
-    }
+
 
 }
