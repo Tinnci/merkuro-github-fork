@@ -92,15 +92,42 @@ Kirigami.ScrollablePage {
 
                             showClickFeedback: true
 
-                            contentItem: QQC2.Label {
-                                function isDarkColor(background) {
-                                    var temp = Qt.darker(background, 1)
-                                    var a = 1 - ( 0.299 * temp.r + 0.587 * temp.g + 0.114 * temp.b);
-                                    return temp.a > 0 && a >= 0.5
+                            function isDarkColor(background) {
+                                var temp = Qt.darker(background, 1)
+                                var a = 1 - ( 0.299 * temp.r + 0.587 * temp.g + 0.114 * temp.b);
+                                return temp.a > 0 && a >= 0.5
+                            }
+
+                            contentItem: GridLayout {
+                                columns: root.isLarge ? 2 : 1
+                                rows: root.isLarge ? 1 : 2
+
+                                QQC2.Label {
+                                    Layout.fillWidth: true
+                                    Layout.fillHeight: true
+                                    Layout.column: 0
+                                    Layout.row: 0
+
+                                    color: eventCard.isDarkColor(modelData.color) ? "white" : "black"
+                                    text: modelData.text
+                                    elide: Text.ElideRight
                                 }
 
-                                color: isDarkColor(modelData.color) ? "white" : "black"
-                                text: modelData.text
+                                QQC2.Label {
+                                    Layout.fillHeight: true
+                                    Layout.column: root.isLarge ? 1 : 0
+                                    Layout.row: root.isLarge ? 0 : 1
+                                    visible: !modelData.allDay
+
+                                    color: eventCard.isDarkColor(modelData.color) ? "white" : "black"
+                                    text: {
+                                        if(modelData.startTime.toTimeString() != modelData.endTime.toTimeString()) {
+                                            modelData.startTime.toLocaleTimeString(Qt.locale(), Locale.ShortFormat) + " - " + modelData.endTime.toLocaleTimeString(Qt.locale(), Locale.ShortFormat)
+                                        } else if (modelData.startTime.toTimeString() == modelData.endTime.toTimeString()) {
+                                            modelData.startTime.toLocaleTimeString(Qt.locale(), Locale.ShortFormat)
+                                        }
+                                    }
+                                }
                             }
 
                             background: Rectangle {
