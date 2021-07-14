@@ -73,6 +73,9 @@ Kirigami.ScrollablePage {
 
             ColumnLayout {
                 Layout.fillWidth: true
+                Layout.bottomMargin: Kirigami.Units.largeSpacing
+
+                visible: events.length
 
                 Repeater {
                     model: events
@@ -80,19 +83,38 @@ Kirigami.ScrollablePage {
                         id: eventsRepeater
                         model: modelData
 
-                        QQC2.Label {
+                        Kirigami.AbstractCard {
+                            id: eventCard
+
                             Layout.fillWidth: true
+                            Layout.leftMargin: Kirigami.Units.largeSpacing
+                            Layout.rightMargin: Kirigami.Units.largeSpacing
+
+                            showClickFeedback: true
+
+                            contentItem: QQC2.Label {
+                                function isDarkColor(background) {
+                                    var temp = Qt.darker(background, 1)
+                                    var a = 1 - ( 0.299 * temp.r + 0.587 * temp.g + 0.114 * temp.b);
+                                    return temp.a > 0 && a >= 0.5
+                                }
+
+                                color: isDarkColor(modelData.color) ? "white" : "black"
+                                text: modelData.text
+                            }
+
                             background: Rectangle {
                                 anchors.fill: parent
                                 color: modelData.color
                                 radius: 2
                                 border.width: 1
                                 border.color: Kirigami.Theme.alternateBackgroundColor
-                                opacity: 0.6
+                                opacity: eventMouseArea.pressed ? 0.8 : 0.6
                             }
-                            text: modelData.text
 
                             IncidenceMouseArea {
+                                id: eventMouseArea
+
                                 eventData: modelData
                                 collectionDetails: Kalendar.CalendarManager.getCollectionDetails(modelData.collectionId)
 
