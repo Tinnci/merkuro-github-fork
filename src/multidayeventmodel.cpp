@@ -2,13 +2,14 @@
 // Copyright (c) 2018 Christian Mollekopf <mollekopf@kolabsys.com>
 // Copyright (c) 2018 Rémi Nicole <minijackson@riseup.net>
 // Copyright (c) 2021 Carl Schwan <carlschwan@kde.org>
+// SPDX-FileCopyrightText: 2021 Claudio Cambra <claudio.cambra@gmail.com>
 // SPDX-License-Identifier: LGPL-2.0-or-later
 
 #include "multidayeventmodel.h"
 
 enum Roles {
     Events = EventOccurrenceModel::LastRole,
-    WeekStartDate
+    PeriodStartDate
 };
 
 MultiDayEventModel::MultiDayEventModel(QObject *parent)
@@ -57,7 +58,8 @@ static long long getDuration(const QDate &start, const QDate &end)
 // and then the rest sorted by start-date.
 QList<QModelIndex> MultiDayEventModel::sortedEventsFromSourceModel(const QDate &rowStart) const
 {
-    const auto rowEnd = rowStart.addDays(mPeriodLength);
+    // Don't add days if we are going for a daily period
+    const auto rowEnd = rowStart.addDays(mPeriodLength < 1 ? mPeriodLength : 0);
     QList<QModelIndex> sorted;
     sorted.reserve(mSourceModel->rowCount());
     for (int row = 0; row < mSourceModel->rowCount(); row++) {
@@ -195,7 +197,7 @@ QVariant MultiDayEventModel::data(const QModelIndex &idx, int role) const
     }
     const auto rowStart = mSourceModel->start().addDays(idx.row() * mPeriodLength);
     switch (role) {
-        case WeekStartDate:
+        case PeriodStartDate:
             return rowStart;
         case Events:
             return layoutLines(rowStart);
@@ -222,10 +224,20 @@ void MultiDayEventModel::setModel(EventOccurrenceModel *model)
     endResetModel();
 }
 
+int MultiDayEventModel::periodLength()
+{
+    return mPeriodLength;
+}
+
+void MultiDayEventModel::setPeriodLength(int periodLength)
+{
+    mPeriodLength = periodLength;
+}
+
 QHash<int, QByteArray> MultiDayEventModel::roleNames() const
 {
     return {
         {Events, "events"},
-        {WeekStartDate, "weekStartDate"}
+        {PeriodStartDate, "periodStartDate"}
     };
 }

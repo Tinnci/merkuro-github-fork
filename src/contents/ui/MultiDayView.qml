@@ -82,7 +82,7 @@ Item {
                     Loader {
                         id: weekHeader
                         sourceComponent: root.weekHeaderDelegate
-                        property var startDate: weekStartDate
+                        property var startDate: periodStartDate
                         Layout.preferredWidth: weekHeaderWidth
                         Layout.fillHeight: true
                     }
@@ -90,7 +90,7 @@ Item {
                         id: dayDelegate
                         Layout.fillWidth: true
                         Layout.fillHeight: true
-                        property var startDate: weekStartDate
+                        property var startDate: periodStartDate
                         //Grid
                         Row {
                             spacing: 1
