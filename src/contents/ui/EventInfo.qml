@@ -116,7 +116,7 @@ Kirigami.OverlayDrawer {
                         }
                         Kirigami.Icon {
                             source: "appointment-recurring"
-                            visible: eventInfo.eventWrapper.recurrenceData["type"]
+                            visible: eventInfo.eventWrapper.recurrenceData.type
                         }
                         Kirigami.Icon {
                             source: "appointment-reminder"
