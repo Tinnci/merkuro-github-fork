@@ -83,7 +83,7 @@ Kirigami.OverlaySheet {
             QQC2.Label {
                 Layout.fillWidth: true
                 text: i18n("Do you really want to delete item: ") + `"${eventWrapper.summary}"?`
-                visible: eventWrapper.recurrenceData["type"] === 0
+                visible: eventWrapper.recurrenceData.type === 0
                 wrapMode: Text.WordWrap
             }
 
