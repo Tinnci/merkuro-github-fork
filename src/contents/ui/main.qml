@@ -19,11 +19,21 @@ Kirigami.ApplicationWindow {
 
     title: i18n("Calendar")
 
-    pageStack.initialPage: scheduleViewComponent //monthViewComponent
+    pageStack.initialPage: monthViewComponent
 
     globalDrawer: Kirigami.GlobalDrawer {
         isMenu: true
         actions: [
+            Kirigami.Action {
+                icon.name: "view-calendar"
+                text: i18n("Month view")
+                onTriggered: pageStack.layers.replace(monthViewComponent)
+            },
+            Kirigami.Action {
+                icon.name: "view-calendar-list"
+                text: i18n("Schedule view")
+                onTriggered: pageStack.layers.replace(scheduleViewComponent)
+            },
             Kirigami.Action {
                 text: i18n("Settings")
                 onTriggered: pageStack.layers.push("qrc:/SettingsPage.qml")
