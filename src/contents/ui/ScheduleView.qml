@@ -61,9 +61,9 @@ Kirigami.ScrollablePage {
                 let date = new Date(section)
                 let dayName = Qt.locale().dayName(date.getDay());
                 let dayDate = date.getDate();
-                let dayMonth = Qt.locale().monthName(date.getMonth())
+                let dayMonth = Qt.locale().monthName(date.getMonth());
 
-                return `${dayName} ${dayDate}`
+                return `${dayName} ${dayDate}`;
             }
         }
 
@@ -95,7 +95,7 @@ Kirigami.ScrollablePage {
                 text: {
                     let dayName = Qt.locale().dayName(periodStartDate.getDay());
                     let dayDate = periodStartDate.getDate();
-                    let dayMonth = Qt.locale().monthName(periodStartDate.getMonth())
+                    let dayMonth = Qt.locale().monthName(periodStartDate.getMonth());
 
                     let nextDay = DateUtils.getLastDayOfWeek( DateUtils.nextWeek(periodStartDate) );
                     if (nextDay.getMonth() !== periodStartDate.getMonth()) {
@@ -104,7 +104,7 @@ Kirigami.ScrollablePage {
 
                     let nextDayName = Qt.locale().dayName(nextDay.getDay());
                     let nextDayDate = nextDay.getDate();
-                    return `${dayName} ${dayDate} - ${nextDayName} ${nextDayDate} ${dayMonth}`
+                    return `${dayName} ${dayDate} - ${nextDayName} ${nextDayDate} ${dayMonth}`;
                 }
                 visible: periodStartDate.getDay() == Qt.locale().firstDayOfWeek || index == 0
             }
@@ -185,9 +185,9 @@ Kirigami.ScrollablePage {
                                 showClickFeedback: true
 
                                 function isDarkColor(background) {
-                                    var temp = Qt.darker(background, 1)
+                                    var temp = Qt.darker(background, 1);
                                     var a = 1 - ( 0.299 * temp.r + 0.587 * temp.g + 0.114 * temp.b);
-                                    return temp.a > 0 && a >= 0.5
+                                    return temp.a > 0 && a >= 0.5;
                                 }
 
                                 contentItem: GridLayout {
