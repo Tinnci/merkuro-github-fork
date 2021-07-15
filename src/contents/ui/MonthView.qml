@@ -22,7 +22,28 @@ Kirigami.Page {
     property alias currentDate: dayView.currentDate
     property alias calendarFilter: dayView.calendarFilter
     property alias month: dayView.month
+    property int year: dayView.currentDate.getFullYear()
     readonly property bool isLarge: width > Kirigami.Units.gridUnit * 30
+
+    function setToDate(date) {
+        let newDate = new Date(date)
+        dayView.month = newDate.getMonth()
+        year = newDate.getFullYear()
+
+        newDate = DateUtils.getFirstDayOfWeek(DateUtils.getFirstDayOfMonth(newDate))
+
+        // Handling adding and subtracting months in Javascript can get *really* messy.
+        newDate = DateUtils.addDaysToDate(newDate, 7)
+
+        if (newDate.getMonth() === dayView.month) {
+            newDate = DateUtils.addDaysToDate(newDate, - 7)
+        }
+        if (newDate.getDate() < 14) {
+            newDate = DateUtils.addDaysToDate(newDate, - 7)
+        }
+
+        startDate = newDate;
+    }
 
     padding: 0
     background: Rectangle {
@@ -33,40 +54,11 @@ Kirigami.Page {
     actions {
         left: Kirigami.Action {
             text: i18n("Previous")
-            onTriggered: {
-                dayView.month - 1 < 0 ? dayView.month = 11 : dayView.month -= 1
-                let newDate = DateUtils.getFirstDayOfWeek(DateUtils.previousMonth(startDate))
-
-                // Handling adding and subtracting months in Javascript can get *really* messy.
-                newDate = DateUtils.addDaysToDate(newDate, 7)
-
-                if (newDate.getMonth() === dayView.month) {
-                    newDate = DateUtils.addDaysToDate(newDate, - 7)
-                }
-                if (newDate.getDate() < 14) {
-                    newDate = DateUtils.addDaysToDate(newDate, - 7)
-                }
-
-                console.log(dayView.month)
-                startDate = newDate
-            }
+            onTriggered: setToDate(new Date(startDate.getFullYear(), startDate.getMonth()))
         }
         right: Kirigami.Action {
             text: i18n("Next")
-            onTriggered: {
-                dayView.month = (dayView.month + 1) % 12
-                let newDate = DateUtils.getFirstDayOfWeek(DateUtils.nextMonth(startDate))
-                newDate = DateUtils.addDaysToDate(newDate, 7)
-
-                if (newDate.getMonth() === dayView.month) {
-                    newDate = DateUtils.addDaysToDate(newDate, - 7)
-                }
-                if (newDate.getDate() < 14) {
-                    newDate = DateUtils.addDaysToDate(newDate, - 7)
-                }
-
-                startDate = newDate
-            }
+            onTriggered: setToDate(new Date(startDate.getFullYear(), startDate.getMonth() + 2)) // Yes. I don't know.
         }
     }
 
