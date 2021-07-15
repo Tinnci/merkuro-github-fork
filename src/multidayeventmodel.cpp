@@ -8,7 +8,7 @@
 
 enum Roles {
     Events = EventOccurrenceModel::LastRole,
-    WeekStartDate
+    PeriodStartDate
 };
 
 MultiDayEventModel::MultiDayEventModel(QObject *parent)
@@ -194,7 +194,7 @@ QVariant MultiDayEventModel::data(const QModelIndex &idx, int role) const
     }
     const auto rowStart = mSourceModel->start().addDays(idx.row() * mPeriodLength);
     switch (role) {
-        case WeekStartDate:
+        case PeriodStartDate:
             return rowStart;
         case Events:
             return layoutLines(rowStart);
@@ -225,6 +225,18 @@ QHash<int, QByteArray> MultiDayEventModel::roleNames() const
 {
     return {
         {Events, "events"},
-        {WeekStartDate, "weekStartDate"}
+        {PeriodStartDate, "periodStartDate"}
     };
 }
+
+int MultiDayEventModel::periodLength()
+{
+    return mPeriodLength;
+}
+
+void MultiDayEventModel::setPeriodLength(int periodLength)
+{
+    mPeriodLength = periodLength;
+    Q_EMIT periodLengthChanged();
+}
+

@@ -12,7 +12,6 @@
 #include <KCalendarCore/MemoryCalendar>
 #include <AkonadiCore/AgentFilterProxyModel>
 #include "multidayeventmodel.h"
-#include "dailyeventsmodel.h"
 #include "eventoccurrencemodel.h"
 #include "calendarmanager.h"
 #include "agentconfiguration.h"
@@ -42,7 +41,7 @@ int main(int argc, char *argv[])
                          // Copyright Statement.
                          i18n("(c) KDE Community 2021"));
     aboutData.addAuthor(i18nc("@info:credit", "Carl Schwan"), i18nc("@info:credit", "Maintainer"), QStringLiteral("carl@carlschwan.eu"), QStringLiteral("https://carlschwan.eu"));
-    aboutData.addAuthor(i18nc("@info:credit", "Clau Cambra"), i18nc("@info:credit", "Developer"));
+    aboutData.addAuthor(i18nc("@info:credit", "Clau Cambra"), i18nc("@info:credit", "Developer"), QStringLiteral("claudio.cambra@gmail.com"), QStringLiteral("https://claudiocambra.com"));
     KAboutData::setApplicationData(aboutData);
 
 
@@ -55,7 +54,6 @@ int main(int argc, char *argv[])
     qmlRegisterType<EventWrapper>("org.kde.kalendar", 1, 0, "EventWrapper");
     qmlRegisterType<MultiDayEventModel>("org.kde.kalendar", 1, 0, "MultiDayEventModel");
     qmlRegisterType<EventOccurrenceModel>("org.kde.kalendar", 1, 0, "EventOccurrenceModel");
-    qmlRegisterType<DailyEventsModel>("org.kde.kalendar", 1, 0, "DailyEventsModel");
     qRegisterMetaType<Akonadi::AgentFilterProxyModel *>();
 
     qmlRegisterSingletonType<AboutType>("org.kde.kalendar", 1, 0, "AboutType", [](QQmlEngine *engine, QJSEngine *scriptEngine) -> QObject * {

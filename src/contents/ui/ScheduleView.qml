@@ -44,8 +44,6 @@ Kirigami.ScrollablePage {
     ListView {
         id: scheduleListView
 
-        property var dateIndexes: []
-
         anchors.fill: parent
 
         headerPositioning: ListView.OverlayHeader
@@ -69,7 +67,8 @@ Kirigami.ScrollablePage {
             }
         }
 
-        model: Kalendar.DailyEventsModel {
+        model: Kalendar.MultiDayEventModel {
+            periodLength: 1
             model: Kalendar.EventOccurrenceModel {
                 id: occurrenceModel
                 objectName: "eventOccurrenceModel"
@@ -93,26 +92,26 @@ Kirigami.ScrollablePage {
 
                 level: 2
                 text: {
-                    let dayName = Qt.locale().dayName(date.getDay());
-                    let dayDate = date.getDate();
-                    let dayMonth = Qt.locale().monthName(date.getMonth())
+                    let dayName = Qt.locale().dayName(periodStartDate.getDay());
+                    let dayDate = periodStartDate.getDate();
+                    let dayMonth = Qt.locale().monthName(periodStartDate.getMonth())
 
-                    let nextDay = DateUtils.getLastDayOfWeek( DateUtils.nextWeek(date) );
-                    if (nextDay.getMonth() !== date.getMonth()) {
-                        nextDay = new Date(date.getFullYear(), date.getMonth(), 0);
+                    let nextDay = DateUtils.getLastDayOfWeek( DateUtils.nextWeek(periodStartDate) );
+                    if (nextDay.getMonth() !== periodStartDate.getMonth()) {
+                        nextDay = new Date(periodStartDate.getFullYear(), periodStartDate.getMonth(), 0);
                     }
 
                     let nextDayName = Qt.locale().dayName(nextDay.getDay());
                     let nextDayDate = nextDay.getDate();
                     return `${dayName} ${dayDate} - ${nextDayName} ${nextDayDate} ${dayMonth}`
                 }
-                visible: date.getDay() == Qt.locale().firstDayOfWeek || index == 0
+                visible: periodStartDate.getDay() == Qt.locale().firstDayOfWeek || index == 0
             }
 
             // Day + events
             GridLayout {
                 id: dayGrid
-                visible: events.length || new Date(date).setHours(0,0,0,0) == new Date().setHours(0,0,0,0)
+                visible: events.length || new Date(periodStartDate).setHours(0,0,0,0) == new Date().setHours(0,0,0,0)
 
                 columns: 2
                 rows: 2
@@ -138,8 +137,8 @@ Kirigami.ScrollablePage {
 
                     level: 3
 
-                    text: Qt.locale().dayName(date.getDay(), Locale.NarrowFormat) + ", \n" + date.getDate()
-                    visible: events.length || new Date(date).setHours(0,0,0,0) == new Date().setHours(0,0,0,0)
+                    text: Qt.locale().dayName(periodStartDate.getDay(), Locale.NarrowFormat) + ", \n" + periodStartDate.getDate()
+                    visible: events.length || new Date(periodStartDate).setHours(0,0,0,0) == new Date().setHours(0,0,0,0)
                 }
 
                 ColumnLayout {
@@ -152,7 +151,7 @@ Kirigami.ScrollablePage {
 
                         showClickFeedback: true
 
-                        property bool isToday: new Date(date).setHours(0,0,0,0) == new Date().setHours(0,0,0,0)
+                        property bool isToday: new Date(periodStartDate).setHours(0,0,0,0) == new Date().setHours(0,0,0,0)
 
                         visible: !events.length && isToday
 
@@ -176,8 +175,6 @@ Kirigami.ScrollablePage {
                                 Layout.fillWidth: true
 
                                 Kirigami.Theme.inherit: false
-                                // NOTE: regardless of the color set used, it is recommended to replace
-                                // all available colors in Theme, to avoid badly contrasting colors
                                 Kirigami.Theme.colorSet: Kirigami.Theme.View
                                 Kirigami.Theme.backgroundColor: Qt.rgba(modelData.color.r, modelData.color.g, modelData.color.b, 0.8)
                                 Kirigami.Theme.highlightColor: Qt.darker(modelData.color, 2.5)
