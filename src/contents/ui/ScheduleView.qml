@@ -106,7 +106,8 @@ Kirigami.ScrollablePage {
                     let nextDayDate = nextDay.getDate();
                     return `${dayName} ${dayDate} - ${nextDayName} ${nextDayDate} ${dayMonth}`;
                 }
-                visible: periodStartDate.getDay() == Qt.locale().firstDayOfWeek || index == 0
+                visible: periodStartDate !== undefined &&
+                    (periodStartDate.getDay() == Qt.locale().firstDayOfWeek || index == 0)
             }
 
             // Day + events
@@ -184,6 +185,10 @@ Kirigami.ScrollablePage {
 
                                 showClickFeedback: true
 
+                                property bool multiday: modelData.startTime.getDate() !== modelData.endTime.getDate()
+                                property int eventDays: DateUtils.fullDaysBetweenDates(modelData.startTime, modelData.endTime)
+                                property int dayOfMultidayEvent: DateUtils.fullDaysBetweenDates(modelData.startTime, periodStartDate)
+
                                 function isDarkColor(background) {
                                     var temp = Qt.darker(background, 1);
                                     var a = 1 - ( 0.299 * temp.r + 0.587 * temp.g + 0.114 * temp.b);
@@ -201,7 +206,13 @@ Kirigami.ScrollablePage {
                                         Layout.row: 0
 
                                         color: eventCard.isDarkColor(modelData.color) ? "white" : "black"
-                                        text: modelData.text
+                                        text: {
+                                            if(eventCard.multiday) {
+                                                return i18n("%1 (Day %2 of %3)", modelData.text, eventCard.dayOfMultidayEvent, eventCard.eventDays);
+                                            } else {
+                                                return modelData.text;
+                                            }
+                                        }
                                         elide: Text.ElideRight
                                     }
 
