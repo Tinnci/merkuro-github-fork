@@ -60,6 +60,8 @@ Item {
         //Weeks
         Repeater {
             model: Kalendar.MultiDayEventModel {
+                periodLength: 7
+
                 model: Kalendar.EventOccurrenceModel {
                     id: occurrenceModel
                     objectName: "eventOccurrenceModel"

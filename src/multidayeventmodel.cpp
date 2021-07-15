@@ -59,7 +59,7 @@ static long long getDuration(const QDate &start, const QDate &end)
 QList<QModelIndex> MultiDayEventModel::sortedEventsFromSourceModel(const QDate &rowStart) const
 {
     // Don't add days if we are going for a daily period
-    const auto rowEnd = rowStart.addDays(mPeriodLength < 1 ? mPeriodLength : 0);
+    const auto rowEnd = rowStart.addDays(mPeriodLength > 1 ? mPeriodLength : 0);
     QList<QModelIndex> sorted;
     sorted.reserve(mSourceModel->rowCount());
     for (int row = 0; row < mSourceModel->rowCount(); row++) {
