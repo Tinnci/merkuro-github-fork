@@ -26,7 +26,7 @@ Kirigami.ApplicationWindow {
         actions: [
             Kirigami.Action {
                 icon.name: "edit-undo"
-                text: CalendarManager.undoRedoData["undoAvailable"] ?
+                text: CalendarManager.undoRedoData.undoAvailable ?
                       i18n("Undo: ") + CalendarManager.undoRedoData["nextUndoDescription"] :
                       i18n("Undo")
                 shortcut: StandardKey.Undo
