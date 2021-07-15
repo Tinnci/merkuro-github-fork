@@ -196,7 +196,7 @@ Kirigami.OverlayDrawer {
                     QQC2.Label {
                         Layout.alignment: Qt.AlignTop
                         text: i18n("<b>Recurrence:</b>")
-                        visible: eventInfo.eventWrapper.recurrenceData["type"]
+                        visible: eventInfo.eventWrapper.recurrenceData.type
                     }
                     ColumnLayout {
                         Layout.fillWidth: true
