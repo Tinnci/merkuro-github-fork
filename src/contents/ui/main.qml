@@ -36,7 +36,7 @@ Kirigami.ApplicationWindow {
             Kirigami.Action {
                 icon.name: "edit-redo"
                 text: CalendarManager.undoRedoData["redoAvailable"] ?
-                      i18n("Redo: ") + CalendarManager.undoRedoData["nextRedoDescription"] :
+                      i18n("Redo: ") + CalendarManager.undoRedoData.nextRedoDescription :
                       i18n("Redo")
                 shortcut: StandardKey.Redo
                 enabled: CalendarManager.undoRedoData.redoAvailable
