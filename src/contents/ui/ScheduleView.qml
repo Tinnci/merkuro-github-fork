@@ -20,8 +20,15 @@ Kirigami.ScrollablePage {
     property date currentDate: new Date()
     property date startDate: DateUtils.getFirstDayOfMonth(currentDate)
     property int month: startDate.getMonth()
+    property int year: startDate.getFullYear()
     property int daysInMonth: new Date(currentDate.getFullYear(), currentDate.getMonth(), 0).getDate()
     readonly property bool isLarge: width > Kirigami.Units.gridUnit * 30
+
+    function setToDate(date) {
+        startDate = DateUtils.getFirstDayOfMonth(date);
+        month = startDate.getMonth();
+        scheduleListView.positionViewAtIndex(date.getDate() - 1, ListView.Beginning);
+    }
 
     background: Rectangle {
         Kirigami.Theme.colorSet: root.isLarge ? Kirigami.Theme.Header : Kirigami.Theme.View
@@ -31,11 +38,11 @@ Kirigami.ScrollablePage {
     actions {
         left: Kirigami.Action {
             text: i18n("Previous")
-            onTriggered: startDate = DateUtils.previousMonth(startDate)
+            onTriggered: setToDate(DateUtils.previousMonth(startDate))
         }
         right: Kirigami.Action {
             text: i18n("Next")
-            onTriggered: startDate = DateUtils.nextMonth(startDate)
+            onTriggered: setToDate(DateUtils.nextMonth(startDate))
         }
     }
 
