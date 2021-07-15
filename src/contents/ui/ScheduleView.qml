@@ -87,6 +87,7 @@ Kirigami.ScrollablePage {
 
             Kirigami.Heading {
                 Layout.fillWidth: true
+                Layout.topMargin: Kirigami.Units.largeSpacing
                 Layout.leftMargin: Kirigami.Units.largeSpacing
                 Layout.rightMargin: Kirigami.Units.largeSpacing
 
@@ -145,17 +146,19 @@ Kirigami.ScrollablePage {
                     Layout.fillWidth: true
 
                     Kirigami.AbstractCard {
+                        id: suggestCard
+
                         Layout.fillWidth: true
-                        Layout.leftMargin: Kirigami.Units.largeSpacing
-                        Layout.rightMargin: Kirigami.Units.largeSpacing
 
                         showClickFeedback: true
 
-                        visible: !events.length && new Date(date).setHours(0,0,0,0) == new Date().setHours(0,0,0,0)
+                        property bool isToday: new Date(date).setHours(0,0,0,0) == new Date().setHours(0,0,0,0)
+
+                        visible: !events.length && isToday
 
                         contentItem: QQC2.Label {
-                            text: Kirigami.Settings.isMobile ?  i18n("Nothing on the books today. Tap to add something.") :
-                                                                i18n("Nothing on the books today. Click to add something.")
+                            property string selectMethod: Kirigami.Settings.isMobile ? i18n("Tap") : i18n("Click")
+                            text: i18n("Nothing on the books today. %1 to add something.", selectMethod)
                         }
 
                         onClicked: root.addEvent()
