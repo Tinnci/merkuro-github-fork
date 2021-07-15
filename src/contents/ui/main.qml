@@ -30,7 +30,7 @@ Kirigami.ApplicationWindow {
                       i18n("Undo: ") + CalendarManager.undoRedoData["nextUndoDescription"] :
                       i18n("Undo")
                 shortcut: StandardKey.Undo
-                enabled: CalendarManager.undoRedoData["undoAvailable"]
+                enabled: CalendarManager.undoRedoData.undoAvailable
                 onTriggered: CalendarManager.undoAction();
             },
             Kirigami.Action {
