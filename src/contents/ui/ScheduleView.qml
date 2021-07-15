@@ -54,6 +54,21 @@ Kirigami.ScrollablePage {
             title: Qt.locale().monthName(root.month)
         }
 
+        section.property: "date"
+        section.labelPositioning: ViewSection.CurrentLabelAtStart
+        section.delegate: Kirigami.ListSectionHeader {
+            height: Kirigami.Units.gridUnit * 2 // Not setting height causes issues in ListView
+            // Items can start to eat into each other's areas. Why? No idea.
+            label: {
+                let date = new Date(section)
+                let dayName = Qt.locale().dayName(date.getDay());
+                let dayDate = date.getDate();
+                let dayMonth = Qt.locale().monthName(date.getMonth())
+
+                return `${dayName} ${dayDate}`
+            }
+        }
+
         model: Kalendar.DailyEventsModel {
             model: Kalendar.EventOccurrenceModel {
                 id: occurrenceModel
@@ -70,9 +85,12 @@ Kirigami.ScrollablePage {
 
             width: scheduleListView.width
 
-            Kirigami.ListSectionHeader {
+            Kirigami.Heading {
                 Layout.fillWidth: true
+                Layout.leftMargin: Kirigami.Units.largeSpacing
+                Layout.rightMargin: Kirigami.Units.largeSpacing
 
+                level: 2
                 text: {
                     let dayName = Qt.locale().dayName(date.getDay());
                     let dayDate = date.getDate();
@@ -116,6 +134,8 @@ Kirigami.ScrollablePage {
 
                     horizontalAlignment: Text.AlignRight
                     verticalAlignment: Text.AlignTop
+
+                    level: 3
 
                     text: Qt.locale().dayName(date.getDay(), Locale.NarrowFormat) + ", \n" + date.getDate()
                     visible: events.length || new Date(date).setHours(0,0,0,0) == new Date().setHours(0,0,0,0)
