@@ -61,6 +61,13 @@ Kirigami.ScrollablePage {
     ListView {
         id: scheduleListView
 
+        spacing: Kirigami.Settings.isMobile ? Kirigami.Units.largeSpacing * 2 : Kirigami.Units.largeSpacing
+        /* Spacing in this view works thus:
+         * 1. scheduleListView's spacing adds space between each day delegate component (including separators)
+         * 2. Weekly listSectionHeader has spacing of the day delegate column removed from bottom margin
+         * 3. Delegate's Separator's spacing gives same sapce (minus some adjustment) between it and dayGrid
+         */
+
         highlightRangeMode: ListView.ApplyRange
         onCountChanged: root.moveToSelected()
 
@@ -90,37 +97,35 @@ Kirigami.ScrollablePage {
 
             width: scheduleListView.width
 
-            // Independent from the event daygrid
-            ColumnLayout {
+            Kirigami.ListSectionHeader {
+                id: weekHeading
+                Layout.fillWidth: true
+                Layout.bottomMargin: dayColumn.spacing * -1
+
+                text: {
+                    let nextDay = DateUtils.getLastDayOfWeek( DateUtils.nextWeek(periodStartDate) );
+                    if (nextDay.getMonth() !== periodStartDate.getMonth()) {
+                        nextDay = new Date(nextDay.getFullYear(), nextDay.getMonth(), 0);
+                    }
+
+                    return periodStartDate.toLocaleDateString(Qt.locale(), "dddd dd") + " - " + nextDay.toLocaleDateString(Qt.locale(), "dddd dd MMMM");
+                }
+                visible: periodStartDate !== undefined &&
+                (periodStartDate.getDay() == Qt.locale().firstDayOfWeek || index == 0)
+            }
+
+            Kirigami.Separator {
+                Layout.fillWidth: true
+                Layout.bottomMargin: scheduleListView.spacing - Kirigami.Units.smallSpacing
+            }
+
+            QQC2.Label {
                 Layout.leftMargin: Kirigami.Units.largeSpacing
                 Layout.rightMargin: Kirigami.Units.largeSpacing
+                Layout.alignment: Qt.AlignVCenter
 
-                Kirigami.Separator {
-                    Layout.columnSpan: 2
-                    Layout.fillWidth: true
-                    Layout.bottomMargin: Kirigami.Units.smallSpacing
-                }
-
-                Kirigami.Heading {
-                    id: weekHeading
-                    Layout.fillWidth: true
-
-                    level: 2
-                    text: {
-                        let nextDay = DateUtils.getLastDayOfWeek( DateUtils.nextWeek(periodStartDate) );
-                        if (nextDay.getMonth() !== periodStartDate.getMonth()) {
-                            nextDay = new Date(nextDay.getFullYear(), nextDay.getMonth(), 0);
-                        }
-
-                        return periodStartDate.toLocaleDateString(Qt.locale(), "dddd dd") + " - " + nextDay.toLocaleDateString(Qt.locale(), "dddd dd MMMM");
-                    }
-                    visible: periodStartDate !== undefined &&
-                        (periodStartDate.getDay() == Qt.locale().firstDayOfWeek || index == 0)
-                }
-                QQC2.Label {
-                    visible: !dayGrid.visible
-                    text: periodStartDate.toLocaleDateString(Qt.locale(), "ddd dd")
-                }
+                visible: !dayGrid.visible
+                text: periodStartDate.toLocaleDateString(Qt.locale(), "ddd dd")
             }
 
             // Day + events
@@ -132,7 +137,6 @@ Kirigami.ScrollablePage {
 
                 Layout.leftMargin: Kirigami.Units.largeSpacing
                 Layout.rightMargin: Kirigami.Units.largeSpacing
-                Layout.bottomMargin: Kirigami.Units.largeSpacing
 
                 property bool isToday: new Date(periodStartDate).setHours(0,0,0,0) == new Date().setHours(0,0,0,0)
                 visible: events.length || isToday
@@ -155,7 +159,7 @@ Kirigami.ScrollablePage {
                     }
 
                     font.bold: true
-                    //color: dayGrid.isToday ? "white" : undefined
+                    color: dayGrid.isToday ? "white" : Kirigami.Theme.textColor
                     level: dayGrid.isToday ? 2 : 3
 
                     text: periodStartDate.toLocaleDateString(Qt.locale(), "ddd\ndd")
@@ -264,6 +268,8 @@ Kirigami.ScrollablePage {
                     }
                 }
             }
+
+
         }
     }
 }
