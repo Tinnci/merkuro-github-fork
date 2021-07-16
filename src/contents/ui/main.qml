@@ -198,7 +198,7 @@ Kirigami.ApplicationWindow {
             id: scheduleView
 
             title: startDate.toLocaleDateString(Qt.locale(), "<b>MMMM</b> yyyy")
-            currentDate: root.currentDate
+            selectedDate: root.currentDate.getMonth() === root.month ? root.currentDate : new Date(root.year, root.month)
             startDate: new Date(root.year, root.month)
 
             onMonthChanged: root.month = month
@@ -208,8 +208,6 @@ Kirigami.ApplicationWindow {
             onViewEvent: setUpView(modelData, collectionData)
             onEditEvent: setUpEdit(eventPtr, collectionData)
             onDeleteEvent: setUpDelete(eventPtr, deleteDate)
-
-            Component.onCompleted: setToDate(root.currentDate)
 
             actions.contextualActions: [
                 Kirigami.Action {

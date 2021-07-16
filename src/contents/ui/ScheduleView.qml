@@ -17,16 +17,25 @@ Kirigami.ScrollablePage {
     signal editEvent(var eventPtr, var collectionId)
     signal deleteEvent(var eventPtr, date deleteDate)
 
-    property date currentDate: new Date()
-    property date startDate: DateUtils.getFirstDayOfMonth(currentDate)
+    property date selectedDate: new Date()
+    property date startDate: DateUtils.getFirstDayOfMonth(selectedDate)
     property int month: startDate.getMonth()
     property int year: startDate.getFullYear()
-    property int daysInMonth: new Date(currentDate.getFullYear(), currentDate.getMonth(), 0).getDate()
+    property int daysInMonth: new Date(selectedDate.getFullYear(), selectedDate.getMonth(), 0).getDate()
     readonly property bool isLarge: width > Kirigami.Units.gridUnit * 30
 
-    function setToDate(date) {
-        currentDate = date
+    onSelectedDateChanged: moveToSelected()
 
+    function moveToSelected() {
+        if (selectedDate.getDate() > 1) {
+            scheduleListView.positionViewAtIndex(selectedDate.getDate() - 1, ListView.Beginning);
+        } else {
+            scheduleListView.positionViewAtBeginning()
+        }
+    }
+
+    function setToDate(date) {
+        selectedDate = date
         startDate = DateUtils.getFirstDayOfMonth(date);
         month = startDate.getMonth();
     }
@@ -53,7 +62,7 @@ Kirigami.ScrollablePage {
         id: scheduleListView
 
         highlightRangeMode: ListView.ApplyRange
-        onCountChanged: positionViewAtIndex(root.currentDate.getDate() - 1, ListView.Beginning);
+        onCountChanged: root.moveToSelected()
 
         header: Kirigami.ItemViewHeader {
             //backgroundImage.source: "../banner.jpg"
@@ -132,11 +141,11 @@ Kirigami.ScrollablePage {
                     Layout.alignment: Qt.AlignTop
                     Layout.maximumWidth: Kirigami.Units.gridUnit * 3
                     Layout.minimumWidth: Kirigami.Units.gridUnit * 3
-                    Layout.rightMargin: Kirigami.Units.smallSpacing
                     Layout.fillHeight: true
                     padding: Kirigami.Units.smallSpacing
+                    rightPadding: Kirigami.Units.largeSpacing
 
-                    horizontalAlignment: dayGrid.isToday ? Text.AlignHCenter: Text.AlignRight
+                    horizontalAlignment: Text.AlignRight
                     verticalAlignment: Text.AlignTop
                     background: Rectangle {
                         Kirigami.Theme.colorSet: Kirigami.Theme.View
@@ -146,7 +155,7 @@ Kirigami.ScrollablePage {
                     }
 
                     font.bold: true
-                    color: dayGrid.isToday ? "white" : undefined
+                    //color: dayGrid.isToday ? "white" : undefined
                     level: dayGrid.isToday ? 2 : 3
 
                     text: periodStartDate.toLocaleDateString(Qt.locale(), "ddd\ndd")
