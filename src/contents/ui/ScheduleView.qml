@@ -116,7 +116,7 @@ Kirigami.ScrollablePage {
                         nextDay = new Date(nextDay.getFullYear(), nextDay.getMonth(), 0);
                     }
 
-                    return periodStartDate.toLocaleDateString(Qt.locale(), "dddd dd") + " - " + nextDay.toLocaleDateString(Qt.locale(), "dddd dd MMMM");
+                    return periodStartDate.toLocaleDateString(Qt.locale(), "dddd <b>dd</b>") + " - " + nextDay.toLocaleDateString(Qt.locale(), "dddd <b>dd</b> MMMM");
                 }
                 visible: periodStartDate !== undefined &&
                 (periodStartDate.getDay() == Qt.locale().firstDayOfWeek || index == 0)
@@ -151,7 +151,7 @@ Kirigami.ScrollablePage {
                     horizontalAlignment: Text.AlignRight
 
                     visible: !cardsColumn.visible
-                    text: periodStartDate.toLocaleDateString(Qt.locale(), "ddd dd")
+                    text: periodStartDate.toLocaleDateString(Qt.locale(), "ddd <b>dd</b>")
                     color: Kirigami.Theme.disabledTextColor
                 }
 
@@ -187,7 +187,9 @@ Kirigami.ScrollablePage {
                         "white" : "black" : Kirigami.Theme.textColor
                     level: dayGrid.isToday ? 2 : 3
 
-                    text: periodStartDate.toLocaleDateString(Qt.locale(), "ddd\ndd")
+                    textFormat: Text.StyledText
+                    wrapMode: Text.Wrap
+                    text: periodStartDate.toLocaleDateString(Qt.locale(), "ddd\n<b>dd</b>")
                     visible: events.length || dayGrid.isToday
                 }
 
