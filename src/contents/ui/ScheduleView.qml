@@ -52,20 +52,12 @@ Kirigami.ScrollablePage {
     ListView {
         id: scheduleListView
 
-        anchors.fill: parent
+        highlightRangeMode: ListView.ApplyRange
+        onCountChanged: positionViewAtIndex(root.currentDate.getDate() - 1, ListView.Beginning);
 
         header: Kirigami.ItemViewHeader {
             //backgroundImage.source: "../banner.jpg"
             title: Qt.locale().monthName(root.month)
-        }
-
-        section.property: "periodStartDate"
-        section.labelPositioning: ViewSection.CurrentLabelAtStart
-        section.delegate: Kirigami.ListSectionHeader {
-            id: listSectionHeader
-            height: Kirigami.Units.gridUnit * 2 // Not setting height causes issues in ListView
-            // Items can start to eat into each other's areas. Why? No idea.
-            label: new Date(section).toLocaleDateString(Qt.locale(), "dddd dd")
         }
 
         model: Kalendar.MultiDayEventModel {
@@ -81,37 +73,50 @@ Kirigami.ScrollablePage {
             }
         }
 
-        highlightRangeMode: ListView.ApplyRange
-        onCountChanged: positionViewAtIndex(root.currentDate.getDate() - 1, ListView.Beginning);
-
         delegate: ColumnLayout {
+            // Tip: do NOT hide an entire delegate.
+            // This will very much screw up use of positionViewAtIndex.
+
             id: dayColumn
 
             width: scheduleListView.width
 
-            Kirigami.Heading {
-                Layout.fillWidth: true
-                Layout.topMargin: Kirigami.Units.largeSpacing
+            // Independent from the event daygrid
+            ColumnLayout {
                 Layout.leftMargin: Kirigami.Units.largeSpacing
                 Layout.rightMargin: Kirigami.Units.largeSpacing
 
-                level: 2
-                text: {
-                    let nextDay = DateUtils.getLastDayOfWeek( DateUtils.nextWeek(periodStartDate) );
-                    if (nextDay.getMonth() !== periodStartDate.getMonth()) {
-                        nextDay = new Date(nextDay.getFullYear(), nextDay.getMonth(), 0);
-                    }
-
-                    return periodStartDate.toLocaleDateString(Qt.locale(), "dddd dd") + " - " + nextDay.toLocaleDateString(Qt.locale(), "dddd dd MMMM");
+                Kirigami.Separator {
+                    Layout.columnSpan: 2
+                    Layout.fillWidth: true
+                    Layout.bottomMargin: Kirigami.Units.smallSpacing
                 }
-                visible: periodStartDate !== undefined &&
-                    (periodStartDate.getDay() == Qt.locale().firstDayOfWeek || index == 0)
+
+                Kirigami.Heading {
+                    id: weekHeading
+                    Layout.fillWidth: true
+
+                    level: 2
+                    text: {
+                        let nextDay = DateUtils.getLastDayOfWeek( DateUtils.nextWeek(periodStartDate) );
+                        if (nextDay.getMonth() !== periodStartDate.getMonth()) {
+                            nextDay = new Date(nextDay.getFullYear(), nextDay.getMonth(), 0);
+                        }
+
+                        return periodStartDate.toLocaleDateString(Qt.locale(), "dddd dd") + " - " + nextDay.toLocaleDateString(Qt.locale(), "dddd dd MMMM");
+                    }
+                    visible: periodStartDate !== undefined &&
+                        (periodStartDate.getDay() == Qt.locale().firstDayOfWeek || index == 0)
+                }
+                QQC2.Label {
+                    visible: !events.length
+                    text: periodStartDate.toLocaleDateString(Qt.locale(), "ddd dd")
+                }
             }
 
             // Day + events
             GridLayout {
                 id: dayGrid
-                visible: events.length || new Date(periodStartDate).setHours(0,0,0,0) == new Date().setHours(0,0,0,0)
 
                 columns: 2
                 rows: 2
@@ -121,12 +126,7 @@ Kirigami.ScrollablePage {
                 Layout.bottomMargin: Kirigami.Units.largeSpacing
 
                 property bool isToday: new Date(periodStartDate).setHours(0,0,0,0) == new Date().setHours(0,0,0,0)
-
-                Kirigami.Separator {
-                    Layout.columnSpan: 2
-                    Layout.fillWidth: true
-                    Layout.bottomMargin: Kirigami.Units.smallSpacing
-                }
+                visible: events.length || isToday
 
                 Kirigami.Heading {
                     Layout.maximumWidth: Kirigami.Units.gridUnit * 3
@@ -140,7 +140,7 @@ Kirigami.ScrollablePage {
                     level: dayGrid.isToday ? 2 : 3
 
                     text: periodStartDate.toLocaleDateString(Qt.locale(), "ddd\ndd")
-                    visible: events.length || new Date(periodStartDate).setHours(0,0,0,0) == new Date().setHours(0,0,0,0)
+                    visible: events.length || dayGrid.isToday
                 }
 
                 ColumnLayout {
