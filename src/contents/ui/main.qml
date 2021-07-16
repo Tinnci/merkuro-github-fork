@@ -21,7 +21,7 @@ Kirigami.ApplicationWindow {
 
     title: i18n("Calendar")
 
-    pageStack.initialPage: monthViewComponent
+    pageStack.initialPage: scheduleViewComponent
 
     globalDrawer: Kirigami.GlobalDrawer {
         isMenu: true
@@ -196,7 +196,8 @@ Kirigami.ApplicationWindow {
             // Make sure we get day from correct date, that is in the month we want
             title: DateUtils.addDaysToDate(startDate, 7).toLocaleDateString(Qt.locale(), "<b>MMMM</b> yyyy")
             currentDate: root.currentDate
-            startDate: DateUtils.getFirstDayOfWeek(DateUtils.getFirstDayOfMonth(root.selectedDate))
+            startDate: DateUtils.getFirstDayOfWeek(DateUtils.getFirstDayOfMonth(new Date(root.year, root.month)))
+            month: root.month
 
             Layout.minimumWidth: applicationWindow().width * 0.66
 
@@ -206,8 +207,6 @@ Kirigami.ApplicationWindow {
 
             onMonthChanged: root.month = month
             onYearChanged: root.year = year
-
-            Component.onCompleted: setToDate(new Date(root.year, root.month))
 
             actions.contextualActions: [
                 Kirigami.Action {
@@ -225,6 +224,7 @@ Kirigami.ApplicationWindow {
         ScheduleView {
             id: scheduleView
 
+            title: startDate.toLocaleDateString(Qt.locale(), "<b>MMMM</b> yyyy")
             currentDate: root.currentDate
             startDate: new Date(root.year, root.month)
 
@@ -236,10 +236,7 @@ Kirigami.ApplicationWindow {
             onEditEvent: setUpEdit(eventPtr, collectionData)
             onDeleteEvent: setUpDelete(eventPtr, deleteDate)
 
-            Component.onCompleted: {
-                setToDate(new Date(root.year, root.month))
-                month = startDate.getMonth() // Otherwise resets on load
-            }
+            Component.onCompleted: setToDate(root.currentDate)
 
             actions.contextualActions: [
                 Kirigami.Action {
