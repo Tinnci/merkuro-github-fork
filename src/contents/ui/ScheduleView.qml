@@ -40,6 +40,12 @@ Kirigami.ScrollablePage {
         month = startDate.getMonth();
     }
 
+    function isDarkColor(background) {
+        var temp = Qt.darker(background, 1);
+        var a = 1 - ( 0.299 * temp.r + 0.587 * temp.g + 0.114 * temp.b);
+        return temp.a > 0 && a >= 0.5;
+    }
+
     background: Rectangle {
         Kirigami.Theme.colorSet: root.isLarge ? Kirigami.Theme.Header : Kirigami.Theme.View
         color: Kirigami.Theme.backgroundColor
@@ -159,7 +165,8 @@ Kirigami.ScrollablePage {
                     }
 
                     font.bold: true
-                    color: dayGrid.isToday ? "white" : Kirigami.Theme.textColor
+                    color: dayGrid.isToday ? root.isDarkColor(Kirigami.Theme.highlightColor) ?
+                        "white" : "black" : Kirigami.Theme.textColor
                     level: dayGrid.isToday ? 2 : 3
 
                     text: periodStartDate.toLocaleDateString(Qt.locale(), "ddd\ndd")
@@ -209,12 +216,6 @@ Kirigami.ScrollablePage {
                                 property int eventDays: DateUtils.fullDaysBetweenDates(modelData.startTime, modelData.endTime)
                                 property int dayOfMultidayEvent: DateUtils.fullDaysBetweenDates(modelData.startTime, periodStartDate)
 
-                                function isDarkColor(background) {
-                                    var temp = Qt.darker(background, 1);
-                                    var a = 1 - ( 0.299 * temp.r + 0.587 * temp.g + 0.114 * temp.b);
-                                    return temp.a > 0 && a >= 0.5;
-                                }
-
                                 contentItem: GridLayout {
                                     columns: root.isLarge ? 2 : 1
                                     rows: root.isLarge ? 1 : 2
@@ -225,7 +226,7 @@ Kirigami.ScrollablePage {
                                         Layout.column: 0
                                         Layout.row: 0
 
-                                        color: eventCard.isDarkColor(modelData.color) ? "white" : "black"
+                                        color: root.isDarkColor(Kirigami.Theme.backgroundColor) ? "white" : "black"
                                         text: {
                                             if(eventCard.multiday) {
                                                 return i18n("%1 (Day %2 of %3)", modelData.text, eventCard.dayOfMultidayEvent, eventCard.eventDays);
@@ -242,7 +243,7 @@ Kirigami.ScrollablePage {
                                         Layout.row: root.isLarge ? 0 : 1
                                         visible: !modelData.allDay
 
-                                        color: eventCard.isDarkColor(modelData.color) ? "white" : "black"
+                                        color: root.isDarkColor(Kirigami.Theme.backgroundColor) ? "white" : "black"
                                         text: {
                                             if(modelData.startTime.toTimeString() != modelData.endTime.toTimeString()) {
                                                 modelData.startTime.toLocaleTimeString(Qt.locale(), Locale.ShortFormat) + " - " + modelData.endTime.toLocaleTimeString(Qt.locale(), Locale.ShortFormat)
