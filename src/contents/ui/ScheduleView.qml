@@ -119,7 +119,7 @@ Kirigami.ScrollablePage {
                     return periodStartDate.toLocaleDateString(Qt.locale(), "dddd <b>dd</b>") + " - " + nextDay.toLocaleDateString(Qt.locale(), "dddd <b>dd</b> MMMM");
                 }
                 visible: periodStartDate !== undefined &&
-                (periodStartDate.getDay() == Qt.locale().firstDayOfWeek || index == 0)
+                    (periodStartDate.getDay() === Qt.locale().firstDayOfWeek || index === 0)
             }
 
             Kirigami.Separator {
@@ -138,7 +138,7 @@ Kirigami.ScrollablePage {
                 Layout.rightMargin: Kirigami.Units.largeSpacing
 
                 property real dayLabelWidth: Kirigami.Units.gridUnit * 3
-                property bool isToday: new Date(periodStartDate).setHours(0,0,0,0) == new Date().setHours(0,0,0,0)
+                property bool isToday: new Date(periodStartDate).setHours(0,0,0,0) === new Date().setHours(0,0,0,0)
 
                 QQC2.Label {
                     id: smallDayLabel
@@ -270,7 +270,7 @@ Kirigami.ScrollablePage {
                                         text: {
                                             if (modelData.allDay) {
                                                 i18n("Runs all day")
-                                            } else if (modelData.startTime.getTime() == modelData.endTime.getTime()) {
+                                            } else if (modelData.startTime.getTime() === modelData.endTime.getTime()) {
                                                 modelData.startTime.toLocaleTimeString(Qt.locale(), Locale.ShortFormat);
                                             } else if (!eventCard.multiday) {
                                                 modelData.startTime.toLocaleTimeString(Qt.locale(), Locale.ShortFormat) + " - " + modelData.endTime.toLocaleTimeString(Qt.locale(), Locale.ShortFormat);
