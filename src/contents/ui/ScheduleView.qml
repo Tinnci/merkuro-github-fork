@@ -63,6 +63,7 @@ Kirigami.ScrollablePage {
     }
 
     padding: 0
+    bottomPadding: Kirigami.Settings.isMobile ? Kirigami.Units.largeSpacing * 2 : Kirigami.Units.largeSpacing
 
     ListView {
         id: scheduleListView
@@ -73,7 +74,7 @@ Kirigami.ScrollablePage {
          * 2. Weekly listSectionHeader has spacing of the day delegate column removed from bottom margin
          * 3. Delegate's Separator's spacing gives same sapce (minus some adjustment) between it and dayGrid
          */
-
+        Layout.bottomMargin: Kirigami.Units.largeSpacing * 5
         highlightRangeMode: ListView.ApplyRange
         onCountChanged: root.moveToSelected()
 
@@ -105,6 +106,7 @@ Kirigami.ScrollablePage {
 
             Kirigami.ListSectionHeader {
                 id: weekHeading
+
                 Layout.fillWidth: true
                 Layout.bottomMargin: dayColumn.spacing * -1
 
@@ -125,15 +127,6 @@ Kirigami.ScrollablePage {
                 Layout.bottomMargin: scheduleListView.spacing - Kirigami.Units.smallSpacing
             }
 
-            QQC2.Label {
-                Layout.leftMargin: Kirigami.Units.largeSpacing
-                Layout.rightMargin: Kirigami.Units.largeSpacing
-                Layout.alignment: Qt.AlignVCenter
-
-                visible: !dayGrid.visible
-                text: periodStartDate.toLocaleDateString(Qt.locale(), "ddd dd")
-            }
-
             // Day + events
             GridLayout {
                 id: dayGrid
@@ -144,19 +137,45 @@ Kirigami.ScrollablePage {
                 Layout.leftMargin: Kirigami.Units.largeSpacing
                 Layout.rightMargin: Kirigami.Units.largeSpacing
 
+                property real dayLabelWidth: Kirigami.Units.gridUnit * 3
                 property bool isToday: new Date(periodStartDate).setHours(0,0,0,0) == new Date().setHours(0,0,0,0)
-                visible: events.length || isToday
+
+                QQC2.Label {
+                    id: smallDayLabel
+
+                    Layout.alignment: Qt.AlignVCenter
+                    Layout.maximumWidth: dayGrid.dayLabelWidth
+                    Layout.minimumWidth: dayGrid.dayLabelWidth
+                    padding: Kirigami.Units.smallSpacing
+                    rightPadding: Kirigami.Units.largeSpacing
+                    horizontalAlignment: Text.AlignRight
+
+                    visible: !cardsColumn.visible
+                    text: periodStartDate.toLocaleDateString(Qt.locale(), "ddd dd")
+                    color: Kirigami.Theme.disabledTextColor
+                }
+
+                QQC2.Label {
+                    id: emptyDayText
+
+                    Layout.alignment: Qt.AlignVCenter
+                    visible: !cardsColumn.visible
+                    text: i18n("Clear day.")
+                    color: Kirigami.Theme.disabledTextColor
+                }
 
                 Kirigami.Heading {
+                    id: largeDayLabel
+
                     Layout.alignment: Qt.AlignTop
-                    Layout.maximumWidth: Kirigami.Units.gridUnit * 3
-                    Layout.minimumWidth: Kirigami.Units.gridUnit * 3
+                    Layout.maximumWidth: dayGrid.dayLabelWidth
+                    Layout.minimumWidth: dayGrid.dayLabelWidth
                     Layout.fillHeight: true
                     padding: Kirigami.Units.smallSpacing
                     rightPadding: Kirigami.Units.largeSpacing
-
                     horizontalAlignment: Text.AlignRight
                     verticalAlignment: Text.AlignTop
+
                     background: Rectangle {
                         Kirigami.Theme.colorSet: Kirigami.Theme.View
                         visible: dayGrid.isToday
@@ -164,7 +183,6 @@ Kirigami.ScrollablePage {
                         radius: 5
                     }
 
-                    font.bold: true
                     color: dayGrid.isToday ? root.isDarkColor(Kirigami.Theme.textColor) ?
                         "white" : "black" : Kirigami.Theme.textColor
                     level: dayGrid.isToday ? 2 : 3
@@ -174,7 +192,10 @@ Kirigami.ScrollablePage {
                 }
 
                 ColumnLayout {
+                    id: cardsColumn
+
                     Layout.fillWidth: true
+                    visible: events.length || dayGrid.isToday
 
                     Kirigami.AbstractCard {
                         id: suggestCard
@@ -187,6 +208,7 @@ Kirigami.ScrollablePage {
                         contentItem: QQC2.Label {
                             property string selectMethod: Kirigami.Settings.isMobile ? i18n("Tap") : i18n("Click")
                             text: i18n("Nothing on the books today. %1 to add something.", selectMethod)
+                            wrapMode: Text.Wrap
                         }
 
                         onClicked: root.addEvent()
@@ -276,8 +298,6 @@ Kirigami.ScrollablePage {
                     }
                 }
             }
-
-
         }
     }
 }
