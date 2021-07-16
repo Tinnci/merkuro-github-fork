@@ -109,7 +109,7 @@ Kirigami.ScrollablePage {
                         (periodStartDate.getDay() == Qt.locale().firstDayOfWeek || index == 0)
                 }
                 QQC2.Label {
-                    visible: !events.length
+                    visible: !dayGrid.visible
                     text: periodStartDate.toLocaleDateString(Qt.locale(), "ddd dd")
                 }
             }
@@ -129,14 +129,24 @@ Kirigami.ScrollablePage {
                 visible: events.length || isToday
 
                 Kirigami.Heading {
+                    Layout.alignment: Qt.AlignTop
                     Layout.maximumWidth: Kirigami.Units.gridUnit * 3
                     Layout.minimumWidth: Kirigami.Units.gridUnit * 3
-                    Layout.rightMargin: Kirigami.Units.largeSpacing
+                    Layout.rightMargin: Kirigami.Units.smallSpacing
                     Layout.fillHeight: true
+                    padding: Kirigami.Units.smallSpacing
 
-                    horizontalAlignment: Text.AlignRight
+                    horizontalAlignment: dayGrid.isToday ? Text.AlignHCenter: Text.AlignRight
                     verticalAlignment: Text.AlignTop
+                    background: Rectangle {
+                        Kirigami.Theme.colorSet: Kirigami.Theme.View
+                        visible: dayGrid.isToday
+                        color: Kirigami.Theme.highlightColor
+                        radius: 5
+                    }
 
+                    font.bold: true
+                    color: dayGrid.isToday ? "white" : undefined
                     level: dayGrid.isToday ? 2 : 3
 
                     text: periodStartDate.toLocaleDateString(Qt.locale(), "ddd\ndd")
