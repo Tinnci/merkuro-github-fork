@@ -160,12 +160,12 @@ Kirigami.ScrollablePage {
                     background: Rectangle {
                         Kirigami.Theme.colorSet: Kirigami.Theme.View
                         visible: dayGrid.isToday
-                        color: Kirigami.Theme.highlightColor
+                        color: Kirigami.Theme.textColor
                         radius: 5
                     }
 
                     font.bold: true
-                    color: dayGrid.isToday ? root.isDarkColor(Kirigami.Theme.highlightColor) ?
+                    color: dayGrid.isToday ? root.isDarkColor(Kirigami.Theme.textColor) ?
                         "white" : "black" : Kirigami.Theme.textColor
                     level: dayGrid.isToday ? 2 : 3
 
@@ -241,14 +241,21 @@ Kirigami.ScrollablePage {
                                         Layout.fillHeight: true
                                         Layout.column: root.isLarge ? 1 : 0
                                         Layout.row: root.isLarge ? 0 : 1
-                                        visible: !modelData.allDay
 
                                         color: root.isDarkColor(Kirigami.Theme.backgroundColor) ? "white" : "black"
                                         text: {
-                                            if(modelData.startTime.toTimeString() != modelData.endTime.toTimeString()) {
-                                                modelData.startTime.toLocaleTimeString(Qt.locale(), Locale.ShortFormat) + " - " + modelData.endTime.toLocaleTimeString(Qt.locale(), Locale.ShortFormat)
-                                            } else if (modelData.startTime.toTimeString() == modelData.endTime.toTimeString()) {
-                                                modelData.startTime.toLocaleTimeString(Qt.locale(), Locale.ShortFormat)
+                                            if (modelData.allDay) {
+                                                i18n("Runs all day")
+                                            } else if (modelData.startTime.getTime() == modelData.endTime.getTime()) {
+                                                modelData.startTime.toLocaleTimeString(Qt.locale(), Locale.ShortFormat);
+                                            } else if (!eventCard.multiday) {
+                                                modelData.startTime.toLocaleTimeString(Qt.locale(), Locale.ShortFormat) + " - " + modelData.endTime.toLocaleTimeString(Qt.locale(), Locale.ShortFormat);
+                                            } else if (eventCard.dayOfMultidayEvent === 1) {
+                                                i18n("Starts at %1", modelData.startTime.toLocaleTimeString(Qt.locale(), Locale.ShortFormat));
+                                            } else if (eventCard.dayOfMultidayEvent === eventCard.eventDays) {
+                                                i18n("Ends at %1", modelData.endTime.toLocaleTimeString(Qt.locale(), Locale.ShortFormat));
+                                            } else { // In between multiday start/finish
+                                                i18n("Runs all day")
                                             }
                                         }
                                     }
