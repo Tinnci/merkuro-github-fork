@@ -313,9 +313,10 @@ Kirigami.OverlayDrawer {
 
                     ColumnLayout {
                         Layout.fillWidth: true
+                        visible: eventInfo.eventWrapper.remindersModel.rowCount() > 0
+
                         Repeater {
                             Layout.fillWidth: true
-                            visible: eventInfo.eventWrapper.remindersModel.rowCount() > 0
 
                             model: eventInfo.eventWrapper.remindersModel
 
@@ -330,7 +331,7 @@ Kirigami.OverlayDrawer {
                     QQC2.Label {
                         Layout.alignment: Qt.AlignTop
                         text: i18n("<b>Organizer:</b>")
-                        visible: eventInfo.eventWrapper.attendeesModel.rowCount() > 0
+                        visible: eventInfo.eventWrapper.organizer.fullName
                     }
                     QQC2.Label {
                         Layout.fillWidth: true
@@ -343,7 +344,7 @@ Kirigami.OverlayDrawer {
                               `[${organizer.email}](mailto:${organizer.email})`
                         onLinkActivated: Qt.openUrlExternally(link)
                         wrapMode: Text.Wrap
-                        visible: eventInfo.eventWrapper.attendeesModel.rowCount() > 0
+                        visible: eventInfo.eventWrapper.organizer.fullName
                     }
 
                     QQC2.Label {
