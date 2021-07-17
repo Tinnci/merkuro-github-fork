@@ -128,6 +128,7 @@ Kirigami.ScrollablePage {
                     y: dayMouseArea.clickY
                     x: dayMouseArea.clickX
 
+                    // TODO: Add to-dos and journals
                     QQC2.MenuItem {
                         icon.name: "tag-events"
                         text:i18n("New event")
@@ -290,7 +291,7 @@ Kirigami.ScrollablePage {
                                                 Layout.fillHeight: true
                                                 source: "tag-events"
                                                 color: cardContents.textColor
-                                                // This will need dynamic changing with implementation of to-dos/journals
+                                                // TODO: This will need dynamic changing with implementation of to-dos/journals
                                             }
 
                                             QQC2.Label {
@@ -318,12 +319,13 @@ Kirigami.ScrollablePage {
                                             Layout.column: 1
                                             Layout.row: 0
 
-                                            Kirigami.Icon {
+                                            // TODO: Re-enable this when MR !8 is merged
+                                            /*Kirigami.Icon {
                                                 Layout.fillHeight: true
                                                 source: "appointment-recurring"
                                                 color: cardContents.textColor
                                                 visible: eventCard.eventWrapper.recurrenceData.type
-                                            }
+                                            }*/
                                             Kirigami.Icon {
                                                 Layout.fillHeight: true
                                                 source: "appointment-reminder"
