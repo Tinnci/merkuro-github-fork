@@ -102,7 +102,7 @@ Kirigami.ApplicationWindow {
             EventEditor {
                 id: eventEditorInLoader
                 onAdded: CalendarManager.addEvent(collectionId, event.eventPtr)
-                onEdited: CalendarManager.editEvent(event.originalPtr, event.eventPtr)
+                onEdited: CalendarManager.editEvent(event.originalEventPtr, event.eventPtr)
                 onCancel: root.close()
             }
 
