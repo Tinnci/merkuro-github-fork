@@ -96,239 +96,252 @@ Kirigami.ScrollablePage {
             }
         }
 
-        delegate: ColumnLayout {
-            // Tip: do NOT hide an entire delegate.
-            // This will very much screw up use of positionViewAtIndex.
+        delegate: MouseArea {
+            width: dayColumn.width
+            height: dayColumn.height
 
-            id: dayColumn
+            property double clickX
+            property double clickY
 
-            width: scheduleListView.width
+            hoverEnabled: true
+            acceptedButtons: Qt.LeftButton | Qt.RightButton
 
-            Kirigami.ListSectionHeader {
-                id: weekHeading
+            onDoubleClicked: addEvent()
 
-                Layout.fillWidth: true
-                Layout.bottomMargin: dayColumn.spacing * -1
+            ColumnLayout {
+                // Tip: do NOT hide an entire delegate.
+                // This will very much screw up use of positionViewAtIndex.
 
-                text: {
-                    let nextDay = DateUtils.getLastDayOfWeek( DateUtils.nextWeek(periodStartDate) );
-                    if (nextDay.getMonth() !== periodStartDate.getMonth()) {
-                        nextDay = new Date(nextDay.getFullYear(), nextDay.getMonth(), 0);
-                    }
+                id: dayColumn
 
-                    return periodStartDate.toLocaleDateString(Qt.locale(), "dddd <b>dd</b>") + " - " + nextDay.toLocaleDateString(Qt.locale(), "dddd <b>dd</b> MMMM");
-                }
-                visible: periodStartDate !== undefined &&
-                    (periodStartDate.getDay() === Qt.locale().firstDayOfWeek || index === 0)
-            }
+                width: scheduleListView.width
 
-            Kirigami.Separator {
-                Layout.fillWidth: true
-                Layout.bottomMargin: scheduleListView.spacing - Kirigami.Units.smallSpacing
-            }
-
-            // Day + events
-            GridLayout {
-                id: dayGrid
-
-                columns: 2
-                rows: 2
-
-                Layout.leftMargin: Kirigami.Units.largeSpacing
-                Layout.rightMargin: Kirigami.Units.largeSpacing
-
-                property real dayLabelWidth: Kirigami.Units.gridUnit * 3
-                property bool isToday: new Date(periodStartDate).setHours(0,0,0,0) === new Date().setHours(0,0,0,0)
-
-                QQC2.Label {
-                    id: smallDayLabel
-
-                    Layout.alignment: Qt.AlignVCenter
-                    Layout.maximumWidth: dayGrid.dayLabelWidth
-                    Layout.minimumWidth: dayGrid.dayLabelWidth
-                    padding: Kirigami.Units.smallSpacing
-                    rightPadding: Kirigami.Units.largeSpacing
-                    horizontalAlignment: Text.AlignRight
-
-                    visible: !cardsColumn.visible
-                    text: periodStartDate.toLocaleDateString(Qt.locale(), "ddd <b>dd</b>")
-                    color: Kirigami.Theme.disabledTextColor
-                }
-
-                QQC2.Label {
-                    id: emptyDayText
-
-                    Layout.alignment: Qt.AlignVCenter
-                    visible: !cardsColumn.visible
-                    text: i18n("Clear day.")
-                    color: Kirigami.Theme.disabledTextColor
-                }
-
-                Kirigami.Heading {
-                    id: largeDayLabel
-
-                    Layout.alignment: Qt.AlignTop
-                    Layout.maximumWidth: dayGrid.dayLabelWidth
-                    Layout.minimumWidth: dayGrid.dayLabelWidth
-                    Layout.fillHeight: true
-                    padding: Kirigami.Units.smallSpacing
-                    rightPadding: Kirigami.Units.largeSpacing
-                    horizontalAlignment: Text.AlignRight
-                    verticalAlignment: Text.AlignTop
-
-                    level: dayGrid.isToday ? 1 : 3
-                    textFormat: Text.StyledText
-                    wrapMode: Text.Wrap
-                    color: dayGrid.isToday ? Kirigami.Theme.highlightColor : Kirigami.Theme.textColor
-                    text: periodStartDate.toLocaleDateString(Qt.locale(), "ddd\n<b>dd</b>")
-                    visible: events.length || dayGrid.isToday
-                }
-
-                ColumnLayout {
-                    id: cardsColumn
+                Kirigami.ListSectionHeader {
+                    id: weekHeading
 
                     Layout.fillWidth: true
-                    visible: events.length || dayGrid.isToday
+                    Layout.bottomMargin: dayColumn.spacing * -1
 
-                    Kirigami.AbstractCard {
-                        id: suggestCard
-
-                        Layout.fillWidth: true
-
-                        showClickFeedback: true
-                        visible: !events.length && dayGrid.isToday
-
-                        contentItem: QQC2.Label {
-                            property string selectMethod: Kirigami.Settings.isMobile ? i18n("Tap") : i18n("Click")
-                            text: i18n("Nothing on the books today. %1 to add something.", selectMethod)
-                            wrapMode: Text.Wrap
+                    text: {
+                        let nextDay = DateUtils.getLastDayOfWeek( DateUtils.nextWeek(periodStartDate) );
+                        if (nextDay.getMonth() !== periodStartDate.getMonth()) {
+                            nextDay = new Date(nextDay.getFullYear(), nextDay.getMonth(), 0);
                         }
 
-                        onClicked: root.addEvent()
+                        return periodStartDate.toLocaleDateString(Qt.locale(), "dddd <b>dd</b>") + " - " + nextDay.toLocaleDateString(Qt.locale(), "dddd <b>dd</b> MMMM");
+                    }
+                    visible: periodStartDate !== undefined &&
+                    (periodStartDate.getDay() === Qt.locale().firstDayOfWeek || index === 0)
+                }
+
+                Kirigami.Separator {
+                    Layout.fillWidth: true
+                    Layout.bottomMargin: scheduleListView.spacing - Kirigami.Units.smallSpacing
+                }
+
+                // Day + events
+                GridLayout {
+                    id: dayGrid
+
+                    columns: 2
+                    rows: 2
+
+                    Layout.leftMargin: Kirigami.Units.largeSpacing
+                    Layout.rightMargin: Kirigami.Units.largeSpacing
+
+                    property real dayLabelWidth: Kirigami.Units.gridUnit * 3
+                    property bool isToday: new Date(periodStartDate).setHours(0,0,0,0) === new Date().setHours(0,0,0,0)
+
+                    QQC2.Label {
+                        id: smallDayLabel
+
+                        Layout.alignment: Qt.AlignVCenter
+                        Layout.maximumWidth: dayGrid.dayLabelWidth
+                        Layout.minimumWidth: dayGrid.dayLabelWidth
+                        padding: Kirigami.Units.smallSpacing
+                        rightPadding: Kirigami.Units.largeSpacing
+                        horizontalAlignment: Text.AlignRight
+
+                        visible: !cardsColumn.visible
+                        text: periodStartDate.toLocaleDateString(Qt.locale(), "ddd <b>dd</b>")
+                        color: Kirigami.Theme.disabledTextColor
                     }
 
-                    Repeater {
-                        model: events
+                    QQC2.Label {
+                        id: emptyDayText
+
+                        Layout.alignment: Qt.AlignVCenter
+                        visible: !cardsColumn.visible
+                        text: i18n("Clear day.")
+                        color: Kirigami.Theme.disabledTextColor
+                    }
+
+                    Kirigami.Heading {
+                        id: largeDayLabel
+
+                        Layout.alignment: Qt.AlignTop
+                        Layout.maximumWidth: dayGrid.dayLabelWidth
+                        Layout.minimumWidth: dayGrid.dayLabelWidth
+                        Layout.fillHeight: true
+                        padding: Kirigami.Units.smallSpacing
+                        rightPadding: Kirigami.Units.largeSpacing
+                        horizontalAlignment: Text.AlignRight
+                        verticalAlignment: Text.AlignTop
+
+                        level: dayGrid.isToday ? 1 : 3
+                        textFormat: Text.StyledText
+                        wrapMode: Text.Wrap
+                        color: dayGrid.isToday ? Kirigami.Theme.highlightColor : Kirigami.Theme.textColor
+                        text: periodStartDate.toLocaleDateString(Qt.locale(), "ddd\n<b>dd</b>")
+                        visible: events.length || dayGrid.isToday
+                    }
+
+                    ColumnLayout {
+                        id: cardsColumn
+
+                        Layout.fillWidth: true
+                        visible: events.length || dayGrid.isToday
+
+                        Kirigami.AbstractCard {
+                            id: suggestCard
+
+                            Layout.fillWidth: true
+
+                            showClickFeedback: true
+                            visible: !events.length && dayGrid.isToday
+
+                            contentItem: QQC2.Label {
+                                property string selectMethod: Kirigami.Settings.isMobile ? i18n("Tap") : i18n("Click")
+                                text: i18n("Nothing on the books today. %1 to add something.", selectMethod)
+                                wrapMode: Text.Wrap
+                            }
+
+                            onClicked: root.addEvent()
+                        }
+
                         Repeater {
-                            id: eventsRepeater
-                            model: modelData
+                            model: events
+                            Repeater {
+                                id: eventsRepeater
+                                model: modelData
 
-                            Kirigami.AbstractCard {
-                                id: eventCard
+                                Kirigami.AbstractCard {
+                                    id: eventCard
 
-                                Layout.fillWidth: true
+                                    Layout.fillWidth: true
 
-                                Kirigami.Theme.inherit: false
-                                Kirigami.Theme.colorSet: Kirigami.Theme.View
-                                Kirigami.Theme.backgroundColor: Qt.rgba(modelData.color.r, modelData.color.g, modelData.color.b, 0.8)
-                                Kirigami.Theme.highlightColor: Qt.darker(modelData.color, 2.5)
+                                    Kirigami.Theme.inherit: false
+                                    Kirigami.Theme.colorSet: Kirigami.Theme.View
+                                    Kirigami.Theme.backgroundColor: Qt.rgba(modelData.color.r, modelData.color.g, modelData.color.b, 0.8)
+                                    Kirigami.Theme.highlightColor: Qt.darker(modelData.color, 2.5)
 
-                                padding: 0
+                                    padding: 0
 
-                                showClickFeedback: true
+                                    showClickFeedback: true
 
-                                property var eventWrapper: new EventWrapper()
-                                property bool multiday: modelData.startTime.getDate() !== modelData.endTime.getDate()
-                                property int eventDays: DateUtils.fullDaysBetweenDates(modelData.startTime, modelData.endTime)
-                                property int dayOfMultidayEvent: DateUtils.fullDaysBetweenDates(modelData.startTime, periodStartDate)
+                                    property var eventWrapper: new EventWrapper()
+                                    property bool multiday: modelData.startTime.getDate() !== modelData.endTime.getDate()
+                                    property int eventDays: DateUtils.fullDaysBetweenDates(modelData.startTime, modelData.endTime)
+                                    property int dayOfMultidayEvent: DateUtils.fullDaysBetweenDates(modelData.startTime, periodStartDate)
 
-                                Component.onCompleted: {
-                                    eventWrapper = Qt.createQmlObject('import org.kde.kalendar 1.0; EventWrapper {id: event}', eventInfo, "event");
-                                    eventWrapper.eventPtr = modelData.eventPtr
-                                }
+                                    Component.onCompleted: {
+                                        eventWrapper = Qt.createQmlObject('import org.kde.kalendar 1.0; EventWrapper {id: event}', eventInfo, "event");
+                                        eventWrapper.eventPtr = modelData.eventPtr
+                                    }
 
-                                contentItem: GridLayout {
-                                    id: cardContents
+                                    contentItem: GridLayout {
+                                        id: cardContents
 
-                                    columns: root.isLarge ? 3 : 2
-                                    rows: root.isLarge ? 1 : 2
+                                        columns: root.isLarge ? 3 : 2
+                                        rows: root.isLarge ? 1 : 2
 
-                                    property color textColor: root.isDarkColor(Kirigami.Theme.backgroundColor) ? "white" : "black"
+                                        property color textColor: root.isDarkColor(Kirigami.Theme.backgroundColor) ? "white" : "black"
 
-                                    RowLayout {
-                                        Kirigami.Icon {
-                                            Layout.fillHeight: true
-                                            source: "tag-events"
-                                            color: cardContents.textColor
-                                            // This will need dynamic changing with implementation of to-dos/journals
+                                        RowLayout {
+                                            Kirigami.Icon {
+                                                Layout.fillHeight: true
+                                                source: "tag-events"
+                                                color: cardContents.textColor
+                                                // This will need dynamic changing with implementation of to-dos/journals
+                                            }
+
+                                            QQC2.Label {
+                                                Layout.fillWidth: true
+                                                Layout.fillHeight: true
+                                                Layout.column: 0
+                                                Layout.row: 0
+                                                Layout.columnSpan: root.isLarge ? 2 : 1
+
+                                                color: cardContents.textColor
+                                                text: {
+                                                    if(eventCard.multiday) {
+                                                        return i18n("%1 (Day %2 of %3)", modelData.text, eventCard.dayOfMultidayEvent, eventCard.eventDays);
+                                                    } else {
+                                                        return modelData.text;
+                                                    }
+                                                }
+                                                elide: Text.ElideRight
+                                            }
                                         }
+
+                                        RowLayout {
+                                            id: additionalIcons
+
+                                            Layout.column: 1
+                                            Layout.row: 0
+
+                                            Kirigami.Icon {
+                                                Layout.fillHeight: true
+                                                source: "appointment-recurring"
+                                                color: cardContents.textColor
+                                                visible: eventCard.eventWrapper.recurrenceData.type
+                                            }
+                                            Kirigami.Icon {
+                                                Layout.fillHeight: true
+                                                source: "appointment-reminder"
+                                                color: cardContents.textColor
+                                                visible: eventCard.eventWrapper.remindersModel.rowCount() > 0
+                                            }
+                                        }
+
 
                                         QQC2.Label {
-                                            Layout.fillWidth: true
                                             Layout.fillHeight: true
-                                            Layout.column: 0
-                                            Layout.row: 0
-                                            Layout.columnSpan: root.isLarge ? 2 : 1
+                                            Layout.maximumWidth: Kirigami.Units.gridUnit * 6
+                                            Layout.minimumWidth: Kirigami.Units.gridUnit * 6
+                                            Layout.column: root.isLarge ? 2 : 0
+                                            Layout.row: root.isLarge ? 0 : 1
 
+                                            horizontalAlignment: root.isLarge ? Text.AlignRight : Text.AlignLeft
                                             color: cardContents.textColor
                                             text: {
-                                                if(eventCard.multiday) {
-                                                    return i18n("%1 (Day %2 of %3)", modelData.text, eventCard.dayOfMultidayEvent, eventCard.eventDays);
-                                                } else {
-                                                    return modelData.text;
+                                                if (modelData.allDay) {
+                                                    i18n("Runs all day")
+                                                } else if (modelData.startTime.getTime() === modelData.endTime.getTime()) {
+                                                    modelData.startTime.toLocaleTimeString(Qt.locale(), Locale.ShortFormat);
+                                                } else if (!eventCard.multiday) {
+                                                    modelData.startTime.toLocaleTimeString(Qt.locale(), Locale.ShortFormat) + " - " + modelData.endTime.toLocaleTimeString(Qt.locale(), Locale.ShortFormat);
+                                                } else if (eventCard.dayOfMultidayEvent === 1) {
+                                                    i18n("Starts at %1", modelData.startTime.toLocaleTimeString(Qt.locale(), Locale.ShortFormat));
+                                                } else if (eventCard.dayOfMultidayEvent === eventCard.eventDays) {
+                                                    i18n("Ends at %1", modelData.endTime.toLocaleTimeString(Qt.locale(), Locale.ShortFormat));
+                                                } else { // In between multiday start/finish
+                                                    i18n("Runs all day")
                                                 }
                                             }
-                                            elide: Text.ElideRight
                                         }
                                     }
 
-                                    RowLayout {
-                                        id: additionalIcons
+                                    IncidenceMouseArea {
+                                        id: eventMouseArea
 
-                                        Layout.column: 1
-                                        Layout.row: 0
+                                        eventData: modelData
+                                        collectionDetails: events.length && Kalendar.CalendarManager.getCollectionDetails(modelData.collectionId)
 
-                                        Kirigami.Icon {
-                                            Layout.fillHeight: true
-                                            source: "appointment-recurring"
-                                            color: cardContents.textColor
-                                            visible: eventCard.eventWrapper.recurrenceData.type
-                                        }
-                                        Kirigami.Icon {
-                                            Layout.fillHeight: true
-                                            source: "appointment-reminder"
-                                            color: cardContents.textColor
-                                            visible: eventCard.eventWrapper.remindersModel.rowCount() > 0
-                                        }
+                                        onViewClicked: root.viewEvent(modelData, collectionData)
+                                        onEditClicked: root.editEvent(eventPtr, collectionId)
+                                        onDeleteClicked: root.deleteEvent(eventPtr, deleteDate)
                                     }
-
-
-                                    QQC2.Label {
-                                        Layout.fillHeight: true
-                                        Layout.maximumWidth: Kirigami.Units.gridUnit * 6
-                                        Layout.minimumWidth: Kirigami.Units.gridUnit * 6
-                                        Layout.column: root.isLarge ? 2 : 0
-                                        Layout.row: root.isLarge ? 0 : 1
-
-                                        horizontalAlignment: root.isLarge ? Text.AlignRight : Text.AlignLeft
-                                        color: cardContents.textColor
-                                        text: {
-                                            if (modelData.allDay) {
-                                                i18n("Runs all day")
-                                            } else if (modelData.startTime.getTime() === modelData.endTime.getTime()) {
-                                                modelData.startTime.toLocaleTimeString(Qt.locale(), Locale.ShortFormat);
-                                            } else if (!eventCard.multiday) {
-                                                modelData.startTime.toLocaleTimeString(Qt.locale(), Locale.ShortFormat) + " - " + modelData.endTime.toLocaleTimeString(Qt.locale(), Locale.ShortFormat);
-                                            } else if (eventCard.dayOfMultidayEvent === 1) {
-                                                i18n("Starts at %1", modelData.startTime.toLocaleTimeString(Qt.locale(), Locale.ShortFormat));
-                                            } else if (eventCard.dayOfMultidayEvent === eventCard.eventDays) {
-                                                i18n("Ends at %1", modelData.endTime.toLocaleTimeString(Qt.locale(), Locale.ShortFormat));
-                                            } else { // In between multiday start/finish
-                                                i18n("Runs all day")
-                                            }
-                                        }
-                                    }
-                                }
-
-                                IncidenceMouseArea {
-                                    id: eventMouseArea
-
-                                    eventData: modelData
-                                    collectionDetails: events.length && Kalendar.CalendarManager.getCollectionDetails(modelData.collectionId)
-
-                                    onViewClicked: root.viewEvent(modelData, collectionData)
-                                    onEditClicked: root.editEvent(eventPtr, collectionId)
-                                    onDeleteClicked: root.deleteEvent(eventPtr, deleteDate)
                                 }
                             }
                         }
