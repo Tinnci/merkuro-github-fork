@@ -78,13 +78,13 @@ Kirigami.OverlayDrawer {
                         QQC2.ToolButton {
                             icon.name: "edit-entry"
                             text:i18n("Edit")
-                            enabled: !eventInfo.collectionData["readOnly"]
+                            enabled: !eventInfo.collectionData.readOnly
                             onClicked: editEvent(eventInfo.eventData.eventPtr, eventInfo.eventData.collectionId)
                         }
                         QQC2.ToolButton {
                             icon.name: "edit-delete"
                             text:i18n("Delete")
-                            enabled: !eventInfo.collectionData["readOnly"]
+                            enabled: !eventInfo.collectionData.readOnly
                             onClicked: deleteEvent(eventInfo.eventData.eventPtr, eventInfo.eventData.startTime)
                         }
                     }
@@ -139,7 +139,7 @@ Kirigami.OverlayDrawer {
                         Layout.alignment: Qt.AlignTop
                         Layout.fillWidth: true
 
-                        text: eventInfo.collectionData["displayName"]
+                        text: eventInfo.collectionData.displayName
                         wrapMode: Text.Wrap
                     }
 
