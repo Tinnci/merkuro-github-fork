@@ -345,16 +345,16 @@ Kirigami.ScrollablePage {
                     onCurrentIndexChanged: if(currentIndex == 0) { eventEditorSheet.eventWrapper.clearRecurrences(); } // "Never"
                     onCurrentValueChanged: if(currentValue >= 0) { eventEditorSheet.eventWrapper.setRegularRecurrence(currentValue); }
                     currentIndex: {
-                        switch(eventEditorSheet.eventWrapper.recurrenceData["type"]) {
+                        switch(eventEditorSheet.eventWrapper.recurrenceData.type) {
                             case 0:
-                                return eventEditorSheet.eventWrapper.recurrenceData["type"];
+                                return eventEditorSheet.eventWrapper.recurrenceData.type;
                             case 3: // Daily
-                                return eventEditorSheet.eventWrapper.recurrenceData["frequency"] === 1 ?
-                                    eventEditorSheet.eventWrapper.recurrenceData["type"] - 2 : 5
+                                return eventEditorSheet.eventWrapper.recurrenceData.frequency === 1 ?
+                                    eventEditorSheet.eventWrapper.recurrenceData.type - 2 : 5
                             case 4: // Weekly
-                                return eventEditorSheet.eventWrapper.recurrenceData["frequency"] === 1 ?
-                                    (eventEditorSheet.eventWrapper.recurrenceData["weekdays"].filter(x => x === true).length === 0 ?
-                                    eventEditorSheet.eventWrapper.recurrenceData["type"] - 2 : 5) : 5
+                                return eventEditorSheet.eventWrapper.recurrenceData.frequency === 1 ?
+                                    (eventEditorSheet.eventWrapper.recurrenceData.weekdays.filter(x => x === true).length === 0 ?
+                                    eventEditorSheet.eventWrapper.recurrenceData.type - 2 : 5) : 5
                             case 5: // Monthly on position (e.g. third Monday)
                             case 7: // Yearly on month
                             case 9: // Yearly on position
@@ -368,10 +368,10 @@ Kirigami.ScrollablePage {
                     }
                     model: [
                         {key: "never", display: i18n("Never"), interval: -1},
-                        {key: "daily", display: i18n("Daily"), interval: eventEditorSheet.eventWrapper.recurrenceIntervals["Daily"]},
-                        {key: "weekly", display: i18n("Weekly"), interval: eventEditorSheet.eventWrapper.recurrenceIntervals["Weekly"]},
-                        {key: "monthly", display: i18n("Monthly"), interval: eventEditorSheet.eventWrapper.recurrenceIntervals["Monthly"]},
-                        {key: "yearly", display: i18n("Yearly"), interval: eventEditorSheet.eventWrapper.recurrenceIntervals["Yearly"]},
+                        {key: "daily", display: i18n("Daily"), interval: eventEditorSheet.eventWrapper.recurrenceIntervals.Daily},
+                        {key: "weekly", display: i18n("Weekly"), interval: eventEditorSheet.eventWrapper.recurrenceIntervals.Weekly},
+                        {key: "monthly", display: i18n("Monthly"), interval: eventEditorSheet.eventWrapper.recurrenceIntervals.Monthly},
+                        {key: "yearly", display: i18n("Yearly"), interval: eventEditorSheet.eventWrapper.recurrenceIntervals.Yearly},
                         {key: "custom", display: i18n("Custom"), interval: -1}
                     ]
                     popup.z: 1000
@@ -388,7 +388,7 @@ Kirigami.ScrollablePage {
                     function setOcurrence() {
                         eventEditorSheet.eventWrapper.setRegularRecurrence(recurScaleRuleCombobox.currentValue, recurFreqRuleSpinbox.value);
 
-                        if(recurScaleRuleCombobox.currentValue === eventEditorSheet.eventWrapper.recurrenceIntervals["Weekly"]) {
+                        if(recurScaleRuleCombobox.currentValue === eventEditorSheet.eventWrapper.recurrenceIntervals.Weekly) {
                             weekdayCheckboxRepeater.setWeekdaysRepeat();
                         }
                     }
@@ -406,8 +406,8 @@ Kirigami.ScrollablePage {
                         Layout.columnSpan: 2
                         visible: repeatComboBox.currentIndex === 5
                         from: 1
-                        value: eventEditorSheet.eventWrapper.recurrenceData["frequency"]
-                        onValueChanged: if(visible) { eventEditorSheet.eventWrapper.recurrenceData["frequency"] = value }
+                        value: eventEditorSheet.eventWrapper.recurrenceData.frequency
+                        onValueChanged: if(visible) { eventEditorSheet.eventWrapper.recurrenceData.frequency = value }
                     }
                     QQC2.ComboBox {
                         id: recurScaleRuleCombobox
@@ -419,14 +419,14 @@ Kirigami.ScrollablePage {
                         valueRole: "interval"
                         onCurrentValueChanged: if(visible) { customRecurrenceLayout.setOcurrence(); }
                         currentIndex: {
-                            if(eventEditorSheet.eventWrapper.recurrenceData["type"] === undefined) {
+                            if(eventEditorSheet.eventWrapper.recurrenceData.type === undefined) {
                                 return -1;
                             }
 
-                            switch(eventEditorSheet.eventWrapper.recurrenceData["type"]) {
+                            switch(eventEditorSheet.eventWrapper.recurrenceData.type) {
                                 case 3: // Daily
                                 case 4: // Weekly
-                                    return eventEditorSheet.eventWrapper.recurrenceData["type"] - 3
+                                    return eventEditorSheet.eventWrapper.recurrenceData.type - 3
                                 case 5: // Monthly on position (e.g. third Monday)
                                 case 6: // Monthly on day (1st of month)
                                     return 2;
@@ -440,10 +440,10 @@ Kirigami.ScrollablePage {
                         }
 
                         model: [
-                            {key: "day", displaySingular: i18n("day"), displayPlural: i18n("days"), interval: eventEditorSheet.eventWrapper.recurrenceIntervals["Daily"]},
-                            {key: "week", displaySingular: i18n("week"), displayPlural: i18n("weeks"), interval: eventEditorSheet.eventWrapper.recurrenceIntervals["Weekly"]},
-                            {key: "month", displaySingular: i18n("month"), displayPlural: i18n("months"), interval: eventEditorSheet.eventWrapper.recurrenceIntervals["Monthly"]},
-                            {key: "year", displaySingular: i18n("year"), displayPlural: i18n("years"), interval: eventEditorSheet.eventWrapper.recurrenceIntervals["Yearly"]},
+                            {key: "day", displaySingular: i18n("day"), displayPlural: i18n("days"), interval: eventEditorSheet.eventWrapper.recurrenceIntervals.Daily},
+                            {key: "week", displaySingular: i18n("week"), displayPlural: i18n("weeks"), interval: eventEditorSheet.eventWrapper.recurrenceIntervals.Weekly},
+                            {key: "month", displaySingular: i18n("month"), displayPlural: i18n("months"), interval: eventEditorSheet.eventWrapper.recurrenceIntervals.Monthly},
+                            {key: "year", displaySingular: i18n("year"), displayPlural: i18n("years"), interval: eventEditorSheet.eventWrapper.recurrenceIntervals.Yearly},
                         ]
                         delegate: Kirigami.BasicListItem {
                             text: recurFreqRuleSpinbox.value > 1 ? modelData.displayPlural : modelData.displaySingular
@@ -481,7 +481,7 @@ Kirigami.ScrollablePage {
                                     // C++ func takes 7 bit array
                                     selectedDays[checkbox.dayNumber] = checkbox.checked
                                 }
-                                eventEditorSheet.eventWrapper.recurrenceData["weekdays"] = selectedDays;
+                                eventEditorSheet.eventWrapper.recurrenceData.weekdays = selectedDays;
                             }
 
                             model: 7
@@ -492,8 +492,8 @@ Kirigami.ScrollablePage {
                                                         Qt.locale().firstDayOfWeek + index - 1 - 7 :
                                                         Qt.locale().firstDayOfWeek + index - 1
 
-                                checked: eventEditorSheet.eventWrapper.recurrenceData["weekdays"][dayNumber]
-                                onClicked: eventEditorSheet.eventWrapper.recurrenceData["weekdays"][dayNumber] = !eventEditorSheet.eventWrapper.recurrenceData["weekdays"][dayNumber]
+                                checked: eventEditorSheet.eventWrapper.recurrenceData.weekdays[dayNumber]
+                                onClicked: eventEditorSheet.eventWrapper.recurrenceData.weekdays[dayNumber] = !eventEditorSheet.eventWrapper.recurrenceData.weekdays[dayNumber]
                             }
                         }
                     }
@@ -520,7 +520,7 @@ Kirigami.ScrollablePage {
                             property int dateOfMonth: eventStartDateCombo.dateFromText.getDate()
 
                             text: i18nc("%1 is the day number of month", "the %1 of each month", LabelUtils.numberToString(dateOfMonth))
-                            checked: eventEditorSheet.eventWrapper.recurrenceData["type"] == 6 // Monthly on day (1st of month)
+                            checked: eventEditorSheet.eventWrapper.recurrenceData.type == 6 // Monthly on day (1st of month)
                             onClicked: customRecurrenceLayout.setOcurrence()
                         }
                         QQC2.RadioButton {
@@ -531,7 +531,7 @@ Kirigami.ScrollablePage {
                             property string dayOfWeekString: Qt.locale().dayName(eventStartDateCombo.dateFromText.getDay())
 
                             text: i18nc("the weekOfMonth dayOfWeekString of each month", "the %1 %2 of each month", LabelUtils.numberToString(weekOfMonth), dayOfWeekString)
-                            checked: eventEditorSheet.eventWrapper.recurrenceData["type"] == 5 // Monthly on position
+                            checked: eventEditorSheet.eventWrapper.recurrenceData.type == 5 // Monthly on position
                             onTextChanged: if(checked) { eventEditorSheet.eventWrapper.setMonthlyPosRecurrence(weekOfMonth, dayOfWeek); }
                             onClicked: eventEditorSheet.eventWrapper.setMonthlyPosRecurrence(weekOfMonth, dayOfWeek)
                         }
@@ -548,8 +548,8 @@ Kirigami.ScrollablePage {
 
                         Layout.fillWidth: true
                         Layout.columnSpan: currentIndex == 0 ? 4 : 2
-                        currentIndex: eventEditorSheet.eventWrapper.recurrenceData["duration"] <= 0 ? // Recurrence duration returns -1 for never ending and 0 when the recurrence
-                                    eventEditorSheet.eventWrapper.recurrenceData["duration"] + 1 :  // end date is set. Any number larger is the set number of recurrences
+                        currentIndex: eventEditorSheet.eventWrapper.recurrenceData.duration <= 0 ? // Recurrence duration returns -1 for never ending and 0 when the recurrence
+                                    eventEditorSheet.eventWrapper.recurrenceData.duration + 1 :  // end date is set. Any number larger is the set number of recurrences
                                     2
                         textRole: "display"
                         valueRole: "duration"
@@ -560,7 +560,7 @@ Kirigami.ScrollablePage {
                         ]
                         delegate: Kirigami.BasicListItem {
                             text: modelData.display
-                            onClicked: eventEditorSheet.eventWrapper.recurrenceData["duration"] = modelData.duration
+                            onClicked: eventEditorSheet.eventWrapper.recurrenceData.duration = modelData.duration
                         }
                         popup.z: 1000
                     }
@@ -571,7 +571,7 @@ Kirigami.ScrollablePage {
                         Layout.columnSpan: 2
                         visible: endRecurType.currentIndex == 1
                         editable: true
-                        editText: eventEditorSheet.eventWrapper.recurrenceData["endDateTime"].toLocaleDateString(Qt.locale(), Locale.NarrowFormat);
+                        editText: eventEditorSheet.eventWrapper.recurrenceData.endDateTime.toLocaleDateString(Qt.locale(), Locale.NarrowFormat);
 
                         inputMethodHints: Qt.ImhDate
 
@@ -585,7 +585,7 @@ Kirigami.ScrollablePage {
                                 datePicker.clickedDate = dateFromText;
 
                                 if (visible) {
-                                    eventEditorSheet.eventWrapper.recurrenceData["endDateTime"] = dateFromText
+                                    eventEditorSheet.eventWrapper.recurrenceData.endDateTime = dateFromText
                                 }
                             }
                         }
@@ -602,7 +602,7 @@ Kirigami.ScrollablePage {
                                 id: recurEndDatePicker
                                 anchors.fill: parent
                                 onDatePicked: {
-                                    eventEditorSheet.eventWrapper.recurrenceData["endDateTime"] = pickedDate
+                                    eventEditorSheet.eventWrapper.recurrenceData.endDateTime = pickedDate
                                     recurEndDatePopup.close()
                                 }
                             }
@@ -619,7 +619,7 @@ Kirigami.ScrollablePage {
                             id: recurOcurrenceEndSpinbox
                             Layout.fillWidth: true
                             from: 1
-                            value: eventEditorSheet.eventWrapper.recurrenceData["duration"]
+                            value: eventEditorSheet.eventWrapper.recurrenceData.duration
                             onValueChanged: eventEditorSheet.eventWrapper.setRecurrenceOcurrences(value)
                         }
                         QQC2.Label {
@@ -732,7 +732,7 @@ Kirigami.ScrollablePage {
                                 //textRole: "DisplayNameRole"
                                 onCurrentValueChanged: eventEditorSheet.eventWrapper.remindersModel.setData(eventEditorSheet.eventWrapper.remindersModel.index(index, 0),
                                                                                                             currentValue,
-                                                                                                            eventEditorSheet.eventWrapper.remindersModel.dataroles["startOffset"])
+                                                                                                            eventEditorSheet.eventWrapper.remindersModel.dataroles.startOffset)
                                 onCountChanged: selectedIndex = currentIndex // Gets called *just* before modelChanged
                                 onModelChanged: currentIndex = selectedIndex
 
@@ -808,7 +808,7 @@ Kirigami.ScrollablePage {
                                     text: model.name
                                     onTextChanged: eventEditorSheet.eventWrapper.attendeesModel.setData(eventEditorSheet.eventWrapper.attendeesModel.index(index, 0),
                                                                                         text,
-                                                                                        eventEditorSheet.eventWrapper.attendeesModel.dataroles["name"])
+                                                                                        eventEditorSheet.eventWrapper.attendeesModel.dataroles.name)
                                 }
 
                                 QQC2.Label {
@@ -820,7 +820,7 @@ Kirigami.ScrollablePage {
                                     text: model.email
                                     onTextChanged: eventEditorSheet.eventWrapper.attendeesModel.setData(eventEditorSheet.eventWrapper.attendeesModel.index(index, 0),
                                                                                         text,
-                                                                                        eventEditorSheet.eventWrapper.attendeesModel.dataroles["email"])
+                                                                                        eventEditorSheet.eventWrapper.attendeesModel.dataroles.email)
                                 }
                                 QQC2.Label {
                                     text: i18n("Status:")
@@ -833,7 +833,7 @@ Kirigami.ScrollablePage {
                                     currentIndex: status // role of parent
                                     onCurrentValueChanged: eventEditorSheet.eventWrapper.attendeesModel.setData(eventEditorSheet.eventWrapper.attendeesModel.index(index, 0),
                                                                                         currentValue,
-                                                                                        eventEditorSheet.eventWrapper.attendeesModel.dataroles["status"])
+                                                                                        eventEditorSheet.eventWrapper.attendeesModel.dataroles.status)
 
                                     popup.z: 1000
                                 }
@@ -843,7 +843,7 @@ Kirigami.ScrollablePage {
                                     checked: model.rsvp
                                     onCheckedChanged: eventEditorSheet.eventWrapper.attendeesModel.setData(eventEditorSheet.eventWrapper.attendeesModel.index(index, 0),
                                                                                         checked,
-                                                                                        eventEditorSheet.eventWrapper.attendeesModel.dataroles["rsvp"])
+                                                                                        eventEditorSheet.eventWrapper.attendeesModel.dataroles.rsvp)
                                 }
                             }
                         }
