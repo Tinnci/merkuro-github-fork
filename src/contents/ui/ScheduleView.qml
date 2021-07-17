@@ -176,19 +176,10 @@ Kirigami.ScrollablePage {
                     horizontalAlignment: Text.AlignRight
                     verticalAlignment: Text.AlignTop
 
-                    background: Rectangle {
-                        Kirigami.Theme.colorSet: Kirigami.Theme.View
-                        visible: dayGrid.isToday
-                        color: Kirigami.Theme.textColor
-                        radius: 5
-                    }
-
-                    color: dayGrid.isToday ? root.isDarkColor(Kirigami.Theme.textColor) ?
-                        "white" : "black" : Kirigami.Theme.textColor
-                    level: dayGrid.isToday ? 2 : 3
-
+                    level: dayGrid.isToday ? 1 : 3
                     textFormat: Text.StyledText
                     wrapMode: Text.Wrap
+                    color: dayGrid.isToday ? Kirigami.Theme.highlightColor : Kirigami.Theme.textColor
                     text: periodStartDate.toLocaleDateString(Qt.locale(), "ddd\n<b>dd</b>")
                     visible: events.length || dayGrid.isToday
                 }
