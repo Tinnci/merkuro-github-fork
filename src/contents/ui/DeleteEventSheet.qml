@@ -28,7 +28,7 @@ Kirigami.OverlaySheet {
             QQC2.Button {
                 icon.name: "deletecell"
                 text: i18n("Only delete current")
-                visible: eventWrapper.recurrenceData["type"] > 0
+                visible: eventWrapper.recurrenceData.type > 0
                 onClicked: addException(deleteDate, eventWrapper)
                 QQC2.DialogButtonBox.buttonRole: QQC2.DialogButtonBox.AcceptRole
             }
@@ -36,7 +36,7 @@ Kirigami.OverlaySheet {
             QQC2.Button {
                 icon.name: "edit-table-delete-row"
                 text: i18n("Also delete future")
-                visible: eventWrapper.recurrenceData["type"] > 0
+                visible: eventWrapper.recurrenceData.type > 0
                 onClicked: {
                     // We want to include the delete date in the deletion
                     // Setting the last recurrence day is not inclusive
@@ -50,7 +50,7 @@ Kirigami.OverlaySheet {
 
             QQC2.Button {
                 icon.name: "delete"
-                text: eventWrapper.recurrenceData["type"] > 0 ? i18n("Delete all") : i18n("Delete")
+                text: eventWrapper.recurrenceData.type > 0 ? i18n("Delete all") : i18n("Delete")
                 onClicked: deleteEvent(eventWrapper.eventPtr)
                 QQC2.DialogButtonBox.buttonRole: QQC2.DialogButtonBox.AcceptRole
             }
@@ -89,7 +89,7 @@ Kirigami.OverlaySheet {
 
             QQC2.Label {
                 Layout.fillWidth: true
-                text: i18n("The calendar item %1 recurs over multiple dates. Do you want to delete the current one on %2, also future occurrences, or all its occurrences?", eventWrapper.summary, deleteDate.toLocaleDateString(Qt.locale()))
+                text: i18n("The calendar item \"%1\" recurs over multiple dates. Do you want to delete the selected ocurrence on %2, also future occurrences, or all of its occurrences?", eventWrapper.summary, deleteDate.toLocaleDateString(Qt.locale()))
                 visible: eventWrapper.recurrenceData.type > 0
                 wrapMode: Text.WordWrap
             }
