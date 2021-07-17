@@ -97,6 +97,8 @@ Kirigami.ScrollablePage {
         }
 
         delegate: MouseArea {
+            id: dayMouseArea
+
             width: dayColumn.width
             height: dayColumn.height
 
@@ -106,7 +108,33 @@ Kirigami.ScrollablePage {
             hoverEnabled: true
             acceptedButtons: Qt.LeftButton | Qt.RightButton
 
-            onDoubleClicked: addEvent()
+            onDoubleClicked: {
+                if (pressedButtons & Qt.LeftButton) {
+                    addEvent()
+                }
+            }
+            onPressed: {
+                clickX = mouseX
+                clickY = mouseY
+                if (pressedButtons & Qt.RightButton) {
+                    dayActions.createObject(dayMouseArea, {}).open()
+                }
+            }
+
+            Component {
+                id: dayActions
+                QQC2.Menu {
+                    id: actionsPopup
+                    y: dayMouseArea.clickY
+                    x: dayMouseArea.clickX
+
+                    QQC2.MenuItem {
+                        icon.name: "tag-events"
+                        text:i18n("New event")
+                        onClicked: root.addEvent()
+                    }
+                }
+            }
 
             ColumnLayout {
                 // Tip: do NOT hide an entire delegate.
