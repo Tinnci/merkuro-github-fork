@@ -112,7 +112,7 @@ Kirigami.OverlayDrawer {
                         }
                         Kirigami.Icon {
                             source: "tag-events"
-                            // This will need dynamic changing with implementation of to-dos/journals
+                            // TODO: This will need dynamic changing with implementation of to-dos/journals
                         }
                         Kirigami.Icon {
                             source: "appointment-recurring"
