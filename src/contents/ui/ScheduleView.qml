@@ -228,45 +228,89 @@ Kirigami.ScrollablePage {
                                 Layout.fillWidth: true
 
                                 Kirigami.Theme.inherit: false
-                                // NOTE: regardless of the color set used, it is recommended to replace
-                                // all available colors in Theme, to avoid badly contrasting colors
                                 Kirigami.Theme.colorSet: Kirigami.Theme.View
                                 Kirigami.Theme.backgroundColor: Qt.rgba(modelData.color.r, modelData.color.g, modelData.color.b, 0.8)
                                 Kirigami.Theme.highlightColor: Qt.darker(modelData.color, 2.5)
 
+                                padding: 0
+
                                 showClickFeedback: true
 
+                                property var eventWrapper: new EventWrapper()
                                 property bool multiday: modelData.startTime.getDate() !== modelData.endTime.getDate()
                                 property int eventDays: DateUtils.fullDaysBetweenDates(modelData.startTime, modelData.endTime)
                                 property int dayOfMultidayEvent: DateUtils.fullDaysBetweenDates(modelData.startTime, periodStartDate)
 
+                                Component.onCompleted: {
+                                    eventWrapper = Qt.createQmlObject('import org.kde.kalendar 1.0; EventWrapper {id: event}', eventInfo, "event");
+                                    eventWrapper.eventPtr = modelData.eventPtr
+                                }
+
                                 contentItem: GridLayout {
-                                    columns: root.isLarge ? 2 : 1
+                                    id: cardContents
+
+                                    columns: root.isLarge ? 3 : 2
                                     rows: root.isLarge ? 1 : 2
 
-                                    QQC2.Label {
-                                        Layout.fillWidth: true
-                                        Layout.fillHeight: true
-                                        Layout.column: 0
-                                        Layout.row: 0
+                                    property color textColor: root.isDarkColor(Kirigami.Theme.backgroundColor) ? "white" : "black"
 
-                                        color: root.isDarkColor(Kirigami.Theme.backgroundColor) ? "white" : "black"
-                                        text: {
-                                            if(eventCard.multiday) {
-                                                return i18n("%1 (Day %2 of %3)", modelData.text, eventCard.dayOfMultidayEvent, eventCard.eventDays);
-                                            } else {
-                                                return modelData.text;
-                                            }
+                                    RowLayout {
+                                        Kirigami.Icon {
+                                            Layout.fillHeight: true
+                                            source: "tag-events"
+                                            color: cardContents.textColor
+                                            // This will need dynamic changing with implementation of to-dos/journals
                                         }
-                                        elide: Text.ElideRight
+
+                                        QQC2.Label {
+                                            Layout.fillWidth: true
+                                            Layout.fillHeight: true
+                                            Layout.column: 0
+                                            Layout.row: 0
+                                            Layout.columnSpan: root.isLarge ? 2 : 1
+
+                                            color: cardContents.textColor
+                                            text: {
+                                                if(eventCard.multiday) {
+                                                    return i18n("%1 (Day %2 of %3)", modelData.text, eventCard.dayOfMultidayEvent, eventCard.eventDays);
+                                                } else {
+                                                    return modelData.text;
+                                                }
+                                            }
+                                            elide: Text.ElideRight
+                                        }
                                     }
 
+                                    RowLayout {
+                                        id: additionalIcons
+
+                                        Layout.column: 1
+                                        Layout.row: 0
+
+                                        Kirigami.Icon {
+                                            Layout.fillHeight: true
+                                            source: "appointment-recurring"
+                                            color: cardContents.textColor
+                                            visible: eventCard.eventWrapper.recurrenceData.type
+                                        }
+                                        Kirigami.Icon {
+                                            Layout.fillHeight: true
+                                            source: "appointment-reminder"
+                                            color: cardContents.textColor
+                                            visible: eventCard.eventWrapper.remindersModel.rowCount() > 0
+                                        }
+                                    }
+
+
                                     QQC2.Label {
                                         Layout.fillHeight: true
-                                        Layout.column: root.isLarge ? 1 : 0
+                                        Layout.maximumWidth: Kirigami.Units.gridUnit * 6
+                                        Layout.minimumWidth: Kirigami.Units.gridUnit * 6
+                                        Layout.column: root.isLarge ? 2 : 0
                                         Layout.row: root.isLarge ? 0 : 1
 
-                                        color: root.isDarkColor(Kirigami.Theme.backgroundColor) ? "white" : "black"
+                                        horizontalAlignment: root.isLarge ? Text.AlignRight : Text.AlignLeft
+                                        color: cardContents.textColor
                                         text: {
                                             if (modelData.allDay) {
                                                 i18n("Runs all day")
