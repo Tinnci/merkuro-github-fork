@@ -94,6 +94,8 @@ Kirigami.OverlayDrawer {
                 }
 
                 GridLayout {
+                    id: infoBody
+
                     Layout.margins: Kirigami.Units.largeSpacing
                     Layout.fillWidth: true
                     Layout.maximumWidth: contentsView.availableWidth - (Kirigami.Units.largeSpacing * 2)
@@ -290,10 +292,13 @@ Kirigami.OverlayDrawer {
                     }
 
                     ColumnLayout {
+                        id: attachmentsColumn
+
                         Layout.fillWidth: true
+                        visible: eventInfo.eventWrapper.attachmentsModel.rowCount() > 0
+
                         Repeater {
                             Layout.fillWidth: true
-                            visible: eventInfo.eventWrapper.attachmentsModel.rowCount() > 0
 
                             model: eventInfo.eventWrapper.attachmentsModel
 
@@ -314,6 +319,8 @@ Kirigami.OverlayDrawer {
                     }
 
                     ColumnLayout {
+                        id: remindersColumn
+
                         Layout.fillWidth: true
                         visible: eventInfo.eventWrapper.remindersModel.rowCount() > 0
 
@@ -355,10 +362,13 @@ Kirigami.OverlayDrawer {
                         visible: eventInfo.eventWrapper.attendeesModel.rowCount() > 0
                     }
                     ColumnLayout {
+                        id: attendeesColumn
+
                         Layout.fillWidth: true
+                        visible: eventInfo.eventWrapper.attendeesModel.rowCount() > 0
+
                         Repeater {
                             Layout.fillWidth: true
-                            visible: eventInfo.eventWrapper.attendeesModel.rowCount() > 0
 
                             model: eventInfo.eventWrapper.attendeesModel
 
