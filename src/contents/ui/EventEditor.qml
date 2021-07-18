@@ -781,73 +781,85 @@ Kirigami.ScrollablePage {
                         // All of the alarms are handled within the delegates.
                         Layout.fillWidth: true
 
-                        delegate: ColumnLayout {
-                            Layout.leftMargin: Kirigami.Units.largeSpacing
+                        delegate: Kirigami.Card {
 
-                            RowLayout {
-                                QQC2.Label {
-                                    Layout.fillWidth: true
-                                    text: i18n("Attendee " + String(index + 1))
-                                }
-                                QQC2.Button {
-                                    icon.name: "edit-delete-remove"
-                                    onClicked: eventEditorSheet.eventWrapper.attendeesModel.deleteAttendee(index);
-                                }
+                            actions: Kirigami.Action {
+                                text: i18n("Remove")
+                                icon.name: "edit-delete-remove"
+                                onTriggered: eventEditorSheet.eventWrapper.attendeesModel.deleteAttendee(index);
                             }
 
-                            GridLayout {
-                                Layout.fillWidth: true
-                                columns: 5
-                                rows: 3
-                                Layout.rightMargin: 0
+                            contentItem: Item {
+                            implicitWidth: attendeeCardContent.implicitWidth
+                            implicitHeight: attendeeCardContent.implicitHeight
 
-                                QQC2.Label{
-                                    text: i18n("Name:")
-                                }
-                                QQC2.TextField {
-                                    Layout.fillWidth: true
-                                    Layout.columnSpan: 4
-                                    text: model.name
-                                    onTextChanged: eventEditorSheet.eventWrapper.attendeesModel.setData(eventEditorSheet.eventWrapper.attendeesModel.index(index, 0),
-                                                                                        text,
-                                                                                        eventEditorSheet.eventWrapper.attendeesModel.dataroles.name)
-                                }
+                                GridLayout {
+                                    id: attendeeCardContent
 
-                                QQC2.Label {
-                                    text: i18n("Email:")
-                                }
-                                QQC2.TextField {
-                                    Layout.fillWidth: true
-                                    Layout.columnSpan: 4
-                                    text: model.email
-                                    onTextChanged: eventEditorSheet.eventWrapper.attendeesModel.setData(eventEditorSheet.eventWrapper.attendeesModel.index(index, 0),
-                                                                                        text,
-                                                                                        eventEditorSheet.eventWrapper.attendeesModel.dataroles.email)
-                                }
-                                QQC2.Label {
-                                    text: i18n("Status:")
-                                }
-                                QQC2.ComboBox {
-                                    Layout.fillWidth: true
-                                    Layout.columnSpan: 2
-                                    model: eventEditorSheet.eventWrapper.attendeesModel.attendeeStatusModel
-                                    textRole: "display"
-                                    valueRole: "value"
-                                    currentIndex: status // role of parent
-                                    onCurrentValueChanged: eventEditorSheet.eventWrapper.attendeesModel.setData(eventEditorSheet.eventWrapper.attendeesModel.index(index, 0),
-                                                                                        currentValue,
-                                                                                        eventEditorSheet.eventWrapper.attendeesModel.dataroles.status)
+                                    anchors {
+                                        left: parent.left
+                                        top: parent.top
+                                        right: parent.right
+                                        //IMPORTANT: never put the bottom margin
+                                    }
 
-                                    popup.z: 1000
-                                }
-                                QQC2.CheckBox {
-                                    Layout.fillWidth: true
-                                    Layout.columnSpan: 2
-                                    text: i18n("Request RSVP")
-                                    checked: model.rsvp
-                                    onCheckedChanged: eventEditorSheet.eventWrapper.attendeesModel.setData(eventEditorSheet.eventWrapper.attendeesModel.index(index, 0),
-                                                                                        checked,
-                                                                                        eventEditorSheet.eventWrapper.attendeesModel.dataroles.rsvp)
+                                    columns: 5
+                                    rows: 4
+
+                                    QQC2.Label {
+                                        Layout.columnSpan: 5
+                                        Layout.fillWidth: true
+                                        text: i18n("Attendee %1", String(index + 1))
+                                    }
+
+                                    QQC2.Label{
+                                        text: i18n("Name:")
+                                    }
+                                    QQC2.TextField {
+                                        Layout.fillWidth: true
+                                        Layout.columnSpan: 4
+                                        text: model.name
+                                        onTextChanged: eventEditorSheet.eventWrapper.attendeesModel.setData(eventEditorSheet.eventWrapper.attendeesModel.index(index, 0),
+                                                                                            text,
+                                                                                            eventEditorSheet.eventWrapper.attendeesModel.dataroles.name)
+                                    }
+
+                                    QQC2.Label {
+                                        text: i18n("Email:")
+                                    }
+                                    QQC2.TextField {
+                                        Layout.fillWidth: true
+                                        Layout.columnSpan: 4
+                                        text: model.email
+                                        onTextChanged: eventEditorSheet.eventWrapper.attendeesModel.setData(eventEditorSheet.eventWrapper.attendeesModel.index(index, 0),
+                                                                                            text,
+                                                                                            eventEditorSheet.eventWrapper.attendeesModel.dataroles.email)
+                                    }
+                                    QQC2.Label {
+                                        text: i18n("Status:")
+                                    }
+                                    QQC2.ComboBox {
+                                        Layout.fillWidth: true
+                                        Layout.columnSpan: 2
+                                        model: eventEditorSheet.eventWrapper.attendeesModel.attendeeStatusModel
+                                        textRole: "display"
+                                        valueRole: "value"
+                                        currentIndex: status // role of parent
+                                        onCurrentValueChanged: eventEditorSheet.eventWrapper.attendeesModel.setData(eventEditorSheet.eventWrapper.attendeesModel.index(index, 0),
+                                                                                            currentValue,
+                                                                                            eventEditorSheet.eventWrapper.attendeesModel.dataroles.status)
+
+                                        popup.z: 1000
+                                    }
+                                    QQC2.CheckBox {
+                                        Layout.fillWidth: true
+                                        Layout.columnSpan: 2
+                                        text: i18n("Request RSVP")
+                                        checked: model.rsvp
+                                        onCheckedChanged: eventEditorSheet.eventWrapper.attendeesModel.setData(eventEditorSheet.eventWrapper.attendeesModel.index(index, 0),
+                                                                                            checked,
+                                                                                            eventEditorSheet.eventWrapper.attendeesModel.dataroles.rsvp)
+                                    }
                                 }
                             }
                         }
