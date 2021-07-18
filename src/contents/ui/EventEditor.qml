@@ -446,7 +446,10 @@ Kirigami.ScrollablePage {
                         ]
                         delegate: Kirigami.BasicListItem {
                             text: recurFreqRuleSpinbox.value > 1 ? modelData.displayPlural : modelData.displaySingular
-                            onClicked: eventEditorSheet.eventWrapper.setRegularRecurrence(modelData.interval, recurFreqRuleSpinbox.value);
+                            onClicked: {
+                                eventEditorSheet.eventWrapper.setRegularRecurrence(modelData.interval, recurFreqRuleSpinbox.value);
+                                repeatComboBox.currentIndex = 5; // Otherwise resets to default daily/weekly/etc.
+                            }
                         }
                         popup.z: 1000
                     }
