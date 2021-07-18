@@ -298,7 +298,7 @@ Kirigami.OverlayDrawer {
                             delegate: QQC2.Label {
                                 Layout.fillWidth: true
                                 // This didn't work in Markdown format
-                                text: `<a href="${uri}">${label}</a>`
+                                text: `<a href="${uri}">${attachmentLabel}</a>`
                                 onLinkActivated: Qt.openUrlExternally(link)
                                 wrapMode: Text.Wrap
                             }

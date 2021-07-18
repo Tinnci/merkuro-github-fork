@@ -882,7 +882,7 @@ Kirigami.ScrollablePage {
                         delegate: RowLayout {
                             QQC2.Label {
                                 Layout.fillWidth: true
-                                text: label
+                                text: attachmentLabel
                             }
                             QQC2.Button {
                                 icon.name: "edit-delete-remove"
