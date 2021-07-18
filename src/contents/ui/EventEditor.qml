@@ -661,7 +661,7 @@ Kirigami.ScrollablePage {
                             id: exceptionsRepeater
                             model: eventEditorSheet.eventWrapper.recurrenceExceptionsModel
                             delegate: RowLayout {
-                                QQC2.Label {
+                                Kirigami.BasicListItem {
                                     Layout.fillWidth: true
                                     text: date.toLocaleDateString(Qt.locale())
                                 }
@@ -891,9 +891,11 @@ Kirigami.ScrollablePage {
                         id: attachmentsRepeater
                         model: eventEditorSheet.eventWrapper.attachmentsModel
                         delegate: RowLayout {
-                            QQC2.Label {
+                            Kirigami.BasicListItem {
                                 Layout.fillWidth: true
-                                text: attachmentLabel
+                                icon: iconName // Why isn't this icon.name??
+                                label: attachmentLabel
+                                onClicked: Qt.openUrlExternally(uri)
                             }
                             QQC2.Button {
                                 icon.name: "edit-delete-remove"
