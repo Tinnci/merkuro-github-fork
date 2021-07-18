@@ -37,7 +37,7 @@ function secondsToReminderLabel(seconds) { // Gives prettified time
     }
 
     if (seconds < 0) {
-        return i18n("%1 before", numAndUnit(seconds * -1));
+        return i18n("%1 before start of event", numAndUnit(seconds * -1));
     } else if (seconds < 0) {
         return i18n("%1 after start of event", numAndUnit(seconds));
     } else {
