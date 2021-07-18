@@ -49,7 +49,7 @@ function weeklyRecurrenceToString(recurrenceData) {
     let returnString = i18np("Every week", "Every %1 weeks", recurrenceData.frequency);
 
     if (recurrenceData.weekdays.filter(x => x === true).length > 0) {
-        returnString += i18n(" on");
+        returnString = i18np("Every week on", "Every %1 weeks on", recurrenceData.frequency);
 
         for(let i = 0; i < recurrenceData.weekdays.length; i++) {
 
