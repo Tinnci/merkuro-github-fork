@@ -322,7 +322,7 @@ Kirigami.OverlayDrawer {
 
                             delegate: QQC2.Label {
                                 Layout.fillWidth: true
-                                text: LabelUtils.secondsToReminderLabel(startOffset) + i18n(" start of event")
+                                text: LabelUtils.secondsToReminderLabel(startOffset)
                                 wrapMode: Text.Wrap
                             }
                         }
