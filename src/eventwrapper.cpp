@@ -168,6 +168,7 @@ QVariantMap EventWrapper::recurrenceData()
         {QStringLiteral("frequency"), m_event->recurrence()->frequency()},
         {QStringLiteral("startDateTime"), m_event->recurrence()->startDateTime()},
         {QStringLiteral("endDateTime"), m_event->recurrence()->endDateTime()},
+        {QStringLiteral("allDay"), m_event->recurrence()->allDay()},
         {QStringLiteral("type"), m_event->recurrence()->recurrenceType()},
         {QStringLiteral("monthDays"), QVariant::fromValue(m_event->recurrence()->monthDays())},
         {QStringLiteral("monthPositions"), monthPositions},
@@ -179,15 +180,39 @@ QVariantMap EventWrapper::recurrenceData()
 
 void EventWrapper::setRecurrenceData(QVariantMap recurrenceData)
 {
+    // You can't set type manually
     QVector<bool> newWeekdays = recurrenceData[QStringLiteral("weekdays")].value<QVector<bool>>();
     int newDuration = recurrenceData[QStringLiteral("duration")].toInt();
     int newFrequency = recurrenceData[QStringLiteral("frequency")].toInt();
+    QDateTime newStartDateTime = recurrenceData[QStringLiteral("startDateTime")].toDateTime();
     QDateTime newEndDateTime = recurrenceData[QStringLiteral("endDateTime")].toDateTime();
+    bool newAllDay = recurrenceData[QStringLiteral("allDay")].toBool();
+    QList<int> newMonthDays = recurrenceData[QStringLiteral("monthDays")].value<QList<int>>();
+    QList<int> newYearDays = recurrenceData[QStringLiteral("yearDays")].value<QList<int>>();
+    QList<int> newYearDates = recurrenceData[QStringLiteral("yearDates")].value<QList<int>>();
+    QList<int> newYearMonths = recurrenceData[QStringLiteral("yearMonths")].value<QList<int>>();
+
+    QList<QVariantMap> oldMonthPositions = recurrenceData[QStringLiteral("monthPositions")].value<QList<QVariantMap>>();
+    QList<KCalendarCore::RecurrenceRule::WDayPos> newMonthPositions;
+
+    for(auto pos : oldMonthPositions) {
+        KCalendarCore::RecurrenceRule::WDayPos newPos;
+        newPos.setDay(pos[QStringLiteral("day")].toInt());
+        newPos.setPos(pos[QStringLiteral("pos")].toInt());
+        newMonthPositions.append(newPos);
+    }
 
     setRecurrenceWeekDays(newWeekdays);
     m_event->recurrence()->setDuration(newDuration);
     m_event->recurrence()->setFrequency(newFrequency);
+    m_event->recurrence()->setStartDateTime(newStartDateTime, newAllDay);
     m_event->recurrence()->setEndDateTime(newEndDateTime);
+    m_event->recurrence()->setAllDay(newAllDay);
+    m_event->recurrence()->setMonthlyDate(newMonthDays);
+    m_event->recurrence()->setYearlyDay(newYearDays);
+    m_event->recurrence()->setYearlyDate(newYearDates);
+    m_event->recurrence()->setYearlyMonth(newYearMonths);
+    m_event->recurrence()->setMonthlyPos(newMonthPositions);
 
     Q_EMIT recurrenceDataChanged();
 }
