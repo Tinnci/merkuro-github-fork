@@ -52,7 +52,6 @@ function weeklyRecurrenceToString(recurrenceData) {
         returnString += i18n(" on");
 
         for(let i = 0; i < recurrenceData.weekdays.length; i++) {
-            console.log(Qt.locale().dayName(i + Qt.locale().firstDayOfWeek, Locale.ShortFormat))
 
             if(recurrenceData.weekdays[i]) {
                 returnString += ` ${Qt.locale().dayName(i + 1, Locale.ShortFormat)},`; // C++ Qt weekdays go Mon->Sun, JS goes Sun->Sat
