@@ -52,7 +52,7 @@ void EventWrapper::setEventPtr(KCalendarCore::Event::Ptr eventPtr)
     Q_EMIT remindersModelChanged();
     Q_EMIT organizerChanged();
     Q_EMIT attendeesModelChanged();
-    Q_EMIT recurrenceDataChanged();;
+    Q_EMIT recurrenceDataChanged();
     Q_EMIT recurrenceExceptionsModelChanged();
     Q_EMIT attachmentsModelChanged();
 }
