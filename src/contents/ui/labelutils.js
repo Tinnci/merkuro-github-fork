@@ -24,13 +24,13 @@ function numberToString(number) {
 function secondsToReminderLabel(seconds) { // Gives prettified time
 
     function numAndUnit(secs) {
-        if(secs >= 2 * 24 * 60 * 60)
+        if(secs >= (2 * 24 * 60 * 60))
             return i18nc("%1 is 2 or more", "%1 days", Math.round(secs / (24*60*60))); // 2 days +
-            else if (secs >= 1 * 24 * 60 * 60)
-                return "1 day";
-            else if (secs >= 2 * 60 * 60)
+            else if (secs >= (1 * 24 * 60 * 60))
+                return i18n("1 day");
+            else if (secs >= (2 * 60 * 60))
                 return i18nc("%1 is 2 or mores", "%1 hours", Math.round(secs / (60*60))); // 2 hours +
-                else if (secs >= 1 * 60 * 60)
+                else if (secs >= (1 * 60 * 60))
                     return i18n("1 hour");
                 else
                     return i18n("%1 minutes", Math.round(secs / 60));
