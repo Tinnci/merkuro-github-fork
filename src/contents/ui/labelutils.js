@@ -70,7 +70,6 @@ function monthPositionsToString(recurrenceData) {
     for(let position of recurrenceData.monthPositions) {
         returnString += `${numberToString(position.pos)} ${Qt.locale().dayName(position.day)}, `
     }
-    console.log(returnString)
 
     return returnString.slice(0, -2);
 }
