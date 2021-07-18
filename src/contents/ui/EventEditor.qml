@@ -117,6 +117,22 @@ Kirigami.ScrollablePage {
                     onTextChanged: eventEditorSheet.eventWrapper.location = text
                 }
 
+                // Restrain the descriptionTextArea from getting too chonky
+                ColumnLayout {
+                    Layout.fillWidth: true
+                    Layout.maximumWidth: eventForm.wideMode ? Kirigami.Units.gridUnit * 25 : -1
+                    Kirigami.FormData.label: i18n("Description:")
+
+                    QQC2.TextArea {
+                        id: descriptionTextArea
+
+                        Layout.fillWidth: true
+                        placeholderText: i18n("Optional")
+                        text: eventEditorSheet.eventWrapper.description
+                        onTextChanged: eventEditorSheet.eventWrapper.description = text
+                    }
+                }
+
                 Kirigami.Separator {
                     Kirigami.FormData.isSection: true
                 }
@@ -680,21 +696,6 @@ Kirigami.ScrollablePage {
                 Kirigami.Separator {
                     Kirigami.FormData.isSection: true
                 }
-                // Restrain the descriptionTextArea from getting too chonky
-                ColumnLayout {
-                    Layout.fillWidth: true
-                    Layout.maximumWidth: eventForm.wideMode ? Kirigami.Units.gridUnit * 25 : -1
-                    Kirigami.FormData.label: i18n("Description:")
-
-                    QQC2.TextArea {
-                        id: descriptionTextArea
-
-                        Layout.fillWidth: true
-                        placeholderText: i18n("Optional")
-                        text: eventEditorSheet.eventWrapper.description
-                        onTextChanged: eventEditorSheet.eventWrapper.description = text
-                    }
-                }
 
                 ColumnLayout {
                     id: remindersColumn
@@ -763,6 +764,10 @@ Kirigami.ScrollablePage {
                             }
                         }
                     }
+                }
+
+                Kirigami.Separator {
+                    Kirigami.FormData.isSection: true
                 }
 
                 ColumnLayout {
@@ -867,6 +872,10 @@ Kirigami.ScrollablePage {
                             }
                         }
                     }
+                }
+
+                Kirigami.Separator {
+                    Kirigami.FormData.isSection: true
                 }
 
                 ColumnLayout {
