@@ -780,6 +780,7 @@ Kirigami.ScrollablePage {
                     Repeater {
                         model: eventEditorSheet.eventWrapper.attendeesModel
                         // All of the alarms are handled within the delegates.
+                        Layout.fillWidth: true
 
                         delegate: ColumnLayout {
                             Layout.leftMargin: Kirigami.Units.largeSpacing
@@ -798,6 +799,8 @@ Kirigami.ScrollablePage {
                             GridLayout {
                                 Layout.fillWidth: true
                                 columns: 5
+                                rows: 3
+                                Layout.rightMargin: 0
 
                                 QQC2.Label{
                                     text: i18n("Name:")
@@ -826,6 +829,7 @@ Kirigami.ScrollablePage {
                                     text: i18n("Status:")
                                 }
                                 QQC2.ComboBox {
+                                    Layout.fillWidth: true
                                     Layout.columnSpan: 2
                                     model: eventEditorSheet.eventWrapper.attendeesModel.attendeeStatusModel
                                     textRole: "display"
@@ -838,6 +842,7 @@ Kirigami.ScrollablePage {
                                     popup.z: 1000
                                 }
                                 QQC2.CheckBox {
+                                    Layout.fillWidth: true
                                     Layout.columnSpan: 2
                                     text: i18n("Request RSVP")
                                     checked: model.rsvp
@@ -867,7 +872,7 @@ Kirigami.ScrollablePage {
 
                             title: "Add an attachment"
                             folder: shortcuts.home
-                            onAccepted: eventEditorSheet.eventWrapper.attachmentsModel.addAttachment(this.fileUrls)
+                            onAccepted: eventEditorSheet.eventWrapper.attachmentsModel.addAttachment(fileUrls)
                         }
                     }
 
