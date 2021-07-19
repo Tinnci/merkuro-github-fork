@@ -66,6 +66,7 @@ QList<QModelIndex> MultiDayEventModel::sortedEventsFromSourceModel(const QDate &
         const auto srcIdx = mSourceModel->index(row, 0, {});
         const auto start = srcIdx.data(EventOccurrenceModel::StartTime).toDateTime().date();
         const auto end = srcIdx.data(EventOccurrenceModel::EndTime).toDateTime().date();
+
         //Skip events not part of the week
         if (end < rowStart || start > rowEnd) {
             // qWarning() << "Skipping because not part of this week";
@@ -120,8 +121,11 @@ QVariantList MultiDayEventModel::layoutLines(const QDate &rowStart) const
     while (!sorted.isEmpty()) {
         const auto srcIdx = sorted.takeFirst();
         const auto startDate = srcIdx.data(EventOccurrenceModel::StartTime).toDateTime();
+        const auto endDate = srcIdx.data(EventOccurrenceModel::EndTime).toDateTime();
         const auto start = getStart(startDate.date());
-        const auto duration = qMin(getDuration(startDate.date(), srcIdx.data(EventOccurrenceModel::EndTime).toDateTime().date()), mPeriodLength - start);
+        const auto duration = qMin(getDuration(startDate.date(), endDate.date()), mPeriodLength - start);
+        const KCalendarCore::Incidence::Ptr type = srcIdx.data(EventOccurrenceModel::EventPtr).value<KCalendarCore::Incidence::Ptr>();
+
         // qWarning() << "First of line " << srcIdx.data(EventOccurrenceModel::StartTime).toDateTime() << duration << srcIdx.data(EventOccurrenceModel::Summary).toString();
         auto currentLine = QVariantList{};
 
@@ -144,7 +148,11 @@ QVariantList MultiDayEventModel::layoutLines(const QDate &rowStart) const
         };
 
         //Add first event of line
-        addToLine(srcIdx, start, duration);
+        if(type->type() == KCalendarCore::Incidence::IncidenceType::TypeTodo && !startDate.isValid()) {
+            addToLine(srcIdx, getStart(endDate.date()), duration);
+        } else {
+            addToLine(srcIdx, start, duration);
+        }
         const bool allDayLine = srcIdx.data(EventOccurrenceModel::AllDay).toBool();
 
         //Fill line with events that fit
@@ -162,9 +170,12 @@ QVariantList MultiDayEventModel::layoutLines(const QDate &rowStart) const
 
         for (auto it = sorted.begin(); it != sorted.end();) {
             const auto idx = *it;
-            const auto start = getStart(idx.data(EventOccurrenceModel::StartTime).toDateTime().date());
-            const auto duration = qMin(getDuration(idx.data(EventOccurrenceModel::StartTime).toDateTime().date(), idx.data(EventOccurrenceModel::EndTime).toDateTime().date()), mPeriodLength - start);
+            const auto startDate = idx.data(EventOccurrenceModel::StartTime).toDateTime();
+            const auto endDate = idx.data(EventOccurrenceModel::EndTime).toDateTime();
+            const auto start = getStart(startDate.date());
+            const auto duration = qMin(getDuration(startDate.date(), endDate.date()), mPeriodLength - start);
             const auto end = start + duration;
+            const KCalendarCore::Incidence::Ptr type = idx.data(EventOccurrenceModel::EventPtr).value<KCalendarCore::Incidence::Ptr>();
 
             // qWarning() << "Checking " << idx.data(EventOccurrenceModel::StartTime).toDateTime() << duration << idx.data(EventOccurrenceModel::Summary).toString();
             //Avoid mixing all-day and other events
@@ -172,8 +183,14 @@ QVariantList MultiDayEventModel::layoutLines(const QDate &rowStart) const
                 break;
             }
 
+
             if (doesIntersect(start, end)) {
                 it++;
+            } else if(!startDate.isValid() && type->type() == KCalendarCore::Incidence::IncidenceType::TypeTodo) {
+                addToLine(idx, getStart(endDate.date()), duration);
+                lastStart = getStart(endDate.date());
+                lastDuration = duration;
+                it = sorted.erase(it);
             } else {
                 addToLine(idx, start, duration);
                 lastStart = start;

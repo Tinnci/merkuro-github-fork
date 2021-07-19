@@ -149,6 +149,7 @@ void EventOccurrenceModel::updateFromSource()
                             event->dtStart(),
                             event->dtEnd(),
                             event,
+                            event->typeStr(),
                             getColor(event),
                             getCollectionId(event),
                             event->allDay()
@@ -162,6 +163,7 @@ void EventOccurrenceModel::updateFromSource()
                             todo->dtStart(),
                             todo->dtDue(),
                             todo,
+                            todo->typeStr(),
                             getColor(todo),
                             getCollectionId(todo),
                             todo->allDay()
@@ -186,7 +188,7 @@ void EventOccurrenceModel::updateFromSource()
                 const auto start = occurrenceIterator.occurrenceStartDate();
                 const auto end = incidence->endDateForStart(start);
                 if (start.date() < mEnd && end.date() >= mStart) {
-                    m_events.append(Occurrence {start, end, incidence, getColor(incidence), getCollectionId(incidence), incidence->allDay() });
+                    m_events.append(Occurrence {start, end, incidence, incidence->typeStr(), getColor(incidence), getCollectionId(incidence), incidence->allDay() });
                 }
             }
         }
