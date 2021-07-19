@@ -46,7 +46,11 @@ Kirigami.Page {
         startDate = newDate;
     }
 
-    padding: 0
+    topPadding: 0
+    rightPadding: Kirigami.Units.smallSpacing
+    bottomPadding: Kirigami.Units.largeSpacing
+    leftPadding: 0
+
     background: Rectangle {
         Kirigami.Theme.colorSet: monthPage.isLarge ? Kirigami.Theme.Header : Kirigami.Theme.View
         color: Kirigami.Theme.backgroundColor
