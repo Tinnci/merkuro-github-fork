@@ -27,7 +27,7 @@ Kirigami.OverlayDrawer {
         eventWrapper = Qt.createQmlObject('import org.kde.kalendar 1.0; IncidenceWrapper {id: event}',
                                           eventInfo,
                                           "event");
-        eventWrapper.eventPtr = eventData.eventPtr
+        eventWrapper.setIncidencePtr(eventData.eventPtr);
     }
 
     enabled: true
