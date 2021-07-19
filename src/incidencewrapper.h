@@ -23,7 +23,7 @@
 class IncidenceWrapper : public QObject
 {
     Q_OBJECT
-    Q_PROPERTY(KCalendarCore::Incidence::Ptr incidencePtr READ incidencePtr NOTIFY incidencePtrChanged)
+    Q_PROPERTY(QVariant incidencePtr READ incidencePtr WRITE setIncidencePtr NOTIFY incidencePtrChanged)
     Q_PROPERTY(KCalendarCore::Incidence::Ptr originalIncidencePtr READ originalIncidencePtr NOTIFY originalIncidencePtrChanged)
     Q_PROPERTY(qint64 collectionId READ collectionId WRITE setCollectionId NOTIFY collectionIdChanged)
     Q_PROPERTY(QString summary READ summary WRITE setSummary NOTIFY summaryChanged)
@@ -54,7 +54,8 @@ public:
     IncidenceWrapper(QObject *parent = nullptr);
     ~IncidenceWrapper() = default;
 
-    KCalendarCore::Incidence::Ptr incidencePtr() const;
+    QVariant incidencePtr() const;
+    void setIncidencePtr(QVariant incidencePtr);
     KCalendarCore::Incidence::Ptr originalIncidencePtr();
     qint64 collectionId();
     void setCollectionId(qint64 collectionId);
@@ -84,8 +85,6 @@ public:
     AttachmentsModel * attachmentsModel();
     QVariantMap recurrenceIntervals();
 
-    Q_INVOKABLE void setIncidencePtr(KCalendarCore::Event::Ptr eventPtr);
-    Q_INVOKABLE void setIncidencePtr(KCalendarCore::Todo::Ptr todoPtr);
     Q_INVOKABLE void addAlarms(KCalendarCore::Alarm::List alarms);
     Q_INVOKABLE void setRegularRecurrence(RecurrenceIntervals interval, int freq = 1);
     Q_INVOKABLE void setMonthlyPosRecurrence(short pos, int day);
