@@ -157,10 +157,15 @@ void EventOccurrenceModel::updateFromSource()
                     }
                 } else if(incidence->type() == KCalendarCore::Incidence::IncidenceType::TypeTodo) {
                     KCalendarCore::Todo::Ptr todo = m_coreCalendar->todo(incidence->uid());
+                    QDateTime todoStart = todo->dtStart();
 
-                    if (todo->dtStart().date() < mEnd && todo->dtDue().date() >= mStart) {
+                    if(!todoStart.isValid()) { // Todos are very likely not to have a set start date
+                        todoStart = todo->dtDue();
+                    }
+
+                    if (todoStart.date() < mEnd && todo->dtDue().date() >= mStart) {
                         m_events.append(Occurrence {
-                            todo->dtStart(),
+                            todoStart,
                             todo->dtDue(),
                             todo,
                             todo->typeStr(),
