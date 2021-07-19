@@ -44,6 +44,7 @@ Item {
 
     Column {
         spacing: 1
+        Layout.bottomMargin: Kirigami.Units.smallSpacing
         anchors {
             fill: parent
         }
@@ -138,19 +139,22 @@ Item {
                             }
                         }
 
-                        Column {
+                        QQC2.ScrollView {
                             anchors {
                                 fill: parent
                                 // Offset for date
                                 topMargin: root.showDayIndicator ? Kirigami.Units.gridUnit + Kirigami.Units.smallSpacing : 0
                             }
-                            Repeater {
+
+                            ListView {
+                                Layout.fillWidth: true
+                                Layout.fillHeight: true
                                 id: linesRepeater
                                 model: events
                                 onCountChanged: {
                                     root.numberOfLinesShown = count
                                 }
-                                Item {
+                                delegate: Item {
                                     id: line
                                     height: Kirigami.Units.gridUnit
                                     width: parent.width
