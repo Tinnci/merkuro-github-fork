@@ -15,8 +15,8 @@ Item {
     id: root
 
     signal viewEvent(var modelData, var collectionData)
-    signal editEvent(var eventPtr, var collectionId)
-    signal deleteEvent(var eventPtr, date deleteDate)
+    signal editEvent(var incidencePtr, var collectionId)
+    signal deleteEvent(var incidencePtr, date deleteDate)
 
     property int daysToShow
     property int daysPerRow: daysToShow
@@ -59,10 +59,10 @@ Item {
 
         //Weeks
         Repeater {
-            model: Kalendar.MultiDayEventModel {
+            model: Kalendar.MultiDayIncidenceModel {
                 model: Kalendar.IncidenceOccurrenceModel {
                     id: occurrenceModel
-                    objectName: "eventOccurrenceModel"
+                    objectName: "incidenceOccurrenceModel"
                     start: root.startDate
                     length: root.daysToShow
                     filter: root.filter ? root.filter : {}
@@ -140,7 +140,7 @@ Item {
                                 Layout.fillWidth: true
                                 Layout.fillHeight: true
                                 id: linesRepeater
-                                model: events
+                                model: incidences
                                 onCountChanged: {
                                     root.numberOfLinesShown = count
                                 }
@@ -149,9 +149,9 @@ Item {
                                     height: Kirigami.Units.gridUnit
                                     width: parent.width
 
-                                    //Events
+                                    //Incidences
                                     Repeater {
-                                        id: eventsRepeater
+                                        id: incidencesRepeater
                                         model: modelData
                                         Rectangle {
                                             x: (root.dayWidth + 1) * modelData.starts // +1 because of the spacing
@@ -194,12 +194,12 @@ Item {
                                                     if(pressedButtons & Qt.LeftButton) {
                                                         viewEvent(modelData, collectionDetails)
                                                     } else if (pressedButtons & Qt.RightButton) {
-                                                        eventActions.createObject(mouseArea, {}).open()
+                                                        incidenceActions.createObject(mouseArea, {}).open()
                                                     }
                                                 }
 
                                                 Component {
-                                                    id: eventActions
+                                                    id: incidenceActions
                                                     QQC2.Menu {
                                                         id: actionsPopup
                                                         y: parent.y + parent.height
@@ -209,13 +209,13 @@ Item {
                                                             icon.name: "edit-entry"
                                                             text:i18n("Edit")
                                                             enabled: !mouseArea.collectionDetails["readOnly"]
-                                                            onClicked: editEvent(modelData.eventPtr, modelData.collectionId)
+                                                            onClicked: editEvent(modelData.incidencePtr, modelData.collectionId)
                                                         }
                                                         QQC2.MenuItem {
                                                             icon.name: "edit-delete"
                                                             text:i18n("Delete")
                                                             enabled: !mouseArea.collectionDetails["readOnly"]
-                                                            onClicked: deleteEvent(modelData.eventPtr, modelData.startTime)
+                                                            onClicked: deleteEvent(modelData.incidencePtr, modelData.startTime)
                                                         }
                                                     }
                                                 }

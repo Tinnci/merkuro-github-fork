@@ -21,16 +21,16 @@ namespace KCalendarCore {
 
 /**
  * Each toplevel index represents a week.
- * The "events" roles provides a list of lists, where each list represents a visual line,
+ * The "incidences" roles provides a list of lists, where each list represents a visual line,
  * containing a number of events to display.
  */
-class MultiDayEventModel : public QAbstractItemModel
+class MultiDayIncidenceModel : public QAbstractItemModel
 {
     Q_OBJECT
     Q_PROPERTY(IncidenceOccurrenceModel* model WRITE setModel)
 public:
-    MultiDayEventModel(QObject *parent = nullptr);
-    ~MultiDayEventModel() = default;
+    MultiDayIncidenceModel(QObject *parent = nullptr);
+    ~MultiDayIncidenceModel() = default;
 
     QModelIndex index(int row, int column, const QModelIndex &parent = {}) const override;
     QModelIndex parent(const QModelIndex &index) const override;
@@ -44,7 +44,7 @@ public:
 
     void setModel(IncidenceOccurrenceModel *model);
 private:
-    QList<QModelIndex> sortedEventsFromSourceModel(const QDate &rowStart) const;
+    QList<QModelIndex> sortedIncidencesFromSourceModel(const QDate &rowStart) const;
     QVariantList layoutLines(const QDate &rowStart) const;
     IncidenceOccurrenceModel *mSourceModel{nullptr};
     int mPeriodLength{7};

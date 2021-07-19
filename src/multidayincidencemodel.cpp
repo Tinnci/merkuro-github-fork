@@ -4,19 +4,19 @@
 // Copyright (c) 2021 Carl Schwan <carlschwan@kde.org>
 // SPDX-License-Identifier: LGPL-2.0-or-later
 
-#include "multidayeventmodel.h"
+#include "multidayincidencemodel.h"
 
 enum Roles {
-    Events = IncidenceOccurrenceModel::LastRole,
+    Incidences = IncidenceOccurrenceModel::LastRole,
     WeekStartDate
 };
 
-MultiDayEventModel::MultiDayEventModel(QObject *parent)
+MultiDayIncidenceModel::MultiDayIncidenceModel(QObject *parent)
     : QAbstractItemModel(parent)
 {
 }
 
-QModelIndex MultiDayEventModel::index(int row, int column, const QModelIndex &parent) const
+QModelIndex MultiDayIncidenceModel::index(int row, int column, const QModelIndex &parent) const
 {
     if (!hasIndex(row, column, parent)) {
         return {};
@@ -28,12 +28,12 @@ QModelIndex MultiDayEventModel::index(int row, int column, const QModelIndex &pa
     return {};
 }
 
-QModelIndex MultiDayEventModel::parent(const QModelIndex &) const
+QModelIndex MultiDayIncidenceModel::parent(const QModelIndex &) const
 {
     return {};
 }
 
-int MultiDayEventModel::rowCount(const QModelIndex &parent) const
+int MultiDayIncidenceModel::rowCount(const QModelIndex &parent) const
 {
     //Number of weeks
     if (!parent.isValid() && mSourceModel) {
@@ -42,7 +42,7 @@ int MultiDayEventModel::rowCount(const QModelIndex &parent) const
     return 0;
 }
 
-int MultiDayEventModel::columnCount(const QModelIndex &) const
+int MultiDayIncidenceModel::columnCount(const QModelIndex &) const
 {
     return 1;
 }
@@ -55,7 +55,7 @@ static long long getDuration(const QDate &start, const QDate &end)
 
 // We first sort all occurences so we get all-day first (sorted by duration),
 // and then the rest sorted by start-date.
-QList<QModelIndex> MultiDayEventModel::sortedEventsFromSourceModel(const QDate &rowStart) const
+QList<QModelIndex> MultiDayIncidenceModel::sortedIncidencesFromSourceModel(const QDate &rowStart) const
 {
     const auto rowEnd = rowStart.addDays(7);
     QList<QModelIndex> sorted;
@@ -65,7 +65,7 @@ QList<QModelIndex> MultiDayEventModel::sortedEventsFromSourceModel(const QDate &
         const auto start = srcIdx.data(IncidenceOccurrenceModel::StartTime).toDateTime().date();
         const auto end = srcIdx.data(IncidenceOccurrenceModel::EndTime).toDateTime().date();
 
-        //Skip events not part of the week
+        //Skip incidences not part of the week
         if (end < rowStart || start > rowEnd) {
             // qWarning() << "Skipping because not part of this week";
             continue;
@@ -97,19 +97,19 @@ QList<QModelIndex> MultiDayEventModel::sortedEventsFromSourceModel(const QDate &
 /*
 * Layout the lines:
 *
-* The line grouping algorithm then always picks the first event,
+* The line grouping algorithm then always picks the first incidence,
 * and tries to add more to the same line.
 *
 * We never mix all-day and non-all day, and otherwise try to fit as much as possible
 * on the same line. Same day time-order should be preserved because of the sorting.
 */
-QVariantList MultiDayEventModel::layoutLines(const QDate &rowStart) const
+QVariantList MultiDayIncidenceModel::layoutLines(const QDate &rowStart) const
 {
     auto getStart = [&rowStart] (const QDate &start) {
         return qMax(rowStart.daysTo(start), 0ll);
     };
 
-    QList<QModelIndex> sorted = sortedEventsFromSourceModel(rowStart);
+    QList<QModelIndex> sorted = sortedIncidencesFromSourceModel(rowStart);
 
     // for (const auto &srcIdx : sorted) {
     //     qWarning() << "sorted " << srcIdx.data(IncidenceOccurrenceModel::StartTime).toDateTime() << srcIdx.data(IncidenceOccurrenceModel::Summary).toString() << srcIdx.data(IncidenceOccurrenceModel::AllDay).toBool();
@@ -144,16 +144,16 @@ QVariantList MultiDayEventModel::layoutLines(const QDate &rowStart) const
                 {QStringLiteral("durationString"), idx.data(IncidenceOccurrenceModel::DurationString)},
                 {QStringLiteral("color"), idx.data(IncidenceOccurrenceModel::Color)},
                 {QStringLiteral("collectionId"), idx.data(IncidenceOccurrenceModel::CollectionId)},
-                {QStringLiteral("eventPtr"), idx.data(IncidenceOccurrenceModel::IncidencePtr)},
-                {QStringLiteral("eventOccurrence"), idx.data(IncidenceOccurrenceModel::IncidenceOccurrence)}
+                {QStringLiteral("incidencePtr"), idx.data(IncidenceOccurrenceModel::IncidencePtr)},
+                {QStringLiteral("incidenceOccurrence"), idx.data(IncidenceOccurrenceModel::IncidenceOccurrence)}
             });
         };
 
-        //Add first event of line
+        //Add first incidence of line
         addToLine(srcIdx, start, duration);
         const bool allDayLine = srcIdx.data(IncidenceOccurrenceModel::AllDay).toBool();
 
-        //Fill line with events that fit
+        //Fill line with incidences that fit
         int lastStart = start;
         int lastDuration = duration;
         auto doesIntersect = [&] (int start, int end) {
@@ -173,7 +173,7 @@ QVariantList MultiDayEventModel::layoutLines(const QDate &rowStart) const
             const auto end = start + duration;
 
             // qWarning() << "Checking " << idx.data(IncidenceOccurrenceModel::StartTime).toDateTime() << duration << idx.data(IncidenceOccurrenceModel::Summary).toString();
-            //Avoid mixing all-day and other events
+            //Avoid mixing all-day and other incidences
             if (allDayLine && !idx.data(IncidenceOccurrenceModel::AllDay).toBool()) {
                 break;
             }
@@ -193,7 +193,7 @@ QVariantList MultiDayEventModel::layoutLines(const QDate &rowStart) const
     return result;
 }
 
-QVariant MultiDayEventModel::data(const QModelIndex &idx, int role) const
+QVariant MultiDayIncidenceModel::data(const QModelIndex &idx, int role) const
 {
     if (!hasIndex(idx.row(), idx.column())) {
         return {};
@@ -205,7 +205,7 @@ QVariant MultiDayEventModel::data(const QModelIndex &idx, int role) const
     switch (role) {
         case WeekStartDate:
             return rowStart;
-        case Events:
+        case Incidences:
             return layoutLines(rowStart);
         default:
             Q_ASSERT(false);
@@ -213,7 +213,7 @@ QVariant MultiDayEventModel::data(const QModelIndex &idx, int role) const
     }
 }
 
-void MultiDayEventModel::setModel(IncidenceOccurrenceModel *model)
+void MultiDayIncidenceModel::setModel(IncidenceOccurrenceModel *model)
 {
     beginResetModel();
     mSourceModel = model;
@@ -230,10 +230,10 @@ void MultiDayEventModel::setModel(IncidenceOccurrenceModel *model)
     endResetModel();
 }
 
-QHash<int, QByteArray> MultiDayEventModel::roleNames() const
+QHash<int, QByteArray> MultiDayIncidenceModel::roleNames() const
 {
     return {
-        {Events, "events"},
+        {Incidences, "incidences"},
         {WeekStartDate, "weekStartDate"}
     };
 }
