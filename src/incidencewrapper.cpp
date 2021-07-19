@@ -29,30 +29,33 @@ IncidenceWrapper::IncidenceWrapper(QObject *parent)
     connect(this, &IncidenceWrapper::incidencePtrChanged,
             &m_attachmentsModel, [=](KCalendarCore::Incidence::Ptr incidencePtr){ m_attachmentsModel.setIncidencePtr(incidencePtr); });
 
-    setIncidencePtr(m_eventPtr);
+    m_setIncidencePtr(m_eventPtr);
     m_eventPtr->setDtStart(QDateTime::currentDateTime());
     m_eventPtr->setDtEnd(QDateTime::currentDateTime().addSecs(60 * 60));
 }
 
-KCalendarCore::Incidence::Ptr IncidenceWrapper::incidencePtr() const
+QVariant IncidenceWrapper::incidencePtr() const
 {
-    return m_incidence;
+    return QVariant::fromValue(m_incidence);
 }
 
-void IncidenceWrapper::setIncidencePtr(KCalendarCore::Event::Ptr eventPtr)
-{
-    m_eventPtr = eventPtr;
-    m_todoPtr = nullptr;
-
-    m_setIncidencePtr(eventPtr);
-}
-
-void IncidenceWrapper::setIncidencePtr(KCalendarCore::Todo::Ptr todoPtr)
+void IncidenceWrapper::setIncidencePtr(QVariant incidencePtr)
 {
     m_eventPtr = nullptr;
-    m_todoPtr = todoPtr;
+    m_todoPtr = nullptr;
 
-    m_setIncidencePtr(todoPtr);
+    KCalendarCore::Incidence::Ptr newIncidencePtr = incidencePtr.value<KCalendarCore::Incidence::Ptr>();
+
+    switch(newIncidencePtr->type()) {
+        case(KCalendarCore::Incidence::IncidenceType::TypeEvent):
+            m_eventPtr = incidencePtr.value<KCalendarCore::Event::Ptr>();
+            break;
+        case(KCalendarCore::Incidence::IncidenceType::TypeTodo):
+            m_todoPtr = incidencePtr.value<KCalendarCore::Todo::Ptr>();
+            break;
+    }
+
+    m_setIncidencePtr(newIncidencePtr);
 }
 
 void IncidenceWrapper::m_setIncidencePtr(KCalendarCore::Incidence::Ptr incidencePtr)
@@ -371,3 +374,4 @@ void IncidenceWrapper::clearRecurrences()
     Q_EMIT recurrenceDataChanged();
 }
 
+Q_DECLARE_METATYPE(KCalendarCore::Incidence::Ptr);
