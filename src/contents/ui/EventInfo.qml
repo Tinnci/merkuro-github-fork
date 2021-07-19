@@ -24,7 +24,7 @@ Kirigami.OverlayDrawer {
     property var collectionData
 
     onEventDataChanged: {
-        eventWrapper = Qt.createQmlObject('import org.kde.kalendar 1.0; EventWrapper {id: event}',
+        eventWrapper = Qt.createQmlObject('import org.kde.kalendar 1.0; IncidenceWrapper {id: event}',
                                           eventInfo,
                                           "event");
         eventWrapper.eventPtr = eventData.eventPtr

@@ -13,24 +13,24 @@
 #include "attachmentsmodel.h"
 
 /**
- * This class is a wrapper for a KCalendarCore::Event::Ptr object.
- * We can use it to create new events, or create event pointers from
- * pre-existing events, to more cleanly pass around to our QML code
+ * This class is a wrapper for a KCalendarCore::Incidence::Ptr object.
+ * We can use it to create new incidences, or create incidence pointers from
+ * pre-existing incidences, to more cleanly pass around to our QML code
  * or to the CalendarManager, which handles the back-end stuff of
- * adding and editing the event in the collection of our choice.
+ * adding and editing the incidence in the collection of our choice.
  */
 
-class EventWrapper : public QObject
+class IncidenceWrapper : public QObject
 {
     Q_OBJECT
-    Q_PROPERTY(KCalendarCore::Event::Ptr eventPtr READ eventPtr WRITE setEventPtr NOTIFY eventPtrChanged)
-    Q_PROPERTY(KCalendarCore::Event::Ptr originalEventPtr READ originalEventPtr NOTIFY originalEventPtrChanged)
+    Q_PROPERTY(KCalendarCore::Incidence::Ptr incidencePtr READ incidencePtr NOTIFY incidencePtrChanged)
+    Q_PROPERTY(KCalendarCore::Incidence::Ptr originalIncidencePtr READ originalIncidencePtr NOTIFY originalIncidencePtrChanged)
     Q_PROPERTY(qint64 collectionId READ collectionId WRITE setCollectionId NOTIFY collectionIdChanged)
     Q_PROPERTY(QString summary READ summary WRITE setSummary NOTIFY summaryChanged)
     Q_PROPERTY(QString description READ description WRITE setDescription NOTIFY descriptionChanged)
     Q_PROPERTY(QString location READ location WRITE setLocation NOTIFY locationChanged)
-    Q_PROPERTY(QDateTime eventStart READ eventStart WRITE setEventStart NOTIFY eventStartChanged)
-    Q_PROPERTY(QDateTime eventEnd READ eventEnd WRITE setEventEnd NOTIFY eventEndChanged)
+    Q_PROPERTY(QDateTime incidenceStart READ incidenceStart WRITE setIncidenceStart NOTIFY incidenceStartChanged)
+    Q_PROPERTY(QDateTime incidenceEnd READ incidenceEnd WRITE setIncidenceEnd NOTIFY incidenceEndChanged)
     Q_PROPERTY(bool allDay READ allDay WRITE setAllDay NOTIFY allDayChanged)
     Q_PROPERTY(KCalendarCore::Recurrence * recurrence READ recurrence)
     Q_PROPERTY(QVariantMap recurrenceData READ recurrenceData WRITE setRecurrenceData NOTIFY recurrenceDataChanged)
@@ -51,12 +51,11 @@ public:
     };
     Q_ENUM(RecurrenceIntervals);
 
-    EventWrapper(QObject *parent = nullptr);
-    ~EventWrapper() = default;
+    IncidenceWrapper(QObject *parent = nullptr);
+    ~IncidenceWrapper() = default;
 
-    KCalendarCore::Event::Ptr eventPtr() const;
-    void setEventPtr(KCalendarCore::Event::Ptr eventPtr);
-    KCalendarCore::Event::Ptr originalEventPtr();
+    KCalendarCore::Incidence::Ptr incidencePtr() const;
+    KCalendarCore::Incidence::Ptr originalIncidencePtr();
     qint64 collectionId();
     void setCollectionId(qint64 collectionId);
     QString summary() const;
@@ -65,10 +64,10 @@ public:
     void setDescription(QString description);
     QString location() const;
     void setLocation(QString location);
-    QDateTime eventStart() const;
-    void setEventStart(QDateTime eventStart);
-    QDateTime eventEnd() const;
-    void setEventEnd(QDateTime eventEnd);
+    QDateTime incidenceStart() const;
+    void setIncidenceStart(QDateTime incidenceStart);
+    QDateTime incidenceEnd() const;
+    void setIncidenceEnd(QDateTime incidenceEnd);
     bool allDay() const;
     void setAllDay(bool allDay);
 
@@ -85,6 +84,8 @@ public:
     AttachmentsModel * attachmentsModel();
     QVariantMap recurrenceIntervals();
 
+    Q_INVOKABLE void setIncidencePtr(KCalendarCore::Event::Ptr eventPtr);
+    Q_INVOKABLE void setIncidencePtr(KCalendarCore::Todo::Ptr todoPtr);
     Q_INVOKABLE void addAlarms(KCalendarCore::Alarm::List alarms);
     Q_INVOKABLE void setRegularRecurrence(RecurrenceIntervals interval, int freq = 1);
     Q_INVOKABLE void setMonthlyPosRecurrence(short pos, int day);
@@ -92,14 +93,14 @@ public:
     Q_INVOKABLE void clearRecurrences();
 
 Q_SIGNALS:
-    void eventPtrChanged(KCalendarCore::Event::Ptr eventPtr);
-    void originalEventPtrChanged();
+    void incidencePtrChanged(KCalendarCore::Incidence::Ptr incidencePtr);
+    void originalIncidencePtrChanged();
     void collectionIdChanged();
     void summaryChanged();
     void descriptionChanged();
     void locationChanged();
-    void eventStartChanged();
-    void eventEndChanged();
+    void incidenceStartChanged();
+    void incidenceEndChanged();
     void allDayChanged();
     void remindersModelChanged();
     void recurrenceDataChanged();
@@ -109,8 +110,11 @@ Q_SIGNALS:
     void attachmentsModelChanged();
 
 private:
-    KCalendarCore::Event::Ptr m_event;
-    KCalendarCore::Event::Ptr m_originalEvent;
+    void m_setIncidencePtr(KCalendarCore::Incidence::Ptr incidencePtr);
+    KCalendarCore::Incidence::Ptr m_incidence;
+    KCalendarCore::Incidence::Ptr m_originalIncidence;
+    KCalendarCore::Event::Ptr m_eventPtr;
+    KCalendarCore::Todo::Ptr m_todoPtr;
     qint64 m_collectionId;
     RemindersModel m_remindersModel;
     AttendeesModel m_attendeesModel;
