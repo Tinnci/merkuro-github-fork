@@ -9,13 +9,13 @@ import org.kde.kirigami 2.14 as Kirigami
 MouseArea {
     id: mouseArea
 
-    signal viewClicked(var eventData, var collectionData)
-    signal editClicked(var eventPtr, var collectionId)
-    signal deleteClicked(var eventPtr, date deleteDate)
+    signal viewClicked(var incidenceData, var collectionData)
+    signal editClicked(var incidencePtr, var collectionId)
+    signal deleteClicked(var incidencePtr, date deleteDate)
 
     property double clickX
     property double clickY
-    property var eventData
+    property var incidenceData
     property var collectionDetails
 
     anchors.fill: parent
@@ -25,14 +25,14 @@ MouseArea {
         clickX = mouseX
         clickY = mouseY
         if (pressedButtons & Qt.LeftButton) {
-            viewClicked(eventData, collectionDetails);
+            viewClicked(incidenceData, collectionDetails);
         } else if (pressedButtons & Qt.RightButton) {
-            eventActions.createObject(mouseArea, {}).open();
+            incidenceActions.createObject(mouseArea, {}).open();
         }
     }
 
     Component {
-        id: eventActions
+        id: incidenceActions
         QQC2.Menu {
             id: actionsPopup
             y: parent.y + mouseArea.clickY
@@ -42,13 +42,13 @@ MouseArea {
                 icon.name: "edit-entry"
                 text:i18n("Edit")
                 enabled: !mouseArea.collectionDetails["readOnly"]
-                onClicked: editClicked(eventData.eventPtr, eventData.collectionId)
+                onClicked: editClicked(incidenceData.incidencePtr, incidenceData.collectionId)
             }
             QQC2.MenuItem {
                 icon.name: "edit-delete"
                 text:i18n("Delete")
                 enabled: !mouseArea.collectionDetails["readOnly"]
-                onClicked: deleteClicked(eventData.eventPtr, eventData.startTime)
+                onClicked: deleteClicked(incidenceData.incidencePtr, incidenceData.startTime)
             }
         }
     }
