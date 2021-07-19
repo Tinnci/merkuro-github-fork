@@ -2,6 +2,7 @@
 // Copyright (c) 2018 Christian Mollekopf <mollekopf@kolabsys.com>
 // Copyright (c) 2018 Rémi Nicole <minijackson@riseup.net>
 // Copyright (c) 2021 Carl Schwan <carlschwan@kde.org>
+// Copyright (c) 2021 Claudio Cambra <claudio.cambra@gmail.com>
 // SPDX-License-Identifier: LGPL-2.0-or-later
 
 #include "eventoccurrencemodel.h"
@@ -100,8 +101,8 @@ void EventOccurrenceModel::updateFromSource()
     m_events.clear();
 
     if (m_coreCalendar) {
-        QMap<QByteArray, KCalendarCore::Event::Ptr> recurringEvents;
-        QMultiMap<QByteArray, KCalendarCore::Event::Ptr> exceptions;
+        QMap<QByteArray, KCalendarCore::Incidence::Ptr> recurringIncidences;
+        QMultiMap<QByteArray, KCalendarCore::Incidence::Ptr> exceptions;
 
         const auto allEvents = Calendar::sortEvents(
             m_coreCalendar->events(mStart, mEnd),
@@ -109,9 +110,17 @@ void EventOccurrenceModel::updateFromSource()
             SortDirection::SortDirectionAscending
         ); // get all events
 
-        QMap<QByteArray, KCalendarCore::Event::Ptr> events;
-        for (int i = 0; i < allEvents.count(); ++i) {
-            auto &event = allEvents[i];
+        const auto allTodos = Calendar::sortTodos(
+            m_coreCalendar->todos(mStart, mEnd),
+            TodoSortField::TodoSortStartDate,
+            SortDirection::SortDirectionAscending
+        );
+
+        Incidence::List allIncidences = Calendar::mergeIncidenceList(allEvents, allTodos, {});
+
+        QMap<QByteArray, KCalendarCore::Incidence::Ptr> incidences;
+        for (int i = 0; i < allIncidences.count(); ++i) {
+            KCalendarCore::Incidence::Ptr &incidence = allIncidences[i];
             //const bool skip = [&] {
             //    for (auto it = mFilter.constBegin(); it!= mFilter.constEnd(); it++) {
             //        if (event->getProperty(it.key().toLatin1()) != it.value()) {
@@ -125,43 +134,59 @@ void EventOccurrenceModel::updateFromSource()
             //}
             //
             // Collect recurring events and add the rest immediately
-            if (event->recurs()) {
-                recurringEvents.insert(event->uid().toLatin1(), event);
-                events.insert(event->instanceIdentifier().toLatin1(), event);
-            } else if(event->recurrenceId().isValid()) {
-                exceptions.insert(event->uid().toLatin1(), event);
-                events.insert(event->instanceIdentifier().toLatin1(), event);
+            if (incidence->recurs()) {
+                recurringIncidences.insert(incidence->uid().toLatin1(), incidence);
+                incidences.insert(incidence->instanceIdentifier().toLatin1(), incidence);
+            } else if(incidence->recurrenceId().isValid()) {
+                exceptions.insert(incidence->uid().toLatin1(), incidence);
+                incidences.insert(incidence->instanceIdentifier().toLatin1(), incidence);
             } else {
-                if (event->dtStart().date() < mEnd && event->dtEnd().date() >= mStart) {
-                    m_events.append(Occurrence {
-                        event->dtStart(),
-                        event->dtEnd(),
-                        event,
-                        getColor(event),
-                        getCollectionId(event),
-                        event->allDay()
-                    });
+                if(incidence->type() == KCalendarCore::Incidence::IncidenceType::TypeEvent) {
+                    KCalendarCore::Event::Ptr event = m_coreCalendar->event(incidence->uid());
+
+                    if (event->dtStart().date() < mEnd && event->dtEnd().date() >= mStart) {
+                        m_events.append(Occurrence {
+                            event->dtStart(),
+                            event->dtEnd(),
+                            event,
+                            getColor(event),
+                            getCollectionId(event),
+                            event->allDay()
+                        });
+                    }
+                } else if(incidence->type() == KCalendarCore::Incidence::IncidenceType::TypeTodo) {
+                    KCalendarCore::Todo::Ptr todo = m_coreCalendar->todo(incidence->uid());
+
+                    if (todo->dtStart().date() < mEnd && todo->dtDue().date() >= mStart) {
+                        m_events.append(Occurrence {
+                            todo->dtStart(),
+                            todo->dtDue(),
+                            todo,
+                            getColor(todo),
+                            getCollectionId(todo),
+                            todo->allDay()
+                        });
+                    }
                 }
             }
 
         }
 
         // process all recurring events and their exceptions.
-        for (const auto &uid : recurringEvents.keys()) {
+        for (const auto &uid : recurringIncidences.keys()) {
             KCalendarCore::MemoryCalendar calendar{ QTimeZone::systemTimeZone() };
-            calendar.addIncidence(recurringEvents.value(uid));
-            for (const auto &event : exceptions.values(uid)) {
-                calendar.addIncidence(event);
+            calendar.addIncidence(recurringIncidences.value(uid));
+            for (const auto &incidence : exceptions.values(uid)) {
+                calendar.addIncidence(incidence);
             }
             KCalendarCore::OccurrenceIterator occurrenceIterator{calendar, QDateTime{mStart, {0, 0, 0}}, QDateTime{mEnd, {12, 59, 59}}};
             while (occurrenceIterator.hasNext()) {
                 occurrenceIterator.next();
                 const auto incidence = occurrenceIterator.incidence();
-                const auto event = events.value(incidence->instanceIdentifier().toLatin1());
                 const auto start = occurrenceIterator.occurrenceStartDate();
                 const auto end = incidence->endDateForStart(start);
                 if (start.date() < mEnd && end.date() >= mStart) {
-                    m_events.append(Occurrence {start, end, event, getColor(event), getCollectionId(event), event->allDay() });
+                    m_events.append(Occurrence {start, end, incidence, getColor(incidence), getCollectionId(incidence), incidence->allDay() });
                 }
             }
         }
@@ -200,9 +225,9 @@ int EventOccurrenceModel::columnCount(const QModelIndex &) const
     return 1;
 }
 
-qint64 EventOccurrenceModel::getCollectionId(const KCalendarCore::Event::Ptr &event)
+qint64 EventOccurrenceModel::getCollectionId(const KCalendarCore::Incidence::Ptr &incidence)
 {
-    auto item = m_coreCalendar->item(event);
+    auto item = m_coreCalendar->item(incidence);
     if (!item.isValid()) {
         return {};
     }
@@ -213,9 +238,9 @@ qint64 EventOccurrenceModel::getCollectionId(const KCalendarCore::Event::Ptr &ev
     return collection.id();
 }
 
-QColor EventOccurrenceModel::getColor(const KCalendarCore::Event::Ptr &event)
+QColor EventOccurrenceModel::getColor(const KCalendarCore::Incidence::Ptr &incidence)
 {
-    auto item = m_coreCalendar->item(event);
+    auto item = m_coreCalendar->item(incidence);
     if (!item.isValid()) {
         return {};
     }
@@ -248,27 +273,27 @@ QVariant EventOccurrenceModel::data(const QModelIndex &idx, int role) const
     if (!hasIndex(idx.row(), idx.column())) {
         return {};
     }
-    auto event = m_events.at(idx.row());
-    auto icalEvent = event.event;
-    KCalendarCore::Duration duration(event.start, event.end);
+    auto incidence = m_events.at(idx.row());
+    auto icalIncidence = incidence.incidence;
+    KCalendarCore::Duration duration(incidence.start, incidence.end);
 
     switch (role) {
         case Summary:
-            return icalEvent->summary();
+            return icalIncidence->summary();
         case Description:
-            return icalEvent->description();
+            return icalIncidence->description();
         case Location:
-            return icalEvent->location();
+            return icalIncidence->location();
         case StartTime:
-            return event.start;
+            return incidence.start;
         case EndTime:
-            return event.end;
+            return incidence.end;
         case Duration:
             return QVariant::fromValue(duration);
         case DurationString:
         {
             KFormat format;
-            if (event.event->allDay() && duration.asSeconds() == 0) {
+            if (incidence.incidence->allDay()) {
                 return format.formatSpelloutDuration(24*60*60*1000); // format milliseconds in 1 day
             } else if (duration.asSeconds() == 0) {
                 return QLatin1String("");
@@ -277,17 +302,17 @@ QVariant EventOccurrenceModel::data(const QModelIndex &idx, int role) const
             }
         }
         case Color:
-            return event.color;
+            return incidence.color;
         case CollectionId:
-            return event.collectionId;
+            return incidence.collectionId;
         case AllDay:
-            return event.allDay;
+            return incidence.allDay;
         case EventPtr:
-            return QVariant::fromValue(event.event);
+            return QVariant::fromValue(incidence.incidence);
         case EventOccurrence:
-            return QVariant::fromValue(event);
+            return QVariant::fromValue(incidence);
         default:
-            qWarning() << "Unknown role for event:" << QMetaEnum::fromType<Roles>().valueToKey(role);
+            qWarning() << "Unknown role for incidence:" << QMetaEnum::fromType<Roles>().valueToKey(role);
             return {};
     }
 }
