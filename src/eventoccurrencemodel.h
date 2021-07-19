@@ -2,6 +2,7 @@
 // Copyright (c) 2018 Christian Mollekopf <mollekopf@kolabsys.com>
 // Copyright (c) 2018 Rémi Nicole <minijackson@riseup.net>
 // Copyright (c) 2021 Carl Schwan <carlschwan@kde.org>
+// Copyright (c) 2021 Claudio Cambra <claudio.cambra@gmail.com>
 // SPDX-License-Identifier: LGPL-2.0-or-later
 
 #pragma once
@@ -82,7 +83,7 @@ public:
     struct Occurrence {
         QDateTime start;
         QDateTime end;
-        QSharedPointer<KCalendarCore::Event> event;
+        QSharedPointer<KCalendarCore::Incidence> incidence;
         QColor color;
         qint64 collectionId;
         bool allDay;
@@ -99,8 +100,8 @@ private:
 
     void refreshView();
     void updateFromSource();
-    QColor getColor(const KCalendarCore::Event::Ptr &event);
-    qint64 getCollectionId(const KCalendarCore::Event::Ptr &event);
+    QColor getColor(const KCalendarCore::Incidence::Ptr &incidence);
+    qint64 getCollectionId(const KCalendarCore::Incidence::Ptr &incidence);
 
     QSharedPointer<QAbstractItemModel> mSourceModel;
     QDate mStart;
@@ -116,4 +117,5 @@ private:
 };
 
 Q_DECLARE_METATYPE(EventOccurrenceModel::Occurrence);
+Q_DECLARE_METATYPE(KCalendarCore::Incidence::Ptr);
 
