@@ -62,8 +62,7 @@ Item {
         Repeater {
             model: Kalendar.MultiDayEventModel {
                 periodLength: 7
-
-                model: Kalendar.EventOccurrenceModel {
+                model: Kalendar.IncidenceOccurrenceModel {
                     id: occurrenceModel
                     objectName: "eventOccurrenceModel"
                     start: root.startDate

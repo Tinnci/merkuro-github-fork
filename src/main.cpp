@@ -12,7 +12,7 @@
 #include <KCalendarCore/MemoryCalendar>
 #include <AkonadiCore/AgentFilterProxyModel>
 #include "multidayeventmodel.h"
-#include "eventoccurrencemodel.h"
+#include "incidenceoccurrencemodel.h"
 #include "calendarmanager.h"
 #include "agentconfiguration.h"
 #include "eventwrapper.h"
@@ -53,7 +53,7 @@ int main(int argc, char *argv[])
     qmlRegisterSingletonInstance("org.kde.kalendar", 1, 0, "AgentConfiguration", &agentConfiguration);
     qmlRegisterType<EventWrapper>("org.kde.kalendar", 1, 0, "EventWrapper");
     qmlRegisterType<MultiDayEventModel>("org.kde.kalendar", 1, 0, "MultiDayEventModel");
-    qmlRegisterType<EventOccurrenceModel>("org.kde.kalendar", 1, 0, "EventOccurrenceModel");
+    qmlRegisterType<IncidenceOccurrenceModel>("org.kde.kalendar", 1, 0, "IncidenceOccurrenceModel");
     qRegisterMetaType<Akonadi::AgentFilterProxyModel *>();
 
     qmlRegisterSingletonType<AboutType>("org.kde.kalendar", 1, 0, "AboutType", [](QQmlEngine *engine, QJSEngine *scriptEngine) -> QObject * {

@@ -18,7 +18,7 @@
 
 namespace KCalendarCore {
     class MemoryCalendar;
-    class Event;
+    class Incidence;
 }
 namespace Akonadi {
     class ETMCalendar;
@@ -31,7 +31,7 @@ using namespace KCalendarCore;
  *
  * Recurrences are expanded
  */
-class EventOccurrenceModel : public QAbstractItemModel
+class IncidenceOccurrenceModel : public QAbstractItemModel
 {
     Q_OBJECT
     Q_PROPERTY(QDate start READ start WRITE setStart NOTIFY startChanged)
@@ -51,13 +51,13 @@ public:
         Color,
         CollectionId,
         AllDay,
-        EventPtr,
-        EventOccurrence,
+        IncidencePtr,
+        IncidenceOccurrence,
         LastRole
     };
     Q_ENUM(Roles);
-    EventOccurrenceModel(QObject *parent = nullptr);
-    ~EventOccurrenceModel() = default;
+    IncidenceOccurrenceModel(QObject *parent = nullptr);
+    ~IncidenceOccurrenceModel() = default;
 
     QModelIndex index(int row, int column, const QModelIndex &parent = {}) const override;
     QModelIndex parent(const QModelIndex &index) const override;
@@ -112,11 +112,11 @@ private:
 
     QTimer mRefreshTimer;
 
-    QList<Occurrence> m_events;
+    QList<Occurrence> m_incidences;
     QHash<QString, QColor> m_colors;
     QVariantMap mFilter;
 };
 
-Q_DECLARE_METATYPE(EventOccurrenceModel::Occurrence);
+Q_DECLARE_METATYPE(IncidenceOccurrenceModel::Occurrence);
 Q_DECLARE_METATYPE(KCalendarCore::Incidence::Ptr);
 
