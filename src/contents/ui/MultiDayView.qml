@@ -44,7 +44,6 @@ Item {
 
     Column {
         spacing: 1
-        Layout.bottomMargin: Kirigami.Units.smallSpacing
         anchors {
             fill: parent
         }
