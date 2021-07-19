@@ -12,8 +12,8 @@ import "labelutils.js" as LabelUtils
 Kirigami.ScrollablePage {
     id: eventEditorSheet
 
-    signal added(int collectionId, EventWrapper event)
-    signal edited(int collectionId, EventWrapper event)
+    signal added(int collectionId, IncidenceWrapper event)
+    signal edited(int collectionId, IncidenceWrapper event)
     signal cancel
 
     // Setting the eventWrapper here and now causes some *really* weird behaviour.

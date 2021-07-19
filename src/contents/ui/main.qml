@@ -125,7 +125,7 @@ Kirigami.ApplicationWindow {
     function setUpAdd() {
         let editorToUse = root.editorToUse();
         if (editorToUse.editMode || !editorToUse.eventWrapper) {
-            editorToUse.eventWrapper = Qt.createQmlObject('import org.kde.kalendar 1.0; EventWrapper {id: event}',
+            editorToUse.eventWrapper = Qt.createQmlObject('import org.kde.kalendar 1.0; IncidenceWrapper {id: event}',
                                                           editorToUse,
                                                           "event");
         }
@@ -140,19 +140,19 @@ Kirigami.ApplicationWindow {
 
     function setUpEdit(eventPtr, collectionId) {
         let editorToUse = root.editorToUse();
-        editorToUse.eventWrapper = Qt.createQmlObject('import org.kde.kalendar 1.0; EventWrapper {id: event}',
+        editorToUse.eventWrapper = Qt.createQmlObject('import org.kde.kalendar 1.0; IncidenceWrapper {id: event}',
                                                       editorToUse,
                                                       "event");
-        editorToUse.eventWrapper.eventPtr = eventPtr;
+        editorToUse.eventWrapper.setIncidencePtr(eventPtr);
         editorToUse.eventWrapper.collectionId = collectionId;
         editorToUse.editMode = true;
     }
 
     function setUpDelete(eventPtr, deleteDate) {
-        deleteEventSheet.eventWrapper = Qt.createQmlObject('import org.kde.kalendar 1.0; EventWrapper {id: event}',
+        deleteEventSheet.eventWrapper = Qt.createQmlObject('import org.kde.kalendar 1.0; IncidenceWrapper {id: event}',
                                                            deleteEventSheet,
                                                            "event");
-        deleteEventSheet.eventWrapper.eventPtr = eventPtr
+        deleteEventSheet.eventWrapper.setIncidencePtr(eventPtr)
         deleteEventSheet.deleteDate = deleteDate
         deleteEventSheet.open()
     }

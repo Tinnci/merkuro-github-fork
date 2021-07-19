@@ -1,0 +1,373 @@
+// SPDX-FileCopyrightText: 2021 Claudio Cambra <claudio.cambra@gmail.com>
+// SPDX-License-Identifier: LGPL-2.1-or-later
+
+#include <QMetaEnum>
+#include <QBitArray>
+#include <incidencewrapper.h>
+
+IncidenceWrapper::IncidenceWrapper(QObject *parent)
+    : QObject(parent)
+    , m_eventPtr(new KCalendarCore::Event)
+    , m_remindersModel(parent, m_eventPtr)
+    , m_attendeesModel(parent, m_eventPtr)
+    , m_recurrenceExceptionsModel(parent, m_eventPtr)
+    , m_attachmentsModel(parent, m_eventPtr)
+{
+    for(int i = 0; i < QMetaEnum::fromType<IncidenceWrapper::RecurrenceIntervals>().keyCount(); i++) {
+        int value = QMetaEnum::fromType<IncidenceWrapper::RecurrenceIntervals>().value(i);
+        QString key = QLatin1String(QMetaEnum::fromType<IncidenceWrapper::RecurrenceIntervals>().key(i));
+        m_recurrenceIntervals[key] = value;
+    }
+
+    // Change incidence pointer in remindersmodel if changed here
+    connect(this, &IncidenceWrapper::incidencePtrChanged,
+            &m_remindersModel, [=](KCalendarCore::Incidence::Ptr incidencePtr){ m_remindersModel.setIncidencePtr(incidencePtr); });
+    connect(this, &IncidenceWrapper::incidencePtrChanged,
+            &m_attendeesModel, [=](KCalendarCore::Incidence::Ptr incidencePtr){ m_attendeesModel.setIncidencePtr(incidencePtr); });
+    connect(this, &IncidenceWrapper::incidencePtrChanged,
+            &m_recurrenceExceptionsModel, [=](KCalendarCore::Incidence::Ptr incidencePtr){ m_recurrenceExceptionsModel.setIncidencePtr(incidencePtr); });
+    connect(this, &IncidenceWrapper::incidencePtrChanged,
+            &m_attachmentsModel, [=](KCalendarCore::Incidence::Ptr incidencePtr){ m_attachmentsModel.setIncidencePtr(incidencePtr); });
+
+    setIncidencePtr(m_eventPtr);
+    m_eventPtr->setDtStart(QDateTime::currentDateTime());
+    m_eventPtr->setDtEnd(QDateTime::currentDateTime().addSecs(60 * 60));
+}
+
+KCalendarCore::Incidence::Ptr IncidenceWrapper::incidencePtr() const
+{
+    return m_incidence;
+}
+
+void IncidenceWrapper::setIncidencePtr(KCalendarCore::Event::Ptr eventPtr)
+{
+    m_eventPtr = eventPtr;
+    m_todoPtr = nullptr;
+
+    m_setIncidencePtr(eventPtr);
+}
+
+void IncidenceWrapper::setIncidencePtr(KCalendarCore::Todo::Ptr todoPtr)
+{
+    m_eventPtr = nullptr;
+    m_todoPtr = todoPtr;
+
+    m_setIncidencePtr(todoPtr);
+}
+
+void IncidenceWrapper::m_setIncidencePtr(KCalendarCore::Incidence::Ptr incidencePtr)
+{
+    m_incidence = incidencePtr;
+    KCalendarCore::Incidence::Ptr originalIncidence(incidencePtr->clone());
+    m_originalIncidence = originalIncidence;
+
+    Q_EMIT incidencePtrChanged(incidencePtr);
+    Q_EMIT originalIncidencePtrChanged();
+    Q_EMIT collectionIdChanged();
+    Q_EMIT summaryChanged();
+    Q_EMIT descriptionChanged();
+    Q_EMIT locationChanged();
+    Q_EMIT incidenceStartChanged();
+    Q_EMIT incidenceEndChanged();
+    Q_EMIT allDayChanged();
+    Q_EMIT remindersModelChanged();
+    Q_EMIT organizerChanged();
+    Q_EMIT attendeesModelChanged();
+    Q_EMIT recurrenceDataChanged();
+    Q_EMIT recurrenceExceptionsModelChanged();
+    Q_EMIT attachmentsModelChanged();
+}
+
+KCalendarCore::Incidence::Ptr IncidenceWrapper::originalIncidencePtr()
+{
+    return m_originalIncidence;
+}
+
+
+qint64 IncidenceWrapper::collectionId()
+{
+    return m_collectionId;
+}
+
+void IncidenceWrapper::setCollectionId(qint64 collectionId)
+{
+    m_collectionId = collectionId;
+    Q_EMIT collectionIdChanged();
+}
+
+QString IncidenceWrapper::summary() const
+{
+    return m_incidence->summary();
+}
+
+void IncidenceWrapper::setSummary(QString summary)
+{
+    m_incidence->setSummary(summary);
+    Q_EMIT summaryChanged();
+}
+
+QString IncidenceWrapper::description() const
+{
+    return m_incidence->description();
+}
+
+void IncidenceWrapper::setDescription(QString description)
+{
+    if (m_incidence->description() == description) {
+         return;
+    }
+    m_incidence->setDescription(description);
+    Q_EMIT descriptionChanged();
+}
+
+QString IncidenceWrapper::location() const
+{
+    return m_incidence->location();
+}
+
+void IncidenceWrapper::setLocation(QString location)
+{
+    m_incidence->setLocation(location);
+    Q_EMIT locationChanged();
+}
+
+
+QDateTime IncidenceWrapper::incidenceStart() const
+{
+    return m_incidence->dtStart();
+}
+
+void IncidenceWrapper::setIncidenceStart(QDateTime incidenceStart)
+{
+    m_incidence->setDtStart(incidenceStart);
+    Q_EMIT incidenceStartChanged();
+}
+
+QDateTime IncidenceWrapper::incidenceEnd() const
+{
+    if(m_incidence->type() == KCalendarCore::Incidence::IncidenceType::TypeEvent) {
+        return m_eventPtr->dtEnd();
+    } else if(m_incidence->type() == KCalendarCore::Incidence::IncidenceType::TypeTodo) {
+        return m_todoPtr->dtDue();
+    }
+    return {};
+}
+
+void IncidenceWrapper::setIncidenceEnd(QDateTime incidenceEnd)
+{
+    if(m_incidence->type() == KCalendarCore::Incidence::IncidenceType::TypeEvent) {
+        m_eventPtr->setDtEnd(incidenceEnd);
+    } else if(m_incidence->type() == KCalendarCore::Incidence::IncidenceType::TypeTodo) {
+        m_todoPtr->setDtDue(incidenceEnd);
+    } else {
+        qWarning() << "Unknown incidence type";
+    }
+    Q_EMIT incidenceEndChanged();
+}
+
+bool IncidenceWrapper::allDay() const
+{
+    return m_incidence->allDay();
+}
+
+void IncidenceWrapper::setAllDay(bool allDay)
+{
+    m_incidence->setAllDay(allDay);
+    Q_EMIT allDayChanged();
+}
+
+KCalendarCore::Recurrence * IncidenceWrapper::recurrence() const
+{
+    KCalendarCore::Recurrence *recurrence = m_incidence->recurrence();
+    return recurrence;
+}
+
+QVariantMap IncidenceWrapper::recurrenceData()
+{
+    QBitArray weekDaysBits = m_incidence->recurrence()->days();
+    QVector<bool> weekDaysBools(7);
+
+    for(int i = 0; i < weekDaysBits.size(); i++) {
+        weekDaysBools[i] = weekDaysBits[i];
+    }
+
+    QVariantList monthPositions;
+    for(auto pos : m_incidence->recurrence()->monthPositions()) {
+        QVariantMap positionToAdd;
+        positionToAdd[QStringLiteral("day")] = pos.day();
+        positionToAdd[QStringLiteral("pos")] = pos.pos();
+        monthPositions.append(positionToAdd);
+    }
+
+    // FYI: yearPositions() just calls monthPositions(), so we're cutting out the middleman
+    return QVariantMap {
+        {QStringLiteral("weekdays"), QVariant::fromValue(weekDaysBools)},
+        {QStringLiteral("duration"), m_incidence->recurrence()->duration()},
+        {QStringLiteral("frequency"), m_incidence->recurrence()->frequency()},
+        {QStringLiteral("startDateTime"), m_incidence->recurrence()->startDateTime()},
+        {QStringLiteral("endDateTime"), m_incidence->recurrence()->endDateTime()},
+        {QStringLiteral("allDay"), m_incidence->recurrence()->allDay()},
+        {QStringLiteral("type"), m_incidence->recurrence()->recurrenceType()},
+        {QStringLiteral("monthDays"), QVariant::fromValue(m_incidence->recurrence()->monthDays())},
+        {QStringLiteral("monthPositions"), monthPositions},
+        {QStringLiteral("yearDays"), QVariant::fromValue(m_incidence->recurrence()->yearDays())},
+        {QStringLiteral("yearDates"), QVariant::fromValue(m_incidence->recurrence()->yearDates())},
+        {QStringLiteral("yearMonths"), QVariant::fromValue(m_incidence->recurrence()->yearMonths())}
+    };
+}
+
+void IncidenceWrapper::setRecurrenceData(QVariantMap recurrenceData)
+{
+    // You can't set type manually
+    QVector<bool> newWeekdays = recurrenceData[QStringLiteral("weekdays")].value<QVector<bool>>();
+    int newDuration = recurrenceData[QStringLiteral("duration")].toInt();
+    int newFrequency = recurrenceData[QStringLiteral("frequency")].toInt();
+    QDateTime newStartDateTime = recurrenceData[QStringLiteral("startDateTime")].toDateTime();
+    QDateTime newEndDateTime = recurrenceData[QStringLiteral("endDateTime")].toDateTime();
+    bool newAllDay = recurrenceData[QStringLiteral("allDay")].toBool();
+    QList<int> newMonthDays = recurrenceData[QStringLiteral("monthDays")].value<QList<int>>();
+    QList<int> newYearDays = recurrenceData[QStringLiteral("yearDays")].value<QList<int>>();
+    QList<int> newYearDates = recurrenceData[QStringLiteral("yearDates")].value<QList<int>>();
+    QList<int> newYearMonths = recurrenceData[QStringLiteral("yearMonths")].value<QList<int>>();
+
+    QList<QVariantMap> oldMonthPositions = recurrenceData[QStringLiteral("monthPositions")].value<QList<QVariantMap>>();
+    QList<KCalendarCore::RecurrenceRule::WDayPos> newMonthPositions;
+
+    for(auto pos : oldMonthPositions) {
+        KCalendarCore::RecurrenceRule::WDayPos newPos;
+        newPos.setDay(pos[QStringLiteral("day")].toInt());
+        newPos.setPos(pos[QStringLiteral("pos")].toInt());
+        newMonthPositions.append(newPos);
+    }
+
+    setRecurrenceWeekDays(newWeekdays);
+    m_incidence->recurrence()->setDuration(newDuration);
+    m_incidence->recurrence()->setFrequency(newFrequency);
+    m_incidence->recurrence()->setStartDateTime(newStartDateTime, newAllDay);
+    m_incidence->recurrence()->setEndDateTime(newEndDateTime);
+    m_incidence->recurrence()->setAllDay(newAllDay);
+    m_incidence->recurrence()->setMonthlyDate(newMonthDays);
+    m_incidence->recurrence()->setYearlyDay(newYearDays);
+    m_incidence->recurrence()->setYearlyDate(newYearDates);
+    m_incidence->recurrence()->setYearlyMonth(newYearMonths);
+    m_incidence->recurrence()->setMonthlyPos(newMonthPositions);
+
+    Q_EMIT recurrenceDataChanged();
+}
+
+void IncidenceWrapper::setRecurrenceWeekDays(const QVector<bool> recurrenceWeekDays)
+{
+    QBitArray days(7);
+
+    for(int i = 0; i < recurrenceWeekDays.size(); i++) {
+        days[i] = recurrenceWeekDays[i];
+    }
+
+    KCalendarCore::RecurrenceRule *rrule = m_incidence->recurrence()->defaultRRule();
+    QList<KCalendarCore::RecurrenceRule::WDayPos> positions;
+
+    for (int i = 0; i < 7; ++i) {
+        if (days.testBit(i)) {
+            KCalendarCore::RecurrenceRule::WDayPos p(0, i + 1);
+            positions.append(p);
+        }
+    }
+
+    rrule->setByDays(positions);
+    m_incidence->recurrence()->updated();
+}
+
+QVariantMap IncidenceWrapper::organizer()
+{
+    auto organizerPerson = m_incidence->organizer();
+    return QVariantMap {
+        {QStringLiteral("name"), organizerPerson.name()},
+        {QStringLiteral("email"), organizerPerson.email()},
+        {QStringLiteral("fullName"), organizerPerson.fullName()}
+    };
+}
+
+KCalendarCore::Attendee::List IncidenceWrapper::attendees() const
+{
+    return m_incidence->attendees();
+}
+
+RemindersModel * IncidenceWrapper::remindersModel()
+{
+    return &m_remindersModel;
+}
+
+AttendeesModel * IncidenceWrapper::attendeesModel()
+{
+    return &m_attendeesModel;
+}
+
+RecurrenceExceptionsModel * IncidenceWrapper::recurrenceExceptionsModel()
+{
+    return &m_recurrenceExceptionsModel;
+}
+
+AttachmentsModel * IncidenceWrapper::attachmentsModel()
+{
+    return &m_attachmentsModel;
+}
+
+
+
+QVariantMap IncidenceWrapper::recurrenceIntervals()
+{
+    return m_recurrenceIntervals;
+}
+
+
+void IncidenceWrapper::addAlarms(KCalendarCore::Alarm::List alarms)
+{
+    for (int i = 0; i < alarms.size(); i++) {
+        m_incidence->addAlarm(alarms[i]);
+    }
+}
+
+void IncidenceWrapper::setRegularRecurrence(IncidenceWrapper::RecurrenceIntervals interval, int freq)
+{
+    switch(interval) {
+        case Daily:
+            m_incidence->recurrence()->setDaily(freq);
+            Q_EMIT recurrenceDataChanged();
+            return;
+        case Weekly:
+            m_incidence->recurrence()->setWeekly(freq);
+            Q_EMIT recurrenceDataChanged();
+            return;
+        case Monthly:
+            m_incidence->recurrence()->setMonthly(freq);
+            Q_EMIT recurrenceDataChanged();
+            return;
+        case Yearly:
+            m_incidence->recurrence()->setYearly(freq);
+            Q_EMIT recurrenceDataChanged();
+            return;
+        default:
+            qWarning() << "Unknown interval for recurrence" << interval;
+            return;
+    }
+}
+
+void IncidenceWrapper::setMonthlyPosRecurrence(short pos, int day)
+{
+    QBitArray daysBitArray(7);
+    daysBitArray[day] = 1;
+    m_incidence->recurrence()->addMonthlyPos(pos, daysBitArray);
+}
+
+void IncidenceWrapper::setRecurrenceOcurrences(int ocurrences)
+{
+    m_incidence->recurrence()->setDuration(ocurrences);
+    Q_EMIT recurrenceDataChanged();
+}
+
+void IncidenceWrapper::clearRecurrences()
+{
+    m_incidence->recurrence()->clear();
+    Q_EMIT recurrenceDataChanged();
+}
+
