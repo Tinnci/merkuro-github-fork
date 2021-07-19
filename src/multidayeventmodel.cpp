@@ -8,8 +8,13 @@
 #include "multidayeventmodel.h"
 
 enum Roles {
+<<<<<<< HEAD
     Events = EventOccurrenceModel::LastRole,
     PeriodStartDate
+=======
+    Events = IncidenceOccurrenceModel::LastRole,
+    WeekStartDate
+>>>>>>> d2dda3a (Renamed eventocurrencemodel class to fit general incidence management)
 };
 
 MultiDayEventModel::MultiDayEventModel(QObject *parent)
@@ -64,21 +69,21 @@ QList<QModelIndex> MultiDayEventModel::sortedEventsFromSourceModel(const QDate &
     sorted.reserve(mSourceModel->rowCount());
     for (int row = 0; row < mSourceModel->rowCount(); row++) {
         const auto srcIdx = mSourceModel->index(row, 0, {});
-        const auto start = srcIdx.data(EventOccurrenceModel::StartTime).toDateTime().date();
-        const auto end = srcIdx.data(EventOccurrenceModel::EndTime).toDateTime().date();
+        const auto start = srcIdx.data(IncidenceOccurrenceModel::StartTime).toDateTime().date();
+        const auto end = srcIdx.data(IncidenceOccurrenceModel::EndTime).toDateTime().date();
 
         //Skip events not part of the week
         if (end < rowStart || start > rowEnd) {
             // qWarning() << "Skipping because not part of this week";
             continue;
         }
-        // qWarning() << "found " << srcIdx.data(EventOccurrenceModel::StartTime).toDateTime() << srcIdx.data(EventOccurrenceModel::Summary).toString();
+        // qWarning() << "found " << srcIdx.data(IncidenceOccurrenceModel::StartTime).toDateTime() << srcIdx.data(IncidenceOccurrenceModel::Summary).toString();
         sorted.append(srcIdx);
     }
     std::sort(sorted.begin(), sorted.end(), [&] (const QModelIndex &left, const QModelIndex &right) {
         //All-day first, sorted by duration (in the hope that we can fit multiple on the same line)
-        const auto leftAllDay = left.data(EventOccurrenceModel::AllDay).toBool();
-        const auto rightAllDay = right.data(EventOccurrenceModel::AllDay).toBool();
+        const auto leftAllDay = left.data(IncidenceOccurrenceModel::AllDay).toBool();
+        const auto rightAllDay = right.data(IncidenceOccurrenceModel::AllDay).toBool();
         if (leftAllDay && !rightAllDay) {
             return true;
         }
@@ -86,12 +91,12 @@ QList<QModelIndex> MultiDayEventModel::sortedEventsFromSourceModel(const QDate &
             return false;
         }
         if (leftAllDay && rightAllDay) {
-            const auto leftDuration = getDuration(left.data(EventOccurrenceModel::StartTime).toDateTime().date(), left.data(EventOccurrenceModel::EndTime).toDateTime().date());
-            const auto rightDuration = getDuration(right.data(EventOccurrenceModel::StartTime).toDateTime().date(), right.data(EventOccurrenceModel::EndTime).toDateTime().date());
+            const auto leftDuration = getDuration(left.data(IncidenceOccurrenceModel::StartTime).toDateTime().date(), left.data(IncidenceOccurrenceModel::EndTime).toDateTime().date());
+            const auto rightDuration = getDuration(right.data(IncidenceOccurrenceModel::StartTime).toDateTime().date(), right.data(IncidenceOccurrenceModel::EndTime).toDateTime().date());
             return leftDuration < rightDuration;
         }
         //The rest sored by start date
-        return left.data(EventOccurrenceModel::StartTime).toDateTime() < right.data(EventOccurrenceModel::StartTime).toDateTime();
+        return left.data(IncidenceOccurrenceModel::StartTime).toDateTime() < right.data(IncidenceOccurrenceModel::StartTime).toDateTime();
     });
     return sorted;
 }
@@ -114,46 +119,46 @@ QVariantList MultiDayEventModel::layoutLines(const QDate &rowStart) const
     QList<QModelIndex> sorted = sortedEventsFromSourceModel(rowStart);
 
     // for (const auto &srcIdx : sorted) {
-    //     qWarning() << "sorted " << srcIdx.data(EventOccurrenceModel::StartTime).toDateTime() << srcIdx.data(EventOccurrenceModel::Summary).toString() << srcIdx.data(EventOccurrenceModel::AllDay).toBool();
+    //     qWarning() << "sorted " << srcIdx.data(IncidenceOccurrenceModel::StartTime).toDateTime() << srcIdx.data(IncidenceOccurrenceModel::Summary).toString() << srcIdx.data(IncidenceOccurrenceModel::AllDay).toBool();
     // }
 
     auto result = QVariantList{};
     while (!sorted.isEmpty()) {
         const auto srcIdx = sorted.takeFirst();
-        const auto startDate = srcIdx.data(EventOccurrenceModel::StartTime).toDateTime();
+        const auto startDate = srcIdx.data(IncidenceOccurrenceModel::StartTime).toDateTime();
         const auto start = getStart(startDate.date());
-        const auto duration = qMin(getDuration(startDate.date(), srcIdx.data(EventOccurrenceModel::EndTime).toDateTime().date()), mPeriodLength - start);
+        const auto duration = qMin(getDuration(startDate.date(), srcIdx.data(IncidenceOccurrenceModel::EndTime).toDateTime().date()), mPeriodLength - start);
 
         /*if(!startDate.isValid()) {
-            const auto endDate = srcIdx.data(EventOccurrenceModel::EndTime).toDateTime();
+            const auto endDate = srcIdx.data(IncidenceOccurrenceModel::EndTime).toDateTime();
             start = getStart(endDate.date());
-            duration = qMin(getDuration(endDate.date(), srcIdx.data(EventOccurrenceModel::EndTime).toDateTime().date()), mPeriodLength - start);
+            duration = qMin(getDuration(endDate.date(), srcIdx.data(IncidenceOccurrenceModel::EndTime).toDateTime().date()), mPeriodLength - start);
         }*/
 
-        // qWarning() << "First of line " << srcIdx.data(EventOccurrenceModel::StartTime).toDateTime() << duration << srcIdx.data(EventOccurrenceModel::Summary).toString();
+        // qWarning() << "First of line " << srcIdx.data(IncidenceOccurrenceModel::StartTime).toDateTime() << duration << srcIdx.data(IncidenceOccurrenceModel::Summary).toString();
         auto currentLine = QVariantList{};
 
         auto addToLine = [&currentLine] (const QModelIndex &idx, int start, int duration) {
             currentLine.append(QVariantMap{
-                {QStringLiteral("text"), idx.data(EventOccurrenceModel::Summary)},
-                {QStringLiteral("description"), idx.data(EventOccurrenceModel::Description)},
-                {QStringLiteral("location"), idx.data(EventOccurrenceModel::Location)},
-                {QStringLiteral("startTime"), idx.data(EventOccurrenceModel::StartTime)},
-                {QStringLiteral("endTime"), idx.data(EventOccurrenceModel::EndTime)},
-                {QStringLiteral("allDay"), idx.data(EventOccurrenceModel::AllDay)},
+                {QStringLiteral("text"), idx.data(IncidenceOccurrenceModel::Summary)},
+                {QStringLiteral("description"), idx.data(IncidenceOccurrenceModel::Description)},
+                {QStringLiteral("location"), idx.data(IncidenceOccurrenceModel::Location)},
+                {QStringLiteral("startTime"), idx.data(IncidenceOccurrenceModel::StartTime)},
+                {QStringLiteral("endTime"), idx.data(IncidenceOccurrenceModel::EndTime)},
+                {QStringLiteral("allDay"), idx.data(IncidenceOccurrenceModel::AllDay)},
                 {QStringLiteral("starts"), start},
                 {QStringLiteral("duration"), duration},
-                {QStringLiteral("durationString"), idx.data(EventOccurrenceModel::DurationString)},
-                {QStringLiteral("color"), idx.data(EventOccurrenceModel::Color)},
-                {QStringLiteral("collectionId"), idx.data(EventOccurrenceModel::CollectionId)},
-                {QStringLiteral("eventPtr"), idx.data(EventOccurrenceModel::EventPtr)},
-                {QStringLiteral("eventOccurrence"), idx.data(EventOccurrenceModel::EventOccurrence)}
+                {QStringLiteral("durationString"), idx.data(IncidenceOccurrenceModel::DurationString)},
+                {QStringLiteral("color"), idx.data(IncidenceOccurrenceModel::Color)},
+                {QStringLiteral("collectionId"), idx.data(IncidenceOccurrenceModel::CollectionId)},
+                {QStringLiteral("eventPtr"), idx.data(IncidenceOccurrenceModel::IncidencePtr)},
+                {QStringLiteral("eventOccurrence"), idx.data(IncidenceOccurrenceModel::IncidenceOccurrence)}
             });
         };
 
         //Add first event of line
         addToLine(srcIdx, start, duration);
-        const bool allDayLine = srcIdx.data(EventOccurrenceModel::AllDay).toBool();
+        const bool allDayLine = srcIdx.data(IncidenceOccurrenceModel::AllDay).toBool();
 
         //Fill line with events that fit
         int lastStart = start;
@@ -170,13 +175,13 @@ QVariantList MultiDayEventModel::layoutLines(const QDate &rowStart) const
 
         for (auto it = sorted.begin(); it != sorted.end();) {
             const auto idx = *it;
-            const auto start = getStart(idx.data(EventOccurrenceModel::StartTime).toDateTime().date());
-            const auto duration = qMin(getDuration(idx.data(EventOccurrenceModel::StartTime).toDateTime().date(), idx.data(EventOccurrenceModel::EndTime).toDateTime().date()), mPeriodLength - start);
+            const auto start = getStart(idx.data(IncidenceOccurrenceModel::StartTime).toDateTime().date());
+            const auto duration = qMin(getDuration(idx.data(IncidenceOccurrenceModel::StartTime).toDateTime().date(), idx.data(IncidenceOccurrenceModel::EndTime).toDateTime().date()), mPeriodLength - start);
             const auto end = start + duration;
 
-            // qWarning() << "Checking " << idx.data(EventOccurrenceModel::StartTime).toDateTime() << duration << idx.data(EventOccurrenceModel::Summary).toString();
+            // qWarning() << "Checking " << idx.data(IncidenceOccurrenceModel::StartTime).toDateTime() << duration << idx.data(IncidenceOccurrenceModel::Summary).toString();
             //Avoid mixing all-day and other events
-            if (allDayLine && !idx.data(EventOccurrenceModel::AllDay).toBool()) {
+            if (allDayLine && !idx.data(IncidenceOccurrenceModel::AllDay).toBool()) {
                 break;
             }
 
@@ -215,7 +220,7 @@ QVariant MultiDayEventModel::data(const QModelIndex &idx, int role) const
     }
 }
 
-void MultiDayEventModel::setModel(EventOccurrenceModel *model)
+void MultiDayEventModel::setModel(IncidenceOccurrenceModel *model)
 {
     beginResetModel();
     mSourceModel = model;
