@@ -24,7 +24,11 @@ Kirigami.Page {
     property alias month: dayView.month
     readonly property bool isLarge: width > Kirigami.Units.gridUnit * 30
 
-    padding: 0
+    topPadding: 0
+    rightPadding: Kirigami.Units.smallSpacing
+    bottomPadding: Kirigami.Units.largeSpacing
+    leftPadding: 0
+
     background: Rectangle {
         Kirigami.Theme.colorSet: monthPage.isLarge ? Kirigami.Theme.Header : Kirigami.Theme.View
         color: Kirigami.Theme.backgroundColor
