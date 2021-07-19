@@ -60,7 +60,7 @@ Item {
         //Weeks
         Repeater {
             model: Kalendar.MultiDayEventModel {
-                model: Kalendar.EventOccurrenceModel {
+                model: Kalendar.IncidenceOccurrenceModel {
                     id: occurrenceModel
                     objectName: "eventOccurrenceModel"
                     start: root.startDate

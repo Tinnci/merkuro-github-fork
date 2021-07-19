@@ -12,7 +12,7 @@
 #include <QSharedPointer>
 #include <QTimer>
 #include <QDateTime>
-#include "eventoccurrencemodel.h"
+#include "incidenceoccurrencemodel.h"
 
 namespace KCalendarCore {
     class MemoryCalendar;
@@ -27,7 +27,7 @@ namespace KCalendarCore {
 class MultiDayEventModel : public QAbstractItemModel
 {
     Q_OBJECT
-    Q_PROPERTY(EventOccurrenceModel* model WRITE setModel)
+    Q_PROPERTY(IncidenceOccurrenceModel* model WRITE setModel)
 public:
     MultiDayEventModel(QObject *parent = nullptr);
     ~MultiDayEventModel() = default;
@@ -42,11 +42,11 @@ public:
 
     QHash<int, QByteArray> roleNames() const override;
 
-    void setModel(EventOccurrenceModel *model);
+    void setModel(IncidenceOccurrenceModel *model);
 private:
     QList<QModelIndex> sortedEventsFromSourceModel(const QDate &rowStart) const;
     QVariantList layoutLines(const QDate &rowStart) const;
-    EventOccurrenceModel *mSourceModel{nullptr};
+    IncidenceOccurrenceModel *mSourceModel{nullptr};
     int mPeriodLength{7};
 };
 

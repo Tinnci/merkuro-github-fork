@@ -5,7 +5,7 @@
 // Copyright (c) 2021 Claudio Cambra <claudio.cambra@gmail.com>
 // SPDX-License-Identifier: LGPL-2.0-or-later
 
-#include "eventoccurrencemodel.h"
+#include "incidenceoccurrencemodel.h"
 
 #include <QMetaEnum>
 
@@ -18,16 +18,16 @@
 #include <KSharedConfig>
 #include <KConfigGroup>
 
-EventOccurrenceModel::EventOccurrenceModel(QObject *parent)
+IncidenceOccurrenceModel::IncidenceOccurrenceModel(QObject *parent)
     : QAbstractItemModel(parent)
     , m_coreCalendar(nullptr)
 {
     mRefreshTimer.setSingleShot(true);
-    QObject::connect(&mRefreshTimer, &QTimer::timeout, this, &EventOccurrenceModel::updateFromSource);
+    QObject::connect(&mRefreshTimer, &QTimer::timeout, this, &IncidenceOccurrenceModel::updateFromSource);
     load();
 }
 
-void EventOccurrenceModel::setStart(const QDate &start)
+void IncidenceOccurrenceModel::setStart(const QDate &start)
 {
     if (start != mStart) {
         mStart = start;
@@ -36,12 +36,12 @@ void EventOccurrenceModel::setStart(const QDate &start)
     }
 }
 
-QDate EventOccurrenceModel::start() const
+QDate IncidenceOccurrenceModel::start() const
 {
     return mStart;
 }
 
-void EventOccurrenceModel::setLength(int length)
+void IncidenceOccurrenceModel::setLength(int length)
 {
     if (mLength == length) {
         return;
@@ -51,19 +51,19 @@ void EventOccurrenceModel::setLength(int length)
     Q_EMIT lengthChanged();
 }
 
-int EventOccurrenceModel::length() const
+int IncidenceOccurrenceModel::length() const
 {
     return mLength;
 }
 
-void EventOccurrenceModel::setFilter(const QVariantMap &filter)
+void IncidenceOccurrenceModel::setFilter(const QVariantMap &filter)
 {
     mFilter = filter;
     updateQuery();
     Q_EMIT filterChanged();
 }
 
-void EventOccurrenceModel::updateQuery()
+void IncidenceOccurrenceModel::updateQuery()
 {
     if (!m_coreCalendar) {
         return;
@@ -75,17 +75,17 @@ void EventOccurrenceModel::updateQuery()
     }
     mEnd = mStart.addDays(mLength);
 
-    QObject::connect(m_coreCalendar->model(), &QAbstractItemModel::dataChanged, this, &EventOccurrenceModel::refreshView);
-    QObject::connect(m_coreCalendar->model(), &QAbstractItemModel::layoutChanged, this, &EventOccurrenceModel::refreshView);
-    QObject::connect(m_coreCalendar->model(), &QAbstractItemModel::modelReset, this, &EventOccurrenceModel::refreshView);
-    QObject::connect(m_coreCalendar->model(), &QAbstractItemModel::rowsInserted, this, &EventOccurrenceModel::refreshView);
-    QObject::connect(m_coreCalendar->model(), &QAbstractItemModel::rowsMoved, this, &EventOccurrenceModel::refreshView);
-    QObject::connect(m_coreCalendar->model(), &QAbstractItemModel::rowsRemoved, this, &EventOccurrenceModel::refreshView);
+    QObject::connect(m_coreCalendar->model(), &QAbstractItemModel::dataChanged, this, &IncidenceOccurrenceModel::refreshView);
+    QObject::connect(m_coreCalendar->model(), &QAbstractItemModel::layoutChanged, this, &IncidenceOccurrenceModel::refreshView);
+    QObject::connect(m_coreCalendar->model(), &QAbstractItemModel::modelReset, this, &IncidenceOccurrenceModel::refreshView);
+    QObject::connect(m_coreCalendar->model(), &QAbstractItemModel::rowsInserted, this, &IncidenceOccurrenceModel::refreshView);
+    QObject::connect(m_coreCalendar->model(), &QAbstractItemModel::rowsMoved, this, &IncidenceOccurrenceModel::refreshView);
+    QObject::connect(m_coreCalendar->model(), &QAbstractItemModel::rowsRemoved, this, &IncidenceOccurrenceModel::refreshView);
 
     refreshView();
 }
 
-void EventOccurrenceModel::refreshView()
+void IncidenceOccurrenceModel::refreshView()
 {
     if (!mRefreshTimer.isActive()) {
         // Instant update, but then only refresh every 50ms max.
@@ -94,11 +94,11 @@ void EventOccurrenceModel::refreshView()
     }
 }
 
-void EventOccurrenceModel::updateFromSource()
+void IncidenceOccurrenceModel::updateFromSource()
 {
     beginResetModel();
 
-    m_events.clear();
+    m_incidences.clear();
 
     if (m_coreCalendar) {
         QMap<QByteArray, KCalendarCore::Incidence::Ptr> recurringIncidences;
@@ -145,7 +145,7 @@ void EventOccurrenceModel::updateFromSource()
                     KCalendarCore::Event::Ptr event = m_coreCalendar->event(incidence->uid());
 
                     if (event->dtStart().date() < mEnd && event->dtEnd().date() >= mStart) {
-                        m_events.append(Occurrence {
+                        m_incidences.append(Occurrence {
                             event->dtStart(),
                             event->dtEnd(),
                             event,
@@ -164,7 +164,7 @@ void EventOccurrenceModel::updateFromSource()
                     }
 
                     if (todoStart.date() < mEnd && todo->dtDue().date() >= mStart) {
-                        m_events.append(Occurrence {
+                        m_incidences.append(Occurrence {
                             todoStart,
                             todo->dtDue(),
                             todo,
@@ -193,7 +193,7 @@ void EventOccurrenceModel::updateFromSource()
                 const auto start = occurrenceIterator.occurrenceStartDate();
                 const auto end = incidence->endDateForStart(start);
                 if (start.date() < mEnd && end.date() >= mStart) {
-                    m_events.append(Occurrence {start, end, incidence, incidence->typeStr(), getColor(incidence), getCollectionId(incidence), incidence->allDay() });
+                    m_incidences.append(Occurrence {start, end, incidence, incidence->typeStr(), getColor(incidence), getCollectionId(incidence), incidence->allDay() });
                 }
             }
         }
@@ -202,7 +202,7 @@ void EventOccurrenceModel::updateFromSource()
     endResetModel();
 }
 
-QModelIndex EventOccurrenceModel::index(int row, int column, const QModelIndex &parent) const
+QModelIndex IncidenceOccurrenceModel::index(int row, int column, const QModelIndex &parent) const
 {
     if (!hasIndex(row, column, parent)) {
         return {};
@@ -214,25 +214,25 @@ QModelIndex EventOccurrenceModel::index(int row, int column, const QModelIndex &
     return {};
 }
 
-QModelIndex EventOccurrenceModel::parent(const QModelIndex &) const
+QModelIndex IncidenceOccurrenceModel::parent(const QModelIndex &) const
 {
     return {};
 }
 
-int EventOccurrenceModel::rowCount(const QModelIndex &parent) const
+int IncidenceOccurrenceModel::rowCount(const QModelIndex &parent) const
 {
     if (!parent.isValid()) {
-        return m_events.size();
+        return m_incidences.size();
     }
     return 0;
 }
 
-int EventOccurrenceModel::columnCount(const QModelIndex &) const
+int IncidenceOccurrenceModel::columnCount(const QModelIndex &) const
 {
     return 1;
 }
 
-qint64 EventOccurrenceModel::getCollectionId(const KCalendarCore::Incidence::Ptr &incidence)
+qint64 IncidenceOccurrenceModel::getCollectionId(const KCalendarCore::Incidence::Ptr &incidence)
 {
     auto item = m_coreCalendar->item(incidence);
     if (!item.isValid()) {
@@ -245,7 +245,7 @@ qint64 EventOccurrenceModel::getCollectionId(const KCalendarCore::Incidence::Ptr
     return collection.id();
 }
 
-QColor EventOccurrenceModel::getColor(const KCalendarCore::Incidence::Ptr &incidence)
+QColor IncidenceOccurrenceModel::getColor(const KCalendarCore::Incidence::Ptr &incidence)
 {
     auto item = m_coreCalendar->item(incidence);
     if (!item.isValid()) {
@@ -275,12 +275,12 @@ QColor EventOccurrenceModel::getColor(const KCalendarCore::Incidence::Ptr &incid
     return color;
 }
 
-QVariant EventOccurrenceModel::data(const QModelIndex &idx, int role) const
+QVariant IncidenceOccurrenceModel::data(const QModelIndex &idx, int role) const
 {
     if (!hasIndex(idx.row(), idx.column())) {
         return {};
     }
-    auto incidence = m_events.at(idx.row());
+    auto incidence = m_incidences.at(idx.row());
     auto icalIncidence = incidence.incidence;
     KCalendarCore::Duration duration(incidence.start, incidence.end);
 
@@ -314,9 +314,9 @@ QVariant EventOccurrenceModel::data(const QModelIndex &idx, int role) const
             return incidence.collectionId;
         case AllDay:
             return incidence.allDay;
-        case EventPtr:
+        case IncidencePtr:
             return QVariant::fromValue(incidence.incidence);
-        case EventOccurrence:
+        case IncidenceOccurrence:
             return QVariant::fromValue(incidence);
         default:
             qWarning() << "Unknown role for incidence:" << QMetaEnum::fromType<Roles>().valueToKey(role);
@@ -324,7 +324,7 @@ QVariant EventOccurrenceModel::data(const QModelIndex &idx, int role) const
     }
 }
 
-void EventOccurrenceModel::setCalendar(Akonadi::ETMCalendar *calendar)
+void IncidenceOccurrenceModel::setCalendar(Akonadi::ETMCalendar *calendar)
 {
     if (m_coreCalendar == calendar) {
         return;
@@ -334,13 +334,13 @@ void EventOccurrenceModel::setCalendar(Akonadi::ETMCalendar *calendar)
     Q_EMIT calendarChanged();
 }
 
-Akonadi::ETMCalendar *EventOccurrenceModel::calendar() const
+Akonadi::ETMCalendar *IncidenceOccurrenceModel::calendar() const
 {
     return m_coreCalendar;
 }
 
 
-void EventOccurrenceModel::load()
+void IncidenceOccurrenceModel::load()
 {
     KSharedConfig::Ptr config = KSharedConfig::openConfig();
     KConfigGroup rColorsConfig(config, "Resources Colors");
@@ -352,7 +352,7 @@ void EventOccurrenceModel::load()
     }
 }
 
-void EventOccurrenceModel::save() const
+void IncidenceOccurrenceModel::save() const
 {
     KSharedConfig::Ptr config = KSharedConfig::openConfig();
     KConfigGroup rColorsConfig(config, "Resources Colors");
