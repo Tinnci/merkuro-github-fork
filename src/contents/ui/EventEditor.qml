@@ -704,17 +704,6 @@ Kirigami.ScrollablePage {
                     Kirigami.FormData.labelAlignment: remindersRepeater.count ? Qt.AlignTop : Qt.AlignVCenter
                     Layout.fillWidth: true
 
-                    property var reminderCombos: []
-
-                    QQC2.Button {
-                        id: remindersButton
-
-                        text: i18n("Add reminder")
-                        Layout.fillWidth: true
-
-                        onClicked: eventEditorSheet.eventWrapper.remindersModel.addAlarm();
-                    }
-
                     Repeater {
                         id: remindersRepeater
 
@@ -765,6 +754,15 @@ Kirigami.ScrollablePage {
                             }
                         }
                     }
+
+                    QQC2.Button {
+                        id: remindersButton
+
+                        text: i18n("Add reminder")
+                        Layout.fillWidth: true
+
+                        onClicked: eventEditorSheet.eventWrapper.remindersModel.addAlarm();
+                    }
                 }
 
                 Kirigami.Separator {
@@ -777,14 +775,6 @@ Kirigami.ScrollablePage {
                     Kirigami.FormData.label: i18n("Attendees:")
                     Kirigami.FormData.labelAlignment: attendeesRepeater.count ? Qt.AlignTop : Qt.AlignVCenter
                     Layout.fillWidth: true
-
-                    QQC2.Button {
-                        id: attendeesButton
-                        text: i18n("Add attendee")
-                        Layout.fillWidth: true
-
-                        onClicked: eventEditorSheet.eventWrapper.attendeesModel.addAttendee();
-                    }
 
                     Repeater {
                         id: attendeesRepeater
@@ -875,6 +865,14 @@ Kirigami.ScrollablePage {
                             }
                         }
                     }
+
+                    QQC2.Button {
+                        id: attendeesButton
+                        text: i18n("Add attendee")
+                        Layout.fillWidth: true
+
+                        onClicked: eventEditorSheet.eventWrapper.attendeesModel.addAttendee();
+                    }
                 }
 
                 Kirigami.Separator {
@@ -887,21 +885,6 @@ Kirigami.ScrollablePage {
                     Kirigami.FormData.label: i18n("Attachments:")
                     Kirigami.FormData.labelAlignment: attachmentsRepeater.count ? Qt.AlignTop : Qt.AlignVCenter
                     Layout.fillWidth: true
-
-                    QQC2.Button {
-                        id: attachmentsButton
-                        text: i18n("Add attachment")
-                        Layout.fillWidth: true
-                        onClicked: attachmentFileDialog.open();
-
-                        FileDialog {
-                            id: attachmentFileDialog
-
-                            title: "Add an attachment"
-                            folder: shortcuts.home
-                            onAccepted: eventEditorSheet.eventWrapper.attachmentsModel.addAttachment(fileUrls)
-                        }
-                    }
 
                     Repeater {
                         id: attachmentsRepeater
@@ -917,6 +900,21 @@ Kirigami.ScrollablePage {
                                 icon.name: "edit-delete-remove"
                                 onClicked: eventEditorSheet.eventWrapper.attachmentsModel.deleteAttachment(uri)
                             }
+                        }
+                    }
+
+                    QQC2.Button {
+                        id: attachmentsButton
+                        text: i18n("Add attachment")
+                        Layout.fillWidth: true
+                        onClicked: attachmentFileDialog.open();
+
+                        FileDialog {
+                            id: attachmentFileDialog
+
+                            title: "Add an attachment"
+                            folder: shortcuts.home
+                            onAccepted: eventEditorSheet.eventWrapper.attachmentsModel.addAttachment(fileUrls)
                         }
                     }
                 }
