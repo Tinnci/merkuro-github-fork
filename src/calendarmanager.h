@@ -13,6 +13,7 @@
 #include <Akonadi/Calendar/IncidenceChanger>
 #include <CalendarSupport/KCalPrefs>
 #include <CalendarSupport/Utils>
+#include <incidencewrapper.h>
 
 namespace Akonadi {
     class ETMCalendar;
@@ -49,9 +50,9 @@ public:
     Q_INVOKABLE int getCalendarSelectableIndex(qint64 collectionId);
     QVariantMap undoRedoData();
 
-    Q_INVOKABLE void addEvent(qint64 collectionId, KCalendarCore::Event::Ptr event);
-    Q_INVOKABLE void editEvent(qint64 collectionId, KCalendarCore::Event::Ptr originalEvent, KCalendarCore::Event::Ptr editedEvent);
-    Q_INVOKABLE void deleteEvent(KCalendarCore::Event::Ptr event);
+    Q_INVOKABLE void addIncidence(IncidenceWrapper *incidenceWrapper);
+    Q_INVOKABLE void editIncidence(IncidenceWrapper *incidenceWrapper);
+    Q_INVOKABLE void deleteIncidence(KCalendarCore::Incidence::Ptr incidence);
     Q_INVOKABLE QVariantMap getCollectionDetails(qint64 collectionId);
     Q_INVOKABLE QVariant getIncidenceSubclassed(KCalendarCore::Incidence::Ptr incidencePtr);
     Q_INVOKABLE void undoAction();

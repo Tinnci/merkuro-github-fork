@@ -12,8 +12,8 @@ import "labelutils.js" as LabelUtils
 Kirigami.ScrollablePage {
     id: incidenceEditorSheet
 
-    signal added(int collectionId, IncidenceWrapper incidence)
-    signal edited(int collectionId, IncidenceWrapper incidence)
+    signal added(IncidenceWrapper incidenceWrapper)
+    signal edited(IncidenceWrapper incidenceWrapper)
     signal cancel
 
     // Setting the incidenceWrapper here and now causes some *really* weird behaviour.
@@ -21,9 +21,9 @@ Kirigami.ScrollablePage {
     property var incidenceWrapper
     property bool editMode: false
 
-    property bool validDates: //incidenceWrapper !== undefined &&
-                              editorLoader.item.validFormDates &&
-                              incidenceWrapper.incidenceStart < incidenceWrapper.incidenceEnd
+    property bool validDates: true//typeof(incidenceWrapper) !== undefined &&
+                              //editorLoader.item.validFormDates &&
+                              //incidenceWrapper.incidenceStart < incidenceWrapper.incidenceEnd
 
     onIncidenceWrapperChanged: if(!editMode) { incidenceWrapper.collectionId = CalendarManager.defaultCalendarId }
 
@@ -42,9 +42,9 @@ Kirigami.ScrollablePage {
         onRejected: cancel()
         onAccepted: {
             if (editMode) {
-                edited(incidenceWrapper.collectionId, incidenceWrapper);
+                edited(incidenceWrapper);
             } else {
-                added(incidenceWrapper.collectionId, incidenceWrapper);
+                added(incidenceWrapper);
             }
             cancel();
         }
