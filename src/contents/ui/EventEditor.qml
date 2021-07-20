@@ -700,7 +700,7 @@ Kirigami.ScrollablePage {
                 ColumnLayout {
                     id: remindersColumn
 
-                    Kirigami.FormData.label: i18n("Reminder:")
+                    Kirigami.FormData.label: i18n("Reminders:")
                     Kirigami.FormData.labelAlignment: remindersRepeater.count ? Qt.AlignTop : Qt.AlignVCenter
                     Layout.fillWidth: true
 
@@ -784,8 +784,8 @@ Kirigami.ScrollablePage {
 
                         delegate: Kirigami.Card {
                             contentItem: Item {
-                            implicitWidth: attendeeCardContent.implicitWidth
-                            implicitHeight: attendeeCardContent.implicitHeight
+                                implicitWidth: attendeeCardContent.implicitWidth
+                                implicitHeight: attendeeCardContent.implicitHeight
 
                                 GridLayout {
                                     id: attendeeCardContent
@@ -797,29 +797,18 @@ Kirigami.ScrollablePage {
                                         //IMPORTANT: never put the bottom margin
                                     }
 
-                                    columns: 5
+                                    columns: 6
                                     rows: 4
 
-                                    RowLayout {
-                                        Layout.fillWidth: true
-                                        Layout.columnSpan: 5
-
-                                        QQC2.Label {
-                                            Layout.fillWidth: true
-                                            text: i18n("Attendee %1", String(index + 1))
-                                        }
-
-                                        QQC2.Button {
-                                            icon.name: "edit-delete-remove"
-                                            onClicked: eventEditorSheet.eventWrapper.attendeesModel.deleteAttendee(index);
-                                        }
-                                    }
-
                                     QQC2.Label{
+                                        Layout.row: 0
+                                        Layout.column: 0
                                         text: i18n("Name:")
                                     }
                                     QQC2.TextField {
                                         Layout.fillWidth: true
+                                        Layout.row: 0
+                                        Layout.column: 1
                                         Layout.columnSpan: 4
                                         text: model.name
                                         onTextChanged: eventEditorSheet.eventWrapper.attendeesModel.setData(eventEditorSheet.eventWrapper.attendeesModel.index(index, 0),
@@ -827,11 +816,23 @@ Kirigami.ScrollablePage {
                                                                                             eventEditorSheet.eventWrapper.attendeesModel.dataroles.name)
                                     }
 
+                                    QQC2.Button {
+                                        Layout.alignment: Qt.AlignTop
+                                        Layout.column: 5
+                                        Layout.row: 0
+                                        icon.name: "edit-delete-remove"
+                                        onClicked: eventEditorSheet.eventWrapper.attendeesModel.deleteAttendee(index);
+                                    }
+
                                     QQC2.Label {
+                                        Layout.row: 1
+                                        Layout.column: 0
                                         text: i18n("Email:")
                                     }
                                     QQC2.TextField {
                                         Layout.fillWidth: true
+                                        Layout.row: 1
+                                        Layout.column: 1
                                         Layout.columnSpan: 4
                                         text: model.email
                                         onTextChanged: eventEditorSheet.eventWrapper.attendeesModel.setData(eventEditorSheet.eventWrapper.attendeesModel.index(index, 0),
@@ -839,10 +840,15 @@ Kirigami.ScrollablePage {
                                                                                             eventEditorSheet.eventWrapper.attendeesModel.dataroles.email)
                                     }
                                     QQC2.Label {
+                                        Layout.row: 2
+                                        Layout.column: 0
                                         text: i18n("Status:")
+                                        visible: eventEditorSheet.editMode
                                     }
                                     QQC2.ComboBox {
                                         Layout.fillWidth: true
+                                        Layout.row: 2
+                                        Layout.column: 1
                                         Layout.columnSpan: 2
                                         model: eventEditorSheet.eventWrapper.attendeesModel.attendeeStatusModel
                                         textRole: "display"
@@ -853,15 +859,19 @@ Kirigami.ScrollablePage {
                                                                                             eventEditorSheet.eventWrapper.attendeesModel.dataroles.status)
 
                                         popup.z: 1000
+                                        visible: eventEditorSheet.editMode
                                     }
                                     QQC2.CheckBox {
                                         Layout.fillWidth: true
+                                        Layout.row: 2
+                                        Layout.column: 3
                                         Layout.columnSpan: 2
                                         text: i18n("Request RSVP")
                                         checked: model.rsvp
                                         onCheckedChanged: eventEditorSheet.eventWrapper.attendeesModel.setData(eventEditorSheet.eventWrapper.attendeesModel.index(index, 0),
                                                                                             checked,
                                                                                             eventEditorSheet.eventWrapper.attendeesModel.dataroles.rsvp)
+                                        visible: eventEditorSheet.editMode
                                     }
                                 }
                             }
