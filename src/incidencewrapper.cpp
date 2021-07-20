@@ -205,65 +205,84 @@ QVariantMap IncidenceWrapper::recurrenceData()
     };
 }
 
-void IncidenceWrapper::setRecurrenceData(QVariantMap recurrenceData)
+void IncidenceWrapper::setRecurrenceDataItem(QString key, QVariant value)
 {
-    // You can't set type manually
-    QVector<bool> newWeekdays = recurrenceData[QStringLiteral("weekdays")].value<QVector<bool>>();
-    int newDuration = recurrenceData[QStringLiteral("duration")].toInt();
-    int newFrequency = recurrenceData[QStringLiteral("frequency")].toInt();
-    QDateTime newStartDateTime = recurrenceData[QStringLiteral("startDateTime")].toDateTime();
-    QDateTime newEndDateTime = recurrenceData[QStringLiteral("endDateTime")].toDateTime();
-    bool newAllDay = recurrenceData[QStringLiteral("allDay")].toBool();
-    QList<int> newMonthDays = recurrenceData[QStringLiteral("monthDays")].value<QList<int>>();
-    QList<int> newYearDays = recurrenceData[QStringLiteral("yearDays")].value<QList<int>>();
-    QList<int> newYearDates = recurrenceData[QStringLiteral("yearDates")].value<QList<int>>();
-    QList<int> newYearMonths = recurrenceData[QStringLiteral("yearMonths")].value<QList<int>>();
+    QVariantMap map = recurrenceData();
+    if(map.contains(key)) {
+        if(key == QStringLiteral("weekdays") && value.canConvert<QVector<bool>>()) {
 
-    QList<QVariantMap> oldMonthPositions = recurrenceData[QStringLiteral("monthPositions")].value<QList<QVariantMap>>();
-    QList<KCalendarCore::RecurrenceRule::WDayPos> newMonthPositions;
+            QVector<bool> recurrenceWeekDays = value.value<QVector<bool>>();
 
-    for(auto pos : oldMonthPositions) {
-        KCalendarCore::RecurrenceRule::WDayPos newPos;
-        newPos.setDay(pos[QStringLiteral("day")].toInt());
-        newPos.setPos(pos[QStringLiteral("pos")].toInt());
-        newMonthPositions.append(newPos);
-    }
+            QBitArray days(7);
 
-    setRecurrenceWeekDays(newWeekdays);
-    m_incidence->recurrence()->setDuration(newDuration);
-    m_incidence->recurrence()->setFrequency(newFrequency);
-    m_incidence->recurrence()->setStartDateTime(newStartDateTime, newAllDay);
-    m_incidence->recurrence()->setEndDateTime(newEndDateTime);
-    m_incidence->recurrence()->setAllDay(newAllDay);
-    m_incidence->recurrence()->setMonthlyDate(newMonthDays);
-    m_incidence->recurrence()->setYearlyDay(newYearDays);
-    m_incidence->recurrence()->setYearlyDate(newYearDates);
-    m_incidence->recurrence()->setYearlyMonth(newYearMonths);
-    m_incidence->recurrence()->setMonthlyPos(newMonthPositions);
+            for(int i = 0; i < recurrenceWeekDays.size(); i++) {
+                days[i] = recurrenceWeekDays[i];
+            }
 
-    Q_EMIT recurrenceDataChanged();
-}
+            KCalendarCore::RecurrenceRule *rrule = m_incidence->recurrence()->defaultRRule();
+            QList<KCalendarCore::RecurrenceRule::WDayPos> positions;
 
-void IncidenceWrapper::setRecurrenceWeekDays(const QVector<bool> recurrenceWeekDays)
-{
-    QBitArray days(7);
+            for (int i = 0; i < 7; ++i) {
+                if (days.testBit(i)) {
+                    KCalendarCore::RecurrenceRule::WDayPos p(0, i + 1);
+                    positions.append(p);
+                }
+            }
 
-    for(int i = 0; i < recurrenceWeekDays.size(); i++) {
-        days[i] = recurrenceWeekDays[i];
-    }
+            rrule->setByDays(positions);
+            m_incidence->recurrence()->updated();
 
-    KCalendarCore::RecurrenceRule *rrule = m_incidence->recurrence()->defaultRRule();
-    QList<KCalendarCore::RecurrenceRule::WDayPos> positions;
+        } else if (key == QStringLiteral("duration")) {
 
-    for (int i = 0; i < 7; ++i) {
-        if (days.testBit(i)) {
-            KCalendarCore::RecurrenceRule::WDayPos p(0, i + 1);
-            positions.append(p);
+            m_incidence->recurrence()->setDuration(value.toInt());
+
+        } else if(key == QStringLiteral("frequency")) {
+
+            m_incidence->recurrence()->setFrequency(value.toInt());
+
+        } else if (key == QStringLiteral("startDateTime") && value.toDateTime().isValid()) {
+
+            m_incidence->recurrence()->setStartDateTime(value.toDateTime(), false);
+
+        } else if (key == QStringLiteral("endDateTime") && value.toDateTime().isValid()) {
+
+            m_incidence->recurrence()->setEndDateTime(value.toDateTime());
+
+        } else if (key == QStringLiteral("allDay")) {
+
+            m_incidence->recurrence()->setAllDay(value.toBool());
+
+        } else if (key == QStringLiteral("monthDays") && value.canConvert<QList<int>>()) {
+
+            m_incidence->recurrence()->setMonthlyDate(value.value<QList<int>>());
+
+        } else if (key == QStringLiteral("yearDays") && value.canConvert<QList<int>>()) {
+
+            m_incidence->recurrence()->setYearlyDay(value.value<QList<int>>());
+
+        } else if (key == QStringLiteral("yearDates") && value.canConvert<QList<int>>()) {
+
+            m_incidence->recurrence()->setYearlyDate(value.value<QList<int>>());
+
+        } else if (key == QStringLiteral("yearMonths") && value.canConvert<QList<int>>()) {
+
+            m_incidence->recurrence()->setYearlyMonth(value.value<QList<int>>());
+
+        } else if (key == QStringLiteral("monthPositions") && value.canConvert<QList<QVariantMap>>()) {
+
+            QList<KCalendarCore::RecurrenceRule::WDayPos> newMonthPositions;
+
+            for(auto pos : value.value<QList<QVariantMap>>()) {
+                KCalendarCore::RecurrenceRule::WDayPos newPos;
+                newPos.setDay(pos[QStringLiteral("day")].toInt());
+                newPos.setPos(pos[QStringLiteral("pos")].toInt());
+                newMonthPositions.append(newPos);
+            }
+
+            m_incidence->recurrence()->setMonthlyPos(newMonthPositions);
         }
     }
-
-    rrule->setByDays(positions);
-    m_incidence->recurrence()->updated();
+    Q_EMIT recurrenceDataChanged();
 }
 
 QVariantMap IncidenceWrapper::organizer()
