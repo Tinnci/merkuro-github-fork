@@ -10,25 +10,24 @@ import org.kde.kalendar 1.0
 import "labelutils.js" as LabelUtils
 
 Kirigami.ScrollablePage {
-    id: eventEditorSheet
+    id: incidenceEditorSheet
 
-    signal added(int collectionId, IncidenceWrapper event)
-    signal edited(int collectionId, IncidenceWrapper event)
+    signal added(int collectionId, IncidenceWrapper incidence)
+    signal edited(int collectionId, IncidenceWrapper incidence)
     signal cancel
 
-    // Setting the eventWrapper here and now causes some *really* weird behaviour.
+    // Setting the incidenceWrapper here and now causes some *really* weird behaviour.
     // Set it after this component has already been instantiated.
-    property var eventWrapper
+    property var incidenceWrapper
     property bool editMode: false
 
-    property bool validDates: eventWrapper !== undefined &&
+    property bool validDates: //incidenceWrapper !== undefined &&
                               editorLoader.item.validFormDates &&
-                              eventWrapper.eventStart < eventWrapper.eventEnd
+                              incidenceWrapper.incidenceStart < incidenceWrapper.incidenceEnd
 
-    onEventWrapperChanged: if(!editMode) { eventWrapper.collectionId = CalendarManager.defaultCalendarId }
+    onIncidenceWrapperChanged: if(!editMode) { incidenceWrapper.collectionId = CalendarManager.defaultCalendarId }
 
-
-    title: editMode ? i18n("Edit event") : i18n("Add event")
+    title: editMode ? i18n("Edit incidence") : i18n("Add incidence")
 
     footer: QQC2.DialogButtonBox {
         standardButtons: QQC2.DialogButtonBox.Cancel
@@ -36,16 +35,16 @@ Kirigami.ScrollablePage {
         QQC2.Button {
             icon.name: editMode ? "document-save" : "list-add"
             text: editMode ? i18n("Save") : i18n("Add")
-            enabled: eventEditorSheet.validDates && eventWrapper.summary && eventWrapper.collectionId
+            enabled: incidenceEditorSheet.validDates && incidenceWrapper.summary && incidenceWrapper.collectionId
             QQC2.DialogButtonBox.buttonRole: QQC2.DialogButtonBox.AcceptRole
         }
 
         onRejected: cancel()
         onAccepted: {
             if (editMode) {
-                edited(eventWrapper.collectionId, eventWrapper);
+                edited(incidenceWrapper.collectionId, incidenceWrapper);
             } else {
-                added(eventWrapper.collectionId, eventWrapper);
+                added(incidenceWrapper.collectionId, incidenceWrapper);
             }
             cancel();
         }
@@ -56,27 +55,27 @@ Kirigami.ScrollablePage {
         Layout.fillWidth: true
         Layout.fillHeight: true
 
-        active: eventWrapper !== undefined
+        active: incidenceWrapper !== undefined
         sourceComponent: ColumnLayout {
             Layout.fillWidth: true
             Layout.fillHeight: true
 
-            property bool validFormDates: eventStartDateCombo.validDate &&
-                                          (eventEndDateCombo.validDate || eventWrapper.allDay)
+            /*property bool validFormDates: incidenceStartDateCombo.validDate &&
+                                          (incidenceEndDateCombo.validDate || incidenceWrapper.allDay)
 
             Kirigami.InlineMessage {
                 id: invalidDateMessage
 
                 Layout.fillWidth: true
-                visible: !eventEditorSheet.validDates
+                visible: !incidenceEditorSheet.validDates
                 type: Kirigami.MessageType.Error
                 // Specify what the problem is to aid user
-                text: eventEditorSheet.eventWrapper.eventStart < eventEditorSheet.eventWrapper.eventEnd ?
+                text: incidenceEditorSheet.incidenceWrapper.incidenceStart < incidenceEditorSheet.incidenceWrapper.incidenceEnd ?
                       i18n("Invalid dates provided.") : i18n("End date cannot be before start date.")
-            }
+            }*/
 
             Kirigami.FormLayout {
-                id: eventForm
+                id: incidenceForm
 
                 property date todayDate: new Date()
 
@@ -88,8 +87,8 @@ Kirigami.ScrollablePage {
 
                     textRole: "display"
                     valueRole: "collectionId"
-                    currentIndex: CalendarManager.getCalendarSelectableIndex(eventEditorSheet.eventWrapper.collectionId)
-                    onCurrentValueChanged: eventEditorSheet.eventWrapper.collectionId = currentValue
+                    currentIndex: CalendarManager.getCalendarSelectableIndex(incidenceEditorSheet.incidenceWrapper.collectionId)
+                    onCurrentValueChanged: incidenceEditorSheet.incidenceWrapper.collectionId = currentValue
 
                     // Should default to default collection
                     // Should also only show *calendars*
@@ -105,16 +104,16 @@ Kirigami.ScrollablePage {
 
                     Kirigami.FormData.label: i18n("<b>Title</b>:")
                     placeholderText: i18n("Required")
-                    text: eventEditorSheet.eventWrapper.summary
-                    onTextChanged: eventEditorSheet.eventWrapper.summary = text
+                    text: incidenceEditorSheet.incidenceWrapper.summary
+                    onTextChanged: incidenceEditorSheet.incidenceWrapper.summary = text
                 }
                 QQC2.TextField {
                     id: locationField
 
                     Kirigami.FormData.label: i18n("Location:")
                     placeholderText: i18n("Optional")
-                    text: eventEditorSheet.eventWrapper.location
-                    onTextChanged: eventEditorSheet.eventWrapper.location = text
+                    text: incidenceEditorSheet.incidenceWrapper.location
+                    onTextChanged: incidenceEditorSheet.incidenceWrapper.location = text
                 }
 
                 // Restrain the descriptionTextArea from getting too chonky
@@ -140,21 +139,21 @@ Kirigami.ScrollablePage {
                 QQC2.CheckBox {
                     id: allDayCheckBox
 
-                    text: i18n("All day event")
-                    onCheckedChanged: eventEditorSheet.eventWrapper.allDay = checked
+                    text: i18n("All day incidence")
+                    onCheckedChanged: incidenceEditorSheet.incidenceWrapper.allDay = checked
                 }
                 RowLayout {
-                    id: eventStartLayout
+                    id: incidenceStartLayout
 
                     Kirigami.FormData.label: i18n("Start:")
                     Layout.fillWidth: true
 
                     QQC2.ComboBox {
-                        id: eventStartDateCombo
+                        id: incidenceStartDateCombo
                         Layout.fillWidth: true
 
                         editable: true
-                        editText: eventEditorSheet.eventWrapper.eventStart.toLocaleDateString(Qt.locale(), Locale.NarrowFormat)
+                        editText: incidenceEditorSheet.incidenceWrapper.incidenceStart.toLocaleDateString(Qt.locale(), Locale.NarrowFormat)
 
                         inputMethodHints: Qt.ImhDate
 
@@ -164,18 +163,18 @@ Kirigami.ScrollablePage {
                         onEditTextChanged: {
                             // Set date from text here because it otherwise updates after this handler
                             dateFromText = Date.fromLocaleDateString(Qt.locale(), editText, Locale.NarrowFormat)
-                            let datePicker = eventStartDatePicker
+                            let datePicker = incidenceStartDatePicker
 
                             if (validDate && activeFocus) {
-                                var timePicker = eventStartTimePicker
+                                var timePicker = incidenceStartTimePicker
                                 datePicker.selectedDate = dateFromText;
                                 datePicker.clickedDate = dateFromText;
-                                eventEditorSheet.eventWrapper.eventStart = new Date(dateFromText.setHours(timePicker.hours, timePicker.minutes));
+                                incidenceEditorSheet.incidenceWrapper.incidenceStart = new Date(dateFromText.setHours(timePicker.hours, timePicker.minutes));
                             }
                         }
 
                         popup: QQC2.Popup {
-                            id: eventStartDatePopup
+                            id: incidenceStartDatePopup
 
                             width: Kirigami.Units.gridUnit * 18
                             height: Kirigami.Units.gridUnit * 18
@@ -183,25 +182,25 @@ Kirigami.ScrollablePage {
                             z: 1000
 
                             DatePicker {
-                                id: eventStartDatePicker
+                                id: incidenceStartDatePicker
 
                                 anchors.fill: parent
                                 onDatePicked: {
-                                    eventStartDatePopup.close();
-                                    let hours = eventEditorSheet.eventWrapper.eventStart.getHours();
-                                    let minutes = eventEditorSheet.eventWrapper.eventStart.getMinutes();
-                                    eventEditorSheet.eventWrapper.eventStart = new Date(pickedDate.setHours(hours, minutes));
+                                    incidenceStartDatePopup.close();
+                                    let hours = incidenceEditorSheet.incidenceWrapper.incidenceStart.getHours();
+                                    let minutes = incidenceEditorSheet.incidenceWrapper.incidenceStart.getMinutes();
+                                    incidenceEditorSheet.incidenceWrapper.incidenceStart = new Date(pickedDate.setHours(hours, minutes));
                                 }
                             }
                         }
                     }
                     QQC2.ComboBox {
-                        id: eventStartTimeCombo
+                        id: incidenceStartTimeCombo
 
                         Layout.fillWidth: true
 
                         editable: true
-                        editText: eventEditorSheet.eventWrapper.eventStart.toLocaleTimeString(Qt.locale(), Locale.ShortFormat)
+                        editText: incidenceEditorSheet.incidenceWrapper.incidenceStart.toLocaleTimeString(Qt.locale(), Locale.ShortFormat)
                         enabled: !allDayCheckBox.checked
                         visible: !allDayCheckBox.checked
 
@@ -211,37 +210,37 @@ Kirigami.ScrollablePage {
                         }
 
                         onEditTextChanged: {
-                            let timePicker = eventStartTimePicker
+                            let timePicker = incidenceStartTimePicker
 
                             if (acceptableInput && activeFocus) { // Need to check for activeFocus or on load the text gets reset to 00:00
                                 timePicker.setToTimeFromString(editText);
-                                eventEditorSheet.eventWrapper.eventStart = new Date(eventEditorSheet.eventWrapper.eventStart.setHours(timePicker.hours, timePicker.minutes));
+                                incidenceEditorSheet.incidenceWrapper.incidenceStart = new Date(incidenceEditorSheet.incidenceWrapper.incidenceStart.setHours(timePicker.hours, timePicker.minutes));
                             }
                         }
 
                         popup: QQC2.Popup {
-                            id: eventStartTimePopup
+                            id: incidenceStartTimePopup
                             width: parent.width
                             height: parent.width * 2
                             y: parent.y + parent.height
                             z: 1000
 
                             TimePicker {
-                                id: eventStartTimePicker
+                                id: incidenceStartTimePicker
 
                                 Component.onCompleted: minuteMultiples = 15
                                 Connections {
-                                    target: eventEditorSheet.eventWrapper
-                                    function onEventStartChanged() {
-                                        eventStartTimePicker.dateTime = eventEditorSheet.eventWrapper.eventStart
+                                    target: incidenceEditorSheet.incidenceWrapper
+                                    function onIncidenceStartChanged() {
+                                        incidenceStartTimePicker.dateTime = incidenceEditorSheet.incidenceWrapper.incidenceStart
                                     }
                                 }
 
-                                dateTime: eventEditorSheet.eventWrapper.eventStart
+                                dateTime: incidenceEditorSheet.incidenceWrapper.incidenceStart
 
                                 onDone: {
-                                    eventStartTimePopup.close();
-                                    eventEditorSheet.eventWrapper.eventStart = new Date(eventEditorSheet.eventWrapper.eventStart.setHours(hours, minutes));
+                                    incidenceStartTimePopup.close();
+                                    incidenceEditorSheet.incidenceWrapper.incidenceStart = new Date(incidenceEditorSheet.incidenceWrapper.incidenceStart.setHours(hours, minutes));
 
                                 }
                             }
@@ -249,14 +248,14 @@ Kirigami.ScrollablePage {
                     }
                 }
                 RowLayout {
-                    id: eventEndLayout
+                    id: incidenceEndLayout
 
                     Kirigami.FormData.label: i18n("End:")
                     Layout.fillWidth: true
                     visible: !allDayCheckBox.checked
 
                     QQC2.ComboBox {
-                        id: eventEndDateCombo
+                        id: incidenceEndDateCombo
 
                         Layout.fillWidth: true
 
@@ -264,24 +263,24 @@ Kirigami.ScrollablePage {
                         property bool validDate: !isNaN(dateFromText.getTime())
 
                         editable: true
-                        editText: eventEditorSheet.eventWrapper.eventEnd.toLocaleDateString(Qt.locale(), Locale.NarrowFormat)
+                        editText: incidenceEditorSheet.incidenceWrapper.incidenceEnd.toLocaleDateString(Qt.locale(), Locale.NarrowFormat)
                         enabled: !allDayCheckBox.checked
 
                         onEditTextChanged: {
                             // Set date from text here because it otherwise updates after this handler
                             dateFromText = Date.fromLocaleDateString(Qt.locale(), editText, Locale.NarrowFormat);
-                            let datePicker = eventEndDatePicker;
+                            let datePicker = incidenceEndDatePicker;
 
                             if (validDate && activeFocus) {
-                                var timePicker = eventEndTimePicker
+                                var timePicker = incidenceEndTimePicker
                                 datePicker.selectedDate = dateFromText;
                                 datePicker.clickedDate = dateFromText;
-                                eventEditorSheet.eventWrapper.eventEnd = new Date(dateFromText.setHours(timePicker.hours, timePicker.minutes));
+                                incidenceEditorSheet.incidenceWrapper.incidenceEnd = new Date(dateFromText.setHours(timePicker.hours, timePicker.minutes));
                             }
                         }
 
                         popup: QQC2.Popup {
-                            id: eventEndDatePopup
+                            id: incidenceEndDatePopup
 
                             width: Kirigami.Units.gridUnit * 18
                             height: Kirigami.Units.gridUnit * 18
@@ -289,24 +288,24 @@ Kirigami.ScrollablePage {
                             z: 1000
 
                             DatePicker {
-                                id: eventEndDatePicker
+                                id: incidenceEndDatePicker
                                 anchors.fill: parent
                                 onDatePicked: {
-                                    eventEndDatePopup.close();
-                                    let hours = eventEditorSheet.eventWrapper.eventEnd.getHours();
-                                    let minutes = eventEditorSheet.eventWrapper.eventEnd.getMinutes();
-                                    eventEditorSheet.eventWrapper.eventEnd = new Date(pickedDate.setHours(hours, minutes));
+                                    incidenceEndDatePopup.close();
+                                    let hours = incidenceEditorSheet.incidenceWrapper.incidenceEnd.getHours();
+                                    let minutes = incidenceEditorSheet.incidenceWrapper.incidenceEnd.getMinutes();
+                                    incidenceEditorSheet.incidenceWrapper.incidenceEnd = new Date(pickedDate.setHours(hours, minutes));
                                 }
                             }
                         }
                     }
                     QQC2.ComboBox {
-                        id: eventEndTimeCombo
+                        id: incidenceEndTimeCombo
 
                         Layout.fillWidth: true
 
                         editable: true
-                        editText: eventEditorSheet.eventWrapper.eventEnd.toLocaleTimeString(Qt.locale(), Locale.ShortFormat)
+                        editText: incidenceEditorSheet.incidenceWrapper.incidenceEnd.toLocaleTimeString(Qt.locale(), Locale.ShortFormat)
                         enabled: !allDayCheckBox.checked
 
                         inputMethodHints: Qt.ImhTime
@@ -315,16 +314,16 @@ Kirigami.ScrollablePage {
                         }
 
                         onEditTextChanged: {
-                            let timePicker = eventEndTimePicker
+                            let timePicker = incidenceEndTimePicker
 
                             if (acceptableInput && activeFocus) {
                                 timePicker.setToTimeFromString(editText);
-                                eventEditorSheet.eventWrapper.eventEnd = new Date(eventEditorSheet.eventWrapper.eventEnd.setHours(timePicker.hours, timePicker.minutes));
+                                incidenceEditorSheet.incidenceWrapper.incidenceEnd = new Date(incidenceEditorSheet.incidenceWrapper.incidenceEnd.setHours(timePicker.hours, timePicker.minutes));
                             }
                         }
 
                         popup: QQC2.Popup {
-                            id: eventEndTimePopup
+                            id: incidenceEndTimePopup
 
                             width: parent.width
                             height: parent.width * 2
@@ -332,21 +331,21 @@ Kirigami.ScrollablePage {
                             z: 1000
 
                             TimePicker {
-                                id: eventEndTimePicker
+                                id: incidenceEndTimePicker
 
                                 Component.onCompleted: minuteMultiples = 15
                                 Connections {
-                                    target: eventEditorSheet.eventWrapper
-                                    function onEventEndChanged() {
-                                        eventEndTimePicker.dateTime = eventEditorSheet.eventWrapper.eventEnd
+                                    target: incidenceEditorSheet.incidenceWrapper
+                                    function onIncidenceEndChanged() {
+                                        incidenceEndTimePicker.dateTime = incidenceEditorSheet.incidenceWrapper.incidenceEnd
                                     }
                                 }
 
-                                dateTime: eventEditorSheet.eventWrapper.eventEnd
+                                dateTime: incidenceEditorSheet.incidenceWrapper.incidenceEnd
 
                                 onDone: {
-                                    eventEndTimePopup.close();
-                                    eventEditorSheet.eventWrapper.eventEnd = new Date(eventEditorSheet.eventWrapper.eventEnd.setHours(hours, minutes));
+                                    incidenceEndTimePopup.close();
+                                    incidenceEditorSheet.incidenceWrapper.incidenceEnd = new Date(incidenceEditorSheet.incidenceWrapper.incidenceEnd.setHours(hours, minutes));
                                 }
                             }
                         }
@@ -359,19 +358,19 @@ Kirigami.ScrollablePage {
                     Layout.fillWidth: true
                     textRole: "display"
                     valueRole: "interval"
-                    onCurrentIndexChanged: if(currentIndex == 0) { eventEditorSheet.eventWrapper.clearRecurrences(); } // "Never"
-                    onCurrentValueChanged: if(currentValue >= 0) { eventEditorSheet.eventWrapper.setRegularRecurrence(currentValue); }
+                    onCurrentIndexChanged: if(currentIndex == 0) { incidenceEditorSheet.incidenceWrapper.clearRecurrences(); } // "Never"
+                    onCurrentValueChanged: if(currentValue >= 0) { incidenceEditorSheet.incidenceWrapper.setRegularRecurrence(currentValue); }
                     currentIndex: {
-                        switch(eventEditorSheet.eventWrapper.recurrenceData.type) {
+                        switch(incidenceEditorSheet.incidenceWrapper.recurrenceData.type) {
                             case 0:
-                                return eventEditorSheet.eventWrapper.recurrenceData.type;
+                                return incidenceEditorSheet.incidenceWrapper.recurrenceData.type;
                             case 3: // Daily
-                                return eventEditorSheet.eventWrapper.recurrenceData.frequency === 1 ?
-                                    eventEditorSheet.eventWrapper.recurrenceData.type - 2 : 5
+                                return incidenceEditorSheet.incidenceWrapper.recurrenceData.frequency === 1 ?
+                                    incidenceEditorSheet.incidenceWrapper.recurrenceData.type - 2 : 5
                             case 4: // Weekly
-                                return eventEditorSheet.eventWrapper.recurrenceData.frequency === 1 ?
-                                    (eventEditorSheet.eventWrapper.recurrenceData.weekdays.filter(x => x === true).length === 0 ?
-                                    eventEditorSheet.eventWrapper.recurrenceData.type - 2 : 5) : 5
+                                return incidenceEditorSheet.incidenceWrapper.recurrenceData.frequency === 1 ?
+                                    (incidenceEditorSheet.incidenceWrapper.recurrenceData.weekdays.filter(x => x === true).length === 0 ?
+                                    incidenceEditorSheet.incidenceWrapper.recurrenceData.type - 2 : 5) : 5
                             case 5: // Monthly on position (e.g. third Monday)
                             case 7: // Yearly on month
                             case 9: // Yearly on position
@@ -385,10 +384,10 @@ Kirigami.ScrollablePage {
                     }
                     model: [
                         {key: "never", display: i18n("Never"), interval: -1},
-                        {key: "daily", display: i18n("Daily"), interval: eventEditorSheet.eventWrapper.recurrenceIntervals.Daily},
-                        {key: "weekly", display: i18n("Weekly"), interval: eventEditorSheet.eventWrapper.recurrenceIntervals.Weekly},
-                        {key: "monthly", display: i18n("Monthly"), interval: eventEditorSheet.eventWrapper.recurrenceIntervals.Monthly},
-                        {key: "yearly", display: i18n("Yearly"), interval: eventEditorSheet.eventWrapper.recurrenceIntervals.Yearly},
+                        {key: "daily", display: i18n("Daily"), interval: incidenceEditorSheet.incidenceWrapper.recurrenceIntervals.Daily},
+                        {key: "weekly", display: i18n("Weekly"), interval: incidenceEditorSheet.incidenceWrapper.recurrenceIntervals.Weekly},
+                        {key: "monthly", display: i18n("Monthly"), interval: incidenceEditorSheet.incidenceWrapper.recurrenceIntervals.Monthly},
+                        {key: "yearly", display: i18n("Yearly"), interval: incidenceEditorSheet.incidenceWrapper.recurrenceIntervals.Yearly},
                         {key: "custom", display: i18n("Custom"), interval: -1}
                     ]
                     popup.z: 1000
@@ -401,10 +400,10 @@ Kirigami.ScrollablePage {
                     Layout.leftMargin: Kirigami.Units.largeSpacing
                     visible: repeatComboBox.currentIndex > 0 // Not "Never" index
 
-                    function setOccurrence() {
-                        eventEditorSheet.eventWrapper.setRegularRecurrence(recurScaleRuleCombobox.currentValue, recurFreqRuleSpinbox.value);
+                    function setOcurrence() {
+                        incidenceEditorSheet.incidenceWrapper.setRegularRecurrence(recurScaleRuleCombobox.currentValue, recurFreqRuleSpinbox.value);
 
-                        if(recurScaleRuleCombobox.currentValue === eventEditorSheet.eventWrapper.recurrenceIntervals.Weekly) {
+                        if(recurScaleRuleCombobox.currentValue === incidenceEditorSheet.incidenceWrapper.recurrenceIntervals.Weekly) {
                             weekdayCheckboxRepeater.setWeekdaysRepeat();
                         }
                     }
@@ -420,25 +419,26 @@ Kirigami.ScrollablePage {
 
                             Layout.fillWidth: true
                             from: 1
-                            value: eventEditorSheet.eventWrapper.recurrenceData.frequency
-                            onValueChanged: if(visible) { eventEditorSheet.eventWrapper.recurrenceData.frequency = value }
+                            value: incidenceEditorSheet.incidenceWrapper.recurrenceData.frequency
+                            onValueChanged: if(visible) { incidenceEditorSheet.incidenceWrapper.recurrenceData.frequency = value }
                         }
                         QQC2.ComboBox {
                             id: recurScaleRuleCombobox
 
                             Layout.fillWidth: true
+                            visible: repeatComboBox.currentIndex === 5
                             textRole: recurFreqRuleSpinbox.value > 1 ? "displayPlural" : "displaySingular"
                             valueRole: "interval"
                             onCurrentValueChanged: if(visible) { customRecurrenceLayout.setOcurrence(); }
                             currentIndex: {
-                                if(eventEditorSheet.eventWrapper.recurrenceData.type === undefined) {
+                                if(incidenceEditorSheet.incidenceWrapper.recurrenceData.type === undefined) {
                                     return -1;
                                 }
 
-                                switch(eventEditorSheet.eventWrapper.recurrenceData.type) {
+                                switch(incidenceEditorSheet.incidenceWrapper.recurrenceData.type) {
                                     case 3: // Daily
                                     case 4: // Weekly
-                                        return eventEditorSheet.eventWrapper.recurrenceData.type - 3
+                                        return incidenceEditorSheet.incidenceWrapper.recurrenceData.type - 3
                                     case 5: // Monthly on position (e.g. third Monday)
                                     case 6: // Monthly on day (1st of month)
                                         return 2;
@@ -452,15 +452,15 @@ Kirigami.ScrollablePage {
                             }
 
                             model: [
-                                {key: "day", displaySingular: i18n("day"), displayPlural: i18n("days"), interval: eventEditorSheet.eventWrapper.recurrenceIntervals.Daily},
-                                {key: "week", displaySingular: i18n("week"), displayPlural: i18n("weeks"), interval: eventEditorSheet.eventWrapper.recurrenceIntervals.Weekly},
-                                {key: "month", displaySingular: i18n("month"), displayPlural: i18n("months"), interval: eventEditorSheet.eventWrapper.recurrenceIntervals.Monthly},
-                                {key: "year", displaySingular: i18n("year"), displayPlural: i18n("years"), interval: eventEditorSheet.eventWrapper.recurrenceIntervals.Yearly},
+                                {key: "day", displaySingular: i18n("day"), displayPlural: i18n("days"), interval: incidenceEditorSheet.incidenceWrapper.recurrenceIntervals.Daily},
+                                {key: "week", displaySingular: i18n("week"), displayPlural: i18n("weeks"), interval: incidenceEditorSheet.incidenceWrapper.recurrenceIntervals.Weekly},
+                                {key: "month", displaySingular: i18n("month"), displayPlural: i18n("months"), interval: incidenceEditorSheet.incidenceWrapper.recurrenceIntervals.Monthly},
+                                {key: "year", displaySingular: i18n("year"), displayPlural: i18n("years"), interval: incidenceEditorSheet.incidenceWrapper.recurrenceIntervals.Yearly},
                             ]
                             delegate: Kirigami.BasicListItem {
                                 text: recurFreqRuleSpinbox.value > 1 ? modelData.displayPlural : modelData.displaySingular
                                 onClicked: {
-                                    eventEditorSheet.eventWrapper.setRegularRecurrence(modelData.interval, recurFreqRuleSpinbox.value);
+                                    incidenceEditorSheet.incidenceWrapper.setRegularRecurrence(modelData.interval, recurFreqRuleSpinbox.value);
                                     repeatComboBox.currentIndex = 5; // Otherwise resets to default daily/weekly/etc.
                                 }
                             }
@@ -495,7 +495,7 @@ Kirigami.ScrollablePage {
                                     // C++ func takes 7 bit array
                                     selectedDays[checkbox.dayNumber] = checkbox.checked
                                 }
-                                eventEditorSheet.eventWrapper.recurrenceData.weekdays = selectedDays;
+                                incidenceEditorSheet.incidenceWrapper.recurrenceData.weekdays = selectedDays;
                             }
 
                             model: 7
@@ -506,8 +506,8 @@ Kirigami.ScrollablePage {
                                                         Qt.locale().firstDayOfWeek + index - 1 - 7 :
                                                         Qt.locale().firstDayOfWeek + index - 1
 
-                                checked: eventEditorSheet.eventWrapper.recurrenceData.weekdays[dayNumber]
-                                onClicked: eventEditorSheet.eventWrapper.recurrenceData.weekdays[dayNumber] = !eventEditorSheet.eventWrapper.recurrenceData.weekdays[dayNumber]
+                                checked: incidenceEditorSheet.incidenceWrapper.recurrenceData.weekdays[dayNumber]
+                                onClicked: incidenceEditorSheet.incidenceWrapper.recurrenceData.weekdays[dayNumber] = !incidenceEditorSheet.incidenceWrapper.recurrenceData.weekdays[dayNumber]
                             }
                         }
                     }
@@ -525,23 +525,24 @@ Kirigami.ScrollablePage {
                         visible: recurScaleRuleCombobox.currentIndex === 2 && repeatComboBox.currentIndex === 5 // "month/months" index
 
                         QQC2.RadioButton {
-                            property int dateOfMonth: eventStartDateCombo.dateFromText.getDate()
+                            property int dateOfMonth: incidenceStartDateCombo.dateFromText.getDate()
 
                             text: i18nc("%1 is the day number of month", "the %1 of each month", LabelUtils.numberToString(dateOfMonth))
-                            checked: eventEditorSheet.eventWrapper.recurrenceData.type == 6 // Monthly on day (1st of month)
-                            onClicked: customRecurrenceLayout.setOccurrence()
+
+                            checked: incidenceEditorSheet.incidenceWrapper.recurrenceData.type == 6 // Monthly on day (1st of month)
+                            onClicked: customRecurrenceLayout.setOcurrence()
                         }
                         QQC2.RadioButton {
-                            property int dayOfWeek: eventStartDateCombo.dateFromText.getDay() > 0 ?
-                                                    eventStartDateCombo.dateFromText.getDay() - 1 :
+                            property int dayOfWeek: incidenceStartDateCombo.dateFromText.getDay() > 0 ?
+                                                    incidenceStartDateCombo.dateFromText.getDay() - 1 :
                                                     7 // C++ Qt day of week index goes Mon-Sun, 0-7
-                            property int weekOfMonth: Math.ceil((eventStartDateCombo.dateFromText.getDate() + 6 - eventStartDateCombo.dateFromText.getDay())/7);
-                            property string dayOfWeekString: Qt.locale().dayName(eventStartDateCombo.dateFromText.getDay())
+                            property int weekOfMonth: Math.ceil((incidenceStartDateCombo.dateFromText.getDate() + 6 - incidenceStartDateCombo.dateFromText.getDay())/7);
+                            property string dayOfWeekString: Qt.locale().dayName(incidenceStartDateCombo.dateFromText.getDay())
 
                             text: i18nc("the weekOfMonth dayOfWeekString of each month", "the %1 %2 of each month", LabelUtils.numberToString(weekOfMonth), dayOfWeekString)
-                            checked: eventEditorSheet.eventWrapper.recurrenceData.type == 5 // Monthly on position
-                            onTextChanged: if(checked) { eventEditorSheet.eventWrapper.setMonthlyPosRecurrence(weekOfMonth, dayOfWeek); }
-                            onClicked: eventEditorSheet.eventWrapper.setMonthlyPosRecurrence(weekOfMonth, dayOfWeek)
+                            checked: incidenceEditorSheet.incidenceWrapper.recurrenceData.type == 5 // Monthly on position
+                            onTextChanged: if(checked) { incidenceEditorSheet.incidenceWrapper.setMonthlyPosRecurrence(weekOfMonth, dayOfWeek); }
+                            onClicked: incidenceEditorSheet.incidenceWrapper.setMonthlyPosRecurrence(weekOfMonth, dayOfWeek)
                         }
                     }
 
@@ -555,9 +556,10 @@ Kirigami.ScrollablePage {
                             id: endRecurType
 
                             Layout.fillWidth: true
-                            currentIndex: eventEditorSheet.eventWrapper.recurrenceData.duration <= 0 ? // Recurrence duration returns -1 for never ending and 0 when the recurrence
-                                        eventEditorSheet.eventWrapper.recurrenceData.duration + 1 :  // end date is set. Any number larger is the set number of recurrences
-                                        2
+                            // Recurrence duration returns -1 for never ending and 0 when the recurrence
+                            // end date is set. Any number larger is the set number of recurrences
+                            currentIndex: incidenceEditorSheet.incidenceWrapper.recurrenceData.duration <= 0 ?
+                                incidenceEditorSheet.incidenceWrapper.recurrenceData.duration + 1 : 2
                             textRole: "display"
                             valueRole: "duration"
                             model: [
@@ -567,7 +569,7 @@ Kirigami.ScrollablePage {
                             ]
                             delegate: Kirigami.BasicListItem {
                                 text: modelData.display
-                                onClicked: eventEditorSheet.eventWrapper.recurrenceData.duration = modelData.duration
+                                onClicked: incidenceEditorSheet.incidenceWrapper.recurrenceData.duration = modelData.duration
                             }
                             popup.z: 1000
                         }
@@ -578,7 +580,7 @@ Kirigami.ScrollablePage {
                             Layout.fillWidth: true
                             visible: endRecurType.currentIndex == 1
                             editable: true
-                            editText: eventEditorSheet.eventWrapper.recurrenceData.endDateTime.toLocaleDateString(Qt.locale(), Locale.NarrowFormat);
+                            editText: incidenceEditorSheet.incidenceWrapper.recurrenceData.endDateTime.toLocaleDateString(Qt.locale(), Locale.NarrowFormat);
 
                             inputMethodHints: Qt.ImhDate
 
@@ -592,7 +594,7 @@ Kirigami.ScrollablePage {
                                     datePicker.clickedDate = dateFromText;
 
                                     if (visible) {
-                                        eventEditorSheet.eventWrapper.recurrenceData.endDateTime = dateFromText
+                                        incidenceEditorSheet.incidenceWrapper.recurrenceData.endDateTime = dateFromText
                                     }
                                 }
                             }
@@ -609,7 +611,7 @@ Kirigami.ScrollablePage {
                                     id: recurEndDatePicker
                                     anchors.fill: parent
                                     onDatePicked: {
-                                        eventEditorSheet.eventWrapper.recurrenceData.endDateTime = pickedDate
+                                        incidenceEditorSheet.incidenceWrapper.recurrenceData.endDateTime = pickedDate
                                         recurEndDatePopup.close()
                                     }
                                 }
@@ -654,9 +656,9 @@ Kirigami.ScrollablePage {
                                 DatePicker {
                                     id: recurExceptionPicker
                                     anchors.fill: parent
-                                    selectedDate: eventStartDateCombo.dateFromText
+                                    selectedDate: incidenceStartDateCombo.dateFromText
                                     onDatePicked: {
-                                        eventEditorSheet.eventWrapper.recurrenceExceptionsModel.addExceptionDateTime(pickedDate)
+                                        incidenceEditorSheet.incidenceWrapper.recurrenceExceptionsModel.addExceptionDateTime(pickedDate)
                                         recurExceptionPopup.close()
                                     }
                                 }
@@ -665,7 +667,7 @@ Kirigami.ScrollablePage {
 
                         Repeater {
                             id: exceptionsRepeater
-                            model: eventEditorSheet.eventWrapper.recurrenceExceptionsModel
+                            model: incidenceEditorSheet.incidenceWrapper.recurrenceExceptionsModel
                             delegate: RowLayout {
                                 Kirigami.BasicListItem {
                                     Layout.fillWidth: true
@@ -673,7 +675,7 @@ Kirigami.ScrollablePage {
                                 }
                                 QQC2.Button {
                                     icon.name: "edit-delete-remove"
-                                    onClicked: eventEditorSheet.eventWrapper.recurrenceExceptionsModel.deleteExceptionDateTime(date)
+                                    onClicked: incidenceEditorSheet.incidenceWrapper.recurrenceExceptionsModel.deleteExceptionDateTime(date)
                                 }
                             }
                         }
@@ -696,7 +698,7 @@ Kirigami.ScrollablePage {
 
                         Layout.fillWidth: true
 
-                        model: eventEditorSheet.eventWrapper.remindersModel
+                        model: incidenceEditorSheet.incidenceWrapper.remindersModel
                         // All of the alarms are handled within the delegates.
 
                         delegate: RowLayout {
@@ -710,13 +712,13 @@ Kirigami.ScrollablePage {
 
                                 displayText: LabelUtils.secondsToReminderLabel(startOffset)
                                 //textRole: "DisplayNameRole"
-                                onCurrentValueChanged: eventEditorSheet.eventWrapper.remindersModel.setData(eventEditorSheet.eventWrapper.remindersModel.index(index, 0),
+                                onCurrentValueChanged: incidenceEditorSheet.incidenceWrapper.remindersModel.setData(incidenceEditorSheet.incidenceWrapper.remindersModel.index(index, 0),
                                                                                                             currentValue,
-                                                                                                            eventEditorSheet.eventWrapper.remindersModel.dataroles.startOffset)
+                                                                                                            incidenceEditorSheet.incidenceWrapper.remindersModel.dataroles.startOffset)
                                 onCountChanged: selectedIndex = currentIndex // Gets called *just* before modelChanged
                                 onModelChanged: currentIndex = selectedIndex
 
-                                model: [0, // We times by -1 to make times be before event
+                                model: [0, // We times by -1 to make times be before incidence
                                         -1 * 5 * 60, // 5 minutes
                                         -1 * 10 * 60,
                                         -1 * 15 * 60,
@@ -737,7 +739,7 @@ Kirigami.ScrollablePage {
 
                             QQC2.Button {
                                 icon.name: "edit-delete-remove"
-                                onClicked: eventEditorSheet.eventWrapper.remindersModel.deleteAlarm(model.index);
+                                onClicked: incidenceEditorSheet.incidenceWrapper.remindersModel.deleteAlarm(model.index);
                             }
                         }
                     }
@@ -766,6 +768,7 @@ Kirigami.ScrollablePage {
                     Repeater {
                         id: attendeesRepeater
                         model: eventEditorSheet.eventWrapper.attendeesModel
+
                         // All of the alarms are handled within the delegates.
                         Layout.fillWidth: true
 
@@ -917,7 +920,22 @@ Kirigami.ScrollablePage {
 
                             title: "Add an attachment"
                             folder: shortcuts.home
-                            onAccepted: eventEditorSheet.eventWrapper.attachmentsModel.addAttachment(fileUrls)
+                            onAccepted: incidenceEditorSheet.incidenceWrapper.attachmentsModel.addAttachment(fileUrls)
+                        }
+                    }
+
+                    Repeater {
+                        id: attachmentsRepeater
+                        model: incidenceEditorSheet.incidenceWrapper.attachmentsModel
+                        delegate: RowLayout {
+                            QQC2.Label {
+                                Layout.fillWidth: true
+                                text: attachmentLabel
+                            }
+                            QQC2.Button {
+                                icon.name: "edit-delete-remove"
+                                onClicked: incidenceEditorSheet.incidenceWrapper.attachmentsModel.deleteAttachment(uri)
+                            }
                         }
                     }
                 }

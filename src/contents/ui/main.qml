@@ -79,31 +79,31 @@ Kirigami.ApplicationWindow {
         ]
     }
 
-    contextDrawer: EventInfo {
-        id: eventInfo
+    contextDrawer: IncidenceInfo {
+        id: incidenceInfo
 
         contentItem.implicitWidth: Kirigami.Units.gridUnit * 25
         modal: !root.wideScreen || !enabled
         onEnabledChanged: drawerOpen = enabled && !modal
         onModalChanged: drawerOpen = !modal
-        enabled: eventData != undefined && pageStack.layers.depth < 2 && pageStack.depth < 3
+        enabled: incidenceData != undefined && pageStack.layers.depth < 2 && pageStack.depth < 3
         handleVisible: enabled && pageStack.layers.depth < 2 && pageStack.depth < 3
         interactive: Kirigami.Settings.isMobile // Otherwise get weird bug where drawer gets dragged around despite no click
 
-        onEditEvent: {
-            setUpEdit(eventPtr, collectionId);
-            if (modal) { eventInfo.close() }
+        onEditIncidence: {
+            setUpEdit(incidencePtr, collectionId);
+            if (modal) { incidenceInfo.close() }
         }
-        onDeleteEvent: {
-            setUpDelete(eventPtr, deleteDate)
-            if (modal) { eventInfo.close() }
+        onDeleteIncidence: {
+            setUpDelete(incidencePtr, deleteDate)
+            if (modal) { incidenceInfo.close() }
         }
     }
 
-    EventEditor {
-        id: eventEditor
-        onAdded: CalendarManager.addEvent(collectionId, event.eventPtr)
-        onEdited: CalendarManager.editEvent(collectionId, event.originalPtr, event.eventPtr)
+    IncidenceEditor {
+        id: incidenceEditor
+        onAdded: CalendarManager.addIncidence(collectionId, incidence.incidencePtr)
+        onEdited: CalendarManager.editIncidence(collectionId, incidence.originalIncidencePtr, incidence.incidencePtr)
         onCancel: pageStack.pop(monthViewComponent)
     }
 
@@ -117,14 +117,14 @@ Kirigami.ApplicationWindow {
             height: Kirigami.Units.gridUnit * 32
 
             // Probably a more elegant way of accessing the editor from outside than this.
-            property var eventEditor: eventEditorInLoader
+            property var incidenceEditor: incidenceEditorInLoader
 
-            pageStack.initialPage: eventEditorInLoader
+            pageStack.initialPage: incidenceEditorInLoader
 
-            EventEditor {
-                id: eventEditorInLoader
-                onAdded: CalendarManager.addEvent(collectionId, event.eventPtr)
-                onEdited: CalendarManager.editEvent(collectionId, event.originalEventPtr, event.eventPtr)
+            IncidenceEditor {
+                id: incidenceEditorInLoader
+                onAdded: CalendarManager.addIncidence(collectionId, incidence.incidencePtr)
+                onEdited: CalendarManager.editIncidence(collectionId, incidence.originalIncidencePtr, incidence.incidencePtr)
                 onCancel: root.close()
             }
 
@@ -136,19 +136,19 @@ Kirigami.ApplicationWindow {
     function editorToUse() {
         if (!Kirigami.Settings.isMobile) {
             editorWindowedLoader.active = true
-            return editorWindowedLoader.item.eventEditor
+            return editorWindowedLoader.item.incidenceEditor
         } else {
-            pageStack.push(eventEditor);
-            return eventEditor;
+            pageStack.push(incidenceEditor);
+            return incidenceEditor;
         }
     }
 
     function setUpAdd(addDate) {
         let editorToUse = root.editorToUse();
-        if (editorToUse.editMode || !editorToUse.eventWrapper) {
-            editorToUse.eventWrapper = Qt.createQmlObject('import org.kde.kalendar 1.0; IncidenceWrapper {id: event}',
+        if (editorToUse.editMode || !editorToUse.incidenceWrapper) {
+            editorToUse.incidenceWrapper = Qt.createQmlObject('import org.kde.kalendar 1.0; IncidenceWrapper {id: incidence}',
                                                           editorToUse,
-                                                          "event");
+                                                          "incidence");
         }
         editorToUse.editMode = false;
         if(typeof(addDate) !== undefined && !isNaN(addDate.getTime())) {
@@ -159,45 +159,45 @@ Kirigami.ApplicationWindow {
     }
 
     function setUpView(modelData, collectionData) {
-        eventInfo.eventData = modelData
-        eventInfo.collectionData = collectionData
-        eventInfo.open()
+        incidenceInfo.incidenceData = modelData
+        incidenceInfo.collectionData = collectionData
+        incidenceInfo.open()
     }
 
-    function setUpEdit(eventPtr, collectionId) {
+    function setUpEdit(incidencePtr, collectionId) {
         let editorToUse = root.editorToUse();
-        editorToUse.eventWrapper = Qt.createQmlObject('import org.kde.kalendar 1.0; IncidenceWrapper {id: event}',
+        editorToUse.incidenceWrapper = Qt.createQmlObject('import org.kde.kalendar 1.0; IncidenceWrapper {id: incidence}',
                                                       editorToUse,
-                                                      "event");
-        editorToUse.eventWrapper.setIncidencePtr(eventPtr);
-        editorToUse.eventWrapper.collectionId = collectionId;
+                                                      "incidence");
+        editorToUse.incidenceWrapper.setIncidenceSubclass(incidencePtr, CalendarManager.getIncidenceSubclassed(incidencePtr));
+        editorToUse.incidenceWrapper.collectionId = collectionId;
         editorToUse.editMode = true;
     }
 
-    function setUpDelete(eventPtr, deleteDate) {
-        deleteEventSheet.eventWrapper = Qt.createQmlObject('import org.kde.kalendar 1.0; IncidenceWrapper {id: event}',
-                                                           deleteEventSheet,
-                                                           "event");
-        deleteEventSheet.eventWrapper.setIncidencePtr(eventPtr)
-        deleteEventSheet.deleteDate = deleteDate
-        deleteEventSheet.open()
+    function setUpDelete(incidencePtr, deleteDate) {
+        deleteIncidenceSheet.incidenceWrapper = Qt.createQmlObject('import org.kde.kalendar 1.0; IncidenceWrapper {id: incidence}',
+                                                           deleteIncidenceSheet,
+                                                           "incidence");
+        deleteIncidenceSheet.incidenceWrapper.setIncidenceSubclass(incidencePtr, CalendarManager.getIncidenceSubclassed(incidencePtr))
+        deleteIncidenceSheet.deleteDate = deleteDate
+        deleteIncidenceSheet.open()
     }
 
-    DeleteEventSheet {
-        id: deleteEventSheet
+    DeleteIncidenceSheet {
+        id: deleteIncidenceSheet
         onAddException: {
-            eventWrapper.recurrenceExceptionsModel.addExceptionDateTime(exceptionDate);
-            CalendarManager.editEvent(eventWrapper.eventPtr);
-            deleteEventSheet.close();
+            incidenceWrapper.recurrenceExceptionsModel.addExceptionDateTime(exceptionDate);
+            CalendarManager.editIncidence(incidenceWrapper.incidencePtr);
+            deleteIncidenceSheet.close();
         }
         onAddRecurrenceEndDate: {
-            eventWrapper.recurrenceEndDateTime = endDate;
-            CalendarManager.editEvent(eventWrapper.eventPtr);
-            deleteEventSheet.close();
+            incidenceWrapper.recurrenceEndDateTime = endDate;
+            CalendarManager.editIncidence(incidenceWrapper.incidencePtr);
+            deleteIncidenceSheet.close();
         }
-        onDeleteEvent: {
-            CalendarManager.deleteEvent(eventPtr);
-            deleteEventSheet.close();
+        onDeleteIncidence: {
+            CalendarManager.deleteIncidence(incidencePtr);
+            deleteIncidenceSheet.close();
         }
     }
 
@@ -215,10 +215,9 @@ Kirigami.ApplicationWindow {
 
             Layout.minimumWidth: applicationWindow().width * 0.66
 
-            onAddEventReceived: root.setUpAdd(receivedAddDate)
-            onViewEventReceived: root.setUpView(receivedModelData, receivedCollectionData)
-            onEditEventReceived: root.setUpEdit(receivedEventPtr, receivedCollectionId)
-            onDeleteEventReceived: root.setUpDelete(receivedEventPtr, receivedDeleteDate)
+            onViewIncidenceReceived: root.setUpView(receivedModelData, receivedCollectionData)
+            onEditIncidenceReceived: root.setUpEdit(receivedIncidencePtr, receivedCollectionId)
+            onDeleteIncidenceReceived: root.setUpDelete(receivedIncidencePtr, receivedDeleteDate)
 
             onMonthChanged: root.month = month
             onYearChanged: root.year = year
@@ -253,7 +252,7 @@ Kirigami.ApplicationWindow {
 
             actions.contextualActions: [
                 Kirigami.Action {
-                    text: i18n("Add event")
+                    text: i18n("Add incidence")
                     icon.name: "list-add"
                     onTriggered: root.setUpAdd();
                 }

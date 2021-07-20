@@ -53,6 +53,7 @@ public:
     Q_INVOKABLE void editEvent(qint64 collectionId, KCalendarCore::Event::Ptr originalEvent, KCalendarCore::Event::Ptr editedEvent);
     Q_INVOKABLE void deleteEvent(KCalendarCore::Event::Ptr event);
     Q_INVOKABLE QVariantMap getCollectionDetails(qint64 collectionId);
+    Q_INVOKABLE QVariant getIncidenceSubclassed(KCalendarCore::Incidence::Ptr incidencePtr);
     Q_INVOKABLE void undoAction();
     Q_INVOKABLE void redoAction();
 
