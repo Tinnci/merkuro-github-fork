@@ -337,10 +337,10 @@ Kirigami.ScrollablePage {
                     id: repeatComboBox
                     Kirigami.FormData.label: i18n("Repeat:")
                     Layout.fillWidth: true
+
                     textRole: "display"
                     valueRole: "interval"
-                    onCurrentIndexChanged: if(currentIndex == 0) { incidenceEditorSheet.incidenceWrapper.clearRecurrences(); } // "Never"
-                    onCurrentValueChanged: if(currentValue >= 0) { incidenceEditorSheet.incidenceWrapper.setRegularRecurrence(currentValue); }
+                    onCurrentIndexChanged: if(currentIndex == 0) { incidenceEditorSheet.incidenceWrapper.clearRecurrences() }
                     currentIndex: {
                         switch(incidenceEditorSheet.incidenceWrapper.recurrenceData.type) {
                             case 0:
@@ -371,6 +371,14 @@ Kirigami.ScrollablePage {
                         {key: "yearly", display: i18n("Yearly"), interval: incidenceEditorSheet.incidenceWrapper.recurrenceIntervals.Yearly},
                         {key: "custom", display: i18n("Custom"), interval: -1}
                     ]
+                    delegate: Kirigami.BasicListItem {
+                        text: modelData.display
+                        onClicked: if (modelData.interval > 0) {
+                            incidenceEditorSheet.incidenceWrapper.setRegularRecurrence(modelData.interval)
+                        } else {
+                            incidenceEditorSheet.incidenceWrapper.clearRecurrences();
+                        }
+                    }
                     popup.z: 1000
                 }
 
@@ -444,7 +452,10 @@ Kirigami.ScrollablePage {
                         ]
                         delegate: Kirigami.BasicListItem {
                             text: recurFreqRuleSpinbox.value > 1 ? modelData.displayPlural : modelData.displaySingular
-                            onClicked: incidenceEditorSheet.incidenceWrapper.setRegularRecurrence(modelData.interval, recurFreqRuleSpinbox.value);
+                            onClicked: {
+                                customRecurrenceLayout.setOcurrence();
+                                repeatComboBox.currentIndex = 5; // Otherwise resets to default daily/weekly/etc.
+                            }
                         }
                         popup.z: 1000
                     }
@@ -603,7 +614,7 @@ Kirigami.ScrollablePage {
                                     recurEndDatePopup.close()
                                 }
                             }
-                        }
+                       }
                     }
 
                     RowLayout {
@@ -617,7 +628,7 @@ Kirigami.ScrollablePage {
                             Layout.fillWidth: true
                             from: 1
                             value: incidenceEditorSheet.incidenceWrapper.recurrenceData.duration
-                            onValueChanged: incidenceEditorSheet.incidenceWrapper.setRecurrenceOcurrences(value)
+                            onValueChanged: if (visible) { incidenceEditorSheet.incidenceWrapper.setRecurrenceOcurrences(value) }
                         }
                         QQC2.Label {
                             text: i18np("occurrence", "occurrences", recurOcurrenceEndSpinbox.value)
