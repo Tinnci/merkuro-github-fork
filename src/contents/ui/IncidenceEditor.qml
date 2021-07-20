@@ -21,9 +21,9 @@ Kirigami.ScrollablePage {
     property var incidenceWrapper
     property bool editMode: false
 
-    property bool validDates: true//typeof(incidenceWrapper) !== undefined &&
-                              //editorLoader.item.validFormDates &&
-                              //incidenceWrapper.incidenceStart < incidenceWrapper.incidenceEnd
+    property bool validDates: typeof(incidenceWrapper) !== undefined &&
+                              editorLoader.item.validFormDates &&
+                              incidenceWrapper.incidenceStart < incidenceWrapper.incidenceEnd
 
     onIncidenceWrapperChanged: if(!editMode) { incidenceWrapper.collectionId = CalendarManager.defaultCalendarId }
 
@@ -60,7 +60,7 @@ Kirigami.ScrollablePage {
             Layout.fillWidth: true
             Layout.fillHeight: true
 
-            /*property bool validFormDates: incidenceStartDateCombo.validDate &&
+            property bool validFormDates: incidenceStartDateCombo.validDate &&
                                           (incidenceEndDateCombo.validDate || incidenceWrapper.allDay)
 
             Kirigami.InlineMessage {
@@ -72,7 +72,7 @@ Kirigami.ScrollablePage {
                 // Specify what the problem is to aid user
                 text: incidenceEditorSheet.incidenceWrapper.incidenceStart < incidenceEditorSheet.incidenceWrapper.incidenceEnd ?
                       i18n("Invalid dates provided.") : i18n("End date cannot be before start date.")
-            }*/
+            }
 
             Kirigami.FormLayout {
                 id: incidenceForm

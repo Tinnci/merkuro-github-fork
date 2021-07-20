@@ -399,7 +399,18 @@ QVariantMap CalendarManager::undoRedoData()
 void CalendarManager::addIncidence(IncidenceWrapper *incidenceWrapper)
 {
     Akonadi::Collection collection(incidenceWrapper->collectionId());
-    qDebug() << m_changer->createIncidence(incidenceWrapper->incidencePtr(), collection);
+
+    switch(incidenceWrapper->incidencePtr()->type()) {
+        case(KCalendarCore::IncidenceBase::TypeEvent):
+            m_changer->createIncidence(KCalendarCore::Event::Ptr(incidenceWrapper->eventPtr()->clone()), collection);
+            break;
+        case(KCalendarCore::IncidenceBase::TypeTodo):
+            m_changer->createIncidence(KCalendarCore::Todo::Ptr(incidenceWrapper->todoPtr()->clone()), collection);
+            break;
+        default:
+            m_changer->createIncidence(KCalendarCore::Incidence::Ptr(incidenceWrapper->incidencePtr()->clone()), collection);
+            break;
+    }
     // This will fritz if you don't choose a valid *calendar*
 }
 
