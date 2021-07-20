@@ -33,7 +33,7 @@ class IncidenceWrapper : public QObject
     Q_PROPERTY(QDateTime incidenceEnd READ incidenceEnd WRITE setIncidenceEnd NOTIFY incidenceEndChanged)
     Q_PROPERTY(bool allDay READ allDay WRITE setAllDay NOTIFY allDayChanged)
     Q_PROPERTY(KCalendarCore::Recurrence * recurrence READ recurrence)
-    Q_PROPERTY(QVariantMap recurrenceData READ recurrenceData WRITE setRecurrenceData NOTIFY recurrenceDataChanged)
+    Q_PROPERTY(QVariantMap recurrenceData READ recurrenceData NOTIFY recurrenceDataChanged)
     Q_PROPERTY(QVariantMap organizer READ organizer NOTIFY organizerChanged)
     Q_PROPERTY(KCalendarCore::Attendee::List attendees READ attendees)
     Q_PROPERTY(RemindersModel * remindersModel READ remindersModel NOTIFY remindersModelChanged)
@@ -74,8 +74,7 @@ public:
 
     KCalendarCore::Recurrence * recurrence() const;
     QVariantMap recurrenceData();
-    void setRecurrenceData(QVariantMap recurrenceData);
-    void setRecurrenceWeekDays(const QVector<bool> recurrenceWeekDays);
+    Q_INVOKABLE void setRecurrenceDataItem(QString key, QVariant value);
     QVariantMap recurrenceIntervals();
 
     QVariantMap organizer();
