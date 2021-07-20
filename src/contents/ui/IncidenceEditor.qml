@@ -22,7 +22,7 @@ Kirigami.ScrollablePage {
     property bool editMode: false
 
     property bool validDates: typeof(incidenceWrapper) !== undefined &&
-                              editorLoader.item.validFormDates &&
+                              editorLoader.active && editorLoader.item.validFormDates &&
                               incidenceWrapper.incidenceStart < incidenceWrapper.incidenceEnd
 
     onIncidenceWrapperChanged: if(!editMode) { incidenceWrapper.collectionId = CalendarManager.defaultCalendarId }
