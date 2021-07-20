@@ -86,10 +86,6 @@ public:
     RecurrenceExceptionsModel * recurrenceExceptionsModel();
     AttachmentsModel * attachmentsModel();
 
-    KCalendarCore::Event::Ptr eventPtr();
-    KCalendarCore::Todo::Ptr todoPtr();
-
-    Q_INVOKABLE void setIncidenceSubclass(KCalendarCore::Incidence::Ptr incidencePtr, QVariant subclassedIncidencePtr);
     Q_INVOKABLE void addAlarms(KCalendarCore::Alarm::List alarms);
     Q_INVOKABLE void setRegularRecurrence(RecurrenceIntervals interval, int freq = 1);
     Q_INVOKABLE void setMonthlyPosRecurrence(short pos, int day);
@@ -116,8 +112,6 @@ Q_SIGNALS:
 private:
     KCalendarCore::Incidence::Ptr m_incidence;
     KCalendarCore::Incidence::Ptr m_originalIncidence;
-    KCalendarCore::Event::Ptr m_eventPtr;
-    KCalendarCore::Todo::Ptr m_todoPtr;
     qint64 m_collectionId;
     RemindersModel m_remindersModel;
     AttendeesModel m_attendeesModel;
