@@ -80,8 +80,8 @@ Kirigami.ApplicationWindow {
 
     IncidenceEditor {
         id: incidenceEditor
-        onAdded: CalendarManager.addIncidence(collectionId, incidence.incidencePtr)
-        onEdited: CalendarManager.editIncidence(collectionId, incidence.originalIncidencePtr, incidence.incidencePtr)
+        onAdded: CalendarManager.addIncidence(incidenceWrapper)
+        onEdited: CalendarManager.editIncidence(incidenceWrapper)
         onCancel: pageStack.pop(monthViewComponent)
     }
 
@@ -101,8 +101,8 @@ Kirigami.ApplicationWindow {
 
             IncidenceEditor {
                 id: incidenceEditorInLoader
-                onAdded: CalendarManager.addIncidence(collectionId, incidence.incidencePtr)
-                onEdited: CalendarManager.editIncidence(collectionId, incidence.originalIncidencePtr, incidence.incidencePtr)
+                onAdded: CalendarManager.addIncidence(incidenceWrapper)
+                onEdited: CalendarManager.editIncidence(incidenceWrapper)
                 onCancel: root.close()
             }
 
@@ -161,12 +161,12 @@ Kirigami.ApplicationWindow {
         id: deleteIncidenceSheet
         onAddException: {
             incidenceWrapper.recurrenceExceptionsModel.addExceptionDateTime(exceptionDate);
-            CalendarManager.editIncidence(incidenceWrapper.incidencePtr);
+            CalendarManager.editIncidence(incidenceWrapper);
             deleteIncidenceSheet.close();
         }
         onAddRecurrenceEndDate: {
             incidenceWrapper.recurrenceEndDateTime = endDate;
-            CalendarManager.editIncidence(incidenceWrapper.incidencePtr);
+            CalendarManager.editIncidence(incidenceWrapper);
             deleteIncidenceSheet.close();
         }
         onDeleteIncidence: {
