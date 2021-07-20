@@ -701,6 +701,7 @@ Kirigami.ScrollablePage {
                     id: remindersColumn
 
                     Kirigami.FormData.label: i18n("Reminder:")
+                    Kirigami.FormData.labelAlignment: remindersRepeater.count ? Qt.AlignTop : Qt.AlignVCenter
                     Layout.fillWidth: true
 
                     property var reminderCombos: []
@@ -774,6 +775,7 @@ Kirigami.ScrollablePage {
                     id: attendeesColumn
 
                     Kirigami.FormData.label: i18n("Attendees:")
+                    Kirigami.FormData.labelAlignment: attendeesRepeater.count ? Qt.AlignTop : Qt.AlignVCenter
                     Layout.fillWidth: true
 
                     QQC2.Button {
@@ -785,6 +787,7 @@ Kirigami.ScrollablePage {
                     }
 
                     Repeater {
+                        id: attendeesRepeater
                         model: eventEditorSheet.eventWrapper.attendeesModel
                         // All of the alarms are handled within the delegates.
                         Layout.fillWidth: true
@@ -882,6 +885,7 @@ Kirigami.ScrollablePage {
                     id: attachmentsColumn
 
                     Kirigami.FormData.label: i18n("Attachments:")
+                    Kirigami.FormData.labelAlignment: attachmentsRepeater.count ? Qt.AlignTop : Qt.AlignVCenter
                     Layout.fillWidth: true
 
                     QQC2.Button {
