@@ -169,7 +169,7 @@ Kirigami.ApplicationWindow {
         editorToUse.incidenceWrapper = Qt.createQmlObject('import org.kde.kalendar 1.0; IncidenceWrapper {id: incidence}',
                                                       editorToUse,
                                                       "incidence");
-        editorToUse.incidenceWrapper.setIncidenceSubclass(incidencePtr, CalendarManager.getIncidenceSubclassed(incidencePtr));
+        editorToUse.incidenceWrapper.incidencePtr = incidencePtr;
         editorToUse.incidenceWrapper.collectionId = collectionId;
         editorToUse.editMode = true;
     }
@@ -178,9 +178,9 @@ Kirigami.ApplicationWindow {
         deleteIncidenceSheet.incidenceWrapper = Qt.createQmlObject('import org.kde.kalendar 1.0; IncidenceWrapper {id: incidence}',
                                                            deleteIncidenceSheet,
                                                            "incidence");
-        deleteIncidenceSheet.incidenceWrapper.setIncidenceSubclass(incidencePtr, CalendarManager.getIncidenceSubclassed(incidencePtr))
-        deleteIncidenceSheet.deleteDate = deleteDate
-        deleteIncidenceSheet.open()
+        deleteIncidenceSheet.incidenceWrapper.incidencePtr = incidencePtr;
+        deleteIncidenceSheet.deleteDate = deleteDate;
+        deleteIncidenceSheet.open();
     }
 
     DeleteIncidenceSheet {

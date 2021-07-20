@@ -7,11 +7,11 @@
 
 IncidenceWrapper::IncidenceWrapper(QObject *parent)
     : QObject(parent)
-    , m_eventPtr(new KCalendarCore::Event)
-    , m_remindersModel(parent, m_eventPtr)
-    , m_attendeesModel(parent, m_eventPtr)
-    , m_recurrenceExceptionsModel(parent, m_eventPtr)
-    , m_attachmentsModel(parent, m_eventPtr)
+    , m_incidence(new KCalendarCore::Event)
+    , m_remindersModel(parent, m_incidence)
+    , m_attendeesModel(parent, m_incidence)
+    , m_recurrenceExceptionsModel(parent, m_incidence)
+    , m_attachmentsModel(parent, m_incidence)
 {
     for(int i = 0; i < QMetaEnum::fromType<IncidenceWrapper::RecurrenceIntervals>().keyCount(); i++) {
         int value = QMetaEnum::fromType<IncidenceWrapper::RecurrenceIntervals>().value(i);
@@ -29,33 +29,14 @@ IncidenceWrapper::IncidenceWrapper(QObject *parent)
     connect(this, &IncidenceWrapper::incidencePtrChanged,
             &m_attachmentsModel, [=](KCalendarCore::Incidence::Ptr incidencePtr){ m_attachmentsModel.setIncidencePtr(incidencePtr); });
 
-    setIncidenceSubclass(m_eventPtr, QVariant::fromValue(m_eventPtr));
-    m_eventPtr->setDtStart(QDateTime::currentDateTime());
-    m_eventPtr->setDtEnd(QDateTime::currentDateTime().addSecs(60 * 60));
+    KCalendarCore::Event::Ptr event = m_incidence.staticCast<KCalendarCore::Event>();
+    event->setDtStart(QDateTime::currentDateTime());
+    event->setDtEnd(QDateTime::currentDateTime().addSecs(60 * 60));
 }
 
 KCalendarCore::Incidence::Ptr IncidenceWrapper::incidencePtr() const
 {
     return m_incidence;
-}
-
-void IncidenceWrapper::setIncidenceSubclass(KCalendarCore::Incidence::Ptr incidencePtr, QVariant subclassedIncidencePtr)
-{
-    m_eventPtr = nullptr;
-    m_todoPtr = nullptr;
-
-    switch(incidencePtr->type()) {
-        case(KCalendarCore::Incidence::IncidenceType::TypeEvent):
-            m_eventPtr = subclassedIncidencePtr.value<KCalendarCore::Event::Ptr>();
-            break;
-        case(KCalendarCore::Incidence::IncidenceType::TypeTodo):
-            m_todoPtr = subclassedIncidencePtr.value<KCalendarCore::Todo::Ptr>();
-            break;
-        default:
-            qWarning() << "Unknown incidence type:" << incidencePtr->typeStr();
-    }
-
-    setIncidencePtr(incidencePtr);
 }
 
 void IncidenceWrapper::setIncidencePtr(KCalendarCore::Incidence::Ptr incidencePtr)
@@ -150,20 +131,23 @@ void IncidenceWrapper::setIncidenceStart(QDateTime incidenceStart)
 QDateTime IncidenceWrapper::incidenceEnd() const
 {
     if(m_incidence->type() == KCalendarCore::Incidence::IncidenceType::TypeEvent) {
-        return m_eventPtr->dtEnd();
+        KCalendarCore::Event::Ptr event = m_incidence.staticCast<KCalendarCore::Event>();
+        return event->dtEnd();
     } else if(m_incidence->type() == KCalendarCore::Incidence::IncidenceType::TypeTodo) {
-        return m_todoPtr->dtDue();
+        KCalendarCore::Todo::Ptr todo = m_incidence.staticCast<KCalendarCore::Todo>();
+        return todo->dtDue();
     }
     return {};
 }
 
 void IncidenceWrapper::setIncidenceEnd(QDateTime incidenceEnd)
 {
-    qDebug() << incidenceEnd;
     if(m_incidence->type() == KCalendarCore::Incidence::IncidenceType::TypeEvent) {
-        m_eventPtr->setDtEnd(incidenceEnd);
+        KCalendarCore::Event::Ptr event = m_incidence.staticCast<KCalendarCore::Event>();
+        event->setDtEnd(incidenceEnd);
     } else if(m_incidence->type() == KCalendarCore::Incidence::IncidenceType::TypeTodo) {
-        m_todoPtr->setDtDue(incidenceEnd);
+        KCalendarCore::Todo::Ptr todo = m_incidence.staticCast<KCalendarCore::Todo>();
+        todo->setDtDue(incidenceEnd);
     } else {
         qWarning() << "Unknown incidence type";
     }
@@ -317,21 +301,9 @@ AttachmentsModel * IncidenceWrapper::attachmentsModel()
     return &m_attachmentsModel;
 }
 
-
-
 QVariantMap IncidenceWrapper::recurrenceIntervals()
 {
     return m_recurrenceIntervals;
-}
-
-KCalendarCore::Event::Ptr IncidenceWrapper::eventPtr()
-{
-    return m_eventPtr;
-}
-
-KCalendarCore::Todo::Ptr IncidenceWrapper::todoPtr()
-{
-    return m_todoPtr;
 }
 
 void IncidenceWrapper::addAlarms(KCalendarCore::Alarm::List alarms)
