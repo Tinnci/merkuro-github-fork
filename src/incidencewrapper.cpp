@@ -142,6 +142,7 @@ QDateTime IncidenceWrapper::incidenceStart() const
 
 void IncidenceWrapper::setIncidenceStart(QDateTime incidenceStart)
 {
+    qDebug() << incidenceStart;
     m_incidence->setDtStart(incidenceStart);
     Q_EMIT incidenceStartChanged();
 }
@@ -158,6 +159,7 @@ QDateTime IncidenceWrapper::incidenceEnd() const
 
 void IncidenceWrapper::setIncidenceEnd(QDateTime incidenceEnd)
 {
+    qDebug() << incidenceEnd;
     if(m_incidence->type() == KCalendarCore::Incidence::IncidenceType::TypeEvent) {
         m_eventPtr->setDtEnd(incidenceEnd);
     } else if(m_incidence->type() == KCalendarCore::Incidence::IncidenceType::TypeTodo) {
