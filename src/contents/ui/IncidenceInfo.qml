@@ -4,30 +4,32 @@ import QtQuick.Controls 2.15 as QQC2
 import QtQuick.Layouts 1.15
 import "labelutils.js" as LabelUtils
 
-Kirigami.OverlayDrawer {
-    id: eventInfo
+import org.kde.kalendar 1.0
 
-    signal editEvent(var eventPtr, var collectionId)
-    signal deleteEvent(var eventPtr, date deleteDate)
+Kirigami.OverlayDrawer {
+    id: incidenceInfo
+
+    signal editIncidence(var incidencePtr, var collectionId)
+    signal deleteIncidence(var incidencePtr, date deleteDate)
 
     /**
-     * We use both eventData and eventWrapper to get info about the occurrence.
-     * EventData contains information about the specific occurrence (i.e. date of occurrence)
-     * as well as some general data about the event such as summary and description.
+     * We use both incidenceData and incidenceWrapper to get info about the occurrence.
+     * IncidenceData contains information about the specific occurrence (i.e. date of occurrence)
+     * as well as some general data about the incidence such as summary and description.
      *
-     * The eventWrapper contains more indepth data about reminders, attendees, etc. that is
-     * general to the event as a whole, not a specific occurrence.
+     * The incidenceWrapper contains more indepth data about reminders, attendees, etc. that is
+     * general to the incidence as a whole, not a specific occurrence.
      **/
 
-    property var eventData
-    property var eventWrapper
+    property var incidenceData
+    property var incidenceWrapper
     property var collectionData
 
-    onEventDataChanged: {
-        eventWrapper = Qt.createQmlObject('import org.kde.kalendar 1.0; IncidenceWrapper {id: event}',
-                                          eventInfo,
-                                          "event");
-        eventWrapper.setIncidencePtr(eventData.eventPtr);
+    onIncidenceDataChanged: {
+        incidenceWrapper = Qt.createQmlObject('import org.kde.kalendar 1.0; IncidenceWrapper {id: incidence}',
+                                          incidenceInfo,
+                                          "incidence");
+        incidenceWrapper.setIncidenceSubclass(incidenceData.incidencePtr, CalendarManager.getIncidenceSubclassed(incidenceData.incidencePtr));
     }
 
     enabled: true
@@ -44,7 +46,7 @@ Kirigami.OverlayDrawer {
         Layout.fillWidth: true
         Layout.fillHeight: true
 
-        active: eventInfo.drawerOpen
+        active: incidenceInfo.drawerOpen
         sourceComponent: QQC2.ScrollView {
             id: contentsView
             Layout.fillWidth: true
@@ -72,20 +74,20 @@ Kirigami.OverlayDrawer {
 
                         Kirigami.Heading {
                             Layout.fillWidth: true
-                            text: i18n("Event")
+                            text: i18n("Incidence")
                         }
 
                         QQC2.ToolButton {
                             icon.name: "edit-entry"
                             text:i18n("Edit")
-                            enabled: !eventInfo.collectionData.readOnly
-                            onClicked: editEvent(eventInfo.eventData.eventPtr, eventInfo.eventData.collectionId)
+                            enabled: !incidenceInfo.collectionData.readOnly
+                            onClicked: editIncidence(incidenceInfo.incidenceData.incidencePtr, incidenceInfo.incidenceData.collectionId)
                         }
                         QQC2.ToolButton {
                             icon.name: "edit-delete"
                             text:i18n("Delete")
-                            enabled: !eventInfo.collectionData.readOnly
-                            onClicked: deleteEvent(eventInfo.eventData.eventPtr, eventInfo.eventData.startTime)
+                            enabled: !incidenceInfo.collectionData.readOnly
+                            onClicked: deleteIncidence(incidenceInfo.incidenceData.incidencePtr, incidenceInfo.incidenceData.startTime)
                         }
                     }
                 }
@@ -109,20 +111,20 @@ Kirigami.OverlayDrawer {
                         Kirigami.Heading {
                             Layout.fillWidth: true
 
-                            text: "<b>" + eventInfo.eventData.text + "</b>"
+                            text: "<b>" + incidenceInfo.incidenceData.text + "</b>"
                             wrapMode: Text.Wrap
                         }
                         Kirigami.Icon {
-                            source: "tag-events"
+                            source: "tag-incidences"
                             // TODO: This will need dynamic changing with implementation of to-dos/journals
                         }
                         Kirigami.Icon {
                             source: "appointment-recurring"
-                            visible: eventInfo.eventWrapper.recurrenceData.type
+                            visible: incidenceInfo.incidenceWrapper.recurrenceData.type
                         }
                         Kirigami.Icon {
                             source: "appointment-reminder"
-                            visible: eventInfo.eventWrapper.remindersModel.rowCount() > 0
+                            visible: incidenceInfo.incidenceWrapper.remindersModel.rowCount() > 0
                         }
                     }
                     Rectangle {
@@ -130,7 +132,7 @@ Kirigami.OverlayDrawer {
                         Layout.fillWidth: true
                         height: Kirigami.Units.gridUnit / 2
 
-                        color: eventInfo.eventData.color
+                        color: incidenceInfo.incidenceData.color
                     }
 
                     QQC2.Label {
@@ -141,7 +143,7 @@ Kirigami.OverlayDrawer {
                         Layout.alignment: Qt.AlignTop
                         Layout.fillWidth: true
 
-                        text: eventInfo.collectionData.displayName
+                        text: incidenceInfo.collectionData.displayName
                         wrapMode: Text.Wrap
                     }
 
@@ -153,62 +155,62 @@ Kirigami.OverlayDrawer {
                         Layout.alignment: Qt.AlignTop
                         Layout.fillWidth: true
 
-                        text: eventInfo.eventData.startTime.toDateString() == eventInfo.eventData.endTime.toDateString() ?
-                        eventInfo.eventData.startTime.toLocaleDateString(Qt.locale()) :
-                        eventInfo.eventData.startTime.toLocaleDateString(Qt.locale()) + " - " + eventInfo.eventData.endTime.toLocaleDateString(Qt.locale())
+                        text: incidenceInfo.incidenceData.startTime.toDateString() == incidenceInfo.incidenceData.endTime.toDateString() ?
+                        incidenceInfo.incidenceData.startTime.toLocaleDateString(Qt.locale()) :
+                        incidenceInfo.incidenceData.startTime.toLocaleDateString(Qt.locale()) + " - " + incidenceInfo.incidenceData.endTime.toLocaleDateString(Qt.locale())
                         wrapMode: Text.Wrap
                     }
 
                     QQC2.Label {
                         Layout.alignment: Qt.AlignTop
                         text: i18n("<b>Time:</b>")
-                        visible: !eventInfo.eventData.allDay &&
-                        eventInfo.eventData.startTime.toDateString() == eventInfo.eventData.endTime.toDateString()
+                        visible: !incidenceInfo.incidenceData.allDay &&
+                        incidenceInfo.incidenceData.startTime.toDateString() == incidenceInfo.incidenceData.endTime.toDateString()
                     }
                     QQC2.Label {
                         Layout.alignment: Qt.AlignTop
                         Layout.fillWidth: true
 
                         text: {
-                            if(eventInfo.eventData.startTime.toTimeString() != eventInfo.eventData.endTime.toTimeString()) {
-                                eventInfo.eventData.startTime.toLocaleTimeString(Qt.locale(), Locale.ShortFormat) + " - " + eventInfo.eventData.endTime.toLocaleTimeString(Qt.locale(), Locale.ShortFormat)
-                            } else if (eventInfo.eventData.startTime.toTimeString() == eventInfo.eventData.endTime.toTimeString()) {
-                                eventInfo.eventData.startTime.toLocaleTimeString(Qt.locale(), Locale.ShortFormat)
+                            if(incidenceInfo.incidenceData.startTime.toTimeString() != incidenceInfo.incidenceData.endTime.toTimeString()) {
+                                incidenceInfo.incidenceData.startTime.toLocaleTimeString(Qt.locale(), Locale.ShortFormat) + " - " + incidenceInfo.incidenceData.endTime.toLocaleTimeString(Qt.locale(), Locale.ShortFormat)
+                            } else if (incidenceInfo.incidenceData.startTime.toTimeString() == incidenceInfo.incidenceData.endTime.toTimeString()) {
+                                incidenceInfo.incidenceData.startTime.toLocaleTimeString(Qt.locale(), Locale.ShortFormat)
                             }
                         }
                         wrapMode: Text.Wrap
-                        visible: !eventInfo.eventData.allDay &&
-                        eventInfo.eventData.startTime.toDateString() == eventInfo.eventData.endTime.toDateString()
+                        visible: !incidenceInfo.incidenceData.allDay &&
+                        incidenceInfo.incidenceData.startTime.toDateString() == incidenceInfo.incidenceData.endTime.toDateString()
                     }
 
                     QQC2.Label {
                         Layout.alignment: Qt.AlignTop
                         text: i18n("<b>Duration:</b>")
-                        visible: eventInfo.eventData.durationString
+                        visible: incidenceInfo.incidenceData.durationString
                     }
                     QQC2.Label {
                         Layout.alignment: Qt.AlignTop
                         Layout.fillWidth: true
 
-                        text: eventInfo.eventData.durationString
-                        visible: eventInfo.eventData.durationString
+                        text: incidenceInfo.incidenceData.durationString
+                        visible: incidenceInfo.incidenceData.durationString
                         wrapMode: Text.Wrap
                     }
 
                     QQC2.Label {
                         Layout.alignment: Qt.AlignTop
                         text: i18n("<b>Recurrence:</b>")
-                        visible: eventInfo.eventWrapper.recurrenceData.type
+                        visible: incidenceInfo.incidenceWrapper.recurrenceData.type
                     }
                     ColumnLayout {
                         Layout.fillWidth: true
-                        visible: eventInfo.eventWrapper.recurrenceData.type
+                        visible: incidenceInfo.incidenceWrapper.recurrenceData.type
 
                         QQC2.Label {
                             Layout.alignment: Qt.AlignTop
                             Layout.fillWidth: true
 
-                            text: LabelUtils.recurrenceToString(eventInfo.eventWrapper.recurrenceData)
+                            text: LabelUtils.recurrenceToString(incidenceInfo.incidenceWrapper.recurrenceData)
                             wrapMode: Text.Wrap
                         }
 
@@ -228,7 +230,7 @@ Kirigami.OverlayDrawer {
 
                                 Repeater {
                                     id: exceptionsRepeater
-                                    model: eventInfo.eventWrapper.recurrenceExceptionsModel
+                                    model: incidenceInfo.incidenceWrapper.recurrenceExceptionsModel
                                     delegate: QQC2.Label {
                                         Layout.fillWidth: true
                                         text: date.toLocaleDateString(Qt.locale())
@@ -240,9 +242,9 @@ Kirigami.OverlayDrawer {
                         QQC2.Label {
                             Layout.alignment: Qt.AlignTop
                             Layout.fillWidth: true
-                            visible: eventInfo.eventWrapper.recurrenceData.duration > -1
+                            visible: incidenceInfo.incidenceWrapper.recurrenceData.duration > -1
 
-                            text: LabelUtils.recurrenceEndToString(eventInfo.eventWrapper.recurrenceData)
+                            text: LabelUtils.recurrenceEndToString(incidenceInfo.incidenceWrapper.recurrenceData)
                             wrapMode: Text.Wrap
                         }
                     }
@@ -250,17 +252,17 @@ Kirigami.OverlayDrawer {
                     QQC2.Label {
                         Layout.alignment: Qt.AlignTop
                         text: i18n("<b>Location:</b>")
-                        visible: eventInfo.eventWrapper.location
+                        visible: incidenceInfo.incidenceWrapper.location
                     }
                     QQC2.Label {
                         Layout.alignment: Qt.AlignTop
                         Layout.fillWidth: true
 
                         textFormat: Text.MarkdownText
-                        text: eventInfo.eventWrapper.location.replace(LabelUtils.urlRegexp, (match) => `[${match}](${match})`)
+                        text: incidenceInfo.incidenceWrapper.location.replace(LabelUtils.urlRegexp, (match) => `[${match}](${match})`)
                         onLinkActivated: Qt.openUrlExternally(link)
                         wrapMode: Text.Wrap
-                        visible: eventInfo.eventWrapper.location
+                        visible: incidenceInfo.incidenceWrapper.location
                     }
 
                     QQC2.Label {
@@ -268,7 +270,7 @@ Kirigami.OverlayDrawer {
                         Layout.alignment: Qt.AlignTop
 
                         text: i18n("<b>Description:</b>")
-                        visible: eventInfo.eventWrapper.description
+                        visible: incidenceInfo.incidenceWrapper.description
                     }
                     QQC2.Label {
                         id: descriptionText
@@ -276,28 +278,28 @@ Kirigami.OverlayDrawer {
                         Layout.fillWidth: true
 
                         textFormat: Text.MarkdownText
-                        text: eventInfo.eventWrapper.description.replace(LabelUtils.urlRegexp, (match) => `[${match}](${match})`)
+                        text: incidenceInfo.incidenceWrapper.description.replace(LabelUtils.urlRegexp, (match) => `[${match}](${match})`)
                         onLinkActivated: Qt.openUrlExternally(link)
                         wrapMode: Text.Wrap
-                        visible: eventInfo.eventWrapper.description
+                        visible: incidenceInfo.incidenceWrapper.description
                     }
 
                     QQC2.Label {
                         Layout.alignment: Qt.AlignTop
-                        text: i18np("<b>Attachment:</b>", "<b>Attachments:</b>", eventInfo.eventWrapper.attachmentsModel.rowCount())
-                        visible: eventInfo.eventWrapper.attachmentsModel.rowCount() > 0
+                        text: i18np("<b>Attachment:</b>", "<b>Attachments:</b>", incidenceInfo.incidenceWrapper.attachmentsModel.rowCount())
+                        visible: incidenceInfo.incidenceWrapper.attachmentsModel.rowCount() > 0
                     }
 
                     ColumnLayout {
                         id: attachmentsColumn
 
                         Layout.fillWidth: true
-                        visible: eventInfo.eventWrapper.attachmentsModel.rowCount() > 0
+                        visible: incidenceInfo.incidenceWrapper.attachmentsModel.rowCount() > 0
 
                         Repeater {
                             Layout.fillWidth: true
 
-                            model: eventInfo.eventWrapper.attachmentsModel
+                            model: incidenceInfo.incidenceWrapper.attachmentsModel
 
                             delegate: QQC2.Label {
                                 Layout.fillWidth: true
@@ -312,19 +314,19 @@ Kirigami.OverlayDrawer {
                     QQC2.Label {
                         Layout.alignment: Qt.AlignTop
                         text: i18n("<b>Reminders:</b>")
-                        visible: eventInfo.eventWrapper.remindersModel.rowCount() > 0
+                        visible: incidenceInfo.incidenceWrapper.remindersModel.rowCount() > 0
                     }
 
                     ColumnLayout {
                         id: remindersColumn
 
                         Layout.fillWidth: true
-                        visible: eventInfo.eventWrapper.remindersModel.rowCount() > 0
+                        visible: incidenceInfo.incidenceWrapper.remindersModel.rowCount() > 0
 
                         Repeater {
                             Layout.fillWidth: true
 
-                            model: eventInfo.eventWrapper.remindersModel
+                            model: incidenceInfo.incidenceWrapper.remindersModel
 
                             delegate: QQC2.Label {
                                 Layout.fillWidth: true
@@ -337,12 +339,12 @@ Kirigami.OverlayDrawer {
                     QQC2.Label {
                         Layout.alignment: Qt.AlignTop
                         text: i18n("<b>Organizer:</b>")
-                        visible: eventInfo.eventWrapper.organizer.fullName
+                        visible: incidenceInfo.incidenceWrapper.organizer.fullName
                     }
                     QQC2.Label {
                         Layout.fillWidth: true
 
-                        property var organizer: eventInfo.eventWrapper.organizer
+                        property var organizer: incidenceInfo.incidenceWrapper.organizer
 
                         textFormat: Text.MarkdownText
                         text: organizer.name ?
@@ -350,24 +352,24 @@ Kirigami.OverlayDrawer {
                               `[${organizer.email}](mailto:${organizer.email})`
                         onLinkActivated: Qt.openUrlExternally(link)
                         wrapMode: Text.Wrap
-                        visible: eventInfo.eventWrapper.organizer.fullName
+                        visible: incidenceInfo.incidenceWrapper.organizer.fullName
                     }
 
                     QQC2.Label {
                         Layout.alignment: Qt.AlignTop
                         text: i18n("<b>Guests:</b>")
-                        visible: eventInfo.eventWrapper.attendeesModel.rowCount() > 0
+                        visible: incidenceInfo.incidenceWrapper.attendeesModel.rowCount() > 0
                     }
                     ColumnLayout {
                         id: attendeesColumn
 
                         Layout.fillWidth: true
-                        visible: eventInfo.eventWrapper.attendeesModel.rowCount() > 0
+                        visible: incidenceInfo.incidenceWrapper.attendeesModel.rowCount() > 0
 
                         Repeater {
                             Layout.fillWidth: true
 
-                            model: eventInfo.eventWrapper.attendeesModel
+                            model: incidenceInfo.incidenceWrapper.attendeesModel
 
                             delegate: QQC2.Label {
                                 Layout.fillWidth: true

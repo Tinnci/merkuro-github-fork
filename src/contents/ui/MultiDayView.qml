@@ -14,9 +14,9 @@ import "dateutils.js" as DateUtils
 Item {
     id: root
 
-    signal viewEvent(var modelData, var collectionData)
-    signal editEvent(var incidencePtr, var collectionId)
-    signal deleteEvent(var incidencePtr, date deleteDate)
+    signal viewIncidence(var modelData, var collectionData)
+    signal editIncidence(var incidencePtr, var collectionId)
+    signal deleteIncidence(var incidencePtr, date deleteDate)
 
     property int daysToShow
     property int daysPerRow: daysToShow
@@ -192,7 +192,7 @@ Item {
                                                 onPressed: {
                                                     clickX = mouseX
                                                     if(pressedButtons & Qt.LeftButton) {
-                                                        viewEvent(modelData, collectionDetails)
+                                                        viewIncidence(modelData, collectionDetails)
                                                     } else if (pressedButtons & Qt.RightButton) {
                                                         incidenceActions.createObject(mouseArea, {}).open()
                                                     }
@@ -209,13 +209,13 @@ Item {
                                                             icon.name: "edit-entry"
                                                             text:i18n("Edit")
                                                             enabled: !mouseArea.collectionDetails["readOnly"]
-                                                            onClicked: editEvent(modelData.incidencePtr, modelData.collectionId)
+                                                            onClicked: editIncidence(modelData.incidencePtr, modelData.collectionId)
                                                         }
                                                         QQC2.MenuItem {
                                                             icon.name: "edit-delete"
                                                             text:i18n("Delete")
                                                             enabled: !mouseArea.collectionDetails["readOnly"]
-                                                            onClicked: deleteEvent(modelData.incidencePtr, modelData.startTime)
+                                                            onClicked: deleteIncidence(modelData.incidencePtr, modelData.startTime)
                                                         }
                                                     }
                                                 }

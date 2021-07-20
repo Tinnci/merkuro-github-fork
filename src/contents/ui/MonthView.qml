@@ -14,9 +14,9 @@ Kirigami.Page {
     id: monthPage
 
     // More elegant way of sending this up to main.qml?
-    signal viewEventReceived(var receivedModelData, var receivedCollectionData)
-    signal editEventReceived(var receivedEventPtr, var receivedCollectionId)
-    signal deleteEventReceived(var receivedEventPtr, date receivedDeleteDate)
+    signal viewIncidenceReceived(var receivedModelData, var receivedCollectionData)
+    signal editIncidenceReceived(var receivedIncidencePtr, var receivedCollectionId)
+    signal deleteIncidenceReceived(var receivedIncidencePtr, date receivedDeleteDate)
 
     property alias startDate: dayView.startDate
     property alias currentDate: dayView.currentDate
@@ -102,9 +102,9 @@ Kirigami.Page {
             text: DateUtils.getWeek(startDate, Qt.locale().firstDayOfWeek)
         }
 
-        onViewEvent: viewEventReceived(modelData, collectionData)
-        onEditEvent: editEventReceived(eventPtr, collectionId)
-        onDeleteEvent: deleteEventReceived(eventPtr, deleteDate)
+        onViewIncidence: viewIncidenceReceived(modelData, collectionData)
+        onEditIncidence: editIncidenceReceived(incidencePtr, collectionId)
+        onDeleteIncidence: deleteIncidenceReceived(incidencePtr, deleteDate)
 
     }
 }
