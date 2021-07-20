@@ -57,10 +57,15 @@ Item {
         }
     }
 
-    ColumnLayout {
+    GridLayout {
         anchors.fill: parent
+        columns: timePicker.secondsPicker ? 5 : 3
+        rows: 5
 
         RowLayout {
+            Layout.row: 0
+            Layout.column: 0
+            Layout.columnSpan: timePicker.secondsPicker ? 5 : 3
             QQC2.Label {
                 text: i18n("Min. interval:")
             }
@@ -75,24 +80,37 @@ Item {
             }
         }
 
-        RowLayout {
-            Layout.fillWidth: true
-            Layout.fillHeight: true
-
-            ColumnLayout {
-                Layout.fillWidth: true
-                Layout.fillHeight: true
-
                 QQC2.ToolButton {
                     Layout.fillWidth: true
+                    Layout.row: 1
+                    Layout.column: 0
                     icon.name: "go-up"
                     enabled: hourView.currentIndex != 0
                     onClicked: hourView.currentIndex -= 1
                 }
+                QQC2.ToolButton {
+                    Layout.fillWidth: true
+                    Layout.row: 1
+                    Layout.column: 2
+                    icon.name: "go-up"
+                    enabled: minuteView.currentIndex != 0
+                    onClicked: minuteView.currentIndex -= 1
+                }
+                QQC2.ToolButton {
+                    Layout.fillWidth: true
+                    Layout.row: 1
+                    Layout.column: 4
+                    icon.name: "go-up"
+                    enabled: secondsView.currentIndex != 0
+                    onClicked: secondsView.currentIndex -= 1
+                    visible: timePicker.secondsPicker
+                }
+
                 QQC2.Tumbler {
                     id: hourView
                     Layout.fillWidth: true
-                    Layout.fillHeight: true
+                    Layout.row: 2
+                    Layout.column: 0
 
                     model: 24
 
@@ -107,35 +125,19 @@ Item {
                         text: modelData < 10 ? String(modelData).padStart(2, "0") : modelData
                     }
                 }
-                QQC2.ToolButton {
-                    Layout.fillWidth: true
-                    icon.name: "go-down"
-                    enabled: hourView.currentIndex < hourView.count - 1
-                    onClicked: hourView.currentIndex += 1
-                }
-            }
 
-            Kirigami.Heading {
-                Layout.fillWidth: true
-                Layout.fillHeight: true
-                horizontalAlignment: Text.AlignHCenter
-                verticalAlignment: Text.AlignVCenter
-                text: ":"
-            }
-            ColumnLayout {
-                Layout.fillWidth: true
-                Layout.fillHeight: true
-
-                QQC2.ToolButton {
-                    Layout.fillWidth: true
-                    icon.name: "go-up"
-                    enabled: minuteView.currentIndex != 0
-                    onClicked: minuteView.currentIndex -= 1
+                Kirigami.Heading {
+                    Layout.row: 2
+                    Layout.column: 1
+                    horizontalAlignment: Text.AlignHCenter
+                    verticalAlignment: Text.AlignVCenter
+                    text: ":"
                 }
+
                 QQC2.Tumbler {
                     id: minuteView
                     Layout.fillWidth: true
-                    Layout.fillHeight: true
+                    wrap: true
 
                     property int selectedIndex: 0
 
@@ -159,42 +161,23 @@ Item {
                         text: minuteToDisplay < 10 ? String(minuteToDisplay).padStart(2, "0") : minuteToDisplay
                     }
                 }
-                QQC2.ToolButton {
-                    Layout.fillWidth: true
-                    icon.name: "go-down"
-                    enabled: minuteView.currentIndex < minuteView.count - 1
-                    onClicked: minuteView.currentIndex += 1
-                }
-            }
+
 
             Kirigami.Heading {
-                Layout.fillWidth: true
-                Layout.fillHeight: true
+                Layout.row: 2
+                Layout.column: 3
                 horizontalAlignment: Text.AlignHCenter
                 verticalAlignment: Text.AlignVCenter
                 visible: timePicker.secondsPicker
                 text: ":"
             }
 
-            ColumnLayout {
-                Layout.fillWidth: true
-                Layout.fillHeight: true
-                visible: timePicker.secondsPicker
-
-                QQC2.ToolButton {
-                    Layout.fillWidth: true
-                    icon.name: "go-up"
-                    enabled: secondsView.currentIndex != 0
-                    onClicked: secondsView.currentIndex -= 1
-                }
-                QQC2.SwipeView {
-                    id: secondsView
-                    orientation: Qt.Vertical
-                    clip: true
-                    Layout.fillWidth: true
-                    Layout.fillHeight: true
-
                     QQC2.Tumbler {
+                        Layout.fillWidth: true
+                        Layout.fillHeight: true
+                        Layout.row: 2
+                        Layout.column: 4
+                        visible: timePicker.secondsPicker
                         model: 60
 
                         onCurrentIndexChanged: timePicker.dateTime = new Date (timePicker.dateTime.setHours(timePicker.dateTime.getHours(),
@@ -210,17 +193,36 @@ Item {
                             text: modelData < 10 ? String(modelData).padStart(2, "0") : modelData
                         }
                     }
+
+                QQC2.ToolButton {
+                    Layout.fillWidth: true
+                    Layout.row: 3
+                    Layout.column: 0
+                    icon.name: "go-down"
+                    enabled: hourView.currentIndex < hourView.count - 1
+                    onClicked: hourView.currentIndex += 1
                 }
                 QQC2.ToolButton {
                     Layout.fillWidth: true
+                    Layout.row: 3
+                    Layout.column: 2
+                    icon.name: "go-down"
+                    enabled: minuteView.currentIndex < minuteView.count - 1
+                    onClicked: minuteView.currentIndex += 1
+                }
+                QQC2.ToolButton {
+                    Layout.fillWidth: true
+                    Layout.row: 3
+                    Layout.column: 4
                     icon.name: "go-down"
                     enabled: secondsView.currentIndex < secondsView.count - 1
                     onClicked: secondsView.currentIndex += 1
+                    visible: timePicker.secondsPicker
                 }
-            }
-        }
 
         QQC2.Button {
+            Layout.row: 4
+            Layout.columnSpan: timePicker.secondsPicker ? 5 : 3
             Layout.fillWidth: true
             text: i18n("Done")
             onClicked: done()

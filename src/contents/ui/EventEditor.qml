@@ -229,6 +229,7 @@ Kirigami.ScrollablePage {
                             TimePicker {
                                 id: eventStartTimePicker
 
+                                Component.onCompleted: minuteMultiples = 15
                                 Connections {
                                     target: eventEditorSheet.eventWrapper
                                     function onEventStartChanged() {
@@ -333,6 +334,7 @@ Kirigami.ScrollablePage {
                             TimePicker {
                                 id: eventEndTimePicker
 
+                                Component.onCompleted: minuteMultiples = 15
                                 Connections {
                                     target: eventEditorSheet.eventWrapper
                                     function onEventEndChanged() {
