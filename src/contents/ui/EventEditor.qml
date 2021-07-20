@@ -783,13 +783,6 @@ Kirigami.ScrollablePage {
                         Layout.fillWidth: true
 
                         delegate: Kirigami.Card {
-
-                            actions: Kirigami.Action {
-                                text: i18n("Remove")
-                                icon.name: "edit-delete-remove"
-                                onTriggered: eventEditorSheet.eventWrapper.attendeesModel.deleteAttendee(index);
-                            }
-
                             contentItem: Item {
                             implicitWidth: attendeeCardContent.implicitWidth
                             implicitHeight: attendeeCardContent.implicitHeight
@@ -807,10 +800,19 @@ Kirigami.ScrollablePage {
                                     columns: 5
                                     rows: 4
 
-                                    QQC2.Label {
-                                        Layout.columnSpan: 5
+                                    RowLayout {
                                         Layout.fillWidth: true
-                                        text: i18n("Attendee %1", String(index + 1))
+                                        Layout.columnSpan: 5
+
+                                        QQC2.Label {
+                                            Layout.fillWidth: true
+                                            text: i18n("Attendee %1", String(index + 1))
+                                        }
+
+                                        QQC2.Button {
+                                            icon.name: "edit-delete-remove"
+                                            onClicked: eventEditorSheet.eventWrapper.attendeesModel.deleteAttendee(index);
+                                        }
                                     }
 
                                     QQC2.Label{
