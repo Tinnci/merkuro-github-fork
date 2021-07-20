@@ -187,13 +187,23 @@ void IncidenceOccurrenceModel::updateFromSource()
                 calendar.addIncidence(incidence);
             }
             KCalendarCore::OccurrenceIterator occurrenceIterator{calendar, QDateTime{mStart, {0, 0, 0}}, QDateTime{mEnd, {12, 59, 59}}};
+
             while (occurrenceIterator.hasNext()) {
                 occurrenceIterator.next();
                 const auto incidence = occurrenceIterator.incidence();
                 const auto start = occurrenceIterator.occurrenceStartDate();
                 const auto end = incidence->endDateForStart(start);
+
                 if (start.date() < mEnd && end.date() >= mStart) {
-                    m_incidences.append(Occurrence {start, end, incidence, incidence->typeStr(), getColor(incidence), getCollectionId(incidence), incidence->allDay() });
+                    m_incidences.append(Occurrence {
+                        start,
+                        end,
+                        incidence,
+                        incidence->typeStr(),
+                        getColor(incidence),
+                        getCollectionId(incidence),
+                        incidence->allDay()
+                    });
                 }
             }
         }

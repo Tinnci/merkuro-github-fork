@@ -367,6 +367,25 @@ int CalendarManager::getCalendarSelectableIndex(qint64 collectionId)
     return -1;
 }
 
+QVariant CalendarManager::getIncidenceSubclassed(KCalendarCore::Incidence::Ptr incidencePtr)
+{
+    switch(incidencePtr->type()) {
+        case(KCalendarCore::IncidenceBase::TypeEvent):
+            return QVariant::fromValue(m_calendar->event(incidencePtr->instanceIdentifier()));
+            break;
+        case(KCalendarCore::IncidenceBase::TypeTodo):
+            return QVariant::fromValue(m_calendar->todo(incidencePtr->instanceIdentifier()));
+            break;
+        case(KCalendarCore::IncidenceBase::TypeJournal):
+            return QVariant::fromValue(m_calendar->todo(incidencePtr->instanceIdentifier()));
+            break;
+        default:
+            return QVariant::fromValue(incidencePtr);
+            break;
+    }
+
+}
+
 QVariantMap CalendarManager::undoRedoData()
 {
     return QVariantMap {
@@ -435,5 +454,6 @@ void CalendarManager::redoAction()
     m_changer->history()->redo();
 }
 
+Q_DECLARE_METATYPE(KCalendarCore::Incidence::Ptr);
 
 #include "calendarmanager.moc"
