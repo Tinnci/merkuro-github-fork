@@ -402,11 +402,17 @@ void CalendarManager::addIncidence(IncidenceWrapper *incidenceWrapper)
 
     switch(incidenceWrapper->incidencePtr()->type()) {
         case(KCalendarCore::IncidenceBase::TypeEvent):
-            m_changer->createIncidence(KCalendarCore::Event::Ptr(incidenceWrapper->eventPtr()->clone()), collection);
+        {
+            KCalendarCore::Event::Ptr event = incidenceWrapper->incidencePtr().staticCast<KCalendarCore::Event>();
+            m_changer->createIncidence(event, collection);
             break;
+        }
         case(KCalendarCore::IncidenceBase::TypeTodo):
-            m_changer->createIncidence(KCalendarCore::Todo::Ptr(incidenceWrapper->todoPtr()->clone()), collection);
+        {
+            KCalendarCore::Todo::Ptr todo = incidenceWrapper->incidencePtr().staticCast<KCalendarCore::Todo>();
+            m_changer->createIncidence(todo, collection);
             break;
+        }
         default:
             m_changer->createIncidence(KCalendarCore::Incidence::Ptr(incidenceWrapper->incidencePtr()->clone()), collection);
             break;
