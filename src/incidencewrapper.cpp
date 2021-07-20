@@ -51,6 +51,8 @@ void IncidenceWrapper::setIncidenceSubclass(KCalendarCore::Incidence::Ptr incide
         case(KCalendarCore::Incidence::IncidenceType::TypeTodo):
             m_todoPtr = subclassedIncidencePtr.value<KCalendarCore::Todo::Ptr>();
             break;
+        default:
+            qWarning() << "Unknown incidence type:" << incidencePtr->typeStr();
     }
 
     setIncidencePtr(incidencePtr);
@@ -320,6 +322,15 @@ QVariantMap IncidenceWrapper::recurrenceIntervals()
     return m_recurrenceIntervals;
 }
 
+KCalendarCore::Event::Ptr IncidenceWrapper::eventPtr()
+{
+    return m_eventPtr;
+}
+
+KCalendarCore::Todo::Ptr IncidenceWrapper::todoPtr()
+{
+    return m_todoPtr;
+}
 
 void IncidenceWrapper::addAlarms(KCalendarCore::Alarm::List alarms)
 {

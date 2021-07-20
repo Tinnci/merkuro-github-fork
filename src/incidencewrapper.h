@@ -76,14 +76,18 @@ public:
     QVariantMap recurrenceData();
     void setRecurrenceData(QVariantMap recurrenceData);
     void setRecurrenceWeekDays(const QVector<bool> recurrenceWeekDays);
-    QVariantMap organizer();
+    QVariantMap recurrenceIntervals();
 
+    QVariantMap organizer();
     KCalendarCore::Attendee::List attendees() const;
+
     RemindersModel * remindersModel();
     AttendeesModel * attendeesModel();
     RecurrenceExceptionsModel * recurrenceExceptionsModel();
     AttachmentsModel * attachmentsModel();
-    QVariantMap recurrenceIntervals();
+
+    KCalendarCore::Event::Ptr eventPtr();
+    KCalendarCore::Todo::Ptr todoPtr();
 
     Q_INVOKABLE void setIncidenceSubclass(KCalendarCore::Incidence::Ptr incidencePtr, QVariant subclassedIncidencePtr);
     Q_INVOKABLE void addAlarms(KCalendarCore::Alarm::List alarms);
