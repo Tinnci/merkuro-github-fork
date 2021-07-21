@@ -3,6 +3,7 @@
 
 #include <QMetaEnum>
 #include <QBitArray>
+#include <QJSValue>
 #include <incidencewrapper.h>
 
 IncidenceWrapper::IncidenceWrapper(QObject *parent)
@@ -209,15 +210,17 @@ void IncidenceWrapper::setRecurrenceDataItem(QString key, QVariant value)
 {
     QVariantMap map = recurrenceData();
     if(map.contains(key)) {
-        if(key == QStringLiteral("weekdays") && value.canConvert<QVector<bool>>()) {
+        if(key == QStringLiteral("weekdays") && value.canConvert<QJSValue>()) {
 
-            QVector<bool> recurrenceWeekDays = value.value<QVector<bool>>();
-
+            auto jsval = value.value<QJSValue>();
+            QVariantList vlist = jsval.toVariant().value<QVariantList>();
             QBitArray days(7);
 
-            for(int i = 0; i < recurrenceWeekDays.size(); i++) {
-                days[i] = recurrenceWeekDays[i];
+            for(int i = 0; i < vlist.size(); i++) {
+                days[i] = vlist[i].toBool();
             }
+
+            qDebug() << days;
 
             KCalendarCore::RecurrenceRule *rrule = m_incidence->recurrence()->defaultRRule();
             QList<KCalendarCore::RecurrenceRule::WDayPos> positions;
