@@ -420,9 +420,14 @@ Kirigami.ScrollablePage {
                         Layout.fillWidth: true
                         Layout.columnSpan: 2
                         visible: repeatComboBox.currentIndex === 5
-                        textRole: recurFreqRuleSpinbox.value > 1 ? "displayPlural" : "displaySingular"
+                        // Make sure it defaults to something
+                        onVisibleChanged: if(visible) { currentIndex = 0; customRecurrenceLayout.setOcurrence(); }
+                        textRole: "display"
                         valueRole: "interval"
-                        onCurrentValueChanged: if(visible) { customRecurrenceLayout.setOcurrence(); }
+                        onCurrentValueChanged: if(visible) {
+                            customRecurrenceLayout.setOcurrence();
+                            repeatComboBox.currentIndex = 5; // Otherwise resets to default daily/weekly/etc.
+                        }
                         currentIndex: {
                             if(root.incidenceWrapper.recurrenceData.type === undefined) {
                                 return -1;
@@ -445,18 +450,11 @@ Kirigami.ScrollablePage {
                         }
 
                         model: [
-                            {key: "day", displaySingular: i18n("day"), displayPlural: i18n("days"), interval: root.incidenceWrapper.recurrenceIntervals.Daily},
-                            {key: "week", displaySingular: i18n("week"), displayPlural: i18n("weeks"), interval: root.incidenceWrapper.recurrenceIntervals.Weekly},
-                            {key: "month", displaySingular: i18n("month"), displayPlural: i18n("months"), interval: root.incidenceWrapper.recurrenceIntervals.Monthly},
-                            {key: "year", displaySingular: i18n("year"), displayPlural: i18n("years"), interval: root.incidenceWrapper.recurrenceIntervals.Yearly},
+                            {key: "day", display: i18np("day", "days", recurFreqRuleSpinbox.value), interval: root.incidenceWrapper.recurrenceIntervals.Daily},
+                            {key: "week", display: i18np("week", "weeks", recurFreqRuleSpinbox.value), interval: root.incidenceWrapper.recurrenceIntervals.Weekly},
+                            {key: "month", display: i18np("month", "months", recurFreqRuleSpinbox.value), interval: root.incidenceWrapper.recurrenceIntervals.Monthly},
+                            {key: "year", display: i18np("year", "years", recurFreqRuleSpinbox.value), interval: root.incidenceWrapper.recurrenceIntervals.Yearly},
                         ]
-                        delegate: Kirigami.BasicListItem {
-                            text: recurFreqRuleSpinbox.value > 1 ? modelData.displayPlural : modelData.displaySingular
-                            onClicked: {
-                                customRecurrenceLayout.setOcurrence();
-                                repeatComboBox.currentIndex = 5; // Otherwise resets to default daily/weekly/etc.
-                            }
-                        }
                         popup.z: 1000
                     }
 
