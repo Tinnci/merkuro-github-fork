@@ -420,7 +420,6 @@ Kirigami.ScrollablePage {
                         Layout.fillWidth: true
                         Layout.columnSpan: 2
                         visible: repeatComboBox.currentIndex === 5
-                        onVisibleChanged: if(currentIndex < 0) { currentIndex = 0 }
                         textRole: recurFreqRuleSpinbox.value > 1 ? "displayPlural" : "displaySingular"
                         valueRole: "interval"
                         onCurrentValueChanged: if(visible) { customRecurrenceLayout.setOcurrence(); }
