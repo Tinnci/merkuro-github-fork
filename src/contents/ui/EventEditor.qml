@@ -784,7 +784,11 @@ Kirigami.ScrollablePage {
                         // All of the alarms are handled within the delegates.
                         Layout.fillWidth: true
 
-                        delegate: Kirigami.Card {
+                        delegate: Kirigami.AbstractCard {
+
+                            topPadding: Kirigami.Units.smallSpacing
+                            bottomPadding: Kirigami.Units.smallSpacing
+
                             contentItem: Item {
                                 implicitWidth: attendeeCardContent.implicitWidth
                                 implicitHeight: attendeeCardContent.implicitHeight
