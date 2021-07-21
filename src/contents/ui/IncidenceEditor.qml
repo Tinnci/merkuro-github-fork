@@ -421,7 +421,7 @@ Kirigami.ScrollablePage {
                         Layout.columnSpan: 2
                         visible: repeatComboBox.currentIndex === 5
                         // Make sure it defaults to something
-                        onVisibleChanged: if(visible) { currentIndex = 0; customRecurrenceLayout.setOcurrence(); }
+                        onVisibleChanged: if(visible && currentIndex < 0) { currentIndex = 0; customRecurrenceLayout.setOcurrence(); }
                         textRole: "display"
                         valueRole: "interval"
                         onCurrentValueChanged: if(visible) {
@@ -580,7 +580,7 @@ Kirigami.ScrollablePage {
                         Layout.fillWidth: true
                         Layout.columnSpan: 2
                         visible: endRecurType.currentIndex == 1
-                        onVisibleChanged: if (visible) { root.incidenceWrapper.setRecurrenceDataItem("endDateTime", new Date()); }
+                        onVisibleChanged: if (visible && !root.incidenceWrapper.recurrenceData.endDateTime) { root.incidenceWrapper.setRecurrenceDataItem("endDateTime", new Date()); }
                         editable: true
                         editText: root.incidenceWrapper.recurrenceData.endDateTime.toLocaleDateString(Qt.locale(), Locale.NarrowFormat);
 
