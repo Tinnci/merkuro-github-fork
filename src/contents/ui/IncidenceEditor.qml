@@ -580,6 +580,7 @@ Kirigami.ScrollablePage {
                         Layout.fillWidth: true
                         Layout.columnSpan: 2
                         visible: endRecurType.currentIndex == 1
+                        onVisibleChanged: if (visible) { root.incidenceWrapper.setRecurrenceDataItem("endDateTime", new Date()); }
                         editable: true
                         editText: root.incidenceWrapper.recurrenceData.endDateTime.toLocaleDateString(Qt.locale(), Locale.NarrowFormat);
 
