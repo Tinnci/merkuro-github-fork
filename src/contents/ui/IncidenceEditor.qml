@@ -26,7 +26,9 @@ Kirigami.ScrollablePage {
 
     onIncidenceWrapperChanged: if(!editMode) { incidenceWrapper.collectionId = CalendarManager.defaultCalendarId }
 
-    title: editMode ? i18n("Edit incidence") : i18n("Add incidence")
+    title: editMode ?
+        i18n("Edit %1", incidenceWrapper.incidenceTypeStr) :
+        i18n("Add %1", incidenceWrapper.incidenceTypeStr)
 
     footer: QQC2.DialogButtonBox {
         standardButtons: QQC2.DialogButtonBox.Cancel
