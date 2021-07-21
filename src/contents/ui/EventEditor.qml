@@ -571,6 +571,7 @@ Kirigami.ScrollablePage {
                             }
                             popup.z: 1000
                         }
+
                         QQC2.ComboBox {
                             id: recurEndDateCombo
 
@@ -614,22 +615,22 @@ Kirigami.ScrollablePage {
                                 }
                             }
                         }
-                    }
 
-                    RowLayout {
-                        Layout.fillWidth: true
-                        visible: endRecurType.currentIndex === 2
-                        onVisibleChanged: if (visible) { eventEditorSheet.eventWrapper.setRecurrenceOccurrences(recurOccurrenceEndSpinbox.value) }
-
-                        QQC2.SpinBox {
-                            id: recurOccurrenceEndSpinbox
+                        RowLayout {
                             Layout.fillWidth: true
-                            from: 1
-                            value: eventEditorSheet.eventWrapper.recurrenceData.duration
-                            onValueChanged: eventEditorSheet.eventWrapper.setRecurrenceOccurrences(value)
-                        }
-                        QQC2.Label {
-                            text: i18np("occurrence", "occurrences", recurOccurrenceEndSpinbox.value)
+                            visible: endRecurType.currentIndex === 2
+                            onVisibleChanged: if (visible) { eventEditorSheet.eventWrapper.setRecurrenceOcurrences(recurOcurrenceEndSpinbox.value) }
+
+                            QQC2.SpinBox {
+                                id: recurOcurrenceEndSpinbox
+                                Layout.fillWidth: true
+                                from: 1
+                                value: eventEditorSheet.eventWrapper.recurrenceData.duration
+                                onValueChanged: eventEditorSheet.eventWrapper.setRecurrenceOcurrences(value)
+                            }
+                            QQC2.Label {
+                                text: i18np("occurrence", "occurrences", recurOcurrenceEndSpinbox.value)
+                            }
                         }
                     }
 
