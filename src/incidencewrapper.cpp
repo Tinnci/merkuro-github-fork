@@ -213,14 +213,17 @@ void IncidenceWrapper::setRecurrenceDataItem(QString key, QVariant value)
         if(key == QStringLiteral("weekdays") && value.canConvert<QJSValue>()) {
 
             auto jsval = value.value<QJSValue>();
+
+            if(!jsval.isArray()) {
+                return;
+            }
+
             QVariantList vlist = jsval.toVariant().value<QVariantList>();
             QBitArray days(7);
 
             for(int i = 0; i < vlist.size(); i++) {
                 days[i] = vlist[i].toBool();
             }
-
-            qDebug() << days;
 
             KCalendarCore::RecurrenceRule *rrule = m_incidence->recurrence()->defaultRRule();
             QList<KCalendarCore::RecurrenceRule::WDayPos> positions;
