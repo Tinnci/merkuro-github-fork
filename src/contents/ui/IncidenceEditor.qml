@@ -421,6 +421,7 @@ Kirigami.ScrollablePage {
                         Kirigami.FormData.label: i18n("Every:")
                         visible: repeatComboBox.currentIndex === 5
 
+<<<<<<< HEAD
                         QQC2.SpinBox {
                             id: recurFreqRuleSpinbox
 
@@ -428,6 +429,18 @@ Kirigami.ScrollablePage {
                             from: 1
                             value: root.incidenceWrapper.recurrenceData.frequency
                             onValueChanged: if(visible) { root.incidenceWrapper.setRecurrenceDataItem("frequency", value) }
+=======
+                        Layout.fillWidth: true
+                        Layout.columnSpan: 2
+                        visible: repeatComboBox.currentIndex === 5
+                        // Make sure it defaults to something
+                        onVisibleChanged: if(visible && currentIndex < 0) { currentIndex = 0; customRecurrenceLayout.setOcurrence(); }
+                        textRole: "display"
+                        valueRole: "interval"
+                        onCurrentValueChanged: if(visible) {
+                            customRecurrenceLayout.setOcurrence();
+                            repeatComboBox.currentIndex = 5; // Otherwise resets to default daily/weekly/etc.
+>>>>>>> 03c7842 (Fixed default combo values overriding recurrence data)
                         }
                         QQC2.ComboBox {
                             id: recurScaleRuleCombobox
@@ -594,7 +607,7 @@ Kirigami.ScrollablePage {
                             Layout.fillWidth: true
 
                             visible: endRecurType.currentIndex == 1
-                            onVisibleChanged: if (visible) { root.incidenceWrapper.setRecurrenceDataItem("endDateTime", new Date()); }
+                            onVisibleChanged: if (visible && !root.incidenceWrapper.recurrenceData.endDateTime) { root.incidenceWrapper.setRecurrenceDataItem("endDateTime", new Date()); }
                             editable: true
                             editText: root.incidenceWrapper.recurrenceData.endDateTime.toLocaleDateString(Qt.locale(), Locale.NarrowFormat);
 
