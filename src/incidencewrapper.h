@@ -25,7 +25,7 @@ class IncidenceWrapper : public QObject
     Q_OBJECT
     Q_PROPERTY(KCalendarCore::Incidence::Ptr incidencePtr READ incidencePtr WRITE setIncidencePtr NOTIFY incidencePtrChanged)
     Q_PROPERTY(KCalendarCore::Incidence::Ptr originalIncidencePtr READ originalIncidencePtr NOTIFY originalIncidencePtrChanged)
-    Q_PROPERTY(QByteArray incidenceTypeStr READ incidenceTypeStr NOTIFY incidenceTypeStr)
+    Q_PROPERTY(QByteArray incidenceTypeStr READ incidenceTypeStr NOTIFY incidenceTypeStrChanged)
 
     Q_PROPERTY(qint64 collectionId READ collectionId WRITE setCollectionId NOTIFY collectionIdChanged)
     Q_PROPERTY(QString summary READ summary WRITE setSummary NOTIFY summaryChanged)
