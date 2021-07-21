@@ -426,7 +426,7 @@ Kirigami.ScrollablePage {
 
                             Layout.fillWidth: true
                             from: 1
-                            value: incidenceEditorSheet.incidenceWrapper.recurrenceData.frequency
+                            value: root.incidenceWrapper.recurrenceData.frequency
                             onValueChanged: if(visible) { root.incidenceWrapper.setRecurrenceDataItem("frequency", value) }
                         }
                         QQC2.ComboBox {
@@ -438,14 +438,14 @@ Kirigami.ScrollablePage {
                             valueRole: "interval"
                             onCurrentValueChanged: if(visible) { customRecurrenceLayout.setOcurrence(); }
                             currentIndex: {
-                                if(incidenceEditorSheet.incidenceWrapper.recurrenceData.type === undefined) {
+                                if(root.incidenceWrapper.recurrenceData.type === undefined) {
                                     return -1;
                                 }
 
-                                switch(incidenceEditorSheet.incidenceWrapper.recurrenceData.type) {
+                                switch(root.incidenceWrapper.recurrenceData.type) {
                                     case 3: // Daily
                                     case 4: // Weekly
-                                        return incidenceEditorSheet.incidenceWrapper.recurrenceData.type - 3
+                                        return root.incidenceWrapper.recurrenceData.type - 3
                                     case 5: // Monthly on position (e.g. third Monday)
                                     case 6: // Monthly on day (1st of month)
                                         return 2;
@@ -458,7 +458,6 @@ Kirigami.ScrollablePage {
                                 }
                             }
 
-<<<<<<< HEAD
                             model: [
                                 {key: "day", displaySingular: i18n("day"), displayPlural: i18n("days"), interval: root.incidenceWrapper.recurrenceIntervals.Daily},
                                 {key: "week", displaySingular: i18n("week"), displayPlural: i18n("weeks"), interval: root.incidenceWrapper.recurrenceIntervals.Weekly},
@@ -845,14 +844,14 @@ Kirigami.ScrollablePage {
                                         Layout.row: 2
                                         Layout.column: 0
                                         text: i18n("Status:")
-                                        visible: eventEditorSheet.editMode
+                                        visible: root.editMode
                                     }
                                     QQC2.ComboBox {
                                         Layout.fillWidth: true
                                         Layout.row: 2
                                         Layout.column: 1
                                         Layout.columnSpan: 2
-                                        model: eventEditorSheet.eventWrapper.attendeesModel.attendeeStatusModel
+                                        model: root.eventWrapper.attendeesModel.attendeeStatusModel
                                         textRole: "display"
                                         valueRole: "value"
                                         currentIndex: status // role of parent
@@ -861,7 +860,7 @@ Kirigami.ScrollablePage {
                                                                                                             root.incidenceWrapper.attendeesModel.dataroles.status)
 
                                         popup.z: 1000
-                                        visible: eventEditorSheet.editMode
+                                        visible: root.editMode
                                     }
                                     QQC2.CheckBox {
                                         Layout.fillWidth: true
@@ -873,7 +872,7 @@ Kirigami.ScrollablePage {
                                         onCheckedChanged: root.incidenceWrapper.attendeesModel.setData(root.incidenceWrapper.attendeesModel.index(index, 0),
                                                                                                        checked,
                                                                                                        root.incidenceWrapper.attendeesModel.dataroles.rsvp)
-                                        visible: eventEditorSheet.editMode
+                                        visible: root.editMode
                                     }
                                 }
                             }
@@ -902,7 +901,7 @@ Kirigami.ScrollablePage {
 
                     Repeater {
                         id: attachmentsRepeater
-                        model: eventEditorSheet.eventWrapper.attachmentsModel
+                        model: root.eventWrapper.attachmentsModel
                         delegate: RowLayout {
                             Kirigami.BasicListItem {
                                 Layout.fillWidth: true
@@ -912,7 +911,7 @@ Kirigami.ScrollablePage {
                             }
                             QQC2.Button {
                                 icon.name: "edit-delete-remove"
-                                onClicked: eventEditorSheet.eventWrapper.attachmentsModel.deleteAttachment(uri)
+                                onClicked: root.eventWrapper.attachmentsModel.deleteAttachment(uri)
                             }
                         }
                     }
