@@ -147,6 +147,7 @@ Kirigami.ScrollablePage {
                     id: incidenceStartLayout
 
                     Kirigami.FormData.label: i18n("Start:")
+                    Kirigami.FormData.checkable: root.incidenceWrapper.incidenceTypeStr === "Todo"
                     Layout.fillWidth: true
 
                     QQC2.ComboBox {
@@ -251,7 +252,9 @@ Kirigami.ScrollablePage {
                 RowLayout {
                     id: incidenceEndLayout
 
-                    Kirigami.FormData.label: i18n("End:")
+                    Component.onCompleted: console.log(root.incidenceWrapper.incidenceTypeStr)
+                    Kirigami.FormData.label: root.incidenceWrapper.incidenceTypeStr === "Todo" ? i18n("Due:") : i18n("End:")
+                    Kirigami.FormData.checkable: root.incidenceWrapper.incidenceTypeStr === "Todo"
                     Layout.fillWidth: true
                     visible: !allDayCheckBox.checked
 
@@ -423,7 +426,6 @@ Kirigami.ScrollablePage {
                         Kirigami.FormData.label: i18n("Every:")
                         visible: repeatComboBox.currentIndex === 5
 
-<<<<<<< HEAD
                         QQC2.SpinBox {
                             id: recurFreqRuleSpinbox
 
@@ -431,18 +433,6 @@ Kirigami.ScrollablePage {
                             from: 1
                             value: root.incidenceWrapper.recurrenceData.frequency
                             onValueChanged: if(visible) { root.incidenceWrapper.setRecurrenceDataItem("frequency", value) }
-=======
-                        Layout.fillWidth: true
-                        Layout.columnSpan: 2
-                        visible: repeatComboBox.currentIndex === 5
-                        // Make sure it defaults to something
-                        onVisibleChanged: if(visible && currentIndex < 0) { currentIndex = 0; customRecurrenceLayout.setOcurrence(); }
-                        textRole: "display"
-                        valueRole: "interval"
-                        onCurrentValueChanged: if(visible) {
-                            customRecurrenceLayout.setOcurrence();
-                            repeatComboBox.currentIndex = 5; // Otherwise resets to default daily/weekly/etc.
->>>>>>> 03c7842 (Fixed default combo values overriding recurrence data)
                         }
                         QQC2.ComboBox {
                             id: recurScaleRuleCombobox
@@ -450,7 +440,8 @@ Kirigami.ScrollablePage {
                             Layout.fillWidth: true
                             visible: repeatComboBox.currentIndex === 5
                             // Make sure it defaults to something
-                            onVisibleChanged: if(visible) { currentIndex = 0; customRecurrenceLayout.setOcurrence(); }
+                            onVisibleChanged: if(visible && currentIndex < 0) { currentIndex = 0; customRecurrenceLayout.setOcurrence(); }
+
                             textRole: "display"
                             valueRole: "interval"
                             onCurrentValueChanged: if(visible) {
@@ -491,6 +482,7 @@ Kirigami.ScrollablePage {
                                     repeatComboBox.currentIndex = 5; // Otherwise resets to default daily/weekly/etc.
                                 }
                             }
+
                             popup.z: 1000
                         }
                     }
@@ -550,6 +542,7 @@ Kirigami.ScrollablePage {
 
                     ColumnLayout {
                         id: monthlyRecurRadioColumn
+
                         Kirigami.FormData.label: i18n("On:")
 
                         Layout.fillWidth: true
@@ -591,6 +584,7 @@ Kirigami.ScrollablePage {
                             // end date is set. Any number larger is the set number of recurrences
                             currentIndex: root.incidenceWrapper.recurrenceData.duration <= 0 ?
                                 root.incidenceWrapper.recurrenceData.duration + 1 : 2
+
                             textRole: "display"
                             valueRole: "duration"
                             model: [
@@ -602,14 +596,14 @@ Kirigami.ScrollablePage {
                                 text: modelData.display
                                 onClicked: root.incidenceWrapper.setRecurrenceDataItem("duration", modelData.duration)
                             }
+                            popup.z: 1000
                         }
-
                         QQC2.ComboBox {
                             id: recurEndDateCombo
-                            Layout.fillWidth: true
 
+                            Layout.fillWidth: true
                             visible: endRecurType.currentIndex == 1
-                            onVisibleChanged: if (visible && !root.incidenceWrapper.recurrenceData.endDateTime) { root.incidenceWrapper.setRecurrenceDataItem("endDateTime", new Date()); }
+                            onVisibleChanged: if (visible && isNaN(root.incidenceWrapper.recurrenceData.endDateTime.getTime())) { root.incidenceWrapper.setRecurrenceDataItem("endDateTime", new Date()); }
                             editable: true
                             editText: root.incidenceWrapper.recurrenceData.endDateTime.toLocaleDateString(Qt.locale(), Locale.NarrowFormat);
 
@@ -625,7 +619,7 @@ Kirigami.ScrollablePage {
                                     datePicker.clickedDate = dateFromText;
 
                                     if (visible) {
-                                        root.incidenceWrapper.setRecurrenceDataItem("endDateTime", dateFromText);
+                                    root.incidenceWrapper.setRecurrenceDataItem("endDateTime", dateFromText);
                                     }
                                 }
                             }
@@ -657,6 +651,7 @@ Kirigami.ScrollablePage {
                             QQC2.SpinBox {
                                 id: recurOcurrenceEndSpinbox
 
+                                Layout.fillWidth: true
                                 from: 1
                                 value: root.incidenceWrapper.recurrenceData.duration
                                 onValueChanged: if (visible) { root.incidenceWrapper.setRecurrenceOcurrences(value) }
