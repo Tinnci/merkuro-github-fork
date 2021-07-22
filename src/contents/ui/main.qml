@@ -21,7 +21,7 @@ Kirigami.ApplicationWindow {
 
     title: i18n("Calendar")
 
-    pageStack.initialPage: scheduleViewComponent
+    pageStack.initialPage: Kirigami.Settings.isMobile ? scheduleViewComponent : monthViewComponent
 
     globalDrawer: Kirigami.GlobalDrawer {
         isMenu: true
