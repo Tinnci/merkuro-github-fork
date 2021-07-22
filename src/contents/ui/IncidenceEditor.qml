@@ -19,16 +19,24 @@ Kirigami.ScrollablePage {
     // Setting the incidenceWrapper here and now causes some *really* weird behaviour.
     // Set it after this component has already been instantiated.
     property var incidenceWrapper
+    property string incidenceType: incidenceWrapper ? incidenceWrapper.incidenceTypeStr : ""
     property bool editMode: false
-
-    property bool validDates: editorLoader.active && editorLoader.item.validFormDates &&
-                              incidenceWrapper.incidenceStart < incidenceWrapper.incidenceEnd
+    property bool validDates: {
+        if(incidenceType === "Todo") {
+            editorLoader.active && editorLoader.item.validEndDate
+        } else {
+            editorLoader.active && editorLoader.item.validFormDates &&
+            incidenceWrapper.incidenceStart < incidenceWrapper.incidenceEnd
+        }
+    }
 
     onIncidenceWrapperChanged: if(!editMode) { incidenceWrapper.collectionId = CalendarManager.defaultCalendarId }
 
-    title: editMode ?
-        i18n("Edit %1", incidenceWrapper.incidenceTypeStr) :
-        i18n("Add %1", incidenceWrapper.incidenceTypeStr)
+    title: if(incidenceWrapper) {
+        editMode ? i18n("Edit %1", i18n(incidenceType)) : i18n("Add %1", i18n(incidenceType));
+    } else {
+        "";
+    }
 
     footer: QQC2.DialogButtonBox {
         standardButtons: QQC2.DialogButtonBox.Cancel
@@ -61,8 +69,9 @@ Kirigami.ScrollablePage {
             Layout.fillWidth: true
             Layout.fillHeight: true
 
-            property bool validFormDates: incidenceStartDateCombo.validDate &&
-                                          (incidenceEndDateCombo.validDate || incidenceWrapper.allDay)
+            property bool validStartDate: incidenceStartDateCombo.validDate
+            property bool validEndDate: incidenceEndDateCombo.validDate
+            property bool validFormDates: validStartDate && (validEndDate || incidenceWrapper.allDay)
 
             Kirigami.InlineMessage {
                 id: invalidDateMessage
@@ -79,6 +88,8 @@ Kirigami.ScrollablePage {
                 id: incidenceForm
 
                 property date todayDate: new Date()
+                property bool isTodo: root.incidenceType === "Todo"
+                property bool isJournal: root.incidenceType === "Journal"
 
                 QQC2.ComboBox {
                     id: calendarCombo
@@ -140,15 +151,15 @@ Kirigami.ScrollablePage {
                 QQC2.CheckBox {
                     id: allDayCheckBox
 
-                    text: i18n("All day incidence")
+                    text: i18n("All day")
                     onCheckedChanged: root.incidenceWrapper.allDay = checked
                 }
                 RowLayout {
                     id: incidenceStartLayout
 
                     Kirigami.FormData.label: i18n("Start:")
-                    Kirigami.FormData.checkable: root.incidenceWrapper.incidenceTypeStr === "Todo"
                     Layout.fillWidth: true
+                    visible: !incidenceForm.isTodo
 
                     QQC2.ComboBox {
                         id: incidenceStartDateCombo
@@ -252,11 +263,9 @@ Kirigami.ScrollablePage {
                 RowLayout {
                     id: incidenceEndLayout
 
-                    Component.onCompleted: console.log(root.incidenceWrapper.incidenceTypeStr)
-                    Kirigami.FormData.label: root.incidenceWrapper.incidenceTypeStr === "Todo" ? i18n("Due:") : i18n("End:")
-                    Kirigami.FormData.checkable: root.incidenceWrapper.incidenceTypeStr === "Todo"
+                    Kirigami.FormData.label: incidenceForm.isTodo ? i18n("Due:") : i18n("End:")
                     Layout.fillWidth: true
-                    visible: !allDayCheckBox.checked
+                    visible: !allDayCheckBox.checked || !incidenceForm.isJournal
 
                     QQC2.ComboBox {
                         id: incidenceEndDateCombo
