@@ -74,7 +74,7 @@ Kirigami.OverlayDrawer {
 
                         Kirigami.Heading {
                             Layout.fillWidth: true
-                            text: i18n("Incidence")
+                            text: i18n(incidenceInfo.incidenceWrapper.incidenceTypeStr)
                         }
 
                         QQC2.ToolButton {
