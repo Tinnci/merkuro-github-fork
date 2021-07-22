@@ -117,7 +117,7 @@ Kirigami.ScrollablePage {
                     id: weekHeading
 
                     Layout.fillWidth: true
-                    Layout.bottomMargin: dayColumn.spacing * -1
+                    Layout.bottomMargin: -dayColumn.spacing
 
                     text: {
                         let nextDay = DateUtils.getLastDayOfWeek( DateUtils.nextWeek(periodStartDate) );
