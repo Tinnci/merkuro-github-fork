@@ -179,6 +179,7 @@ Kirigami.ApplicationWindow {
 
             Layout.minimumWidth: applicationWindow().width * 0.66
 
+            onAddEventReceived: root.setUpAdd(receivedAddDate)
             onViewEventReceived: root.setUpView(receivedModelData, receivedCollectionData)
             onEditEventReceived: root.setUpEdit(receivedEventPtr, receivedCollectionData)
             onDeleteEventReceived: root.setUpDelete(receivedEventPtr, receivedDeleteDate)

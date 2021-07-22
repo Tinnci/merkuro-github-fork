@@ -14,6 +14,7 @@ import "dateutils.js" as DateUtils
 Item {
     id: root
 
+    signal addEvent(date addDate)
     signal viewEvent(var modelData, var collectionData)
     signal editEvent(var eventPtr, var collectionId)
     signal deleteEvent(var eventPtr, date deleteDate)
@@ -126,6 +127,12 @@ Item {
                                         padding: Kirigami.Units.smallSpacing
                                         visible: root.showDayIndicator
                                         color: gridItem.isToday ? Kirigami.Theme.highlightColor : (!gridItem.isCurrentMonth ? Kirigami.Theme.disabledTextColor : Kirigami.Theme.textColor)
+                                    }
+
+                                    DayMouseArea {
+                                        anchors.fill: parent
+                                        addDate: gridItem.date
+                                        onAddNewEvent: addEvent(addDate)
                                     }
                                 }
                             }
