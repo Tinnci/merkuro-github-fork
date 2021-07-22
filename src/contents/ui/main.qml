@@ -27,7 +27,16 @@ Kirigami.ApplicationWindow {
         isMenu: true
         actions: [
             Kirigami.Action {
-<<<<<<< HEAD
+                text: i18n("Add...")
+                icon.name: "list-add"
+
+                Kirigami.Action {
+                    text: i18n("New event")
+                    icon.name: "tag-events"
+                    onTriggered: root.setUpAdd();
+                }
+            },
+            Kirigami.Action {
                 icon.name: "edit-undo"
                 text: CalendarManager.undoRedoData.undoAvailable ?
                       i18n("Undo: ") + CalendarManager.undoRedoData.nextUndoDescription :
