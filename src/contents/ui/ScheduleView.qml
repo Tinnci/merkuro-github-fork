@@ -12,7 +12,7 @@ import "dateutils.js" as DateUtils
 Kirigami.ScrollablePage {
     id: root
 
-    signal addEvent
+    signal addEvent(date addDate)
     signal viewEvent(var modelData, var collectionData)
     signal editEvent(var eventPtr, var collectionId)
     signal deleteEvent(var eventPtr, date deleteDate)
@@ -110,7 +110,7 @@ Kirigami.ScrollablePage {
 
             onDoubleClicked: {
                 if (pressedButtons & Qt.LeftButton) {
-                    addEvent()
+                    addEvent(periodStartDate)
                 }
             }
             onPressed: {
