@@ -25,9 +25,9 @@ MouseArea {
         clickX = mouseX
         clickY = mouseY
         if (pressedButtons & Qt.LeftButton) {
-            viewClicked(eventData, collectionDetails)
+            viewClicked(eventData, collectionDetails);
         } else if (pressedButtons & Qt.RightButton) {
-            eventActions.createObject(mouseArea, {}).open()
+            eventActions.createObject(mouseArea, {}).open();
         }
     }
 

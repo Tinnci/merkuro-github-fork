@@ -20,14 +20,14 @@ MouseArea {
 
     onDoubleClicked: {
         if (pressedButtons & Qt.LeftButton) {
-            addNewEvent(addDate)
+            addNewEvent(addDate);
         }
     }
     onPressed: {
-        clickX = mouseX
-        clickY = mouseY
+        clickX = mouseX;
+        clickY = mouseY;
         if (pressedButtons & Qt.RightButton) {
-            dayActions.createObject(dayMouseArea, {}).open()
+            dayActions.createObject(dayMouseArea, {}).open();
         }
     }
 
@@ -41,7 +41,7 @@ MouseArea {
             // TODO: Add to-dos and journals
             QQC2.MenuItem {
                 icon.name: "tag-events"
-                text:i18n("New event")
+                text: i18n("New event")
                 onClicked: addNewEvent(dayMouseArea.addDate)
             }
         }
