@@ -107,7 +107,7 @@ Kirigami.ApplicationWindow {
         }
     }
 
-    function setUpAdd() {
+    function setUpAdd(addDate) {
         let editorToUse = root.editorToUse();
         if (editorToUse.editMode || !editorToUse.eventWrapper) {
             editorToUse.eventWrapper = Qt.createQmlObject('import org.kde.kalendar 1.0; EventWrapper {id: event}',
@@ -115,6 +115,11 @@ Kirigami.ApplicationWindow {
                                                           "event");
         }
         editorToUse.editMode = false;
+        if(typeof(addDate) !== undefined && !isNaN(addDate.getTime())) {
+            let existingStart = editorToUse.eventWrapper.eventStart;
+            editorToUse.eventWrapper.eventStart = new Date(addDate.setHours(existingStart.getHours(), existingStart.getMinutes()));
+            editorToUse.eventWrapper.eventEnd = new Date(addDate.setHours(existingStart.getHours() + 1, existingStart.getMinutes()));
+        }
     }
 
     function setUpView(modelData, collectionData) {
@@ -204,7 +209,7 @@ Kirigami.ApplicationWindow {
             onMonthChanged: root.month = month
             onYearChanged: root.year = year
 
-            onAddEvent: setUpAdd()
+            onAddEvent: setUpAdd(addDate)
             onViewEvent: setUpView(modelData, collectionData)
             onEditEvent: setUpEdit(eventPtr, collectionData)
             onDeleteEvent: setUpDelete(eventPtr, deleteDate)
