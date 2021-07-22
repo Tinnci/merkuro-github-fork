@@ -325,7 +325,8 @@ Kirigami.ScrollablePage {
                                                 } else if (modelData.startTime.getTime() === modelData.endTime.getTime()) {
                                                     modelData.startTime.toLocaleTimeString(Qt.locale(), Locale.ShortFormat);
                                                 } else if (!eventCard.multiday) {
-                                                    modelData.startTime.toLocaleTimeString(Qt.locale(), Locale.ShortFormat) + " - " + modelData.endTime.toLocaleTimeString(Qt.locale(), Locale.ShortFormat);
+                                                    i18nc("Displays times between incidence start and end", "%1 - %2",
+                                                    modelData.startTime.toLocaleTimeString(Qt.locale(), Locale.ShortFormat), modelData.endTime.toLocaleTimeString(Qt.locale(), Locale.ShortFormat));
                                                 } else if (eventCard.dayOfMultidayEvent === 1) {
                                                     i18n("Starts at %1", modelData.startTime.toLocaleTimeString(Qt.locale(), Locale.ShortFormat));
                                                 } else if (eventCard.dayOfMultidayEvent === eventCard.eventDays) {
