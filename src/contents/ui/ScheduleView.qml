@@ -96,46 +96,14 @@ Kirigami.ScrollablePage {
             }
         }
 
-        delegate: MouseArea {
+        delegate: DayMouseArea {
             id: dayMouseArea
 
             width: dayColumn.width
             height: dayColumn.height
 
-            property double clickX
-            property double clickY
-
-            hoverEnabled: true
-            acceptedButtons: Qt.LeftButton | Qt.RightButton
-
-            onDoubleClicked: {
-                if (pressedButtons & Qt.LeftButton) {
-                    addEvent(periodStartDate)
-                }
-            }
-            onPressed: {
-                clickX = mouseX
-                clickY = mouseY
-                if (pressedButtons & Qt.RightButton) {
-                    dayActions.createObject(dayMouseArea, {}).open()
-                }
-            }
-
-            Component {
-                id: dayActions
-                QQC2.Menu {
-                    id: actionsPopup
-                    y: dayMouseArea.clickY
-                    x: dayMouseArea.clickX
-
-                    // TODO: Add to-dos and journals
-                    QQC2.MenuItem {
-                        icon.name: "tag-events"
-                        text:i18n("New event")
-                        onClicked: root.addEvent()
-                    }
-                }
-            }
+            addDate: periodStartDate
+            onAddNewEvent: addEvent(addDate)
 
             ColumnLayout {
                 // Tip: do NOT hide an entire delegate.
