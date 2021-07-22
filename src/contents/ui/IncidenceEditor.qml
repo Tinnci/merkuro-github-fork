@@ -20,6 +20,7 @@ Kirigami.ScrollablePage {
     // Set it after this component has already been instantiated.
     property var incidenceWrapper
     property string incidenceType: incidenceWrapper ? incidenceWrapper.incidenceTypeStr : ""
+
     property bool editMode: false
     property bool validDates: {
         if(incidenceType === "Todo") {
@@ -97,17 +98,25 @@ Kirigami.ScrollablePage {
                     Kirigami.FormData.label: i18n("Calendar:")
                     Layout.fillWidth: true
 
+                    // Not using a property from the incidenceWrapper object makes currentIndex send old incidenceWrapper to function
+                    property int collectionId: root.incidenceWrapper.collectionId
+
                     textRole: "display"
                     valueRole: "collectionId"
-                    currentIndex: CalendarManager.getCalendarSelectableIndex(root.incidenceWrapper.collectionId)
-                    onCurrentValueChanged: root.incidenceWrapper.collectionId = currentValue
+                    currentIndex: if(model && collectionId) { CalendarManager.getCalendarSelectableIndex(root.incidenceWrapper) }
 
                     // Should default to default collection
-                    // Should also only show *calendars*
-                    model: CalendarManager.selectableCalendars
+                    model: {
+                        if(root.incidenceType === "Event") {
+                            return CalendarManager.selectableEventCalendars;
+                        } else if (root.incidenceType === "Todo") {
+                            return CalendarManager.selectableTodoCalendars;
+                        }
+                    }
                     delegate: Kirigami.BasicListItem {
                         label: display
                         icon: decoration
+                        onClicked: root.incidenceWrapper.collectionId = currentValue
                     }
                     popup.z: 1000
                 }
