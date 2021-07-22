@@ -264,7 +264,10 @@ Kirigami.ScrollablePage {
                                     Kirigami.Theme.backgroundColor: Qt.rgba(modelData.color.r, modelData.color.g, modelData.color.b, 0.8)
                                     Kirigami.Theme.highlightColor: Qt.darker(modelData.color, 2.5)
 
-                                    padding: 0
+                                    property real paddingSize: Kirigami.Settings.isMobile ? Kirigami.Units.largeSpacing : Kirigami.Units.smallSpacing
+
+                                    topPadding: paddingSize
+                                    bottomPadding: paddingSize
 
                                     showClickFeedback: true
 
@@ -319,14 +322,18 @@ Kirigami.ScrollablePage {
                                             Layout.column: 1
                                             Layout.row: 0
 
+                                            visible: eventCard.eventWrapper.remindersModel.rowCount() > 0 //&& eventCard.eventWrapper.recurrenceData.type
+
                                             // TODO: Re-enable this when MR !8 is merged
                                             /*Kirigami.Icon {
+                                                id: recurringIcon
                                                 Layout.fillHeight: true
                                                 source: "appointment-recurring"
                                                 color: cardContents.textColor
                                                 visible: eventCard.eventWrapper.recurrenceData.type
                                             }*/
                                             Kirigami.Icon {
+                                                id: reminderIcon
                                                 Layout.fillHeight: true
                                                 source: "appointment-reminder"
                                                 color: cardContents.textColor
