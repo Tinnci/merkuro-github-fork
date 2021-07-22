@@ -53,11 +53,13 @@ Kirigami.ScrollablePage {
 
     actions {
         left: Kirigami.Action {
-            text: i18n("Previous")
+            icon.name: "go-previous"
+            text: i18n("Previous month")
             onTriggered: setToDate(DateUtils.previousMonth(startDate))
         }
         right: Kirigami.Action {
-            text: i18n("Next")
+            icon.name: "go-next"
+            text: i18n("Next month")
             onTriggered: setToDate(DateUtils.nextMonth(startDate))
         }
     }

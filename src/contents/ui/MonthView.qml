@@ -54,11 +54,13 @@ Kirigami.Page {
 
     actions {
         left: Kirigami.Action {
-            text: i18n("Previous")
+            icon.name: "go-previous"
+            text: i18n("Previous month")
             onTriggered: setToDate(new Date(startDate.getFullYear(), startDate.getMonth()))
         }
         right: Kirigami.Action {
-            text: i18n("Next")
+            icon.name: "go-next"
+            text: i18n("Next month")
             onTriggered: setToDate(new Date(startDate.getFullYear(), startDate.getMonth() + 2)) // Yes. I don't know.
         }
     }
