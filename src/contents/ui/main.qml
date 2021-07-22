@@ -27,6 +27,16 @@ Kirigami.ApplicationWindow {
         isMenu: true
         actions: [
             Kirigami.Action {
+                text: i18n("Add...")
+                icon.name: "list-add"
+
+                Kirigami.Action {
+                    text: i18n("New event")
+                    icon.name: "tag-events"
+                    onTriggered: root.setUpAdd();
+                }
+            },
+            Kirigami.Action {
                 icon.name: "view-calendar"
                 text: i18n("Month view")
                 onTriggered: pageStack.layers.replace(monthViewComponent);
