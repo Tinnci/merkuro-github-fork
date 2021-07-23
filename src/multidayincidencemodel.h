@@ -28,12 +28,9 @@ namespace KCalendarCore {
 class MultiDayIncidenceModel : public QAbstractItemModel
 {
     Q_OBJECT
-<<<<<<< HEAD
-    Q_PROPERTY(EventOccurrenceModel* model WRITE setModel)
     Q_PROPERTY(int periodLength READ periodLength WRITE setPeriodLength NOTIFY periodLengthChanged)
-=======
     Q_PROPERTY(IncidenceOccurrenceModel* model WRITE setModel)
->>>>>>> d2dda3a (Renamed eventocurrencemodel class to fit general incidence management)
+
 public:
     MultiDayIncidenceModel(QObject *parent = nullptr);
     ~MultiDayIncidenceModel() = default;
@@ -48,8 +45,7 @@ public:
 
     QHash<int, QByteArray> roleNames() const override;
 
-<<<<<<< HEAD
-    void setModel(EventOccurrenceModel *model);
+    void setModel(IncidenceOccurrenceModel *model);
     int periodLength();
     void setPeriodLength(int periodLength);
 
@@ -57,16 +53,9 @@ Q_SIGNALS:
     void periodLengthChanged();
 
 private:
-    QList<QModelIndex> sortedEventsFromSourceModel(const QDate &rowStart) const;
-    EventOccurrenceModel *mSourceModel{nullptr};
-=======
-    void setModel(IncidenceOccurrenceModel *model);
-private:
     QList<QModelIndex> sortedIncidencesFromSourceModel(const QDate &rowStart) const;
     QVariantList layoutLines(const QDate &rowStart) const;
     IncidenceOccurrenceModel *mSourceModel{nullptr};
->>>>>>> d2dda3a (Renamed eventocurrencemodel class to fit general incidence management)
     int mPeriodLength{7};
-    QVariantList layoutLines(const QDate &rowStart) const;
 };
 

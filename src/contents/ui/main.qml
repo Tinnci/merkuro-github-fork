@@ -31,8 +31,8 @@ Kirigami.ApplicationWindow {
                 icon.name: "list-add"
 
                 Kirigami.Action {
-                    text: i18n("New event")
-                    icon.name: "tag-events"
+                    text: i18n("New incidence")
+                    icon.name: "tag-incidences"
                     onTriggered: root.setUpAdd();
                 }
             },
@@ -152,8 +152,8 @@ Kirigami.ApplicationWindow {
         }
         editorToUse.editMode = false;
 
-        if(type === "Event") {
-            editorToUse.incidenceWrapper.setNewEvent();
+        if(type === "Incidence") {
+            editorToUse.incidenceWrapper.setNewIncidence();
         } else if (type === "Todo") {
             editorToUse.incidenceWrapper.setNewTodo();
         }
@@ -162,9 +162,9 @@ Kirigami.ApplicationWindow {
 
 
         if(typeof(addDate) !== undefined && !isNaN(addDate.getTime())) {
-            let existingStart = editorToUse.eventWrapper.eventStart;
-            editorToUse.eventWrapper.eventStart = new Date(addDate.setHours(existingStart.getHours(), existingStart.getMinutes()));
-            editorToUse.eventWrapper.eventEnd = new Date(addDate.setHours(existingStart.getHours() + 1, existingStart.getMinutes()));
+            let existingStart = editorToUse.incidenceWrapper.incidenceStart;
+            editorToUse.incidenceWrapper.incidenceStart = new Date(addDate.setHours(existingStart.getHours(), existingStart.getMinutes()));
+            editorToUse.incidenceWrapper.incidenceEnd = new Date(addDate.setHours(existingStart.getHours() + 1, existingStart.getMinutes()));
         }
     }
 
@@ -234,9 +234,9 @@ Kirigami.ApplicationWindow {
 
             actions.contextualActions: [
                 Kirigami.Action {
-                    text: i18n("Add event")
+                    text: i18n("Add incidence")
                     icon.name: "list-add"
-                    onTriggered: root.setUpAdd();
+                    onTriggered: root.setUpAdd("Event");
                 }
             ]
         }
@@ -255,10 +255,10 @@ Kirigami.ApplicationWindow {
             onMonthChanged: root.month = month
             onYearChanged: root.year = year
 
-            onAddEvent: setUpAdd(addDate)
-            onViewEvent: setUpView(modelData, collectionData)
-            onEditEvent: setUpEdit(eventPtr, collectionData)
-            onDeleteEvent: setUpDelete(eventPtr, deleteDate)
+            onAddIncidence: setUpAdd(type, addDate)
+            onViewIncidence: setUpView(modelData, collectionData)
+            onEditIncidence: setUpEdit(incidencePtr, collectionData)
+            onDeleteIncidence: setUpDelete(incidencePtr, deleteDate)
 
             actions.contextualActions: [
                 Kirigami.Action {

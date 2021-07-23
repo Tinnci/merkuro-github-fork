@@ -964,21 +964,6 @@ Kirigami.ScrollablePage {
                             onAccepted: root.incidenceWrapper.attachmentsModel.addAttachment(fileUrls)
                         }
                     }
-
-                    Repeater {
-                        id: attachmentsRepeater
-                        model: root.incidenceWrapper.attachmentsModel
-                        delegate: RowLayout {
-                            QQC2.Label {
-                                Layout.fillWidth: true
-                                text: attachmentLabel
-                            }
-                            QQC2.Button {
-                                icon.name: "edit-delete-remove"
-                                onClicked: root.incidenceWrapper.attachmentsModel.deleteAttachment(uri)
-                            }
-                        }
-                    }
                 }
             }
         }
