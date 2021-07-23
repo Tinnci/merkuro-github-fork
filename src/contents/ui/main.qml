@@ -158,6 +158,9 @@ Kirigami.ApplicationWindow {
             editorToUse.incidenceWrapper.setNewTodo();
         }
 
+        editorToUse.incidenceWrapper.collectionId = CalendarManager.defaultCalendarId(editorToUse.incidenceWrapper)
+
+
         if(typeof(addDate) !== undefined && !isNaN(addDate.getTime())) {
             let existingStart = editorToUse.eventWrapper.eventStart;
             editorToUse.eventWrapper.eventStart = new Date(addDate.setHours(existingStart.getHours(), existingStart.getMinutes()));
