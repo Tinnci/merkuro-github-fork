@@ -78,14 +78,26 @@ Kirigami.OverlayDrawer {
                         }
 
                         QQC2.ToolButton {
+                            // If accessing directly, updated incidenceWrapper data not grabbed (???)
+                            property string incidenceType: incidenceInfo.incidenceWrapper.incidenceTypeStr
+                            property bool todoCompleted: incidenceInfo.incidenceWrapper.todoCompleted
+                            icon.name: todoCompleted ? "edit-undo" : "checkmark"
+                            text: todoCompleted ? i18n("Mark incomplete") : i18n("Mark complete")
+                            visible: incidenceType === "Todo"
+                            onClicked: {
+                                incidenceInfo.incidenceWrapper.todoCompleted = !incidenceInfo.incidenceWrapper.todoCompleted;
+                                CalendarManager.editIncidence(incidenceInfo.incidenceWrapper);
+                            }
+                        }
+                        QQC2.ToolButton {
                             icon.name: "edit-entry"
-                            text:i18n("Edit")
+                            text: i18n("Edit")
                             enabled: !incidenceInfo.collectionData.readOnly
                             onClicked: editIncidence(incidenceInfo.incidenceData.incidencePtr, incidenceInfo.incidenceData.collectionId)
                         }
                         QQC2.ToolButton {
                             icon.name: "edit-delete"
-                            text:i18n("Delete")
+                            text: i18n("Delete")
                             enabled: !incidenceInfo.collectionData.readOnly
                             onClicked: deleteIncidence(incidenceInfo.incidenceData.incidencePtr, incidenceInfo.incidenceData.startTime)
                         }
