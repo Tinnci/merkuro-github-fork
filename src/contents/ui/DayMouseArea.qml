@@ -9,7 +9,7 @@ import org.kde.kirigami 2.15 as Kirigami
 MouseArea {
     id: dayMouseArea
 
-    signal addNewEvent(date addDate)
+    signal addNewIncidence(date addDate)
 
     property date addDate
     property double clickX
@@ -42,7 +42,7 @@ MouseArea {
             QQC2.MenuItem {
                 icon.name: "tag-events"
                 text: i18n("New event")
-                onClicked: addNewEvent(dayMouseArea.addDate)
+                onClicked: addNewIncidence("Event", dayMouseArea.addDate)
             }
         }
     }

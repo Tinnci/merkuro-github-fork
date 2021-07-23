@@ -131,7 +131,7 @@ Item {
                                     DayMouseArea {
                                         anchors.fill: parent
                                         addDate: gridItem.date
-                                        onAddNewIncidence: addIncidence(addDate)
+                                        onAddNewIncidence: addIncidence("Event", addDate)
                                     }
                                 }
                             }

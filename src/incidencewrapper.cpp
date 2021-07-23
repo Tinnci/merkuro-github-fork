@@ -430,9 +430,9 @@ void IncidenceWrapper::setMonthlyPosRecurrence(short pos, int day)
     m_incidence->recurrence()->addMonthlyPos(pos, daysBitArray);
 }
 
-void IncidenceWrapper::setRecurrenceOcurrences(int ocurrences)
+void IncidenceWrapper::setRecurrenceOccurrences(int occurrences)
 {
-    m_incidence->recurrence()->setDuration(ocurrences);
+    m_incidence->recurrence()->setDuration(occurrences);
     Q_EMIT recurrenceDataChanged();
 }
 
