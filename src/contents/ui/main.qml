@@ -143,7 +143,7 @@ Kirigami.ApplicationWindow {
         }
     }
 
-    function setUpAdd(type, addDate) {
+    function setUpAdd(type, addDate = new Date()) {
         let editorToUse = root.editorToUse();
         if (editorToUse.editMode || !editorToUse.incidenceWrapper) {
             editorToUse.incidenceWrapper = Qt.createQmlObject('import org.kde.kalendar 1.0; IncidenceWrapper {id: incidence}',
@@ -225,6 +225,7 @@ Kirigami.ApplicationWindow {
 
             Layout.minimumWidth: applicationWindow().width * 0.66
 
+            onAddIncidenceReceived: root.setUpAdd(receivedType, receivedAddDate)
             onViewIncidenceReceived: root.setUpView(receivedModelData, receivedCollectionData)
             onEditIncidenceReceived: root.setUpEdit(receivedIncidencePtr, receivedCollectionId)
             onDeleteIncidenceReceived: root.setUpDelete(receivedIncidencePtr, receivedDeleteDate)

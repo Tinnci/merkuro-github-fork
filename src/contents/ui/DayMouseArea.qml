@@ -9,8 +9,9 @@ import org.kde.kirigami 2.15 as Kirigami
 MouseArea {
     id: dayMouseArea
 
-    signal addNewIncidence(date addDate)
+    signal addNewIncidence(string type, date addDate)
 
+    property string type: "Event"
     property date addDate
     property double clickX
     property double clickY
@@ -20,7 +21,7 @@ MouseArea {
 
     onDoubleClicked: {
         if (pressedButtons & Qt.LeftButton) {
-            addNewEvent(addDate);
+            addNewIncidence(type, addDate);
         }
     }
     onPressed: {
