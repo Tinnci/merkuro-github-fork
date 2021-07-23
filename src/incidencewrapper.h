@@ -48,6 +48,8 @@ class IncidenceWrapper : public QObject
     Q_PROPERTY(RemindersModel * remindersModel READ remindersModel NOTIFY remindersModelChanged)
     Q_PROPERTY(AttachmentsModel * attachmentsModel READ attachmentsModel NOTIFY attachmentsModelChanged)
 
+    Q_PROPERTY(bool todoCompleted READ todoCompleted WRITE setTodoCompleted NOTIFY todoCompletedChanged)
+
 public:
     enum RecurrenceIntervals {
         Daily,
@@ -93,6 +95,9 @@ public:
     RecurrenceExceptionsModel * recurrenceExceptionsModel();
     AttachmentsModel * attachmentsModel();
 
+    bool todoCompleted();
+    void setTodoCompleted(bool completed);
+
     Q_INVOKABLE void setNewEvent();
     Q_INVOKABLE void setNewTodo();
     Q_INVOKABLE void addAlarms(KCalendarCore::Alarm::List alarms);
@@ -119,6 +124,7 @@ Q_SIGNALS:
     void attendeesModelChanged();
     void recurrenceExceptionsModelChanged();
     void attachmentsModelChanged();
+    void todoCompletedChanged();
 
 private:
     KCalendarCore::Incidence::Ptr m_incidence;

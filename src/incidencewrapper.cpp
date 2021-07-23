@@ -334,6 +334,30 @@ AttachmentsModel * IncidenceWrapper::attachmentsModel()
     return &m_attachmentsModel;
 }
 
+bool IncidenceWrapper::todoCompleted()
+{
+    if(m_incidence->type() != KCalendarCore::IncidenceBase::TypeTodo) {
+        return false;
+    }
+
+    auto todo = m_incidence.staticCast<KCalendarCore::Todo>();
+    return todo->isCompleted();
+}
+
+void IncidenceWrapper::setTodoCompleted(bool completed)
+{
+    if(m_incidence->type() != KCalendarCore::IncidenceBase::TypeTodo) {
+        return;
+    }
+
+    auto todo = m_incidence.staticCast<KCalendarCore::Todo>();
+    todo->setCompleted(completed);
+
+    Q_EMIT todoCompletedChanged();
+    Q_EMIT incidenceIconNameChanged();
+}
+
+
 QVariantMap IncidenceWrapper::recurrenceIntervals()
 {
     return m_recurrenceIntervals;
