@@ -287,7 +287,7 @@ CalendarManager::CalendarManager(QObject *parent)
 CalendarManager::~CalendarManager()
 {
     save();
-    delete mCollectionSelectionModelStateSaver;
+    //delete mCollectionSelectionModelStateSaver;
 }
 
 void CalendarManager::save()
