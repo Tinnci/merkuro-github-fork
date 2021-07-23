@@ -26,6 +26,7 @@ class IncidenceWrapper : public QObject
     Q_PROPERTY(KCalendarCore::Incidence::Ptr incidencePtr READ incidencePtr WRITE setIncidencePtr NOTIFY incidencePtrChanged)
     Q_PROPERTY(KCalendarCore::Incidence::Ptr originalIncidencePtr READ originalIncidencePtr NOTIFY originalIncidencePtrChanged)
     Q_PROPERTY(QByteArray incidenceTypeStr READ incidenceTypeStr NOTIFY incidenceTypeStrChanged)
+    Q_PROPERTY(QString incidenceIconName READ incidenceIconName NOTIFY incidenceIconNameChanged)
 
     Q_PROPERTY(qint64 collectionId READ collectionId WRITE setCollectionId NOTIFY collectionIdChanged)
     Q_PROPERTY(QString summary READ summary WRITE setSummary NOTIFY summaryChanged)
@@ -63,6 +64,7 @@ public:
     void setIncidencePtr(KCalendarCore::Incidence::Ptr incidencePtr);
     KCalendarCore::Incidence::Ptr originalIncidencePtr();
     QByteArray incidenceTypeStr();
+    QString incidenceIconName();
     qint64 collectionId();
     void setCollectionId(qint64 collectionId);
     QString summary() const;
@@ -103,6 +105,7 @@ Q_SIGNALS:
     void incidencePtrChanged(KCalendarCore::Incidence::Ptr incidencePtr);
     void originalIncidencePtrChanged();
     void incidenceTypeStrChanged();
+    void incidenceIconNameChanged();
     void collectionIdChanged();
     void summaryChanged();
     void descriptionChanged();
