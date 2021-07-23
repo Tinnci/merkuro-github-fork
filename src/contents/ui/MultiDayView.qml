@@ -14,7 +14,7 @@ import "dateutils.js" as DateUtils
 Item {
     id: root
 
-    signal addIncidence(date addDate)
+    signal addIncidence(string type, date addDate)
     signal viewIncidence(var modelData, var collectionData)
     signal editIncidence(var incidencePtr, var collectionId)
     signal deleteIncidence(var incidencePtr, date deleteDate)
@@ -131,7 +131,7 @@ Item {
                                     DayMouseArea {
                                         anchors.fill: parent
                                         addDate: gridItem.date
-                                        onAddNewIncidence: addIncidence("Event", addDate)
+                                        onAddNewIncidence: addIncidence(type, addDate)
                                     }
                                 }
                             }
