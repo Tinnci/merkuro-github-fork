@@ -272,7 +272,7 @@ Kirigami.ScrollablePage {
 
                     Kirigami.FormData.label: incidenceForm.isTodo ? i18n("Due:") : i18n("End:")
                     Layout.fillWidth: true
-                    visible: !allDayCheckBox.checked || !incidenceForm.isJournal
+                    visible: (!allDayCheckBox.checked && !incidenceForm.isJournal) || incidenceForm.isTodo
 
                     QQC2.ComboBox {
                         id: incidenceEndDateCombo
@@ -284,7 +284,7 @@ Kirigami.ScrollablePage {
 
                         editable: true
                         editText: root.incidenceWrapper.incidenceEnd.toLocaleDateString(Qt.locale(), Locale.NarrowFormat)
-                        enabled: !allDayCheckBox.checked
+                        enabled: !allDayCheckBox.checked || incidenceForm.isTodo
 
                         onEditTextChanged: {
                             // Set date from text here because it otherwise updates after this handler
@@ -327,6 +327,7 @@ Kirigami.ScrollablePage {
                         editable: true
                         editText: root.incidenceWrapper.incidenceEnd.toLocaleTimeString(Qt.locale(), Locale.ShortFormat)
                         enabled: !allDayCheckBox.checked
+                        visible: !allDayCheckBox.checked
 
                         inputMethodHints: Qt.ImhTime
                         validator: RegularExpressionValidator {
