@@ -135,6 +135,8 @@ Kirigami.ApplicationWindow {
         } else if (type === "Todo") {
             editorToUse.incidenceWrapper.setNewTodo();
         }
+
+        editorToUse.incidenceWrapper.collectionId = CalendarManager.defaultCalendarId(editorToUse.incidenceWrapper)
     }
 
     function setUpView(modelData, collectionData) {

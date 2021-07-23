@@ -31,8 +31,6 @@ Kirigami.ScrollablePage {
         }
     }
 
-    onIncidenceWrapperChanged: if(!editMode) { incidenceWrapper.collectionId = CalendarManager.defaultCalendarId }
-
     title: if(incidenceWrapper) {
         editMode ? i18n("Edit %1", i18n(incidenceType)) : i18n("Add %1", i18n(incidenceType));
     } else {
@@ -116,7 +114,7 @@ Kirigami.ScrollablePage {
                     delegate: Kirigami.BasicListItem {
                         label: display
                         icon: decoration
-                        onClicked: root.incidenceWrapper.collectionId = currentValue
+                        onClicked: root.incidenceWrapper.collectionId = collectionId
                     }
                     popup.z: 1000
                 }

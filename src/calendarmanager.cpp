@@ -360,8 +360,28 @@ Akonadi::EntityRightsFilterModel * CalendarManager::selectableTodoCalendars() co
     return m_todoRightsFilterModel;
 }
 
-qint64 CalendarManager::defaultCalendarId()
+qint64 CalendarManager::defaultCalendarId(IncidenceWrapper *incidenceWrapper)
 {
+    auto mimeType = incidenceWrapper->incidencePtr()->mimeType();
+    Akonadi::Collection collection = m_calendar->collection(CalendarSupport::KCalPrefs::instance()->defaultCalendarId());
+    bool supportsMimeType = collection.contentMimeTypes().contains(mimeType) || mimeType == QLatin1String("");
+    bool hasRights = collection.rights() & Akonadi::Collection::CanCreateItem;
+    if (collection.isValid() && supportsMimeType && hasRights) {
+        qDebug() << collection.id();
+        return collection.id();
+    }
+
+    for (int i = 0; i < m_allCalendars->rowCount(); i++) {
+        QModelIndex idx = m_allCalendars->index(i, 0);
+        auto collection = idx.data(Akonadi::EntityTreeModel::Roles::CollectionRole).value<Akonadi::Collection>();
+        supportsMimeType = collection.contentMimeTypes().contains(mimeType) || mimeType == QLatin1String("");
+        hasRights = collection.rights() & Akonadi::Collection::CanCreateItem;
+        if (collection.isValid() && supportsMimeType && hasRights) {
+            qDebug() << collection.id();
+            return collection.id();
+        }
+    }
+
     return CalendarSupport::KCalPrefs::instance()->defaultCalendarId();
 }
 
@@ -394,7 +414,7 @@ int CalendarManager::getCalendarSelectableIndex(IncidenceWrapper *incidenceWrapp
             return i;
     }
 
-    return -1;
+    return 0;
 }
 
 QVariant CalendarManager::getIncidenceSubclassed(KCalendarCore::Incidence::Ptr incidencePtr)
