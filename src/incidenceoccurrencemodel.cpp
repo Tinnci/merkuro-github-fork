@@ -149,7 +149,6 @@ void IncidenceOccurrenceModel::updateFromSource()
                             event->dtStart(),
                             event->dtEnd(),
                             event,
-                            event->typeStr(),
                             getColor(event),
                             getCollectionId(event),
                             event->allDay()
@@ -168,7 +167,6 @@ void IncidenceOccurrenceModel::updateFromSource()
                             todoStart,
                             todo->dtDue(),
                             todo,
-                            todo->typeStr(),
                             getColor(todo),
                             getCollectionId(todo),
                             todo->allDay()
@@ -199,7 +197,6 @@ void IncidenceOccurrenceModel::updateFromSource()
                         start,
                         end,
                         incidence,
-                        incidence->typeStr(),
                         getColor(incidence),
                         getCollectionId(incidence),
                         incidence->allDay()
@@ -324,6 +321,19 @@ QVariant IncidenceOccurrenceModel::data(const QModelIndex &idx, int role) const
             return incidence.collectionId;
         case AllDay:
             return incidence.allDay;
+        case TodoCompleted:
+        {
+            if(incidence.incidence->type() != KCalendarCore::IncidenceBase::TypeTodo) {
+                return false;
+            }
+
+            auto todo = incidence.incidence.staticCast<KCalendarCore::Todo>();
+            return todo->isCompleted();
+        }
+        case IncidenceTypeStr:
+            return incidence.incidence->typeStr();
+        case IncidenceTypeIcon:
+            return incidence.incidence->iconName();
         case IncidencePtr:
             return QVariant::fromValue(incidence.incidence);
         case IncidenceOccurrence:
