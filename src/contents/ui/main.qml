@@ -200,7 +200,7 @@ Kirigami.ApplicationWindow {
 
             actions.contextualActions: [
                 Kirigami.Action {
-                    text: i18n("Add...")
+                    text: i18n("Add")
                     icon.name: "list-add"
 
                     Kirigami.Action {
@@ -210,7 +210,7 @@ Kirigami.ApplicationWindow {
                     }
                     Kirigami.Action {
                         text: i18n("New Todo")
-                        icon.name: "checkmark"
+                        icon.name: "task-complete"
                         onTriggered: root.setUpAdd("Todo");
                     }
                 }

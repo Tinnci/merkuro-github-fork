@@ -115,8 +115,7 @@ Kirigami.OverlayDrawer {
                             wrapMode: Text.Wrap
                         }
                         Kirigami.Icon {
-                            source: "tag-incidences"
-                            // TODO: This will need dynamic changing with implementation of to-dos/journals
+                            source: incidenceInfo.incidenceWrapper.incidenceIconName
                         }
                         Kirigami.Icon {
                             source: "appointment-recurring"

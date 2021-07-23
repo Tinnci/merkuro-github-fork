@@ -46,6 +46,7 @@ void IncidenceWrapper::setIncidencePtr(KCalendarCore::Incidence::Ptr incidencePt
     Q_EMIT incidencePtrChanged(incidencePtr);
     Q_EMIT originalIncidencePtrChanged();
     Q_EMIT incidenceTypeStrChanged();
+    Q_EMIT incidenceIconNameChanged();
     Q_EMIT collectionIdChanged();
     Q_EMIT summaryChanged();
     Q_EMIT descriptionChanged();
@@ -69,6 +70,11 @@ KCalendarCore::Incidence::Ptr IncidenceWrapper::originalIncidencePtr()
 QByteArray IncidenceWrapper::incidenceTypeStr()
 {
     return m_incidence->typeStr();
+}
+
+QString IncidenceWrapper::incidenceIconName()
+{
+    return m_incidence->iconName();
 }
 
 qint64 IncidenceWrapper::collectionId()
