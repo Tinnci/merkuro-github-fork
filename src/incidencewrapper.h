@@ -91,6 +91,8 @@ public:
     RecurrenceExceptionsModel * recurrenceExceptionsModel();
     AttachmentsModel * attachmentsModel();
 
+    Q_INVOKABLE void setNewEvent();
+    Q_INVOKABLE void setNewTodo();
     Q_INVOKABLE void addAlarms(KCalendarCore::Alarm::List alarms);
     Q_INVOKABLE void setRegularRecurrence(RecurrenceIntervals interval, int freq = 1);
     Q_INVOKABLE void setMonthlyPosRecurrence(short pos, int day);

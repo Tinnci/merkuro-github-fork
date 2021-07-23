@@ -121,7 +121,7 @@ Kirigami.ApplicationWindow {
         }
     }
 
-    function setUpAdd() {
+    function setUpAdd(type) {
         let editorToUse = root.editorToUse();
         if (editorToUse.editMode || !editorToUse.incidenceWrapper) {
             editorToUse.incidenceWrapper = Qt.createQmlObject('import org.kde.kalendar 1.0; IncidenceWrapper {id: incidence}',
@@ -129,6 +129,12 @@ Kirigami.ApplicationWindow {
                                                           "incidence");
         }
         editorToUse.editMode = false;
+
+        if(type === "Event") {
+            editorToUse.incidenceWrapper.setNewEvent();
+        } else if (type === "Todo") {
+            editorToUse.incidenceWrapper.setNewTodo();
+        }
     }
 
     function setUpView(modelData, collectionData) {
@@ -192,9 +198,19 @@ Kirigami.ApplicationWindow {
 
             actions.contextualActions: [
                 Kirigami.Action {
-                    text: i18n("Add incidence")
+                    text: i18n("Add...")
                     icon.name: "list-add"
-                    onTriggered: root.setUpAdd();
+
+                    Kirigami.Action {
+                        text: i18n("New event")
+                        icon.name: "tag-events"
+                        onTriggered: root.setUpAdd("Event");
+                    }
+                    Kirigami.Action {
+                        text: i18n("New Todo")
+                        icon.name: "checkmark"
+                        onTriggered: root.setUpAdd("Todo");
+                    }
                 }
             ]
         }

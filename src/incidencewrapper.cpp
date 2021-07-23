@@ -30,9 +30,6 @@ IncidenceWrapper::IncidenceWrapper(QObject *parent)
     connect(this, &IncidenceWrapper::incidencePtrChanged,
             &m_attachmentsModel, [=](KCalendarCore::Incidence::Ptr incidencePtr){ m_attachmentsModel.setIncidencePtr(incidencePtr); });
 
-    KCalendarCore::Event::Ptr event = m_incidence.staticCast<KCalendarCore::Event>();
-    event->setDtStart(QDateTime::currentDateTime());
-    event->setDtEnd(QDateTime::currentDateTime().addSecs(60 * 60));
 }
 
 KCalendarCore::Incidence::Ptr IncidenceWrapper::incidencePtr() const
@@ -334,6 +331,21 @@ AttachmentsModel * IncidenceWrapper::attachmentsModel()
 QVariantMap IncidenceWrapper::recurrenceIntervals()
 {
     return m_recurrenceIntervals;
+}
+
+void IncidenceWrapper::setNewEvent()
+{
+    auto event = KCalendarCore::Event::Ptr(new KCalendarCore::Event);
+    event->setDtStart(QDateTime::currentDateTime());
+    event->setDtEnd(QDateTime::currentDateTime().addSecs(60 * 60));
+    setIncidencePtr(event);
+}
+
+void IncidenceWrapper::setNewTodo()
+{
+    auto todo = KCalendarCore::Todo::Ptr(new KCalendarCore::Todo);
+    todo->setDtDue(QDateTime::currentDateTime().addSecs(30 * 60));
+    setIncidencePtr(todo);
 }
 
 void IncidenceWrapper::addAlarms(KCalendarCore::Alarm::List alarms)
