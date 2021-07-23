@@ -51,6 +51,9 @@ public:
         Color,
         CollectionId,
         AllDay,
+        TodoCompleted,
+        IncidenceTypeStr,
+        IncidenceTypeIcon,
         IncidencePtr,
         IncidenceOccurrence,
         LastRole
@@ -84,7 +87,6 @@ public:
         QDateTime start;
         QDateTime end;
         QSharedPointer<KCalendarCore::Incidence> incidence;
-        QByteArray incidenceType;
         QColor color;
         qint64 collectionId;
         bool allDay;

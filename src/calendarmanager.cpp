@@ -371,6 +371,8 @@ qint64 CalendarManager::defaultCalendarId(IncidenceWrapper *incidenceWrapper)
         return collection.id();
     }
 
+    // Should add last used collection by mimetype somewhere.
+
     for (int i = 0; i < m_allCalendars->rowCount(); i++) {
         QModelIndex idx = m_allCalendars->index(i, 0);
         collection = idx.data(Akonadi::EntityTreeModel::Roles::CollectionRole).value<Akonadi::Collection>();

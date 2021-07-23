@@ -170,14 +170,26 @@ Item {
                                                 opacity: 0.6
                                             }
 
-                                            QQC2.Label {
+                                            RowLayout {
                                                 anchors {
                                                     fill: parent
                                                     leftMargin: Kirigami.Units.smallSpacing
                                                     rightMargin: Kirigami.Units.smallSpacing
                                                 }
-                                                text: modelData.text
-                                                elide: Text.ElideRight
+
+                                                Kirigami.Icon {
+                                                    Layout.maximumHeight: parent.height
+                                                    Layout.maximumWidth: height
+
+                                                    source: modelData.todoCompleted ? "checkmark" : "choice-round"
+                                                    visible: modelData.incidenceTypeStr == "Todo"
+                                                }
+
+                                                QQC2.Label {
+                                                    Layout.fillWidth: true
+                                                    text: modelData.text
+                                                    elide: Text.ElideRight
+                                                }
                                             }
 
                                             MouseArea {

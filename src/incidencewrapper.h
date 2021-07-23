@@ -49,6 +49,7 @@ class IncidenceWrapper : public QObject
     Q_PROPERTY(AttachmentsModel * attachmentsModel READ attachmentsModel NOTIFY attachmentsModelChanged)
 
     Q_PROPERTY(bool todoCompleted READ todoCompleted WRITE setTodoCompleted NOTIFY todoCompletedChanged)
+    Q_PROPERTY(QDateTime todoCompletionDt READ todoCompletionDt NOTIFY todoCompletionDtChanged)
 
 public:
     enum RecurrenceIntervals {
@@ -97,6 +98,7 @@ public:
 
     bool todoCompleted();
     void setTodoCompleted(bool completed);
+    QDateTime todoCompletionDt();
 
     Q_INVOKABLE void setNewEvent();
     Q_INVOKABLE void setNewTodo();
@@ -125,6 +127,7 @@ Q_SIGNALS:
     void recurrenceExceptionsModelChanged();
     void attachmentsModelChanged();
     void todoCompletedChanged();
+    void todoCompletionDtChanged();
 
 private:
     KCalendarCore::Incidence::Ptr m_incidence;

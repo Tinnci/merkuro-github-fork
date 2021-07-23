@@ -210,6 +210,25 @@ Kirigami.OverlayDrawer {
 
                     QQC2.Label {
                         Layout.alignment: Qt.AlignTop
+                        text: i18n("<b>Completed:</b>")
+                        visible: incidenceInfo.incidenceWrapper.todoCompleted
+                    }
+                    QQC2.Label {
+                        id: todoCompletedTimeLabel
+                        Layout.alignment: Qt.AlignTop
+                        Layout.fillWidth: true
+
+                        property date completionDate: incidenceInfo.incidenceWrapper.todoCompletionDt
+
+                        text: completionDate.toLocaleString(Qt.locale())
+                        visible: incidenceInfo.incidenceWrapper.todoCompleted
+                        // HACK: For some reason, calling the todoCompletionDt always returns an invalid date once it is changed (???)
+                        onVisibleChanged: if(visible && isNaN(completionDate.getTime())) { text = new Date().toLocaleString(Qt.locale()) }
+                        wrapMode: Text.Wrap
+                    }
+
+                    QQC2.Label {
+                        Layout.alignment: Qt.AlignTop
                         text: i18n("<b>Recurrence:</b>")
                         visible: incidenceInfo.incidenceWrapper.recurrenceData.type
                     }
