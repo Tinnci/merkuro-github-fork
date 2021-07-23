@@ -60,6 +60,8 @@ void IncidenceWrapper::setIncidencePtr(KCalendarCore::Incidence::Ptr incidencePt
     Q_EMIT recurrenceDataChanged();
     Q_EMIT recurrenceExceptionsModelChanged();
     Q_EMIT attachmentsModelChanged();
+    Q_EMIT todoCompletedChanged();
+    Q_EMIT todoCompletionDtChanged();
 }
 
 KCalendarCore::Incidence::Ptr IncidenceWrapper::originalIncidencePtr()
@@ -353,8 +355,19 @@ void IncidenceWrapper::setTodoCompleted(bool completed)
     auto todo = m_incidence.staticCast<KCalendarCore::Todo>();
     todo->setCompleted(completed);
 
-    Q_EMIT todoCompletedChanged();
+    Q_EMIT todoCompletionDtChanged();
     Q_EMIT incidenceIconNameChanged();
+    Q_EMIT todoCompletedChanged();
+}
+
+QDateTime IncidenceWrapper::todoCompletionDt()
+{
+    if(m_incidence->type() != KCalendarCore::IncidenceBase::TypeTodo) {
+        return QDateTime();
+    }
+
+    auto todo = m_incidence.staticCast<KCalendarCore::Todo>();
+    return todo->completed();
 }
 
 
