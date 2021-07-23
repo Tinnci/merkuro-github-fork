@@ -373,16 +373,15 @@ qint64 CalendarManager::defaultCalendarId(IncidenceWrapper *incidenceWrapper)
 
     for (int i = 0; i < m_allCalendars->rowCount(); i++) {
         QModelIndex idx = m_allCalendars->index(i, 0);
-        auto collection = idx.data(Akonadi::EntityTreeModel::Roles::CollectionRole).value<Akonadi::Collection>();
+        collection = idx.data(Akonadi::EntityTreeModel::Roles::CollectionRole).value<Akonadi::Collection>();
         supportsMimeType = collection.contentMimeTypes().contains(mimeType) || mimeType == QLatin1String("");
         hasRights = collection.rights() & Akonadi::Collection::CanCreateItem;
         if (collection.isValid() && supportsMimeType && hasRights) {
-            qDebug() << collection.id();
             return collection.id();
         }
     }
 
-    return CalendarSupport::KCalPrefs::instance()->defaultCalendarId();
+    return -1;
 }
 
 int CalendarManager::getCalendarSelectableIndex(IncidenceWrapper *incidenceWrapper)
