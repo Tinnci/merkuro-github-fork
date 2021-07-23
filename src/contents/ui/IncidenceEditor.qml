@@ -150,7 +150,7 @@ Kirigami.ScrollablePage {
 
                     Kirigami.FormData.label: i18n("Start:")
                     Layout.fillWidth: true
-                    visible: !incidenceForm.isTodo
+                    visible: !incidenceForm.isTodo || (incidenceForm.isTodo && !isNaN(root.incidenceWrapper.incidenceStart.getTime()))
 
                     QQC2.ComboBox {
                         id: incidenceStartDateCombo
