@@ -193,8 +193,7 @@ Item {
                                                     Layout.maximumHeight: parent.height
                                                     Layout.maximumWidth: height
 
-                                                    source: modelData.todoCompleted ? "checkmark" : "choice-round"
-                                                    visible: modelData.incidenceTypeStr == "Todo"
+                                                    source: modelData.incidenceTypeIcon
                                                 }
 
                                                 QQC2.Label {
