@@ -79,7 +79,7 @@ public:
     QDateTime incidenceStart() const;
     void setIncidenceStart(const QDateTime &incidenceStart);
     QDateTime incidenceEnd() const;
-    void setIncidenceEnd(QDateTime incidenceEnd);
+    void setIncidenceEnd(const QDateTime &incidenceEnd);
     bool allDay() const;
     void setAllDay(bool allDay);
 
