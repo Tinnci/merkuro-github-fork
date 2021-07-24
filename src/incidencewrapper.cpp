@@ -106,7 +106,7 @@ QString IncidenceWrapper::description() const
     return m_incidence->description();
 }
 
-void IncidenceWrapper::setDescription(QString description)
+void IncidenceWrapper::setDescription(const QString &description)
 {
     if (m_incidence->description() == description) {
          return;
