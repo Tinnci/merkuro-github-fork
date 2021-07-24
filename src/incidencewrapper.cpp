@@ -132,7 +132,7 @@ QDateTime IncidenceWrapper::incidenceStart() const
     return m_incidence->dtStart();
 }
 
-void IncidenceWrapper::setIncidenceStart(QDateTime incidenceStart)
+void IncidenceWrapper::setIncidenceStart(const QDateTime &incidenceStart)
 {
     qDebug() << incidenceStart;
     m_incidence->setDtStart(incidenceStart);
