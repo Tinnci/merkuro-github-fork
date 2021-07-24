@@ -119,7 +119,6 @@ Item {
                                             addDate: DateUtils.addDaysToDate(periodStartDate, modelData)
                                             Component.onCompleted: console.log(Object.keys(parent))
                                             onAddNewIncidence: addIncidence(type, addDate)
-                                            x: 10000
                                         }
                                     }
 
