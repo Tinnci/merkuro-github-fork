@@ -31,8 +31,10 @@ Kirigami.ScrollablePage {
         }
     }
 
-    title: if(incidenceWrapper) {
-        editMode ? i18n("Edit %1", i18n(incidenceType)) : i18n("Add %1", i18n(incidenceType));
+    title: if (incidenceType === "Todo") {
+        editMode ? i18n("Edit Todo") : i18n("Add Todo");    
+    } else if (incidenceType === "Event") {
+        editMode ? i18n("Edit Event") : i18n("Add Event");
     } else {
         "";
     }
