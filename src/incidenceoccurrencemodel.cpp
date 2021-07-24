@@ -17,6 +17,7 @@
 #include <QRandomGenerator>
 #include <KSharedConfig>
 #include <KConfigGroup>
+#include <KLocalizedString>
 
 IncidenceOccurrenceModel::IncidenceOccurrenceModel(QObject *parent)
     : QAbstractItemModel(parent)
@@ -331,7 +332,7 @@ QVariant IncidenceOccurrenceModel::data(const QModelIndex &idx, int role) const
             return todo->isCompleted();
         }
         case IncidenceTypeStr:
-            return incidence.incidence->typeStr();
+            return i18n(incidence.incidence->typeStr());
         case IncidenceTypeIcon:
             return incidence.incidence->iconName();
         case IncidencePtr:
