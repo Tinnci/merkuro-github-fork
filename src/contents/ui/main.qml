@@ -33,12 +33,12 @@ Kirigami.ApplicationWindow {
                 Kirigami.Action {
                     text: i18n("New event")
                     icon.name: "resource-calendar-insert"
-                    onTriggered: root.setUpAdd("Event");
+                    onTriggered: root.setUpAdd(IncidenceWrapper.TypeEvent);
                 }
                 Kirigami.Action {
                     text: i18n("New todo")
                     icon.name: "view-task-add"
-                    onTriggered: root.setUpAdd("Todo");
+                    onTriggered: root.setUpAdd(IncidenceWrapper.TypeTodo);
                 }
             },
             Kirigami.Action {
@@ -157,9 +157,9 @@ Kirigami.ApplicationWindow {
         }
         editorToUse.editMode = false;
 
-        if(type === "Event") {
+        if(type === IncidenceWrapper.TypeEvent) {
             editorToUse.incidenceWrapper.setNewEvent();
-        } else if (type === "Todo") {
+        } else if (type === IncidenceWrapper.TypeTodo) {
             editorToUse.incidenceWrapper.setNewTodo();
         }
 
@@ -169,10 +169,10 @@ Kirigami.ApplicationWindow {
             let existingStart = editorToUse.incidenceWrapper.incidenceStart;
             let existingEnd = editorToUse.incidenceWrapper.incidenceEnd;
 
-            if(type === "Event") {
+            if(type === IncidenceWrapper.TypeEvent) {
                 editorToUse.incidenceWrapper.incidenceStart = new Date(addDate.setHours(existingStart.getHours(), existingStart.getMinutes()));
                 editorToUse.incidenceWrapper.incidenceEnd = new Date(addDate.setHours(existingStart.getHours() + 1, existingStart.getMinutes()));
-            } else if (type === "Todo") {
+            } else if (type === IncidenceWrapper.TypeTodo) {
                 editorToUse.incidenceWrapper.incidenceEnd = new Date(addDate.setHours(existingEnd.getHours() + 1, existingEnd.getMinutes()));
             }
         }
@@ -251,12 +251,12 @@ Kirigami.ApplicationWindow {
                     Kirigami.Action {
                         text: i18n("New event")
                         icon.name: "resource-calendar-insert"
-                        onTriggered: root.setUpAdd("Event");
+                        onTriggered: root.setUpAdd(IncidenceWrapper.TypeEvent);
                     }
                     Kirigami.Action {
                         text: i18n("New todo")
                         icon.name: "view-task-add"
-                        onTriggered: root.setUpAdd("Todo");
+                        onTriggered: root.setUpAdd(IncidenceWrapper.TypeTodo);
                     }
                 }
             ]
@@ -289,12 +289,12 @@ Kirigami.ApplicationWindow {
                     Kirigami.Action {
                         text: i18n("New event")
                         icon.name: "resource-calendar-insert"
-                        onTriggered: root.setUpAdd("Event");
+                        onTriggered: root.setUpAdd(IncidenceWrapper.TypeEvent);
                     }
                     Kirigami.Action {
                         text: i18n("New todo")
                         icon.name: "view-task-add"
-                        onTriggered: root.setUpAdd("Todo");
+                        onTriggered: root.setUpAdd(IncidenceWrapper.TypeTodo);
                     }
                 }
             ]

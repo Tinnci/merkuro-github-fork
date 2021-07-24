@@ -14,7 +14,7 @@ import "dateutils.js" as DateUtils
 Item {
     id: root
 
-    signal addIncidence(string type, date addDate)
+    signal addIncidence(int type, date addDate)
     signal viewIncidence(var modelData, var collectionData)
     signal editIncidence(var incidencePtr, var collectionId)
     signal deleteIncidence(var incidencePtr, date deleteDate)

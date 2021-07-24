@@ -19,11 +19,10 @@ Kirigami.ScrollablePage {
     // Setting the incidenceWrapper here and now causes some *really* weird behaviour.
     // Set it after this component has already been instantiated.
     property var incidenceWrapper
-    property string incidenceType: incidenceWrapper ? incidenceWrapper.incidenceTypeStr : ""
 
     property bool editMode: false
     property bool validDates: {
-        if(incidenceType === "Todo") {
+        if(incidenceWrapper.incidenceType === IncidenceWrapper.TypeTodo) {
             editorLoader.active && editorLoader.item.validEndDate
         } else {
             editorLoader.active && editorLoader.item.validFormDates &&
@@ -31,10 +30,9 @@ Kirigami.ScrollablePage {
         }
     }
 
-    title: if (incidenceType === "Todo") {
-        editMode ? i18n("Edit Todo") : i18n("Add Todo");    
-    } else if (incidenceType === "Event") {
-        editMode ? i18n("Edit Event") : i18n("Add Event");
+    title: if (incidenceWrapper) {
+        editMode ? i18nc("%1 is incidence type", "Edit %1", incidenceWrapper.incidenceTypeStr) :
+            i18nc("%1 is incidence type", "Add %1", incidenceWrapper.incidenceTypeStr);
     } else {
         "";
     }
@@ -67,6 +65,7 @@ Kirigami.ScrollablePage {
 
         active: incidenceWrapper !== undefined
         sourceComponent: ColumnLayout {
+
             Layout.fillWidth: true
             Layout.fillHeight: true
 
@@ -89,8 +88,8 @@ Kirigami.ScrollablePage {
                 id: incidenceForm
 
                 property date todayDate: new Date()
-                property bool isTodo: root.incidenceType === "Todo"
-                property bool isJournal: root.incidenceType === "Journal"
+                property bool isTodo: root.incidenceWrapper.incidenceType === IncidenceWrapper.TypeTodo
+                property bool isJournal: root.incidenceWrapper.incidenceType === IncidenceWrapper.TypeJournal
 
                 QQC2.ComboBox {
                     id: calendarCombo
@@ -107,9 +106,9 @@ Kirigami.ScrollablePage {
 
                     // Should default to default collection
                     model: {
-                        if(root.incidenceType === "Event") {
+                        if(root.incidenceWrapper.incidenceType === IncidenceWrapper.TypeEvent) {
                             return CalendarManager.selectableEventCalendars;
-                        } else if (root.incidenceType === "Todo") {
+                        } else if (root.incidenceWrapper.incidenceType === IncidenceWrapper.TypeTodo) {
                             return CalendarManager.selectableTodoCalendars;
                         }
                     }
@@ -407,10 +406,10 @@ Kirigami.ScrollablePage {
                     }
                     model: [
                         {key: "never", display: i18n("Never"), interval: -1},
-                        {key: "daily", display: i18n("Daily"), interval: root.incidenceWrapper.recurrenceIntervals.Daily},
-                        {key: "weekly", display: i18n("Weekly"), interval: root.incidenceWrapper.recurrenceIntervals.Weekly},
-                        {key: "monthly", display: i18n("Monthly"), interval: root.incidenceWrapper.recurrenceIntervals.Monthly},
-                        {key: "yearly", display: i18n("Yearly"), interval: root.incidenceWrapper.recurrenceIntervals.Yearly},
+                        {key: "daily", display: i18n("Daily"), interval: IncidenceWrapper.Daily},
+                        {key: "weekly", display: i18n("Weekly"), interval: IncidenceWrapper.Weekly},
+                        {key: "monthly", display: i18n("Monthly"), interval: IncidenceWrapper.Monthly},
+                        {key: "yearly", display: i18n("Yearly"), interval: IncidenceWrapper.Yearly},
                         {key: "custom", display: i18n("Custom"), interval: -1}
                     ]
                     delegate: Kirigami.BasicListItem {
@@ -434,7 +433,7 @@ Kirigami.ScrollablePage {
                     function setOcurrence() {
                         root.incidenceWrapper.setRegularRecurrence(recurScaleRuleCombobox.currentValue, recurFreqRuleSpinbox.value);
 
-                        if(recurScaleRuleCombobox.currentValue === root.incidenceWrapper.recurrenceIntervals.Weekly) {
+                        if(recurScaleRuleCombobox.currentValue === IncidenceWrapper.Weekly) {
                             weekdayCheckboxRepeater.setWeekdaysRepeat();
                         }
                     }
@@ -489,10 +488,10 @@ Kirigami.ScrollablePage {
                             }
 
                             model: [
-                                {key: "day", display: i18np("day", "days", recurFreqRuleSpinbox.value), interval: root.incidenceWrapper.recurrenceIntervals.Daily},
-                                {key: "week", display: i18np("week", "weeks", recurFreqRuleSpinbox.value), interval: root.incidenceWrapper.recurrenceIntervals.Weekly},
-                                {key: "month", display: i18np("month", "months", recurFreqRuleSpinbox.value), interval: root.incidenceWrapper.recurrenceIntervals.Monthly},
-                                {key: "year", display: i18np("year", "years", recurFreqRuleSpinbox.value), interval: root.incidenceWrapper.recurrenceIntervals.Yearly},
+                                {key: "day", display: i18np("day", "days", recurFreqRuleSpinbox.value), interval: IncidenceWrapper.Daily},
+                                {key: "week", display: i18np("week", "weeks", recurFreqRuleSpinbox.value), interval: IncidenceWrapper.Weekly},
+                                {key: "month", display: i18np("month", "months", recurFreqRuleSpinbox.value), interval: IncidenceWrapper.Monthly},
+                                {key: "year", display: i18np("year", "years", recurFreqRuleSpinbox.value), interval: IncidenceWrapper.Yearly},
                             ]
                             delegate: Kirigami.BasicListItem {
                                 text: modelData.display

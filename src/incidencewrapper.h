@@ -25,6 +25,7 @@ class IncidenceWrapper : public QObject
     Q_OBJECT
     Q_PROPERTY(KCalendarCore::Incidence::Ptr incidencePtr READ incidencePtr WRITE setIncidencePtr NOTIFY incidencePtrChanged)
     Q_PROPERTY(KCalendarCore::Incidence::Ptr originalIncidencePtr READ originalIncidencePtr NOTIFY originalIncidencePtrChanged)
+    Q_PROPERTY(int incidenceType READ incidenceType NOTIFY incidenceTypeChanged)
     Q_PROPERTY(QString incidenceTypeStr READ incidenceTypeStr NOTIFY incidenceTypeStrChanged)
     Q_PROPERTY(QString incidenceIconName READ incidenceIconName NOTIFY incidenceIconNameChanged)
 
@@ -39,7 +40,6 @@ class IncidenceWrapper : public QObject
     Q_PROPERTY(KCalendarCore::Recurrence * recurrence READ recurrence)
     Q_PROPERTY(QVariantMap recurrenceData READ recurrenceData NOTIFY recurrenceDataChanged)
     Q_PROPERTY(RecurrenceExceptionsModel * recurrenceExceptionsModel READ recurrenceExceptionsModel NOTIFY recurrenceExceptionsModelChanged)
-    Q_PROPERTY(QVariantMap recurrenceIntervals READ recurrenceIntervals CONSTANT)
 
     Q_PROPERTY(AttendeesModel * attendeesModel READ attendeesModel NOTIFY attendeesModelChanged)
     Q_PROPERTY(QVariantMap organizer READ organizer NOTIFY organizerChanged)
@@ -59,7 +59,13 @@ public:
         Yearly
     };
     Q_ENUM(RecurrenceIntervals);
-    Q_ENUM(KCalendarCore::Incidence::IncidenceType)
+
+    enum IncidenceTypes {
+        TypeEvent = KCalendarCore::IncidenceBase::TypeEvent,
+        TypeTodo = KCalendarCore::IncidenceBase::TypeTodo,
+        TypeJournal = KCalendarCore::IncidenceBase::TypeJournal
+    };
+    Q_ENUM(IncidenceTypes)
 
     IncidenceWrapper(QObject *parent = nullptr);
     ~IncidenceWrapper() = default;
@@ -67,6 +73,7 @@ public:
     KCalendarCore::Incidence::Ptr incidencePtr() const;
     void setIncidencePtr(KCalendarCore::Incidence::Ptr incidencePtr);
     KCalendarCore::Incidence::Ptr originalIncidencePtr();
+    int incidenceType();
     QString incidenceTypeStr();
     QString incidenceIconName();
     qint64 collectionId();
@@ -87,7 +94,6 @@ public:
     KCalendarCore::Recurrence * recurrence() const;
     QVariantMap recurrenceData();
     Q_INVOKABLE void setRecurrenceDataItem(const QString &key, const QVariant &value);
-    QVariantMap recurrenceIntervals();
 
     QVariantMap organizer();
     KCalendarCore::Attendee::List attendees() const;
@@ -112,6 +118,7 @@ public:
 Q_SIGNALS:
     void incidencePtrChanged(KCalendarCore::Incidence::Ptr incidencePtr);
     void originalIncidencePtrChanged();
+    void incidenceTypeChanged();
     void incidenceTypeStrChanged();
     void incidenceIconNameChanged();
     void collectionIdChanged();
@@ -138,5 +145,4 @@ private:
     AttendeesModel m_attendeesModel;
     RecurrenceExceptionsModel m_recurrenceExceptionsModel;
     AttachmentsModel m_attachmentsModel;
-    QVariantMap m_recurrenceIntervals;
 };

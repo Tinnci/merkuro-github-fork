@@ -15,11 +15,6 @@ IncidenceWrapper::IncidenceWrapper(QObject *parent)
     , m_recurrenceExceptionsModel(parent, m_incidence)
     , m_attachmentsModel(parent, m_incidence)
 {
-    for(int i = 0; i < QMetaEnum::fromType<IncidenceWrapper::RecurrenceIntervals>().keyCount(); i++) {
-        int value = QMetaEnum::fromType<IncidenceWrapper::RecurrenceIntervals>().value(i);
-        QString key = QLatin1String(QMetaEnum::fromType<IncidenceWrapper::RecurrenceIntervals>().key(i));
-        m_recurrenceIntervals[key] = value;
-    }
 
     // Change incidence pointer in remindersmodel if changed here
     connect(this, &IncidenceWrapper::incidencePtrChanged,
@@ -46,6 +41,7 @@ void IncidenceWrapper::setIncidencePtr(const KCalendarCore::Incidence::Ptr incid
 
     Q_EMIT incidencePtrChanged(incidencePtr);
     Q_EMIT originalIncidencePtrChanged();
+    Q_EMIT incidenceTypeChanged();
     Q_EMIT incidenceTypeStrChanged();
     Q_EMIT incidenceIconNameChanged();
     Q_EMIT collectionIdChanged();
@@ -68,6 +64,11 @@ void IncidenceWrapper::setIncidencePtr(const KCalendarCore::Incidence::Ptr incid
 KCalendarCore::Incidence::Ptr IncidenceWrapper::originalIncidencePtr()
 {
     return m_originalIncidence;
+}
+
+int IncidenceWrapper::incidenceType()
+{
+    return m_incidence->type();
 }
 
 QString IncidenceWrapper::incidenceTypeStr()
@@ -369,12 +370,6 @@ QDateTime IncidenceWrapper::todoCompletionDt()
 
     auto todo = m_incidence.staticCast<KCalendarCore::Todo>();
     return todo->completed();
-}
-
-
-QVariantMap IncidenceWrapper::recurrenceIntervals()
-{
-    return m_recurrenceIntervals;
 }
 
 void IncidenceWrapper::setNewEvent()
