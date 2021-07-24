@@ -120,7 +120,7 @@ QString IncidenceWrapper::location() const
     return m_incidence->location();
 }
 
-void IncidenceWrapper::setLocation(QString location)
+void IncidenceWrapper::setLocation(const QString &location)
 {
     m_incidence->setLocation(location);
     Q_EMIT locationChanged();
