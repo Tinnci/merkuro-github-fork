@@ -84,7 +84,7 @@ qint64 IncidenceWrapper::collectionId()
     return m_collectionId;
 }
 
-void IncidenceWrapper::setCollectionId(const qint64 &collectionId)
+void IncidenceWrapper::setCollectionId(qint64 collectionId)
 {
     m_collectionId = collectionId;
     Q_EMIT collectionIdChanged();
@@ -170,7 +170,7 @@ bool IncidenceWrapper::allDay() const
     return m_incidence->allDay();
 }
 
-void IncidenceWrapper::setAllDay(const bool &allDay)
+void IncidenceWrapper::setAllDay(bool allDay)
 {
     m_incidence->setAllDay(allDay);
     Q_EMIT allDayChanged();
@@ -346,7 +346,7 @@ bool IncidenceWrapper::todoCompleted()
     return todo->isCompleted();
 }
 
-void IncidenceWrapper::setTodoCompleted(const bool &completed)
+void IncidenceWrapper::setTodoCompleted(bool completed)
 {
     if(m_incidence->type() != KCalendarCore::IncidenceBase::TypeTodo) {
         return;
@@ -398,7 +398,7 @@ void IncidenceWrapper::addAlarms(KCalendarCore::Alarm::List alarms)
     }
 }
 
-void IncidenceWrapper::setRegularRecurrence(const IncidenceWrapper::RecurrenceIntervals &interval, const int &freq)
+void IncidenceWrapper::setRegularRecurrence(IncidenceWrapper::RecurrenceIntervals interval, int freq)
 {
     switch(interval) {
         case Daily:
@@ -423,14 +423,14 @@ void IncidenceWrapper::setRegularRecurrence(const IncidenceWrapper::RecurrenceIn
     }
 }
 
-void IncidenceWrapper::setMonthlyPosRecurrence(const short &pos, const int &day)
+void IncidenceWrapper::setMonthlyPosRecurrence(short pos, int day)
 {
     QBitArray daysBitArray(7);
     daysBitArray[day] = 1;
     m_incidence->recurrence()->addMonthlyPos(pos, daysBitArray);
 }
 
-void IncidenceWrapper::setRecurrenceOccurrences(const int &occurrences)
+void IncidenceWrapper::setRecurrenceOccurrences(int occurrences)
 {
     m_incidence->recurrence()->setDuration(occurrences);
     Q_EMIT recurrenceDataChanged();
