@@ -216,7 +216,7 @@ QVariantMap IncidenceWrapper::recurrenceData()
     };
 }
 
-void IncidenceWrapper::setRecurrenceDataItem(QString key, QVariant value)
+void IncidenceWrapper::setRecurrenceDataItem(const QString &key, const QVariant &value)
 {
     QVariantMap map = recurrenceData();
     if(map.contains(key)) {
