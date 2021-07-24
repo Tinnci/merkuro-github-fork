@@ -102,7 +102,7 @@ Kirigami.ScrollablePage {
 
                     textRole: "display"
                     valueRole: "collectionId"
-                    currentIndex: if(model && collectionId != -1) { CalendarManager.getCalendarSelectableIndex(root.incidenceWrapper) }
+                    currentIndex: model && collectionId !== -1 ? CalendarManager.getCalendarSelectableIndex(root.incidenceWrapper) : -1
 
                     // Should default to default collection
                     model: {
