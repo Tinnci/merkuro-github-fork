@@ -393,13 +393,13 @@ Kirigami.ScrollablePage {
                                     (root.incidenceWrapper.recurrenceData.weekdays.filter(x => x === true).length === 0 ?
                                     root.incidenceWrapper.recurrenceData.type - 2 : 5) : 5
                             case 5: // Monthly on position (e.g. third Monday)
-                            case 7: // Yearly on month
+                            case 8: // Yearly on day
                             case 9: // Yearly on position
                             case 10: // Other
                                 return 5;
                             case 6: // Monthly on day (1st of month)
                                 return 3;
-                            case 8: // Yearly on day
+                            case 7: // Yearly on month
                                 return 4;
                         }
                     }
