@@ -4,6 +4,7 @@
 #include <QMetaEnum>
 #include <QBitArray>
 #include <QJSValue>
+#include <KLocalizedString>
 #include <incidencewrapper.h>
 
 IncidenceWrapper::IncidenceWrapper(QObject *parent)
@@ -69,9 +70,9 @@ KCalendarCore::Incidence::Ptr IncidenceWrapper::originalIncidencePtr()
     return m_originalIncidence;
 }
 
-QByteArray IncidenceWrapper::incidenceTypeStr()
+QString IncidenceWrapper::incidenceTypeStr()
 {
-    return m_incidence->typeStr();
+    return i18n(m_incidence->typeStr());
 }
 
 QString IncidenceWrapper::incidenceIconName()

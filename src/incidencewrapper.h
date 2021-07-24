@@ -25,7 +25,7 @@ class IncidenceWrapper : public QObject
     Q_OBJECT
     Q_PROPERTY(KCalendarCore::Incidence::Ptr incidencePtr READ incidencePtr WRITE setIncidencePtr NOTIFY incidencePtrChanged)
     Q_PROPERTY(KCalendarCore::Incidence::Ptr originalIncidencePtr READ originalIncidencePtr NOTIFY originalIncidencePtrChanged)
-    Q_PROPERTY(QByteArray incidenceTypeStr READ incidenceTypeStr NOTIFY incidenceTypeStrChanged)
+    Q_PROPERTY(QString incidenceTypeStr READ incidenceTypeStr NOTIFY incidenceTypeStrChanged)
     Q_PROPERTY(QString incidenceIconName READ incidenceIconName NOTIFY incidenceIconNameChanged)
 
     Q_PROPERTY(qint64 collectionId READ collectionId WRITE setCollectionId NOTIFY collectionIdChanged)
@@ -59,6 +59,7 @@ public:
         Yearly
     };
     Q_ENUM(RecurrenceIntervals);
+    Q_ENUM(KCalendarCore::Incidence::IncidenceType)
 
     IncidenceWrapper(QObject *parent = nullptr);
     ~IncidenceWrapper() = default;
@@ -66,7 +67,7 @@ public:
     KCalendarCore::Incidence::Ptr incidencePtr() const;
     void setIncidencePtr(KCalendarCore::Incidence::Ptr incidencePtr);
     KCalendarCore::Incidence::Ptr originalIncidencePtr();
-    QByteArray incidenceTypeStr();
+    QString incidenceTypeStr();
     QString incidenceIconName();
     qint64 collectionId();
     void setCollectionId(qint64 collectionId);
