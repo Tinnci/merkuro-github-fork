@@ -95,7 +95,7 @@ QString IncidenceWrapper::summary() const
     return m_incidence->summary();
 }
 
-void IncidenceWrapper::setSummary(QString summary)
+void IncidenceWrapper::setSummary(const QString &summary)
 {
     m_incidence->setSummary(summary);
     Q_EMIT summaryChanged();
