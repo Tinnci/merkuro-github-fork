@@ -77,7 +77,7 @@ public:
     QString location() const;
     void setLocation(QString location);
     QDateTime incidenceStart() const;
-    void setIncidenceStart(QDateTime incidenceStart);
+    void setIncidenceStart(const QDateTime &incidenceStart);
     QDateTime incidenceEnd() const;
     void setIncidenceEnd(QDateTime incidenceEnd);
     bool allDay() const;
