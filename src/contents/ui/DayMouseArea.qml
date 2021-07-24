@@ -5,13 +5,14 @@ import QtQuick 2.15
 import QtQuick.Controls 2.15 as QQC2
 import QtQuick.Layouts 1.15
 import org.kde.kirigami 2.15 as Kirigami
+import org.kde.kalendar 1.0 as Kalendar
 
 MouseArea {
     id: dayMouseArea
 
-    signal addNewIncidence(string type, date addDate)
+    signal addNewIncidence(int type, date addDate)
 
-    property string type: "Event"
+    property string type: Kalendar.IncidenceWrapper.TypeEvent
     property date addDate
     property double clickX
     property double clickY
@@ -43,12 +44,12 @@ MouseArea {
             QQC2.MenuItem {
                 text: i18n("New event")
                 icon.name: "resource-calendar-insert"
-                onClicked: addNewIncidence("Event", dayMouseArea.addDate)
+                onClicked: addNewIncidence(Kalendar.IncidenceWrapper.TypeEvent, dayMouseArea.addDate)
             }
             QQC2.MenuItem {
                 text: i18n("New todo")
                 icon.name: "view-task-add"
-                onClicked: addNewIncidence("Todo", dayMouseArea.addDate)
+                onClicked: addNewIncidence(Kalendar.IncidenceWrapper.TypeTodo, dayMouseArea.addDate)
             }
         }
     }

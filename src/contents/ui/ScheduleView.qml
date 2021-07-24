@@ -12,7 +12,7 @@ import "dateutils.js" as DateUtils
 Kirigami.ScrollablePage {
     id: root
 
-    signal addIncidence(string type, date addDate)
+    signal addIncidence(int type, date addDate)
     signal viewIncidence(var modelData, var collectionData)
     signal editIncidence(var incidencePtr, var collectionId)
     signal deleteIncidence(var incidencePtr, date deleteDate)
@@ -215,7 +215,7 @@ Kirigami.ScrollablePage {
                                 wrapMode: Text.Wrap
                             }
 
-                            onClicked: root.addIncidence("Event")
+                            onClicked: root.addIncidence(IncidenceWrapper.TypeEvent)
                         }
 
                         Repeater {
