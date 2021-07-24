@@ -809,6 +809,7 @@ Kirigami.ScrollablePage {
                     Layout.fillWidth: true
 
                     Repeater {
+                        id: attendeesRepeater
                         model: root.incidenceWrapper.attendeesModel
                         // All of the alarms are handled within the delegates.
                         Layout.fillWidth: true
@@ -935,7 +936,7 @@ Kirigami.ScrollablePage {
 
                     Repeater {
                         id: attachmentsRepeater
-                        model: root.eventWrapper.attachmentsModel
+                        model: root.incidenceWrapper.attachmentsModel
                         delegate: RowLayout {
                             Kirigami.BasicListItem {
                                 Layout.fillWidth: true

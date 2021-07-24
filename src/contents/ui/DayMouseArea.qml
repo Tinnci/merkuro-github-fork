@@ -39,11 +39,16 @@ MouseArea {
             y: dayMouseArea.clickY
             x: dayMouseArea.clickX
 
-            // TODO: Add to-dos and journals
+            // TODO: Add journals
             QQC2.MenuItem {
-                icon.name: "tag-events"
                 text: i18n("New event")
+                icon.name: "resource-calendar-insert"
                 onClicked: addNewIncidence("Event", dayMouseArea.addDate)
+            }
+            QQC2.MenuItem {
+                text: i18n("New todo")
+                icon.name: "view-task-add"
+                onClicked: addNewIncidence("Todo", dayMouseArea.addDate)
             }
         }
     }
