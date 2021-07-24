@@ -93,6 +93,7 @@ Item {
                         Layout.fillWidth: true
                         Layout.fillHeight: true
                         property var startDate: periodStartDate
+
                         //Grid
                         Row {
                             spacing: 1
@@ -112,6 +113,14 @@ Item {
                                     background: Rectangle {
                                         Kirigami.Theme.colorSet: Kirigami.Theme.View
                                         color: model.sameMonth ? Kirigami.Theme.backgroundColor : Kirigami.Theme.alternateBackgroundColor
+
+                                        DayMouseArea {
+                                            anchors.fill: parent
+                                            addDate: DateUtils.addDaysToDate(periodStartDate, modelData)
+                                            Component.onCompleted: console.log(Object.keys(parent))
+                                            onAddNewIncidence: addIncidence(type, addDate)
+                                            x: 10000
+                                        }
                                     }
 
                                     padding: 0
@@ -127,17 +136,12 @@ Item {
                                         visible: root.showDayIndicator
                                         color: gridItem.isToday ? Kirigami.Theme.highlightColor : (!gridItem.isCurrentMonth ? Kirigami.Theme.disabledTextColor : Kirigami.Theme.textColor)
                                     }
-
-                                    DayMouseArea {
-                                        anchors.fill: parent
-                                        addDate: gridItem.date
-                                        onAddNewIncidence: addIncidence(type, addDate)
-                                    }
                                 }
                             }
                         }
 
                         QQC2.ScrollView {
+
                             anchors {
                                 fill: parent
                                 // Offset for date
@@ -146,12 +150,13 @@ Item {
 
                             ListView {
                                 Layout.fillWidth: true
-                                Layout.fillHeight: true
                                 id: linesRepeater
+
                                 model: incidences
                                 onCountChanged: {
                                     root.numberOfLinesShown = count
                                 }
+
                                 delegate: Item {
                                     id: line
                                     height: Kirigami.Units.gridUnit

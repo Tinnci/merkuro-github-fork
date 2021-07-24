@@ -27,13 +27,18 @@ Kirigami.ApplicationWindow {
         isMenu: true
         actions: [
             Kirigami.Action {
-                text: i18n("Add...")
+                text: i18n("Add")
                 icon.name: "list-add"
 
                 Kirigami.Action {
-                    text: i18n("New incidence")
-                    icon.name: "tag-incidences"
-                    onTriggered: root.setUpAdd();
+                    text: i18n("New event")
+                    icon.name: "resource-calendar-insert"
+                    onTriggered: root.setUpAdd("Event");
+                }
+                Kirigami.Action {
+                    text: i18n("New todo")
+                    icon.name: "view-task-add"
+                    onTriggered: root.setUpAdd("Todo");
                 }
             },
             Kirigami.Action {
@@ -143,28 +148,33 @@ Kirigami.ApplicationWindow {
         }
     }
 
-    function setUpAdd(type, addDate = new Date()) {
+    function setUpAdd(type, addDate) {
         let editorToUse = root.editorToUse();
         if (editorToUse.editMode || !editorToUse.incidenceWrapper) {
             editorToUse.incidenceWrapper = Qt.createQmlObject('import org.kde.kalendar 1.0; IncidenceWrapper {id: incidence}',
-                                                          editorToUse,
-                                                          "incidence");
+                                                              editorToUse,
+                                                              "incidence");
         }
         editorToUse.editMode = false;
 
-        if(type === "Incidence") {
-            editorToUse.incidenceWrapper.setNewIncidence();
+        if(type === "Event") {
+            editorToUse.incidenceWrapper.setNewEvent();
         } else if (type === "Todo") {
             editorToUse.incidenceWrapper.setNewTodo();
         }
 
         editorToUse.incidenceWrapper.collectionId = CalendarManager.defaultCalendarId(editorToUse.incidenceWrapper)
 
-
-        if(typeof(addDate) !== undefined && !isNaN(addDate.getTime())) {
+        if(addDate !== undefined && !isNaN(addDate.getTime())) {
             let existingStart = editorToUse.incidenceWrapper.incidenceStart;
-            editorToUse.incidenceWrapper.incidenceStart = new Date(addDate.setHours(existingStart.getHours(), existingStart.getMinutes()));
-            editorToUse.incidenceWrapper.incidenceEnd = new Date(addDate.setHours(existingStart.getHours() + 1, existingStart.getMinutes()));
+            let existingEnd = editorToUse.incidenceWrapper.incidenceEnd;
+
+            if(type === "Event") {
+                editorToUse.incidenceWrapper.incidenceStart = new Date(addDate.setHours(existingStart.getHours(), existingStart.getMinutes()));
+                editorToUse.incidenceWrapper.incidenceEnd = new Date(addDate.setHours(existingStart.getHours() + 1, existingStart.getMinutes()));
+            } else if (type === "Todo") {
+                editorToUse.incidenceWrapper.incidenceEnd = new Date(addDate.setHours(existingEnd.getHours() + 1, existingEnd.getMinutes()));
+            }
         }
     }
 
@@ -177,8 +187,8 @@ Kirigami.ApplicationWindow {
     function setUpEdit(incidencePtr, collectionId) {
         let editorToUse = root.editorToUse();
         editorToUse.incidenceWrapper = Qt.createQmlObject('import org.kde.kalendar 1.0; IncidenceWrapper {id: incidence}',
-                                                      editorToUse,
-                                                      "incidence");
+                                                          editorToUse,
+                                                          "incidence");
         editorToUse.incidenceWrapper.incidencePtr = incidencePtr;
         editorToUse.incidenceWrapper.collectionId = collectionId;
         editorToUse.editMode = true;
@@ -186,8 +196,8 @@ Kirigami.ApplicationWindow {
 
     function setUpDelete(incidencePtr, deleteDate) {
         deleteIncidenceSheet.incidenceWrapper = Qt.createQmlObject('import org.kde.kalendar 1.0; IncidenceWrapper {id: incidence}',
-                                                           deleteIncidenceSheet,
-                                                           "incidence");
+                                                                   deleteIncidenceSheet,
+                                                                   "incidence");
         deleteIncidenceSheet.incidenceWrapper.incidencePtr = incidencePtr;
         deleteIncidenceSheet.deleteDate = deleteDate;
         deleteIncidenceSheet.open();
@@ -235,9 +245,19 @@ Kirigami.ApplicationWindow {
 
             actions.contextualActions: [
                 Kirigami.Action {
-                    text: i18n("Add incidence")
+                    text: i18n("Add")
                     icon.name: "list-add"
-                    onTriggered: root.setUpAdd("Event");
+
+                    Kirigami.Action {
+                        text: i18n("New event")
+                        icon.name: "resource-calendar-insert"
+                        onTriggered: root.setUpAdd("Event");
+                    }
+                    Kirigami.Action {
+                        text: i18n("New todo")
+                        icon.name: "view-task-add"
+                        onTriggered: root.setUpAdd("Todo");
+                    }
                 }
             ]
         }
