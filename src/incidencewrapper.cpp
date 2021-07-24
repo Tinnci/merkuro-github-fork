@@ -151,7 +151,7 @@ QDateTime IncidenceWrapper::incidenceEnd() const
     return {};
 }
 
-void IncidenceWrapper::setIncidenceEnd(QDateTime incidenceEnd)
+void IncidenceWrapper::setIncidenceEnd(const QDateTime &incidenceEnd)
 {
     if(m_incidence->type() == KCalendarCore::Incidence::IncidenceType::TypeEvent) {
         KCalendarCore::Event::Ptr event = m_incidence.staticCast<KCalendarCore::Event>();
