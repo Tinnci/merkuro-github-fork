@@ -117,7 +117,6 @@ Item {
                                         DayMouseArea {
                                             anchors.fill: parent
                                             addDate: DateUtils.addDaysToDate(periodStartDate, modelData)
-                                            Component.onCompleted: console.log(Object.keys(parent))
                                             onAddNewIncidence: addIncidence(type, addDate)
                                         }
                                     }
