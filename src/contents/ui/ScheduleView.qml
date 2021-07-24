@@ -262,9 +262,8 @@ Kirigami.ScrollablePage {
                                         RowLayout {
                                             Kirigami.Icon {
                                                 Layout.fillHeight: true
-                                                source: "tag-incidences"
+                                                source: incidenceCard.incidenceWrapper.incidenceIconName
                                                 color: cardContents.textColor
-                                                // TODO: This will need dynamic changing with implementation of to-dos/journals
                                             }
 
                                             QQC2.Label {
