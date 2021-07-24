@@ -18,7 +18,7 @@ Kirigami.OverlaySheet {
     property date deleteDate
 
     header: Kirigami.Heading {
-        text: i18n("Delete incidence")
+        text: i18n("Delete %1", incidenceWrapper.incidenceTypeStr)
     }
 
     footer: Loader {

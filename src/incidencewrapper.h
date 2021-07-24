@@ -64,28 +64,28 @@ public:
     ~IncidenceWrapper() = default;
 
     KCalendarCore::Incidence::Ptr incidencePtr() const;
-    void setIncidencePtr(KCalendarCore::Incidence::Ptr incidencePtr);
+    void setIncidencePtr(const KCalendarCore::Incidence::Ptr incidencePtr);
     KCalendarCore::Incidence::Ptr originalIncidencePtr();
     QByteArray incidenceTypeStr();
     QString incidenceIconName();
     qint64 collectionId();
-    void setCollectionId(qint64 collectionId);
+    void setCollectionId(const qint64 &collectionId);
     QString summary() const;
-    void setSummary(QString summary);
+    void setSummary(const QString &summary);
     QString description() const;
-    void setDescription(QString description);
+    void setDescription(const QString &description);
     QString location() const;
-    void setLocation(QString location);
+    void setLocation(const QString &location);
     QDateTime incidenceStart() const;
     void setIncidenceStart(const QDateTime &incidenceStart);
     QDateTime incidenceEnd() const;
     void setIncidenceEnd(const QDateTime &incidenceEnd);
     bool allDay() const;
-    void setAllDay(bool allDay);
+    void setAllDay(const bool &allDay);
 
     KCalendarCore::Recurrence * recurrence() const;
     QVariantMap recurrenceData();
-    Q_INVOKABLE void setRecurrenceDataItem(QString key, QVariant value);
+    Q_INVOKABLE void setRecurrenceDataItem(const QString &key, const QVariant &value);
     QVariantMap recurrenceIntervals();
 
     QVariantMap organizer();
@@ -97,15 +97,15 @@ public:
     AttachmentsModel * attachmentsModel();
 
     bool todoCompleted();
-    void setTodoCompleted(bool completed);
+    void setTodoCompleted(const bool &completed);
     QDateTime todoCompletionDt();
 
     Q_INVOKABLE void setNewEvent();
     Q_INVOKABLE void setNewTodo();
     Q_INVOKABLE void addAlarms(KCalendarCore::Alarm::List alarms);
-    Q_INVOKABLE void setRegularRecurrence(RecurrenceIntervals interval, int freq = 1);
-    Q_INVOKABLE void setMonthlyPosRecurrence(short pos, int day);
-    Q_INVOKABLE void setRecurrenceOccurrences(int occurrences);
+    Q_INVOKABLE void setRegularRecurrence(const RecurrenceIntervals &interval, const int &freq = 1);
+    Q_INVOKABLE void setMonthlyPosRecurrence(const short &pos, const int &day);
+    Q_INVOKABLE void setRecurrenceOccurrences(const int &occurrences);
     Q_INVOKABLE void clearRecurrences();
 
 Q_SIGNALS:
