@@ -165,7 +165,7 @@ Kirigami.ScrollablePage {
                     stepSize: 10.0
                     value: root.incidenceWrapper.todoPercentComplete
                     onValueChanged: root.incidenceWrapper.todoPercentComplete = value
-                    visible: incidenceForm.isTodo
+                    visible: incidenceForm.isTodo && root.editMode
                 }
 
                 QQC2.ComboBox {
