@@ -146,6 +146,33 @@ Kirigami.OverlayDrawer {
                         color: incidenceInfo.incidenceData.color
                     }
 
+                    ColumnLayout {
+                        Layout.columnSpan: 2
+                        visible: incidenceInfo.incidenceWrapper.incidenceType === IncidenceWrapper.TypeTodo
+
+                        Kirigami.Heading {
+                            Layout.alignment: Qt.AlignTop
+                            Layout.fillWidth: true
+                            level: 2
+                            text: i18nc("%1 is a percentage number", "<b>%1\%</b> complete", String(incidenceInfo.incidenceWrapper.todoPercentComplete))
+                        }
+                        QQC2.Slider {
+                            Layout.fillWidth: true
+                            orientation: Qt.Horizontal
+                            from: 0
+                            to: 100.0
+                            stepSize: 10.0
+                            value: incidenceInfo.incidenceWrapper.todoPercentComplete
+                            onValueChanged: {
+                                if (incidenceInfo.incidenceWrapper.incidenceType === IncidenceWrapper.TypeTodo) {
+                                    incidenceInfo.incidenceWrapper.todoPercentComplete = value
+                                    CalendarManager.editIncidence(incidenceInfo.incidenceWrapper);
+                                }
+                            }
+                            padding: 0
+                        }
+                    }
+
                     QQC2.Label {
                         Layout.alignment: Qt.AlignTop
                         text: i18n("<b>Calendar:</b>")
@@ -230,18 +257,6 @@ Kirigami.OverlayDrawer {
                             }
                         }
                         visible: incidenceInfo.incidenceWrapper.priority
-                    }
-
-                    QQC2.Label {
-                        Layout.alignment: Qt.AlignTop
-                        text: i18n("<b>Percent done:</b>")
-                        visible: incidenceInfo.incidenceWrapper.incidenceType === IncidenceWrapper.TypeTodo
-                    }
-                    QQC2.Label {
-                        Layout.alignment: Qt.AlignTop
-                        Layout.fillWidth: true
-                        text: String(incidenceInfo.incidenceWrapper.todoPercentComplete) + "%"
-                        visible: incidenceInfo.incidenceWrapper.incidenceType === IncidenceWrapper.TypeTodo
                     }
 
                     QQC2.Label {

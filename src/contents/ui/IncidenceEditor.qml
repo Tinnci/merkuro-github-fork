@@ -170,6 +170,7 @@ Kirigami.ScrollablePage {
 
                 QQC2.ComboBox {
                     Kirigami.FormData.label: i18n("Priority:")
+
                     Layout.fillWidth: true
                     currentIndex: root.incidenceWrapper.priority
                     onCurrentValueChanged: root.incidenceWrapper.priority = currentValue
