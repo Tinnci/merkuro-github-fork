@@ -147,6 +147,8 @@ Kirigami.OverlayDrawer {
                     }
 
                     ColumnLayout {
+                        id: todoCompletionLayout
+
                         Layout.columnSpan: 2
                         visible: incidenceInfo.incidenceWrapper.incidenceType === IncidenceWrapper.TypeTodo
 
@@ -169,8 +171,13 @@ Kirigami.OverlayDrawer {
                                     CalendarManager.editIncidence(incidenceInfo.incidenceWrapper);
                                 }
                             }
-                            padding: 0
                         }
+                    }
+
+                    Kirigami.Separator {
+                        Layout.columnSpan: 2
+                        Layout.fillWidth: true
+                        visible: todoCompletionLayout.visible
                     }
 
                     QQC2.Label {
