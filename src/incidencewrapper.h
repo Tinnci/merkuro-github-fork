@@ -50,6 +50,7 @@ class IncidenceWrapper : public QObject
 
     Q_PROPERTY(bool todoCompleted READ todoCompleted WRITE setTodoCompleted NOTIFY todoCompletedChanged)
     Q_PROPERTY(QDateTime todoCompletionDt READ todoCompletionDt NOTIFY todoCompletionDtChanged)
+    Q_PROPERTY(int todoPercentComplete READ todoPercentComplete WRITE setTodoPercentComplete NOTIFY todoPercentCompleteChanged)
 
 public:
     enum RecurrenceIntervals {
@@ -106,6 +107,8 @@ public:
     bool todoCompleted();
     void setTodoCompleted(bool completed);
     QDateTime todoCompletionDt();
+    int todoPercentComplete();
+    void setTodoPercentComplete(int todoPercentComplete);
 
     Q_INVOKABLE void setNewEvent();
     Q_INVOKABLE void setNewTodo();
@@ -136,6 +139,7 @@ Q_SIGNALS:
     void attachmentsModelChanged();
     void todoCompletedChanged();
     void todoCompletionDtChanged();
+    void todoPercentCompleteChanged();
 
 private:
     KCalendarCore::Incidence::Ptr m_incidence;

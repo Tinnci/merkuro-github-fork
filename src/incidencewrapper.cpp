@@ -59,6 +59,7 @@ void IncidenceWrapper::setIncidencePtr(const KCalendarCore::Incidence::Ptr incid
     Q_EMIT attachmentsModelChanged();
     Q_EMIT todoCompletedChanged();
     Q_EMIT todoCompletionDtChanged();
+    Q_EMIT todoPercentCompleteChanged();
 }
 
 KCalendarCore::Incidence::Ptr IncidenceWrapper::originalIncidencePtr()
@@ -358,6 +359,7 @@ void IncidenceWrapper::setTodoCompleted(bool completed)
     todo->setCompleted(completed);
 
     Q_EMIT todoCompletionDtChanged();
+    Q_EMIT todoPercentCompleteChanged();
     Q_EMIT incidenceIconNameChanged();
     Q_EMIT todoCompletedChanged();
 }
@@ -370,6 +372,28 @@ QDateTime IncidenceWrapper::todoCompletionDt()
 
     auto todo = m_incidence.staticCast<KCalendarCore::Todo>();
     return todo->completed();
+}
+
+int IncidenceWrapper::todoPercentComplete()
+{
+    if(m_incidence->type() != KCalendarCore::IncidenceBase::TypeTodo) {
+        return 0;
+    }
+
+    auto todo = m_incidence.staticCast<KCalendarCore::Todo>();
+    return todo->percentComplete();
+}
+
+void IncidenceWrapper::setTodoPercentComplete(int todoPercentComplete)
+{
+    if(m_incidence->type() != KCalendarCore::IncidenceBase::TypeTodo) {
+        return;
+    }
+
+    auto todo = m_incidence.staticCast<KCalendarCore::Todo>();
+    todo->setPercentComplete(todoPercentComplete);
+
+    Q_EMIT todoPercentCompleteChanged();
 }
 
 void IncidenceWrapper::setNewEvent()
