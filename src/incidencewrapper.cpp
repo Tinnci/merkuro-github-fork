@@ -51,6 +51,7 @@ void IncidenceWrapper::setIncidencePtr(const KCalendarCore::Incidence::Ptr incid
     Q_EMIT incidenceStartChanged();
     Q_EMIT incidenceEndChanged();
     Q_EMIT allDayChanged();
+    Q_EMIT priorityChanged();
     Q_EMIT remindersModelChanged();
     Q_EMIT organizerChanged();
     Q_EMIT attendeesModelChanged();
@@ -67,22 +68,22 @@ KCalendarCore::Incidence::Ptr IncidenceWrapper::originalIncidencePtr()
     return m_originalIncidence;
 }
 
-int IncidenceWrapper::incidenceType()
+int IncidenceWrapper::incidenceType() const
 {
     return m_incidence->type();
 }
 
-QString IncidenceWrapper::incidenceTypeStr()
+QString IncidenceWrapper::incidenceTypeStr() const
 {
     return i18n(m_incidence->typeStr());
 }
 
-QString IncidenceWrapper::incidenceIconName()
+QString IncidenceWrapper::incidenceIconName() const
 {
     return m_incidence->iconName();
 }
 
-qint64 IncidenceWrapper::collectionId()
+qint64 IncidenceWrapper::collectionId() const
 {
     return m_collectionId;
 }
@@ -177,6 +178,17 @@ void IncidenceWrapper::setAllDay(bool allDay)
 {
     m_incidence->setAllDay(allDay);
     Q_EMIT allDayChanged();
+}
+
+int IncidenceWrapper::priority() const
+{
+    return m_incidence->priority();
+}
+
+void IncidenceWrapper::setPriority(int priority)
+{
+    m_incidence->setPriority(priority);
+    Q_EMIT priorityChanged();
 }
 
 KCalendarCore::Recurrence * IncidenceWrapper::recurrence() const

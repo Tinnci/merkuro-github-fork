@@ -168,6 +168,27 @@ Kirigami.ScrollablePage {
                     visible: incidenceForm.isTodo
                 }
 
+                QQC2.ComboBox {
+                    Kirigami.FormData.label: i18n("Priority:")
+                    Layout.fillWidth: true
+                    currentIndex: root.incidenceWrapper.priority
+                    onCurrentValueChanged: root.incidenceWrapper.priority = currentValue
+                    textRole: "display"
+                    valueRole: "value"
+                    model: [
+                        {display: i18n("Unassigned"), value: 0},
+                        {display: i18n("1 (Highest priority)"), value: 1},
+                        {display: i18n("2"), value: 2},
+                        {display: i18n("3"), value: 3},
+                        {display: i18n("4"), value: 4},
+                        {display: i18n("5 (Medium priority)"), value: 5},
+                        {display: i18n("6"), value: 6},
+                        {display: i18n("7"), value: 7},
+                        {display: i18n("8"), value: 8},
+                        {display: i18n("9 (Lowest priority)"), value: 9}
+                    ]
+                }
+
                 Kirigami.Separator {
                     Kirigami.FormData.isSection: true
                     visible: incidenceForm.isTodo

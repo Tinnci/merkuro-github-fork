@@ -36,6 +36,7 @@ class IncidenceWrapper : public QObject
     Q_PROPERTY(QDateTime incidenceStart READ incidenceStart WRITE setIncidenceStart NOTIFY incidenceStartChanged)
     Q_PROPERTY(QDateTime incidenceEnd READ incidenceEnd WRITE setIncidenceEnd NOTIFY incidenceEndChanged)
     Q_PROPERTY(bool allDay READ allDay WRITE setAllDay NOTIFY allDayChanged)
+    Q_PROPERTY(int priority READ priority WRITE setPriority NOTIFY priorityChanged)
 
     Q_PROPERTY(KCalendarCore::Recurrence * recurrence READ recurrence)
     Q_PROPERTY(QVariantMap recurrenceData READ recurrenceData NOTIFY recurrenceDataChanged)
@@ -74,10 +75,10 @@ public:
     KCalendarCore::Incidence::Ptr incidencePtr() const;
     void setIncidencePtr(KCalendarCore::Incidence::Ptr incidencePtr);
     KCalendarCore::Incidence::Ptr originalIncidencePtr();
-    int incidenceType();
-    QString incidenceTypeStr();
-    QString incidenceIconName();
-    qint64 collectionId();
+    int incidenceType() const;
+    QString incidenceTypeStr() const;
+    QString incidenceIconName() const;
+    qint64 collectionId() const;
     void setCollectionId(qint64 collectionId);
     QString summary() const;
     void setSummary(const QString &summary);
@@ -91,6 +92,8 @@ public:
     void setIncidenceEnd(const QDateTime &incidenceEnd);
     bool allDay() const;
     void setAllDay(bool allDay);
+    int priority() const;
+    void setPriority(int priority);
 
     KCalendarCore::Recurrence * recurrence() const;
     QVariantMap recurrenceData();
@@ -131,6 +134,7 @@ Q_SIGNALS:
     void incidenceStartChanged();
     void incidenceEndChanged();
     void allDayChanged();
+    void priorityChanged();
     void remindersModelChanged();
     void recurrenceDataChanged();
     void organizerChanged();
