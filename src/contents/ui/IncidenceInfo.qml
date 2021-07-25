@@ -210,6 +210,18 @@ Kirigami.OverlayDrawer {
 
                     QQC2.Label {
                         Layout.alignment: Qt.AlignTop
+                        text: i18n("<b>Percent done:</b>")
+                        visible: incidenceInfo.incidenceWrapper.incidenceType === IncidenceWrapper.TypeTodo
+                    }
+                    QQC2.Label {
+                        Layout.alignment: Qt.AlignTop
+                        Layout.fillWidth: true
+                        text: String(incidenceInfo.incidenceWrapper.todoPercentComplete) + "%"
+                        visible: incidenceInfo.incidenceWrapper.incidenceType === IncidenceWrapper.TypeTodo
+                    }
+
+                    QQC2.Label {
+                        Layout.alignment: Qt.AlignTop
                         text: i18n("<b>Completed:</b>")
                         visible: incidenceInfo.incidenceWrapper.todoCompleted
                     }
