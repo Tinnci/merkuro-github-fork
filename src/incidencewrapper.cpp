@@ -406,6 +406,12 @@ void IncidenceWrapper::setTodoPercentComplete(int todoPercentComplete)
     todo->setPercentComplete(todoPercentComplete);
 
     Q_EMIT todoPercentCompleteChanged();
+
+    if (todoPercentComplete < 100 && todoCompleted()) {
+        setTodoCompleted(false);
+    }
+
+    Q_EMIT todoCompletedChanged();
 }
 
 void IncidenceWrapper::setNewEvent()
