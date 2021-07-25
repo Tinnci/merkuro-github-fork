@@ -120,9 +120,9 @@ Kirigami.ScrollablePage {
                     popup.z: 1000
                 }
                 QQC2.TextField {
-                    id: titleField
+                    id: summaryField
 
-                    Kirigami.FormData.label: i18n("<b>Title</b>:")
+                    Kirigami.FormData.label: i18n("<b>Summary:</b>")
                     placeholderText: i18n("Required")
                     text: root.incidenceWrapper.summary
                     onTextChanged: root.incidenceWrapper.summary = text
