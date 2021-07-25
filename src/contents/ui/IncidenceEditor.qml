@@ -156,6 +156,23 @@ Kirigami.ScrollablePage {
                     Kirigami.FormData.isSection: true
                 }
 
+                QQC2.Slider {
+                    Kirigami.FormData.label: i18n("Completion:")
+                    Layout.fillWidth: true
+                    orientation: Qt.Horizontal
+                    from: 0
+                    to: 100.0
+                    stepSize: 10.0
+                    value: root.incidenceWrapper.todoPercentComplete
+                    onValueChanged: root.incidenceWrapper.todoPercentComplete = value
+                    visible: incidenceForm.isTodo
+                }
+
+                Kirigami.Separator {
+                    Kirigami.FormData.isSection: true
+                    visible: incidenceForm.isTodo
+                }
+
                 QQC2.CheckBox {
                     id: allDayCheckBox
 
