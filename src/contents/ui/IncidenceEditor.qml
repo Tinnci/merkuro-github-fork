@@ -187,6 +187,7 @@ Kirigami.ScrollablePage {
                         {display: i18n("8"), value: 8},
                         {display: i18n("9 (Lowest priority)"), value: 9}
                     ]
+                    visible: incidenceForm.isTodo
                 }
 
                 Kirigami.Separator {
