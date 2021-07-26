@@ -156,16 +156,23 @@ Kirigami.ScrollablePage {
                     Kirigami.FormData.isSection: true
                 }
 
-                QQC2.Slider {
+                RowLayout {
                     Kirigami.FormData.label: i18n("Completion:")
                     Layout.fillWidth: true
-                    orientation: Qt.Horizontal
-                    from: 0
-                    to: 100.0
-                    stepSize: 10.0
-                    value: root.incidenceWrapper.todoPercentComplete
-                    onValueChanged: root.incidenceWrapper.todoPercentComplete = value
                     visible: incidenceForm.isTodo && root.editMode
+
+                    QQC2.Slider {
+                        Layout.fillWidth: true
+                        orientation: Qt.Horizontal
+                        from: 0
+                        to: 100.0
+                        stepSize: 10.0
+                        value: root.incidenceWrapper.todoPercentComplete
+                        onValueChanged: root.incidenceWrapper.todoPercentComplete = value
+                    }
+                    QQC2.Label {
+                        text: String(root.incidenceWrapper.todoPercentComplete) + "\%"
+                    }
                 }
 
                 QQC2.ComboBox {
