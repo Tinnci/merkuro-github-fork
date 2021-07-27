@@ -22,5 +22,6 @@ target_link_libraries(kalendar
     KF5::WindowSystem
     KF5::ConfigWidgets
     KF5::AkonadiWidgets
+    KF5::People
 )
 install(TARGETS kalendar ${KF5_INSTALL_TARGETS_DEFAULT_ARGS})
