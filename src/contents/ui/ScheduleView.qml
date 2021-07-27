@@ -16,6 +16,7 @@ Kirigami.ScrollablePage {
     signal viewIncidence(var modelData, var collectionData)
     signal editIncidence(var incidencePtr, var collectionId)
     signal deleteIncidence(var incidencePtr, date deleteDate)
+    signal completeTodo(var incidencePtr)
 
     property date selectedDate: new Date()
     property date startDate: DateUtils.getFirstDayOfMonth(selectedDate)
@@ -348,6 +349,7 @@ Kirigami.ScrollablePage {
                                         onViewClicked: root.viewIncidence(modelData, collectionData)
                                         onEditClicked: root.editIncidence(incidencePtr, collectionId)
                                         onDeleteClicked: root.deleteIncidence(incidencePtr, deleteDate)
+                                        onTodoCompletedClicked: completeTodo(incidencePtr)
                                     }
                                 }
                             }
