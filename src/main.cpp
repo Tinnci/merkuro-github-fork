@@ -18,6 +18,7 @@
 #include "incidencewrapper.h"
 #include "about.h"
 #include "config-kalendar.h"
+#include "contactcontroller.h"
 
 using namespace KCalendarCore;
 
@@ -49,12 +50,22 @@ int main(int argc, char *argv[])
 
     auto manager = new CalendarManager(&engine);
     AgentConfiguration agentConfiguration;
+    ContactController contactController;
+
     qmlRegisterSingletonInstance("org.kde.kalendar", 1, 0, "CalendarManager", manager);
     qmlRegisterSingletonInstance("org.kde.kalendar", 1, 0, "AgentConfiguration", &agentConfiguration);
+    qmlRegisterSingletonInstance("org.kde.phonebook", 1, 0, "ContactController", &contactController);
+
     qmlRegisterType<IncidenceWrapper>("org.kde.kalendar", 1, 0, "IncidenceWrapper");
     qmlRegisterType<MultiDayIncidenceModel>("org.kde.kalendar", 1, 0, "MultiDayIncidenceModel");
     qmlRegisterType<IncidenceOccurrenceModel>("org.kde.kalendar", 1, 0, "IncidenceOccurrenceModel");
+
     qRegisterMetaType<Akonadi::AgentFilterProxyModel *>();
+    qRegisterMetaType<KContacts::Addressee>();
+    qRegisterMetaType<KContacts::Picture>();
+    qRegisterMetaType<KContacts::Email>();
+    qRegisterMetaType<KContacts::Impp>();
+    qRegisterMetaType<KContacts::PhoneNumber>();
 
     qmlRegisterSingletonType<AboutType>("org.kde.kalendar", 1, 0, "AboutType", [](QQmlEngine *engine, QJSEngine *scriptEngine) -> QObject * {
         Q_UNUSED(engine)
