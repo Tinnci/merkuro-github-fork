@@ -18,6 +18,7 @@ Item {
     signal viewIncidence(var modelData, var collectionData)
     signal editIncidence(var incidencePtr, var collectionId)
     signal deleteIncidence(var incidencePtr, date deleteDate)
+    signal completeTodo(var incidencePtr)
 
     property int daysToShow
     property int daysPerRow: daysToShow
@@ -209,6 +210,7 @@ Item {
                                                 onViewClicked: viewIncidence(modelData, collectionData)
                                                 onEditClicked: editIncidence(incidencePtr, collectionId)
                                                 onDeleteClicked: deleteIncidence(incidencePtr, deleteDate)
+                                                onTodoCompletedClicked: completeTodo(incidencePtr)
                                             }
                                         }
                                     }

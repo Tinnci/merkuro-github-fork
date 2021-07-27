@@ -18,6 +18,7 @@ Kirigami.Page {
     signal viewIncidenceReceived(var receivedModelData, var receivedCollectionData)
     signal editIncidenceReceived(var receivedIncidencePtr, var receivedCollectionId)
     signal deleteIncidenceReceived(var receivedIncidencePtr, date receivedDeleteDate)
+    signal completeTodoReceived(var receivedIncidencePtr)
 
     property alias startDate: dayView.startDate
     property alias currentDate: dayView.currentDate
@@ -101,6 +102,7 @@ Kirigami.Page {
         onViewIncidence: viewIncidenceReceived(modelData, collectionData)
         onEditIncidence: editIncidenceReceived(incidencePtr, collectionId)
         onDeleteIncidence: deleteIncidenceReceived(incidencePtr, deleteDate)
+        onCompleteTodo: completeTodoReceived(incidencePtr)
     }
 }
 

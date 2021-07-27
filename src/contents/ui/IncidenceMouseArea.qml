@@ -5,6 +5,7 @@ import QtQuick 2.4
 import QtQuick.Layouts 1.15
 import QtQuick.Controls 2.15 as QQC2
 import org.kde.kirigami 2.14 as Kirigami
+import org.kde.kalendar 1.0 as Kalendar
 
 MouseArea {
     id: mouseArea
@@ -12,6 +13,7 @@ MouseArea {
     signal viewClicked(var incidenceData, var collectionData)
     signal editClicked(var incidencePtr, var collectionId)
     signal deleteClicked(var incidencePtr, date deleteDate)
+    signal todoCompletedClicked(var incidencePtr)
 
     property double clickX
     property double clickY
@@ -54,6 +56,16 @@ MouseArea {
                 text:i18n("Delete")
                 enabled: !mouseArea.collectionDetails["readOnly"]
                 onClicked: deleteClicked(incidenceData.incidencePtr, incidenceData.startTime)
+            }
+            QQC2.MenuSeparator {
+                visible: incidenceData.incidenceType === Kalendar.IncidenceWrapper.TypeTodo
+            }
+            QQC2.MenuItem {
+                icon.name: "task-complete"
+                text: incidenceData.todoCompleted ? i18n("Mark Todo as Incomplete") : i18n("Mark Todo as Complete")
+                enabled: !mouseArea.collectionDetails["readOnly"]
+                onClicked: todoCompletedClicked(incidenceData.incidencePtr)
+                visible: incidenceData.incidenceType === Kalendar.IncidenceWrapper.TypeTodo
             }
         }
     }

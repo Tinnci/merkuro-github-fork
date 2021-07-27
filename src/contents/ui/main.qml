@@ -203,6 +203,19 @@ Kirigami.ApplicationWindow {
         deleteIncidenceSheet.open();
     }
 
+    function completeTodo(incidencePtr) {
+        let todo = Qt.createQmlObject('import org.kde.kalendar 1.0; IncidenceWrapper {id: incidence}',
+                                      this,
+                                      "incidence");
+
+        todo.incidencePtr = incidencePtr;
+
+        if(todo.incidenceType === IncidenceWrapper.TypeTodo) {
+            todo.todoCompleted = !todo.todoCompleted;
+            CalendarManager.editIncidence(todo);
+        }
+    }
+
     DeleteIncidenceSheet {
         id: deleteIncidenceSheet
         onAddException: {
@@ -239,6 +252,7 @@ Kirigami.ApplicationWindow {
             onViewIncidenceReceived: root.setUpView(receivedModelData, receivedCollectionData)
             onEditIncidenceReceived: root.setUpEdit(receivedIncidencePtr, receivedCollectionId)
             onDeleteIncidenceReceived: root.setUpDelete(receivedIncidencePtr, receivedDeleteDate)
+            onCompleteTodoReceived: root.completeTodo(receivedIncidencePtr)
 
             onMonthChanged: root.month = month
             onYearChanged: root.year = year
@@ -276,10 +290,11 @@ Kirigami.ApplicationWindow {
             onMonthChanged: root.month = month
             onYearChanged: root.year = year
 
-            onAddIncidence: setUpAdd(type, addDate)
-            onViewIncidence: setUpView(modelData, collectionData)
-            onEditIncidence: setUpEdit(incidencePtr, collectionData)
-            onDeleteIncidence: setUpDelete(incidencePtr, deleteDate)
+            onAddIncidence: root.setUpAdd(type, addDate)
+            onViewIncidence: root.setUpView(modelData, collectionData)
+            onEditIncidence: root.setUpEdit(incidencePtr, collectionData)
+            onDeleteIncidence: root.setUpDelete(incidencePtr, deleteDate)
+            onCompleteTodo: root.completeTodo(incidencePtr)
 
             actions.contextualActions: [
                 Kirigami.Action {
