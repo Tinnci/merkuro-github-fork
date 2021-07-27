@@ -18,5 +18,7 @@
     <file alias="ContactsPage.qml">contents/ui/ContactsPage.qml</file>
     <file alias="ContactListItem.qml">contents/ui/ContactListItem.qml</file>
     <file alias="RoundImage.qml">contents/ui/RoundImage.qml</file>
+    <file alias="DetailPage.qml">contents/ui/DetailPage.qml</file>
+    <file alias="Header.qml">contents/ui/Header.qml</file>
   </qresource>
 </RCC>

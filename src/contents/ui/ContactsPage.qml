@@ -13,11 +13,11 @@ import QtQuick.Layouts 1.7
 import org.kde.kirigami 2.12 as Kirigami
 import org.kde.people 1.0 as KPeople
 
-//import org.kde.phonebook 1.0
+import org.kde.phonebook 1.0
 
 
 Kirigami.ScrollablePage {
-    title: i18n("Phonebook")
+    title: i18n("Contacts")
 
     actions.main: Kirigami.Action {
         icon.name: "contact-new-symbolic"
@@ -35,6 +35,8 @@ Kirigami.ScrollablePage {
             onTextChanged: filterModel.setFilterFixedString(text)
         }
     }
+
+    Component { id: detailPage; DetailPage {}}
 
     ListView {
         id: contactsList
