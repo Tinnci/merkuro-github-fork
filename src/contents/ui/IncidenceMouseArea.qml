@@ -39,6 +39,11 @@ MouseArea {
             x: parent.x + mouseArea.clickX
 
             QQC2.MenuItem {
+                icon.name: "dialog-icon-preview"
+                text:i18n("View")
+                onClicked: viewClicked(incidenceData, collectionDetails);
+            }
+            QQC2.MenuItem {
                 icon.name: "edit-entry"
                 text:i18n("Edit")
                 enabled: !mouseArea.collectionDetails["readOnly"]
