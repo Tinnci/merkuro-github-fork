@@ -7,21 +7,23 @@
 #include <QSortFilterProxyModel>
 #include <Akonadi/Contact/ContactsTreeModel>
 #include <Akonadi/Contact/ContactsFilterProxyModel>
+#include <AkonadiCore/EntityMimeTypeFilterModel>
 #include <KItemModels/KDescendantsProxyModel>
 
 class ContactsManager : public QObject
 {
     Q_OBJECT
-    Q_PROPERTY(KDescendantsProxyModel * contactsModel READ contactsModel CONSTANT)
+    Q_PROPERTY(Akonadi::EntityMimeTypeFilterModel * contactsModel READ contactsModel CONSTANT)
 
 public:
     ContactsManager(QObject *parent = nullptr);
     ~ContactsManager() = default;
 
-    KDescendantsProxyModel *contactsModel();
+    Akonadi::EntityMimeTypeFilterModel *contactsModel();
 
 private:
-    KDescendantsProxyModel *m_model = nullptr;
+    Akonadi::EntityMimeTypeFilterModel *m_model = nullptr;
+    KDescendantsProxyModel *m_flatModel = nullptr;
     Akonadi::ContactsTreeModel *m_sourceModel = nullptr;
     Akonadi::ContactsFilterProxyModel *m_filterModel = nullptr;
 };

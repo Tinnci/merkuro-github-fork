@@ -32,15 +32,19 @@ ContactsManager::ContactsManager(QObject* parent)
 
     m_sourceModel = new Akonadi::ContactsTreeModel(monitor);
     m_filterModel = new Akonadi::ContactsFilterProxyModel;
-    m_model = new KDescendantsProxyModel;
+    m_flatModel = new KDescendantsProxyModel;
 
     m_filterModel->setSourceModel(m_sourceModel);
     m_filterModel->setFilterFlags(Akonadi::ContactsFilterProxyModel::HasEmail);
-    m_model->setSourceModel(m_filterModel);
+    m_flatModel->setSourceModel(m_filterModel);
+
+    m_model = new Akonadi::EntityMimeTypeFilterModel;
+    m_model->setSourceModel(m_flatModel);
+    m_model->addMimeTypeInclusionFilter(KContacts::Addressee::mimeType());
     m_model->sort(0);
 }
 
-KDescendantsProxyModel * ContactsManager::contactsModel()
+Akonadi::EntityMimeTypeFilterModel * ContactsManager::contactsModel()
 {
     return m_model;
 }
