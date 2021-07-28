@@ -1019,6 +1019,7 @@ Kirigami.ScrollablePage {
                         QQC2.Menu {
                             id: attendeeAddChoices
                             width: attendeesButton.width
+                            y: parent.height // Y is relative to parent
 
                             QQC2.MenuItem {
                                 text: i18n("Choose from contacts")
