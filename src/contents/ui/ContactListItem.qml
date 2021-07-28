@@ -16,9 +16,8 @@ import org.kde.people 1.0 as KPeople
 Kirigami.AbstractListItem {
     id: listItem
 
-    signal viewClicked
-
     property string name
+    property bool clicked: false
     property var avatarIcon
 
     contentItem: RowLayout {
@@ -40,10 +39,9 @@ Kirigami.AbstractListItem {
             Layout.fillWidth: true
         }
 
-        Controls.Button {
-            flat: true
-            text: i18n("View")
-            onClicked: viewClicked()
+        Kirigami.Icon {
+            source: "checkmark"
+            visible: clicked
         }
     }
 }
