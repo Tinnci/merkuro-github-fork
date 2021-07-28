@@ -19,7 +19,7 @@ Kirigami.ScrollablePage {
 
     title: i18n("Contacts")
 
-    signal addAttendee(var personUri)
+    signal addAttendee(var itemId)
 
     actions.main: Kirigami.Action {
         icon.name: "object-select-symbolic"
@@ -61,12 +61,10 @@ Kirigami.ScrollablePage {
             name: model && model.display
             avatarIcon: model && model.decoration
 
-            //onClicked: addAttendee(personUri);
-            /*onViewClicked: {
-                pageStack.push(detailPage, {
-                    personUri: model.personUri
-                })
-            }*/
+            onClicked: {
+                addAttendee(itemId);
+                clicked = true;
+            }
         }
     }
 }

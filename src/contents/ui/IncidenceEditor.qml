@@ -19,7 +19,7 @@ Kirigami.ScrollablePage {
     Component {
         id: contactsPage
         ContactsPage {
-            onAddAttendee: root.incidenceWrapper.attendeesModel.addAttendee(personUri);
+            onAddAttendee: root.incidenceWrapper.attendeesModel.addAttendee(itemId);
         }
     }
 

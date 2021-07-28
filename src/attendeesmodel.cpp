@@ -5,7 +5,9 @@
 #include <QRegularExpression>
 #include <KLocalizedString>
 #include "attendeesmodel.h"
-#include <KPeople/PersonData>
+#include <KContacts/Addressee>
+#include <AkonadiCore/ItemFetchJob>
+#include <AkonadiCore/ItemFetchScope>
 
 AttendeeStatusModel::AttendeeStatusModel(QObject *parent)
     : QAbstractListModel(parent)
@@ -253,18 +255,31 @@ int AttendeesModel::rowCount(const QModelIndex &) const
     return m_incidence->attendeeCount();
 }
 
-void AttendeesModel::addAttendee(QString personUri)
+void AttendeesModel::addAttendee(qint64 itemId)
 {
+    if(itemId) {
+        Akonadi::Item item(itemId);
+
+        Akonadi::ItemFetchJob *job = new Akonadi::ItemFetchJob(item);
+        job->fetchScope().fetchFullPayload();
+
+        connect(job, &Akonadi::ItemFetchJob::result, this, [this](KJob *job) {
+
+            Akonadi::ItemFetchJob *fetchJob = qobject_cast<Akonadi::ItemFetchJob*>(job);
+            auto item = fetchJob->items().at(0);
+            auto payload = item.payload<KContacts::Addressee>();
+            KCalendarCore::Attendee attendee(payload.name(), payload.preferredEmail());
+
+            m_incidence->addAttendee(attendee);
+            Q_EMIT attendeesChanged();
+            Q_EMIT layoutChanged();
+            return;
+        });
+
+    }
+
     // QLatin1String is a workaround for QT_NO_CAST_FROM_ASCII
     KCalendarCore::Attendee attendee(QLatin1String(""), QLatin1String(""));
-
-    if(!personUri.isNull()) {
-        KPeople::PersonData person(personUri);
-        if(person.isValid()) {
-            attendee.setName(person.name());
-            attendee.setEmail(person.email());
-        }
-    }
 
     // addAttendee won't actually add any attendees without a set name
     m_incidence->addAttendee(attendee);
