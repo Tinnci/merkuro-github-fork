@@ -2,6 +2,7 @@
  * SPDX-FileCopyrightText: 2015 Martin Klapetek <mklapetek@kde.org>
  * SPDX-FileCopyrightText: 2019 Linus Jahn <lnj@kaidan.im>
  * SPDX-FileCopyrightText: 2019 Jonah Brüchert <jbb@kaidan.im>
+ * SPDX-FileCopyrightText: 2021 Claudio Cambra <claudio.cambra@gmail.com>
  *
  * SPDX-License-Identifier: GPL-2.0-only OR GPL-3.0-only OR LicenseRef-KDE-Accepted-GPL
  */
@@ -17,14 +18,16 @@ import org.kde.phonebook 1.0
 
 
 Kirigami.ScrollablePage {
+    id: root
+
     title: i18n("Contacts")
 
+    signal addAttendee(var personUri)
+
     actions.main: Kirigami.Action {
-        icon.name: "contact-new-symbolic"
-        text: i18n("Create New")
-        onTriggered: {
-            pageStack.push(Qt.resolvedUrl("AddContactPage.qml"), {state: "create"})
-        }
+        icon.name: "object-select-symbolic"
+        text: i18n("Done")
+        onTriggered: pageStack.pop()
     }
 
     header: Controls.Control {
@@ -73,7 +76,8 @@ Kirigami.ScrollablePage {
             name: model && model.display
             avatarIcon: model && model.decoration
 
-            onClicked: {
+            onClicked: addAttendee(personUri);
+            onViewClicked: {
                 pageStack.push(detailPage, {
                     personUri: model.personUri
                 })

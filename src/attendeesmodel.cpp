@@ -5,6 +5,7 @@
 #include <QRegularExpression>
 #include <KLocalizedString>
 #include "attendeesmodel.h"
+#include <KPeople/PersonData>
 
 AttendeeStatusModel::AttendeeStatusModel(QObject *parent)
     : QAbstractListModel(parent)
@@ -252,12 +253,22 @@ int AttendeesModel::rowCount(const QModelIndex &) const
     return m_incidence->attendeeCount();
 }
 
-void AttendeesModel::addAttendee()
+void AttendeesModel::addAttendee(QString personUri)
 {
     // QLatin1String is a workaround for QT_NO_CAST_FROM_ASCII
     KCalendarCore::Attendee attendee(QLatin1String(""), QLatin1String(""));
+
+    if(!personUri.isNull()) {
+        KPeople::PersonData person(personUri);
+        if(person.isValid()) {
+            attendee.setName(person.name());
+            attendee.setEmail(person.email());
+        }
+    }
+
     // addAttendee won't actually add any attendees without a set name
     m_incidence->addAttendee(attendee);
+
     Q_EMIT attendeesChanged();
     Q_EMIT layoutChanged();
 }

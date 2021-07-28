@@ -16,6 +16,8 @@ import org.kde.people 1.0 as KPeople
 Kirigami.AbstractListItem {
     id: listItem
 
+    signal viewClicked
+
     property string name
     property var avatarIcon
 
@@ -36,6 +38,12 @@ Kirigami.AbstractListItem {
             maximumLineCount: 1
             level: 3
             Layout.fillWidth: true
+        }
+
+        Controls.Button {
+            flat: true
+            text: i18n("View")
+            onClicked: viewClicked()
         }
     }
 }

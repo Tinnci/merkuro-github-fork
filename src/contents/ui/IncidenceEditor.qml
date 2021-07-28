@@ -16,6 +16,13 @@ Kirigami.ScrollablePage {
     signal edited(IncidenceWrapper incidenceWrapper)
     signal cancel
 
+    Component {
+        id: contactsPage
+        ContactsPage {
+            onAddAttendee: root.incidenceWrapper.attendeesModel.addAttendee(personUri);
+        }
+    }
+
     // Setting the incidenceWrapper here and now causes some *really* weird behaviour.
     // Set it after this component has already been instantiated.
     property var incidenceWrapper
@@ -1002,12 +1009,21 @@ Kirigami.ScrollablePage {
                         }
                     }
 
-                    QQC2.Button {
-                        id: attendeesButton
-                        text: i18n("Add attendee")
-                        Layout.fillWidth: true
+                    RowLayout {
+                        QQC2.Button {
+                            id: attendeesButton
+                            text: i18n("Add attendee")
+                            Layout.fillWidth: true
 
-                        onClicked: root.incidenceWrapper.attendeesModel.addAttendee();
+                            onClicked: root.incidenceWrapper.attendeesModel.addAttendee();
+                        }
+                        QQC2.Button {
+                            id: contactsPicker
+                            text: i18n("Choose contacts")
+                            Layout.fillWidth: true
+
+                            onClicked: pageStack.push(contactsPage)
+                        }
                     }
                 }
 
