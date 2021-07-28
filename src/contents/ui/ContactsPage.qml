@@ -57,7 +57,6 @@ Kirigami.ScrollablePage {
         }
 
         delegate: ContactListItem {
-            leftPadding: Kirigami.Units.largeSpacing * model.kDescendantLevel
             height: Kirigami.Units.gridUnit * 3
             name: model && model.display
             avatarIcon: model && model.decoration
