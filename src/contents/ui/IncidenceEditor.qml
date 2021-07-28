@@ -1009,20 +1009,25 @@ Kirigami.ScrollablePage {
                         }
                     }
 
-                    RowLayout {
-                        QQC2.Button {
-                            id: attendeesButton
-                            text: i18n("Add attendee")
-                            Layout.fillWidth: true
+                    QQC2.Button {
+                        id: attendeesButton
+                        text: i18n("Add attendee")
+                        Layout.fillWidth: true
 
-                            onClicked: root.incidenceWrapper.attendeesModel.addAttendee();
-                        }
-                        QQC2.Button {
-                            id: contactsPicker
-                            text: i18n("Choose contacts")
-                            Layout.fillWidth: true
+                        onClicked: attendeeAddChoices.open()
 
-                            onClicked: pageStack.push(contactsPage)
+                        QQC2.Menu {
+                            id: attendeeAddChoices
+                            width: attendeesButton.width
+
+                            QQC2.MenuItem {
+                                text: i18n("Choose from contacts")
+                                onClicked: pageStack.push(contactsPage)
+                            }
+                            QQC2.MenuItem {
+                                text: i18n("Fill in manually")
+                                onClicked: root.incidenceWrapper.attendeesModel.addAttendee();
+                            }
                         }
                     }
                 }
