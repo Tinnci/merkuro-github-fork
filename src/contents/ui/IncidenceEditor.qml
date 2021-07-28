@@ -941,6 +941,7 @@ Kirigami.ScrollablePage {
                                         Layout.row: 0
                                         Layout.column: 1
                                         Layout.columnSpan: 4
+                                        placeholderText: i18n("Optional")
                                         text: model.name
                                         onTextChanged: root.incidenceWrapper.attendeesModel.setData(root.incidenceWrapper.attendeesModel.index(index, 0),
                                                                                                     text,
@@ -965,6 +966,7 @@ Kirigami.ScrollablePage {
                                         Layout.row: 1
                                         Layout.column: 1
                                         Layout.columnSpan: 4
+                                        placeholderText: i18n("Required")
                                         text: model.email
                                         onTextChanged: root.incidenceWrapper.attendeesModel.setData(root.incidenceWrapper.attendeesModel.index(index, 0),
                                                                                                     text,
