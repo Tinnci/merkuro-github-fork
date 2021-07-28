@@ -65,7 +65,7 @@ public:
     ~AttendeesModel() = default;
 
     KCalendarCore::Incidence::Ptr incidencePtr();
-    void setIncidencePtr(KCalendarCore::Incidence::Ptr incidence);
+    void setIncidencePtr(const KCalendarCore::Incidence::Ptr incidence);
     KCalendarCore::Attendee::List attendees();
     AttendeeStatusModel * attendeeStatusModel();
     QVariantMap dataroles();
@@ -75,7 +75,7 @@ public:
     QHash<int, QByteArray> roleNames() const override;
     int rowCount(const QModelIndex &parent = {}) const override;
 
-    Q_INVOKABLE void addAttendee();
+    Q_INVOKABLE void addAttendee(QString personUri = QLatin1String());
     Q_INVOKABLE void deleteAttendee(int row);
 
 Q_SIGNALS:

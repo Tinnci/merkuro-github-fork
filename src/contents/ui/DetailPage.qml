@@ -16,17 +16,14 @@ Kirigami.ScrollablePage {
     property string personUri;
     id: page
 
+    signal addAttendee(var personData)
+
     leftPadding: 0
     rightPadding: 0
     topPadding: 0
 
     title: personData.person.name
     Kirigami.Theme.colorSet: Kirigami.Theme.View
-
-    function callNumber(number) {
-        //Qt.openUrlExternally("tel:" + number)
-        console.log(personData.person.contactCustomProperty("phoneNumber"))
-    }
 
     KPeople.PersonData {
         id: personData
@@ -88,28 +85,6 @@ Kirigami.ScrollablePage {
                 id: toolbar
                 width: parent.width
 
-                actions: [
-                    Kirigami.Action {
-                        text: i18n("Call")
-                        iconName: "call-start"
-                        visible: addressee.phoneNumbers.length > 0
-                        onTriggered: {
-                            var model = addressee.phoneNumbers
-
-                            if (addressee.phoneNumbers.length == 1) {
-                                page.callNumber(model[0].normalizedNumber)
-                            } else {
-                                page.callNumber(model[0].normalizedNumber)
-                            }
-                        }
-                    },
-                    Kirigami.Action {
-                        text: i18n("Send email")
-                        iconName: "mail-message"
-                        visible:personData.person.contactCustomProperty("email").length > 0
-                        onTriggered: Qt.openUrlExternally("mailto:" + personData.person.contactCustomProperty("email"))
-                    }
-                ]
             }
         }
 
@@ -132,22 +107,12 @@ Kirigami.ScrollablePage {
 
     actions {
         main: Kirigami.Action {
-            iconName: "document-edit"
-            text: i18n("Edit")
+            iconName: "list-add"
+            text: i18n("Add attendee")
             onTriggered: {
                 pageStack.push(Qt.resolvedUrl("AddContactPage.qml"), {state: "update", person: personData.person, addressee: page.addressee})
             }
         }
-        contextualActions: [
-            Kirigami.Action {
-                iconName: "delete"
-                text: i18n("Delete contact")
-                onTriggered: {
-                    KPeople.PersonPluginManager.deleteContact(page.personUri)
-                    pageStack.pop()
-                }
-            }
-        ]
         left: Kirigami.Action {
             text: i18n("Cancel")
             icon.name: "dialog-cancel"
