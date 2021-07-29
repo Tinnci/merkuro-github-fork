@@ -6,6 +6,7 @@
 #include <KLocalizedString>
 #include "attendeesmodel.h"
 #include <KContacts/Addressee>
+#include <AkonadiCore/Item>
 #include <AkonadiCore/ItemFetchJob>
 #include <AkonadiCore/ItemFetchScope>
 
@@ -255,7 +256,7 @@ int AttendeesModel::rowCount(const QModelIndex &) const
     return m_incidence->attendeeCount();
 }
 
-void AttendeesModel::addAttendee(qint64 itemId)
+void AttendeesModel::addAttendee(qint64 itemId, QString email)
 {
     if(itemId) {
         Akonadi::Item item(itemId);
@@ -263,12 +264,17 @@ void AttendeesModel::addAttendee(qint64 itemId)
         Akonadi::ItemFetchJob *job = new Akonadi::ItemFetchJob(item);
         job->fetchScope().fetchFullPayload();
 
-        connect(job, &Akonadi::ItemFetchJob::result, this, [this](KJob *job) {
+        connect(job, &Akonadi::ItemFetchJob::result, this, [this, email](KJob *job) {
 
             Akonadi::ItemFetchJob *fetchJob = qobject_cast<Akonadi::ItemFetchJob*>(job);
             auto item = fetchJob->items().at(0);
             auto payload = item.payload<KContacts::Addressee>();
+
             KCalendarCore::Attendee attendee(payload.name(), payload.preferredEmail());
+
+            if(!email.isNull()) {
+                attendee.setEmail(email);
+            }
 
             m_incidence->addAttendee(attendee);
             // Otherwise won't update

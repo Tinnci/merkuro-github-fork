@@ -6,7 +6,6 @@
 #include <QAbstractItemModel>
 #include <QCalendar>
 #include <KCalendarCore/Calendar>
-#include <AkonadiCore/Item>
 #include <QDebugStateSaver>
 #include <QDebug>
 
@@ -76,7 +75,7 @@ public:
     QHash<int, QByteArray> roleNames() const override;
     int rowCount(const QModelIndex &parent = {}) const override;
 
-    Q_INVOKABLE void addAttendee(qint64 itemId = qint64());
+    Q_INVOKABLE void addAttendee(qint64 itemId = qint64(), QString email = QLatin1String());
     Q_INVOKABLE void deleteAttendee(int row);
 
 Q_SIGNALS:
