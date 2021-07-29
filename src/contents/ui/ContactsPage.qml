@@ -65,7 +65,7 @@ Kirigami.ScrollablePage {
 
         contentItem: Kirigami.SearchField {
             id: searchField
-            onTextChanged: filterModel.setFilterFixedString(text)
+            onTextChanged: ContactsManager.contactsModel.setFilterFixedString(text)
         }
     }
 
