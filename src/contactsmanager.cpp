@@ -11,42 +11,71 @@
 #include <KContacts/ContactGroup>
 #include "contactsmanager.h"
 
+class ContactsModel : public QSortFilterProxyModel
+{
+public:
+    explicit ContactsModel(QObject *parent = nullptr)
+        : QSortFilterProxyModel(parent)
+    {
+        Akonadi::Session *session = new Akonadi::Session( "MySession" );
+        Akonadi::ItemFetchScope scope;
+        // fetch all content of the contacts, including images
+        scope.fetchFullPayload( true );
+        // fetch the EntityDisplayAttribute, which contains custom names and icons
+        scope.fetchAttribute<Akonadi::EntityDisplayAttribute>();
+        Akonadi::Monitor *monitor = new Akonadi::Monitor;
+        monitor->setSession( session );
+        // include fetching the collection tree
+        monitor->fetchCollection( true );
+        // set the fetch scope that shall be used
+        monitor->setItemFetchScope( scope );
+        // monitor all collections below the root collection for changes
+        monitor->setCollectionMonitored( Akonadi::Collection::root() );
+        // list only contacts and contact groups
+        monitor->setMimeTypeMonitored( KContacts::Addressee::mimeType(), true );
+        monitor->setMimeTypeMonitored( KContacts::ContactGroup::mimeType(), true );
+
+        auto sourceModel = new Akonadi::ContactsTreeModel(monitor);
+        auto filterModel = new Akonadi::ContactsFilterProxyModel;
+        auto flatModel = new KDescendantsProxyModel;
+        auto addresseeOnlyModel = new Akonadi::EntityMimeTypeFilterModel;
+
+        filterModel->setSourceModel(sourceModel);
+        filterModel->setFilterFlags(Akonadi::ContactsFilterProxyModel::HasEmail);
+        flatModel->setSourceModel(filterModel);
+
+        addresseeOnlyModel->setSourceModel(flatModel);
+        addresseeOnlyModel->addMimeTypeInclusionFilter(KContacts::Addressee::mimeType());
+
+        setSourceModel(addresseeOnlyModel);
+        setDynamicSortFilter(true);
+        sort(0);
+    }
+
+protected:
+    bool filterAcceptsRow(int row, const QModelIndex &sourceParent) const override
+    {
+        const QModelIndex sourceIndex = sourceModel()->index(row, 0, sourceParent);
+        Q_ASSERT(sourceIndex.isValid());
+
+        auto data = index(row, 0).data(Akonadi::EntityTreeModel::ItemIdRole);
+        auto matches = match(index(0,0), Akonadi::EntityTreeModel::ItemIdRole, data, 2, Qt::MatchExactly | Qt::MatchWrap | Qt::MatchRecursive);
+
+        if(matches.length() >= 1) {
+            return false;
+        }
+
+        return true;
+    }
+};
+
 ContactsManager::ContactsManager(QObject* parent)
     : QObject(parent)
 {
-    Akonadi::Session *session = new Akonadi::Session( "MySession" );
-    Akonadi::ItemFetchScope scope;
-    // fetch all content of the contacts, including images
-    scope.fetchFullPayload( true );
-    // fetch the EntityDisplayAttribute, which contains custom names and icons
-    scope.fetchAttribute<Akonadi::EntityDisplayAttribute>();
-    Akonadi::Monitor *monitor = new Akonadi::Monitor;
-    monitor->setSession( session );
-    // include fetching the collection tree
-    monitor->fetchCollection( true );
-    // set the fetch scope that shall be used
-    monitor->setItemFetchScope( scope );
-    // monitor all collections below the root collection for changes
-    monitor->setCollectionMonitored( Akonadi::Collection::root() );
-    // list only contacts and contact groups
-    monitor->setMimeTypeMonitored( KContacts::Addressee::mimeType(), true );
-    monitor->setMimeTypeMonitored( KContacts::ContactGroup::mimeType(), true );
-
-    m_sourceModel = new Akonadi::ContactsTreeModel(monitor);
-    m_filterModel = new Akonadi::ContactsFilterProxyModel;
-    m_flatModel = new KDescendantsProxyModel;
-
-    m_filterModel->setSourceModel(m_sourceModel);
-    m_filterModel->setFilterFlags(Akonadi::ContactsFilterProxyModel::HasEmail);
-    m_flatModel->setSourceModel(m_filterModel);
-
-    m_model = new Akonadi::EntityMimeTypeFilterModel;
-    m_model->setSourceModel(m_flatModel);
-    m_model->addMimeTypeInclusionFilter(KContacts::Addressee::mimeType());
-    m_model->sort(0);
+    m_model = new ContactsModel(this);
 }
 
-Akonadi::EntityMimeTypeFilterModel * ContactsManager::contactsModel()
+QSortFilterProxyModel * ContactsManager::contactsModel()
 {
     return m_model;
 }
