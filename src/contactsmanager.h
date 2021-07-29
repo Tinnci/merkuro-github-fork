@@ -20,6 +20,10 @@ public:
     ~ContactsManager() = default;
 
     Akonadi::EntityMimeTypeFilterModel *contactsModel();
+    Q_INVOKABLE void contactEmails(qint64 itemId);
+
+Q_SIGNALS:
+    void emailsFetched(QStringList emails, qint64 itemId);
 
 private:
     Akonadi::EntityMimeTypeFilterModel *m_model = nullptr;

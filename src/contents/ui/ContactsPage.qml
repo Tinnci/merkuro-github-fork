@@ -19,7 +19,36 @@ Kirigami.ScrollablePage {
 
     title: i18n("Contacts")
 
-    signal addAttendee(var itemId)
+    signal addAttendee(var itemId, string email)
+
+    Connections {
+        target: ContactsManager
+        function onEmailsFetched(emails, itemId) {
+            if(emails.length > 1) {
+                emailsView.itemId = itemId;
+                emailsView.model = emails;
+                emailPickerSheet.open();
+            } else {
+                addAttendee(itemId, undefined);
+            }
+        }
+    }
+
+    Kirigami.OverlaySheet {
+        id: emailPickerSheet
+
+        ListView {
+            id: emailsView
+            property var itemId
+            delegate: Kirigami.BasicListItem {
+                text: modelData
+                onClicked: {
+                    addAttendee(emailsView.itemId, modelData);
+                    emailPickerSheet.close();
+                }
+            }
+        }
+    }
 
     actions.main: Kirigami.Action {
         icon.name: "object-select-symbolic"
@@ -61,10 +90,7 @@ Kirigami.ScrollablePage {
             name: model && model.display
             avatarIcon: model && model.decoration
 
-            onClicked: {
-                addAttendee(itemId);
-                clicked = true;
-            }
+            onClicked: ContactsManager.contactEmails(itemId);
         }
     }
 }
