@@ -258,6 +258,8 @@ int AttendeesModel::rowCount(const QModelIndex &) const
 
 void AttendeesModel::addAttendee(qint64 itemId, QString email)
 {
+    qDebug() << itemId;
+
     if(itemId) {
         Akonadi::Item item(itemId);
 

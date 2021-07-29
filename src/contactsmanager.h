@@ -10,24 +10,23 @@
 #include <AkonadiCore/EntityMimeTypeFilterModel>
 #include <KItemModels/KDescendantsProxyModel>
 
+class QSortFilterProxyModel;
+
 class ContactsManager : public QObject
 {
     Q_OBJECT
-    Q_PROPERTY(Akonadi::EntityMimeTypeFilterModel * contactsModel READ contactsModel CONSTANT)
+    Q_PROPERTY(QSortFilterProxyModel * contactsModel READ contactsModel CONSTANT)
 
 public:
     ContactsManager(QObject *parent = nullptr);
     ~ContactsManager() = default;
 
-    Akonadi::EntityMimeTypeFilterModel *contactsModel();
+    QSortFilterProxyModel *contactsModel();
     Q_INVOKABLE void contactEmails(qint64 itemId);
 
 Q_SIGNALS:
     void emailsFetched(QStringList emails, qint64 itemId);
 
 private:
-    Akonadi::EntityMimeTypeFilterModel *m_model = nullptr;
-    KDescendantsProxyModel *m_flatModel = nullptr;
-    Akonadi::ContactsTreeModel *m_sourceModel = nullptr;
-    Akonadi::ContactsFilterProxyModel *m_filterModel = nullptr;
+    QSortFilterProxyModel *m_model = nullptr;
 };
