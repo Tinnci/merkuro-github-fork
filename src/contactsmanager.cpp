@@ -2,6 +2,8 @@
 // SPDX-License-Identifier: LGPL-2.1-or-later
 
 #include <AkonadiCore/Session>
+#include <AkonadiCore/Item>
+#include <AkonadiCore/ItemFetchJob>
 #include <AkonadiCore/ItemFetchScope>
 #include <AkonadiCore/EntityDisplayAttribute>
 #include <AkonadiCore/Monitor>
@@ -47,4 +49,21 @@ ContactsManager::ContactsManager(QObject* parent)
 Akonadi::EntityMimeTypeFilterModel * ContactsManager::contactsModel()
 {
     return m_model;
+}
+
+void ContactsManager::contactEmails(qint64 itemId)
+{
+    Akonadi::Item item(itemId);
+
+    Akonadi::ItemFetchJob *job = new Akonadi::ItemFetchJob(item);
+    job->fetchScope().fetchFullPayload();
+
+    connect(job, &Akonadi::ItemFetchJob::result, this, [this, itemId] (KJob *job) {
+
+        Akonadi::ItemFetchJob *fetchJob = qobject_cast<Akonadi::ItemFetchJob*>(job);
+        auto item = fetchJob->items().at(0);
+        auto payload = item.payload<KContacts::Addressee>();
+
+        Q_EMIT emailsFetched(payload.emails(), itemId);
+    });
 }
