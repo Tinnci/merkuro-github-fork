@@ -72,7 +72,13 @@ protected:
 ContactsManager::ContactsManager(QObject* parent)
     : QObject(parent)
 {
-    m_model = new ContactsModel(this);
+    auto model = new ContactsModel(this);
+    m_model = new QSortFilterProxyModel;
+    m_model->setSourceModel(model);
+    m_model->setDynamicSortFilter(true);
+    m_model->setSortCaseSensitivity(Qt::CaseInsensitive);
+    m_model->setFilterCaseSensitivity(Qt::CaseInsensitive);
+    m_model->sort(0);
 }
 
 QSortFilterProxyModel * ContactsManager::contactsModel()
