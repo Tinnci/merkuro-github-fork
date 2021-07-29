@@ -37,6 +37,10 @@ Kirigami.ScrollablePage {
     Kirigami.OverlaySheet {
         id: emailPickerSheet
 
+        header: Kirigami.Heading {
+            text: i18n("Select email address")
+        }
+
         ListView {
             id: emailsView
             property var itemId
