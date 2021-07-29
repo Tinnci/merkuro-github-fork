@@ -19,7 +19,10 @@ Kirigami.ScrollablePage {
     Component {
         id: contactsPage
         ContactsPage {
-            onAddAttendee: root.incidenceWrapper.attendeesModel.addAttendee(itemId, email);
+            onAddAttendee: {
+                root.incidenceWrapper.attendeesModel.addAttendee(itemId, email);
+                root.flickable.contentY = editorLoader.item.attendeesColumnY;
+            }
         }
     }
 
@@ -83,6 +86,8 @@ Kirigami.ScrollablePage {
                 incidenceEndDateCombo.validDate || !incidenceEndCheckBox.checked :
                 incidenceEndDateCombo.validDate
             property bool validFormDates: validStartDate && (validEndDate || incidenceWrapper.allDay)
+
+            property alias attendeesColumnY: attendeesColumn.y
 
             Kirigami.InlineMessage {
                 id: invalidDateMessage
