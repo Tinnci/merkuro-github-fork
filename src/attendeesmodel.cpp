@@ -79,6 +79,7 @@ AttendeesModel::AttendeesModel(QObject* parent, KCalendarCore::Incidence::Ptr in
     , m_incidence(incidencePtr)
     , m_attendeeStatusModel(parent)
 {
+    connect(this, &AttendeesModel::attendeesChanged, this, &AttendeesModel::updateAkonadiContactIds);
 }
 
 KCalendarCore::Incidence::Ptr AttendeesModel::incidencePtr()
@@ -93,7 +94,22 @@ void AttendeesModel::setIncidencePtr(KCalendarCore::Incidence::Ptr incidence)
     }
     m_incidence = incidence;
 
-    for(auto attendee : incidence->attendees()) {
+    Q_EMIT incidencePtrChanged();
+    Q_EMIT attendeesChanged();
+    Q_EMIT attendeeStatusModelChanged();
+    Q_EMIT layoutChanged();
+}
+
+KCalendarCore::Attendee::List AttendeesModel::attendees()
+{
+    return m_incidence->attendees();
+}
+
+void AttendeesModel::updateAkonadiContactIds()
+{
+    m_attendeesAkonadiIds.clear();
+
+    for(auto attendee : m_incidence->attendees()) {
         Akonadi::ContactSearchJob *job = new Akonadi::ContactSearchJob();
         job->setQuery(Akonadi::ContactSearchJob::Email, attendee.email());
 
@@ -103,19 +119,10 @@ void AttendeesModel::setIncidencePtr(KCalendarCore::Incidence::Ptr incidence)
             for(auto item : searchJob->items()) {
                 m_attendeesAkonadiIds.append(item.id());
             }
+
+            Q_EMIT attendeesAkonadiIdsChanged();
         });
     }
-
-    Q_EMIT incidencePtrChanged();
-    Q_EMIT attendeesChanged();
-    Q_EMIT attendeeStatusModelChanged();
-    Q_EMIT attendeesAkonadiIdsChanged();
-    Q_EMIT layoutChanged();
-}
-
-KCalendarCore::Attendee::List AttendeesModel::attendees()
-{
-    return m_incidence->attendees();
 }
 
 AttendeeStatusModel * AttendeesModel::attendeeStatusModel()
@@ -270,15 +277,13 @@ int AttendeesModel::rowCount(const QModelIndex &) const
 
 void AttendeesModel::addAttendee(qint64 itemId, QString email)
 {
-    qDebug() << itemId;
-
     if(itemId) {
         Akonadi::Item item(itemId);
 
         Akonadi::ItemFetchJob *job = new Akonadi::ItemFetchJob(item);
         job->fetchScope().fetchFullPayload();
 
-        connect(job, &Akonadi::ItemFetchJob::result, this, [this, email, itemId](KJob *job) {
+        connect(job, &Akonadi::ItemFetchJob::result, this, [this, email](KJob *job) {
 
             Akonadi::ItemFetchJob *fetchJob = qobject_cast<Akonadi::ItemFetchJob*>(job);
             auto item = fetchJob->items().at(0);
@@ -291,10 +296,8 @@ void AttendeesModel::addAttendee(qint64 itemId, QString email)
             }
 
             m_incidence->addAttendee(attendee);
-            m_attendeesAkonadiIds.append(itemId);
             // Otherwise won't update
             Q_EMIT attendeesChanged();
-            Q_EMIT attendeesAkonadiIdsChanged();
             Q_EMIT layoutChanged();
         });
     } else {
