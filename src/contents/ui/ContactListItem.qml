@@ -17,7 +17,7 @@ Kirigami.AbstractListItem {
     id: listItem
 
     property string name
-    property bool clicked: false
+    property bool added: false
     property var avatarIcon
 
     contentItem: RowLayout {
@@ -43,7 +43,7 @@ Kirigami.AbstractListItem {
             height: parent.height
             width: height
             source: "checkmark"
-            visible: clicked
+            visible: added
         }
     }
 }
