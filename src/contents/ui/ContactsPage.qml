@@ -90,7 +90,7 @@ Kirigami.ScrollablePage {
         }
 
         delegate: ContactListItem {
-            height: Kirigami.Settins.isMobile ? Kirigami.Units.gridUnit * 3 : Kirigami.Units.gridUnit
+            height: Kirigami.Settings.isMobile ? Kirigami.Units.gridUnit * 3 : Kirigami.Units.gridUnit
             name: model && model.display
             avatarIcon: model && model.decoration
 
