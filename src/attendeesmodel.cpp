@@ -314,10 +314,36 @@ void AttendeesModel::deleteAttendee(int row)
     if (!hasIndex(row, 0)) {
         return;
     }
+
     KCalendarCore::Attendee::List currentAttendees(m_incidence->attendees());
     currentAttendees.removeAt(row);
     m_incidence->setAttendees(currentAttendees);
-    rowCount();
+
     Q_EMIT attendeesChanged();
     Q_EMIT layoutChanged();
 }
+
+void AttendeesModel::deleteAttendeeFromAkonadiId(qint64 itemId)
+{
+    Akonadi::Item item(itemId);
+
+    Akonadi::ItemFetchJob *job = new Akonadi::ItemFetchJob(item);
+    job->fetchScope().fetchFullPayload();
+
+    connect(job, &Akonadi::ItemFetchJob::result, this, [this, itemId](KJob *job) {
+        Akonadi::ItemFetchJob *fetchJob = qobject_cast<Akonadi::ItemFetchJob*>(job);
+        auto item = fetchJob->items().at(0);
+        auto payload = item.payload<KContacts::Addressee>();
+
+        for(int i = 0; i < m_incidence->attendees().length(); i++) {
+
+            for(auto email : payload.emails()) {
+                if(m_incidence->attendees()[i].email() == email) {
+                    deleteAttendee(i);
+                    m_attendeesAkonadiIds.removeAll(itemId);
+                }
+            }
+        }
+    });
+}
+
