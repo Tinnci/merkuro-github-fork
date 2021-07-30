@@ -28,10 +28,6 @@ Kirigami.ScrollablePage {
             onRemoveAttendee: {
                 root.incidenceWrapper.attendeesModel.deleteAttendeeFromAkonadiId(itemId)
                 root.flickable.contentY = editorLoader.item.attendeesColumnY;
-
-                for(let i = 0; i < attendeeAkonadiIds.length; i++) {
-                    console.log(attendeeAkonadiIds[i])
-                }
             }
         }
     }

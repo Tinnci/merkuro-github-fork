@@ -40,6 +40,8 @@ Kirigami.ScrollablePage {
     Kirigami.OverlaySheet {
         id: emailPickerSheet
 
+        Layout.maximumWidth: Kirigami.Units.gridUnit * 30
+
         header: Kirigami.Heading {
             text: i18n("Select email address")
         }

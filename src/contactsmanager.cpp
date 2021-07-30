@@ -1,12 +1,11 @@
 // SPDX-FileCopyrightText: 2021 Claudio Cambra <claudio.cambra@gmail.com>
 // SPDX-License-Identifier: LGPL-2.1-or-later
 
-#include <AkonadiCore/Session>
 #include <AkonadiCore/Item>
 #include <AkonadiCore/ItemFetchJob>
 #include <AkonadiCore/ItemFetchScope>
-#include <AkonadiCore/EntityDisplayAttribute>
 #include <AkonadiCore/Monitor>
+#include <Akonadi/Contact/EmailAddressSelectionModel>
 #include <KContacts/Addressee>
 #include <KContacts/ContactGroup>
 #include "contactsmanager.h"
@@ -17,30 +16,12 @@ public:
     explicit ContactsModel(QObject *parent = nullptr)
         : QSortFilterProxyModel(parent)
     {
-        Akonadi::Session *session = new Akonadi::Session( "MySession" );
-        Akonadi::ItemFetchScope scope;
-        // fetch all content of the contacts, including images
-        scope.fetchFullPayload( true );
-        // fetch the EntityDisplayAttribute, which contains custom names and icons
-        scope.fetchAttribute<Akonadi::EntityDisplayAttribute>();
-        Akonadi::Monitor *monitor = new Akonadi::Monitor;
-        monitor->setSession( session );
-        // include fetching the collection tree
-        monitor->fetchCollection( true );
-        // set the fetch scope that shall be used
-        monitor->setItemFetchScope( scope );
-        // monitor all collections below the root collection for changes
-        monitor->setCollectionMonitored( Akonadi::Collection::root() );
-        // list only contacts and contact groups
-        monitor->setMimeTypeMonitored( KContacts::Addressee::mimeType(), true );
-        monitor->setMimeTypeMonitored( KContacts::ContactGroup::mimeType(), true );
-
-        auto sourceModel = new Akonadi::ContactsTreeModel(monitor);
+        auto sourceModel = new Akonadi::EmailAddressSelectionModel;
         auto filterModel = new Akonadi::ContactsFilterProxyModel;
         auto flatModel = new KDescendantsProxyModel;
         auto addresseeOnlyModel = new Akonadi::EntityMimeTypeFilterModel;
 
-        filterModel->setSourceModel(sourceModel);
+        filterModel->setSourceModel(sourceModel->model());
         filterModel->setFilterFlags(Akonadi::ContactsFilterProxyModel::HasEmail);
         flatModel->setSourceModel(filterModel);
 
@@ -51,7 +32,6 @@ public:
         setDynamicSortFilter(true);
         sort(0);
     }
-
 protected:
     bool filterAcceptsRow(int row, const QModelIndex &sourceParent) const override
     {
@@ -62,9 +42,7 @@ protected:
         auto data = index(row, 0).data(Akonadi::EntityTreeModel::ItemIdRole);
         auto matches = match(index(0,0), Akonadi::EntityTreeModel::ItemIdRole, data, 2, Qt::MatchExactly | Qt::MatchWrap | Qt::MatchRecursive);
 
-        qDebug() << matches.length();
-
-        if(matches.length() >= 1) {
+        if(matches.length() > 1) {
             qDebug() << matches[0].data();
             return false;
         }
