@@ -19,6 +19,8 @@ Kirigami.ScrollablePage {
     Component {
         id: contactsPage
         ContactsPage {
+            attendeeAkonadiIds: root.incidenceWrapper.attendeesModel.attendeesAkonadiIds
+
             onAddAttendee: {
                 root.incidenceWrapper.attendeesModel.addAttendee(itemId, email);
                 root.flickable.contentY = editorLoader.item.attendeesColumnY;

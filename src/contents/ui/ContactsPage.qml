@@ -21,6 +21,8 @@ Kirigami.ScrollablePage {
 
     signal addAttendee(var itemId, string email)
 
+    property var attendeeAkonadiIds
+
     Connections {
         target: ContactsManager
         function onEmailsFetched(emails, itemId) {
@@ -90,11 +92,12 @@ Kirigami.ScrollablePage {
         }
 
         delegate: ContactListItem {
-            height: Kirigami.Settings.isMobile ? Kirigami.Units.gridUnit * 3 : Kirigami.Units.gridUnit
+            height: Kirigami.Settings.isMobile ? Kirigami.Units.gridUnit * 3 : Kirigami.Units.gridUnit * 2
             name: model && model.display
             avatarIcon: model && model.decoration
+            added: root.attendeeAkonadiIds.includes(model.itemId)
 
-            onClicked: ContactsManager.contactEmails(itemId);
+            onClicked: ContactsManager.contactEmails(model.itemId);
         }
     }
 }
