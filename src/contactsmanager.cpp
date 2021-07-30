@@ -39,10 +39,10 @@ protected:
         const QModelIndex sourceIndex = sourceModel()->index(row, 0, sourceParent);
         Q_ASSERT(sourceIndex.isValid());
 
-        auto data = index(row, 0).data(Akonadi::EntityTreeModel::ItemIdRole);
+        auto data = sourceIndex.data(Akonadi::EntityTreeModel::ItemIdRole);
         auto matches = match(index(0,0), Akonadi::EntityTreeModel::ItemIdRole, data, 2, Qt::MatchExactly | Qt::MatchWrap | Qt::MatchRecursive);
 
-        if(matches.length() > 1) {
+        if(matches.length() >= 1) {
             qDebug() << matches[0].data();
             return false;
         }
