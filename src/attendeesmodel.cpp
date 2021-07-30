@@ -109,20 +109,25 @@ void AttendeesModel::updateAkonadiContactIds()
 {
     m_attendeesAkonadiIds.clear();
 
-    for(auto attendee : m_incidence->attendees()) {
-        Akonadi::ContactSearchJob *job = new Akonadi::ContactSearchJob();
-        job->setQuery(Akonadi::ContactSearchJob::Email, attendee.email());
+    if (m_incidence->attendees().length()) {
+        for(auto attendee : m_incidence->attendees()) {
+            Akonadi::ContactSearchJob *job = new Akonadi::ContactSearchJob();
+            job->setQuery(Akonadi::ContactSearchJob::Email, attendee.email());
 
-        connect(job, &Akonadi::ContactSearchJob::result, this, [this](KJob *job) {
-            Akonadi::ContactSearchJob *searchJob = qobject_cast<Akonadi::ContactSearchJob*>(job);
+            connect(job, &Akonadi::ContactSearchJob::result, this, [this](KJob *job) {
+                Akonadi::ContactSearchJob *searchJob = qobject_cast<Akonadi::ContactSearchJob*>(job);
 
-            for(auto item : searchJob->items()) {
-                m_attendeesAkonadiIds.append(item.id());
-            }
+                for(auto item : searchJob->items()) {
+                    m_attendeesAkonadiIds.append(item.id());
+                }
 
-            Q_EMIT attendeesAkonadiIdsChanged();
-        });
+                qDebug() << m_attendeesAkonadiIds;
+                Q_EMIT attendeesAkonadiIdsChanged();
+            });
+        }
     }
+
+    Q_EMIT attendeesAkonadiIdsChanged();
 }
 
 AttendeeStatusModel * AttendeesModel::attendeeStatusModel()
@@ -333,7 +338,7 @@ void AttendeesModel::deleteAttendeeFromAkonadiId(qint64 itemId)
     Akonadi::ItemFetchJob *job = new Akonadi::ItemFetchJob(item);
     job->fetchScope().fetchFullPayload();
 
-    connect(job, &Akonadi::ItemFetchJob::result, this, [this, itemId](KJob *job) {
+    connect(job, &Akonadi::ItemFetchJob::result, this, [this](KJob *job) {
         Akonadi::ItemFetchJob *fetchJob = qobject_cast<Akonadi::ItemFetchJob*>(job);
         auto item = fetchJob->items().at(0);
         auto payload = item.payload<KContacts::Addressee>();
@@ -343,7 +348,6 @@ void AttendeesModel::deleteAttendeeFromAkonadiId(qint64 itemId)
             for(auto email : payload.emails()) {
                 if(m_incidence->attendees()[i].email() == email) {
                     deleteAttendee(i);
-                    m_attendeesAkonadiIds.removeAll(itemId);
                 }
             }
         }
