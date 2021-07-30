@@ -77,6 +77,7 @@ public:
 
     Q_INVOKABLE void addAttendee(qint64 itemId = qint64(), QString email = QLatin1String());
     Q_INVOKABLE void deleteAttendee(int row);
+    Q_INVOKABLE void deleteAttendeeFromAkonadiId(qint64 itemId);
 
 Q_SIGNALS:
     void incidencePtrChanged();
