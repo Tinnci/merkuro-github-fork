@@ -20,6 +20,7 @@ Kirigami.ScrollablePage {
     title: i18n("Contacts")
 
     signal addAttendee(var itemId, string email)
+    signal removeAttendee(var itemId)
 
     property var attendeeAkonadiIds
 
@@ -97,7 +98,7 @@ Kirigami.ScrollablePage {
             avatarIcon: model && model.decoration
             added: root.attendeeAkonadiIds.includes(model.itemId)
 
-            onClicked: ContactsManager.contactEmails(model.itemId);
+            onClicked: added ? removeAttendee(itemId) : ContactsManager.contactEmails(model.itemId);
         }
     }
 }
