@@ -121,7 +121,6 @@ void AttendeesModel::updateAkonadiContactIds()
                     m_attendeesAkonadiIds.append(item.id());
                 }
 
-                qDebug() << m_attendeesAkonadiIds;
                 Q_EMIT attendeesAkonadiIdsChanged();
             });
         }
@@ -340,14 +339,16 @@ void AttendeesModel::deleteAttendeeFromAkonadiId(qint64 itemId)
 
     connect(job, &Akonadi::ItemFetchJob::result, this, [this](KJob *job) {
         Akonadi::ItemFetchJob *fetchJob = qobject_cast<Akonadi::ItemFetchJob*>(job);
+
         auto item = fetchJob->items().at(0);
         auto payload = item.payload<KContacts::Addressee>();
 
-        for(int i = 0; i < m_incidence->attendees().length(); i++) {
+        for(int i = 0; i < m_incidence->attendeeCount(); i++) {
 
             for(auto email : payload.emails()) {
                 if(m_incidence->attendees()[i].email() == email) {
                     deleteAttendee(i);
+                    break;
                 }
             }
         }
