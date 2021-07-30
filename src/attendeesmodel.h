@@ -43,7 +43,7 @@ class AttendeesModel : public QAbstractListModel
     Q_PROPERTY(KCalendarCore::Incidence::Ptr incidencePtr READ incidencePtr WRITE setIncidencePtr NOTIFY incidencePtrChanged)
     Q_PROPERTY(KCalendarCore::Attendee::List attendees READ attendees NOTIFY attendeesChanged)
     Q_PROPERTY(AttendeeStatusModel * attendeeStatusModel READ attendeeStatusModel NOTIFY attendeeStatusModelChanged)
-    Q_PROPERTY(QVariantMap dataroles READ dataroles CONSTANT)
+    Q_PROPERTY(QList<qint64> attendeesAkonadiIds READ attendeesAkonadiIds NOTIFY attendeesAkonadiIdsChanged)
 
 public:
     enum Roles {
@@ -68,7 +68,7 @@ public:
     void setIncidencePtr(const KCalendarCore::Incidence::Ptr incidence);
     KCalendarCore::Attendee::List attendees();
     AttendeeStatusModel * attendeeStatusModel();
-    QVariantMap dataroles();
+    QList<qint64> attendeesAkonadiIds();
 
     QVariant data(const QModelIndex &idx, int role) const override;
     bool setData(const QModelIndex &idx, const QVariant &value, int role) override;
@@ -82,9 +82,10 @@ Q_SIGNALS:
     void incidencePtrChanged();
     void attendeesChanged();
     void attendeeStatusModelChanged();
+    void attendeesAkonadiIdsChanged();
 
 private:
     KCalendarCore::Incidence::Ptr m_incidence;
     AttendeeStatusModel m_attendeeStatusModel;
-    QVariantMap m_dataRoles;
+    QList<qint64> m_attendeesAkonadiIds;
 };
