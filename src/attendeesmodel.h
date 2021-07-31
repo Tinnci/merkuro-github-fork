@@ -90,4 +90,5 @@ private:
     KCalendarCore::Incidence::Ptr m_incidence;
     AttendeeStatusModel m_attendeeStatusModel;
     QList<qint64> m_attendeesAkonadiIds;
+    QVariantMap m_dataRoles;
 };
