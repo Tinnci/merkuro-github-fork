@@ -294,6 +294,8 @@ void AttendeesModel::addAttendee(qint64 itemId, QString email)
             auto payload = item.payload<KContacts::Addressee>();
 
             KCalendarCore::Attendee attendee(payload.name(), payload.preferredEmail());
+            attendee.setRSVP(true);
+            attendee.setRole(KCalendarCore::Attendee::ReqParticipant);
 
             if(!email.isNull()) {
                 attendee.setEmail(email);
@@ -307,6 +309,8 @@ void AttendeesModel::addAttendee(qint64 itemId, QString email)
     } else {
         // QLatin1String is a workaround for QT_NO_CAST_FROM_ASCII
         KCalendarCore::Attendee attendee(QLatin1String(""), QLatin1String(""));
+        attendee.setRSVP(true);
+        attendee.setRole(KCalendarCore::Attendee::ReqParticipant);
 
         // addAttendee won't actually add any attendees without a set name
         m_incidence->addAttendee(attendee);
