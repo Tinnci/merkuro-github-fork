@@ -994,7 +994,7 @@ Kirigami.ScrollablePage {
                                         Layout.row: 2
                                         Layout.column: 1
                                         Layout.columnSpan: 2
-                                        model: root.eventWrapper.attendeesModel.attendeeStatusModel
+                                        model: root.incidenceWrapper.attendeesModel.attendeeStatusModel
                                         textRole: "display"
                                         valueRole: "value"
                                         currentIndex: status // role of parent
