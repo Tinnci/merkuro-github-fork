@@ -32,8 +32,6 @@ public:
         setSourceModel(addresseeOnlyModel);
         setDynamicSortFilter(true);
         sort(0);
-
-        qDebug() << roleNames();
     }
 protected:
     bool filterAcceptsRow(int row, const QModelIndex &sourceParent) const override
