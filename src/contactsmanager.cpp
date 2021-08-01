@@ -45,12 +45,7 @@ protected:
         auto data = sourceIndex.data(Akonadi::EntityTreeModel::ItemIdRole);
         auto matches = match(index(0,0), Akonadi::EntityTreeModel::ItemIdRole, data, 2, Qt::MatchExactly | Qt::MatchWrap | Qt::MatchRecursive);
 
-        if(matches.length() >= 1) {
-            qDebug() << matches[0].data();
-            return false;
-        }
-
-        return true;
+        return matches.length() < 1;
     }
 };
 
