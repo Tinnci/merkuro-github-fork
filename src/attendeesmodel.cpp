@@ -110,14 +110,14 @@ void AttendeesModel::updateAkonadiContactIds()
     m_attendeesAkonadiIds.clear();
 
     if (m_incidence->attendees().length()) {
-        for(auto attendee : m_incidence->attendees()) {
+        for (const auto &attendee : m_incidence->attendees()) {
             Akonadi::ContactSearchJob *job = new Akonadi::ContactSearchJob();
             job->setQuery(Akonadi::ContactSearchJob::Email, attendee.email());
 
             connect(job, &Akonadi::ContactSearchJob::result, this, [this](KJob *job) {
                 Akonadi::ContactSearchJob *searchJob = qobject_cast<Akonadi::ContactSearchJob*>(job);
 
-                for(auto item : searchJob->items()) {
+                for(const auto &item : searchJob->items()) {
                     m_attendeesAkonadiIds.append(item.id());
                 }
 
@@ -354,7 +354,7 @@ void AttendeesModel::deleteAttendeeFromAkonadiId(qint64 itemId)
 
         for(int i = 0; i < m_incidence->attendeeCount(); i++) {
 
-            for(auto email : payload.emails()) {
+            for(const auto &email : payload.emails()) {
                 if(m_incidence->attendees()[i].email() == email) {
                     deleteAttendee(i);
                     break;
