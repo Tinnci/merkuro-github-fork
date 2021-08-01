@@ -8,6 +8,7 @@
 #include <Akonadi/Contact/EmailAddressSelectionModel>
 #include <KContacts/Addressee>
 #include <KContacts/ContactGroup>
+#include <QBuffer>
 #include "contactsmanager.h"
 
 class ContactsModel : public QSortFilterProxyModel
@@ -31,6 +32,8 @@ public:
         setSourceModel(addresseeOnlyModel);
         setDynamicSortFilter(true);
         sort(0);
+
+        qDebug() << roleNames();
     }
 protected:
     bool filterAcceptsRow(int row, const QModelIndex &sourceParent) const override
@@ -83,4 +86,19 @@ void ContactsManager::contactEmails(qint64 itemId)
 
         Q_EMIT emailsFetched(payload.emails(), itemId);
     });
+}
+
+QUrl ContactsManager::decorationToUrl(QVariant decoration)
+{
+    if(!decoration.canConvert<QImage>()) {
+        return {};
+    }
+
+    QImage imgDecoration = decoration.value<QImage>();
+    QByteArray byteArray;
+    QBuffer buffer(&byteArray);
+    buffer.open(QIODevice::WriteOnly);
+    imgDecoration.save(&buffer, "png");
+    QString base64 = QString::fromUtf8(byteArray.toBase64());
+    return QUrl(QLatin1String("data:image/png;base64,") + base64);
 }

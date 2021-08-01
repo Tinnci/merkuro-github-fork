@@ -11,7 +11,8 @@ import QtQuick.Layouts 1.3
 import QtQuick.Controls 2.0 as Controls
 import QtGraphicalEffects 1.0
 
-import org.kde.kirigami 2.0 as Kirigami
+import org.kde.kirigami 2.14 as Kirigami
+import org.kde.kalendar 1.0
 
 Kirigami.AbstractListItem {
     id: listItem
@@ -22,12 +23,12 @@ Kirigami.AbstractListItem {
 
     contentItem: RowLayout {
 
-        RoundImage {
+        Kirigami.Avatar {
             id: avatar
-            height: parent.height
-            width: height
-            source: avatarIcon
-            isRound: true
+            Layout.maximumHeight: parent.height
+            Layout.maximumWidth: parent.height
+            source: ContactsManager.decorationToUrl(avatarIcon)
+            name: name
         }
 
         Kirigami.Heading {

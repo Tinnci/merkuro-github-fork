@@ -17,6 +17,5 @@
     <file alias="DayMouseArea.qml">contents/ui/DayMouseArea.qml</file>
     <file alias="ContactsPage.qml">contents/ui/ContactsPage.qml</file>
     <file alias="ContactListItem.qml">contents/ui/ContactListItem.qml</file>
-    <file alias="RoundImage.qml">contents/ui/RoundImage.qml</file>
   </qresource>
 </RCC>

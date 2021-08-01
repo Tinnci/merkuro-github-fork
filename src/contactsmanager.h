@@ -23,6 +23,7 @@ public:
 
     QSortFilterProxyModel *contactsModel();
     Q_INVOKABLE void contactEmails(qint64 itemId);
+    Q_INVOKABLE QUrl decorationToUrl(QVariant decoration);
 
 Q_SIGNALS:
     void emailsFetched(QStringList emails, qint64 itemId);
