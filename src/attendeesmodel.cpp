@@ -117,7 +117,7 @@ void AttendeesModel::updateAkonadiContactIds()
             connect(job, &Akonadi::ContactSearchJob::result, this, [this](KJob *job) {
                 Akonadi::ContactSearchJob *searchJob = qobject_cast<Akonadi::ContactSearchJob*>(job);
 
-                for(auto item : searchJob->items()) {
+                for(const auto &item : searchJob->items()) {
                     m_attendeesAkonadiIds.append(item.id());
                 }
 
