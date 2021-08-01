@@ -110,7 +110,7 @@ void AttendeesModel::updateAkonadiContactIds()
     m_attendeesAkonadiIds.clear();
 
     if (m_incidence->attendees().length()) {
-        for(auto attendee : m_incidence->attendees()) {
+        for (const auto &attendee : m_incidence->attendees()) {
             Akonadi::ContactSearchJob *job = new Akonadi::ContactSearchJob();
             job->setQuery(Akonadi::ContactSearchJob::Email, attendee.email());
 
