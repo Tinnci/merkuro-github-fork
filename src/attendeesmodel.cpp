@@ -354,7 +354,7 @@ void AttendeesModel::deleteAttendeeFromAkonadiId(qint64 itemId)
 
         for(int i = 0; i < m_incidence->attendeeCount(); i++) {
 
-            for(auto email : payload.emails()) {
+            for(const auto &email : payload.emails()) {
                 if(m_incidence->attendees()[i].email() == email) {
                     deleteAttendee(i);
                     break;
