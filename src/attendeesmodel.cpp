@@ -310,6 +310,7 @@ void AttendeesModel::addAttendee(qint64 itemId, QString email)
         });
     } else {
         // QLatin1String is a workaround for QT_NO_CAST_FROM_ASCII
+        // addAttendee method does not work with null strings, so we use empty strings
         KCalendarCore::Attendee attendee(QLatin1String(""),
                                          QLatin1String(""),
                                          true,
