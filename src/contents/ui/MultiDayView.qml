@@ -128,7 +128,8 @@ Item {
                                     // Day number
                                     contentItem: Kirigami.Heading {
                                         level: 4
-                                        text: gridItem.date.toLocaleDateString(Qt.locale(), gridItem.date.getDate() == 1 ? "d MMM" : "d")
+                                        text: gridItem.date.toLocaleDateString(Qt.locale(), gridItem.isToday && gridItem.date.getDate() == 1 ?
+                                            "<b>d MMM</b>" : (gridItem.isToday ? "<b>d</b>" : (gridItem.date.getDate() == 1 ? "d MMM" : "d")))
                                         horizontalAlignment: Text.AlignRight
                                         verticalAlignment: Text.AlignTop
                                         padding: Kirigami.Units.smallSpacing
