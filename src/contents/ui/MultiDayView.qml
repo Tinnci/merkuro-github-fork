@@ -114,7 +114,10 @@ Item {
 
                                     background: Rectangle {
                                         Kirigami.Theme.colorSet: Kirigami.Theme.View
-                                        color: model.sameMonth ? Kirigami.Theme.backgroundColor : Kirigami.Theme.alternateBackgroundColor
+                                        color: gridItem.isCurrentMonth ? Kirigami.Theme.backgroundColor : Kirigami.Theme.alternateBackgroundColor
+
+                                        border.color: Kirigami.Theme.alternateBackgroundColor
+                                        border.width: 2
 
                                         DayMouseArea {
                                             anchors.fill: parent
