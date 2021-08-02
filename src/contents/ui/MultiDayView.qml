@@ -107,7 +107,7 @@ Item {
                                     id: gridItem
                                     height: parent.height
                                     width: root.dayWidth
-                                    property date gridSquareDate: DateUtils.addDaysToDate(dayDelegate.startDate, modelData)
+                                    property date gridSquareDate: date
                                     property var date: DateUtils.addDaysToDate(dayDelegate.startDate, modelData)
                                     property bool isInPast: DateUtils.roundToDay(date) < DateUtils.roundToDay(root.currentDate)
                                     property bool isToday: DateUtils.sameDay(root.currentDate, date)
@@ -163,7 +163,7 @@ Item {
                                     anchors.fill: parent
                                     z: -1
 
-                                    function useGridSquareDate(root, globalPos) {
+                                    function useGridSquareDate(type, root, globalPos) {
                                         for(var i in root.children) {
                                             var child = root.children[i];
                                             var localpos = child.mapFromGlobal(globalPos.x, globalPos.y);
@@ -171,12 +171,12 @@ Item {
                                             if(child.contains(localpos) && child.gridSquareDate) {
                                                 addIncidence(type, child.gridSquareDate);
                                             } else {
-                                                useGridSquareDate(child, globalPos);
+                                                useGridSquareDate(type, child, globalPos);
                                             }
                                         }
                                     }
 
-                                    onAddNewIncidence: useGridSquareDate(applicationWindow().contentItem, this.mapToGlobal(clickX, clickY))
+                                    onAddNewIncidence: useGridSquareDate(type, applicationWindow().contentItem, this.mapToGlobal(clickX, clickY))
                                 }
 
                                 model: incidences
