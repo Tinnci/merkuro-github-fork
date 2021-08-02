@@ -175,6 +175,8 @@ Item {
                                             y: 0
                                             width: root.dayWidth * modelData.duration
                                             height: parent.height
+                                            opacity: modelData.endTime.getMonth() == root.month || modelData.startTime.getMonth() == root.month ?
+                                                    1.0 : 0.5
                                             radius: rectRadius
 
                                             property int rectRadius: 5
