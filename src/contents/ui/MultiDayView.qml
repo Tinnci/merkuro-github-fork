@@ -107,6 +107,7 @@ Item {
                                     id: gridItem
                                     height: parent.height
                                     width: root.dayWidth
+                                    property date gridSquareDate: DateUtils.addDaysToDate(dayDelegate.startDate, modelData)
                                     property var date: DateUtils.addDaysToDate(dayDelegate.startDate, modelData)
                                     property bool isInPast: DateUtils.roundToDay(date) < DateUtils.roundToDay(root.currentDate)
                                     property bool isToday: DateUtils.sameDay(root.currentDate, date)
@@ -114,7 +115,7 @@ Item {
 
                                     background: Rectangle {
                                         Kirigami.Theme.colorSet: Kirigami.Theme.View
-                                        color: gridItem.isToday ? Kirigami.Theme.complementaryBackgroundColor :
+                                        color: gridItem.isToday ? Kirigami.Theme.activeBackgroundColor :
                                             gridItem.isCurrentMonth ? Kirigami.Theme.backgroundColor : Kirigami.Theme.alternateBackgroundColor
 
                                         border.color: Kirigami.Theme.alternateBackgroundColor
@@ -156,6 +157,26 @@ Item {
                             ListView {
                                 Layout.fillWidth: true
                                 id: linesRepeater
+
+                                DayMouseArea {
+                                    id: listViewMenu
+                                    anchors.fill: parent
+                                    z: -1
+
+                                    function useGridSquareDate(root, globalPos){
+                                        for(var i in root.children){
+                                            var child = root.children[i]
+                                            var localpos = child.mapFromGlobal(globalPos.x, globalPos.y)
+
+                                            if(child.contains(localpos) && child.gridSquareDate) {
+                                                addIncidence(type, child.gridSquareDate);
+                                            }
+                                            useGridSquareDate(child, globalPos)
+                                        }
+                                    }
+
+                                    onAddNewIncidence: useGridSquareDate(applicationWindow().contentItem, this.mapToGlobal(clickX, clickY))
+                                }
 
                                 model: incidences
                                 onCountChanged: {

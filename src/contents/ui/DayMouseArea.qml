@@ -28,6 +28,7 @@ MouseArea {
     onPressed: {
         clickX = mouseX;
         clickY = mouseY;
+
         if (pressedButtons & Qt.RightButton) {
             dayActions.createObject(dayMouseArea, {}).open();
         }
