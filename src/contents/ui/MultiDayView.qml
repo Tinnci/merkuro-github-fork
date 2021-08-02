@@ -115,9 +115,9 @@ Item {
                                     background: Rectangle {
                                         Kirigami.Theme.colorSet: Kirigami.Theme.View
                                         color: gridItem.isToday ? Kirigami.Theme.activeBackgroundColor :
-                                            gridItem.isCurrentMonth ? Kirigami.Theme.viewBackgroundColor : Kirigami.Theme.alternateBackgroundColor
+                                            gridItem.isCurrentMonth ? Kirigami.Theme.backgroundColor : Kirigami.Theme.alternateBackgroundColor
 
-                                        border.color: Kirigami.Theme.backgroundColor
+                                        border.color: Kirigami.Theme.alternateBackgroundColor
                                         border.width: 1
 
                                         DayMouseArea {
