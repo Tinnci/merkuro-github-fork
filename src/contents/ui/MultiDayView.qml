@@ -72,7 +72,6 @@ Item {
                     filter: root.filter ? root.filter : {}
                     calendar: Kalendar.CalendarManager.calendar
                 }
-                // daysPerRow: root.daysPerRow //Hardcoded to 7
             }
             //One row => one week
             Item {
@@ -116,10 +115,10 @@ Item {
                                     background: Rectangle {
                                         Kirigami.Theme.colorSet: Kirigami.Theme.View
                                         color: gridItem.isToday ? Kirigami.Theme.activeBackgroundColor :
-                                            gridItem.isCurrentMonth ? Kirigami.Theme.backgroundColor : Kirigami.Theme.alternateBackgroundColor
+                                            gridItem.isCurrentMonth ? Kirigami.Theme.viewBackgroundColor : Kirigami.Theme.alternateBackgroundColor
 
-                                        border.color: Kirigami.Theme.alternateBackgroundColor
-                                        border.width: 2
+                                        border.color: Kirigami.Theme.backgroundColor
+                                        border.width: 1
 
                                         DayMouseArea {
                                             anchors.fill: parent
