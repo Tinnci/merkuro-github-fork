@@ -287,7 +287,7 @@ Kirigami.ScrollablePage {
                                             Layout.column: 1
                                             Layout.row: 0
 
-                                            visible: incidenceCard.incidenceWrapper.remindersModel.rowCount() > 0 && incidenceCard.incidenceWrapper.recurrenceData.type
+                                            visible: incidenceCard.incidenceWrapper.remindersModel.rowCount() > 0 || incidenceCard.incidenceWrapper.recurrenceData.type
 
                                             Kirigami.Icon {
                                                 id: recurringIcon
