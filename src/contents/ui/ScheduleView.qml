@@ -144,7 +144,7 @@ Kirigami.ScrollablePage {
                     Layout.leftMargin: Kirigami.Units.largeSpacing
                     Layout.rightMargin: Kirigami.Units.largeSpacing
 
-                    property real dayLabelWidth: Kirigami.Units.gridUnit * 3
+                    property real dayLabelWidth: Kirigami.Units.gridUnit * 4
                     property bool isToday: new Date(periodStartDate).setHours(0,0,0,0) === new Date().setHours(0,0,0,0)
 
                     QQC2.Label {
@@ -187,7 +187,7 @@ Kirigami.ScrollablePage {
                         textFormat: Text.StyledText
                         wrapMode: Text.Wrap
                         color: dayGrid.isToday ? Kirigami.Theme.highlightColor : Kirigami.Theme.textColor
-                        text: periodStartDate.toLocaleDateString(Qt.locale(), "ddd\n<b>dd</b>")
+                        text: periodStartDate.toLocaleDateString(Qt.locale(), "ddd<br><b>dd</b>")
                         visible: incidences.length || dayGrid.isToday
                     }
 
@@ -287,16 +287,15 @@ Kirigami.ScrollablePage {
                                             Layout.column: 1
                                             Layout.row: 0
 
-                                            visible: incidenceCard.incidenceWrapper.remindersModel.rowCount() > 0 //&& incidenceCard.incidenceWrapper.recurrenceData.type
+                                            visible: incidenceCard.incidenceWrapper.remindersModel.rowCount() > 0 && incidenceCard.incidenceWrapper.recurrenceData.type
 
-                                            // TODO: Re-enable this when MR !8 is merged
-                                            /*Kirigami.Icon {
+                                            Kirigami.Icon {
                                                 id: recurringIcon
                                                 Layout.fillHeight: true
                                                 source: "appointment-recurring"
                                                 color: cardContents.textColor
                                                 visible: incidenceCard.incidenceWrapper.recurrenceData.type
-                                            }*/
+                                            }
                                             Kirigami.Icon {
                                                 id: reminderIcon
                                                 Layout.fillHeight: true
