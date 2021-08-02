@@ -227,7 +227,7 @@ Kirigami.ScrollablePage {
 
                                     Kirigami.Theme.inherit: false
                                     Kirigami.Theme.colorSet: Kirigami.Theme.View
-                                    Kirigami.Theme.backgroundColor: Qt.rgba(modelData.color.r, modelData.color.g, modelData.color.b, 0.8)
+                                    Kirigami.Theme.backgroundColor: Qt.rgba(modelData.color.r, modelData.color.g, modelData.color.b, 1)
                                     Kirigami.Theme.highlightColor: Qt.darker(modelData.color, 2.5)
 
                                     property real paddingSize: Kirigami.Settings.isMobile ? Kirigami.Units.largeSpacing : Kirigami.Units.smallSpacing

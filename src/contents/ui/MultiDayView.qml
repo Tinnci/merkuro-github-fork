@@ -182,7 +182,6 @@ Item {
                                                 radius: parent.rectRadius
                                                 border.width: 1
                                                 border.color: Kirigami.Theme.alternateBackgroundColor
-                                                opacity: 0.8
                                             }
 
                                             RowLayout {
