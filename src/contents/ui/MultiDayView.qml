@@ -163,15 +163,16 @@ Item {
                                     anchors.fill: parent
                                     z: -1
 
-                                    function useGridSquareDate(root, globalPos){
-                                        for(var i in root.children){
-                                            var child = root.children[i]
-                                            var localpos = child.mapFromGlobal(globalPos.x, globalPos.y)
+                                    function useGridSquareDate(root, globalPos) {
+                                        for(var i in root.children) {
+                                            var child = root.children[i];
+                                            var localpos = child.mapFromGlobal(globalPos.x, globalPos.y);
 
                                             if(child.contains(localpos) && child.gridSquareDate) {
                                                 addIncidence(type, child.gridSquareDate);
+                                            } else {
+                                                useGridSquareDate(child, globalPos);
                                             }
-                                            useGridSquareDate(child, globalPos)
                                         }
                                     }
 
