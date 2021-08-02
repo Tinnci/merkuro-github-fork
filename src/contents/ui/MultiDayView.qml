@@ -131,15 +131,26 @@ Item {
                                     topPadding: 0
 
                                     // Day number
-                                    contentItem: Kirigami.Heading {
-                                        level: gridItem.isToday ? 3 : 4
-                                        text: gridItem.date.toLocaleDateString(Qt.locale(), gridItem.isToday && gridItem.date.getDate() == 1 ?
-                                            "<b>d MMM</b>" : (gridItem.isToday ? "<b>d</b>" : (gridItem.date.getDate() == 1 ? "d MMM" : "d")))
-                                        horizontalAlignment: Text.AlignRight
-                                        verticalAlignment: Text.AlignTop
-                                        padding: Kirigami.Units.smallSpacing
+                                    contentItem: RowLayout {
                                         visible: root.showDayIndicator
-                                        color: gridItem.isToday ? Kirigami.Theme.highlightColor : (!gridItem.isCurrentMonth ? Kirigami.Theme.disabledTextColor : Kirigami.Theme.textColor)
+
+                                        Kirigami.Heading {
+                                            Layout.alignment: Qt.AlignLeft | Qt.AlignTop
+                                            padding: Kirigami.Units.smallSpacing
+                                            level: 4
+                                            text: i18n("<b>Today</b>")
+                                            color: Kirigami.Theme.highlightColor
+                                            visible: gridItem.isToday
+                                        }
+                                        Kirigami.Heading {
+                                            Layout.alignment: Qt.AlignRight | Qt.AlignTop
+                                            level: 4
+                                            text: gridItem.date.toLocaleDateString(Qt.locale(), gridItem.isToday && gridItem.date.getDate() == 1 ?
+                                                "<b>d MMM</b>" : (gridItem.isToday ? "<b>d</b>" : (gridItem.date.getDate() == 1 ? "d MMM" : "d")))
+                                            padding: Kirigami.Units.smallSpacing
+                                            visible: root.showDayIndicator
+                                            color: gridItem.isToday ? Kirigami.Theme.highlightColor : (!gridItem.isCurrentMonth ? Kirigami.Theme.disabledTextColor : Kirigami.Theme.textColor)
+                                        }
                                     }
                                 }
                             }
