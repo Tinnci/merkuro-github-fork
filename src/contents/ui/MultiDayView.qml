@@ -10,6 +10,7 @@ import org.kde.kirigami 2.14 as Kirigami
 
 import org.kde.kalendar 1.0 as Kalendar
 import "dateutils.js" as DateUtils
+import "labelutils.js" as LabelUtils
 
 Item {
     id: root
@@ -127,7 +128,7 @@ Item {
 
                                     // Day number
                                     contentItem: Kirigami.Heading {
-                                        level: 4
+                                        level: gridItem.isToday ? 3 : 4
                                         text: gridItem.date.toLocaleDateString(Qt.locale(), gridItem.isToday && gridItem.date.getDate() == 1 ?
                                             "<b>d MMM</b>" : (gridItem.isToday ? "<b>d</b>" : (gridItem.date.getDate() == 1 ? "d MMM" : "d")))
                                         horizontalAlignment: Text.AlignRight
@@ -159,7 +160,7 @@ Item {
 
                                 delegate: Item {
                                     id: line
-                                    height: Kirigami.Units.gridUnit
+                                    height: Kirigami.Units.gridUnit + Kirigami.Units.smallSpacing
                                     width: parent.width
 
                                     //Incidences
@@ -171,16 +172,17 @@ Item {
                                             y: 0
                                             width: root.dayWidth * modelData.duration
                                             height: parent.height
+                                            radius: rectRadius
 
-                                            radius: 2
+                                            property int rectRadius: 5
 
                                             Rectangle {
                                                 anchors.fill: parent
                                                 color: modelData.color
-                                                radius: 2
+                                                radius: parent.rectRadius
                                                 border.width: 1
                                                 border.color: Kirigami.Theme.alternateBackgroundColor
-                                                opacity: 0.6
+                                                opacity: 0.8
                                             }
 
                                             RowLayout {
@@ -195,12 +197,14 @@ Item {
                                                     Layout.maximumWidth: height
 
                                                     source: modelData.incidenceTypeIcon
+                                                    color: LabelUtils.isDarkColor(modelData.color) ? "white" : "black"
                                                 }
 
                                                 QQC2.Label {
                                                     Layout.fillWidth: true
                                                     text: modelData.text
                                                     elide: Text.ElideRight
+                                                    color: LabelUtils.isDarkColor(modelData.color) ? "white" : "black"
                                                 }
                                             }
 

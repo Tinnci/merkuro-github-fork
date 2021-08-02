@@ -8,6 +8,7 @@ import org.kde.kirigami 2.14 as Kirigami
 
 import org.kde.kalendar 1.0 as Kalendar
 import "dateutils.js" as DateUtils
+import "labelutils.js" as LabelUtils
 
 Kirigami.ScrollablePage {
     id: root
@@ -39,12 +40,6 @@ Kirigami.ScrollablePage {
         selectedDate = date
         startDate = DateUtils.getFirstDayOfMonth(date);
         month = startDate.getMonth();
-    }
-
-    function isDarkColor(background) {
-        var temp = Qt.darker(background, 1);
-        var a = 1 - ( 0.299 * temp.r + 0.587 * temp.g + 0.114 * temp.b);
-        return temp.a > 0 && a >= 0.5;
     }
 
     background: Rectangle {
@@ -258,7 +253,7 @@ Kirigami.ScrollablePage {
                                         columns: root.isLarge ? 3 : 2
                                         rows: root.isLarge ? 1 : 2
 
-                                        property color textColor: root.isDarkColor(Kirigami.Theme.backgroundColor) ? "white" : "black"
+                                        property color textColor: LabelUtils.isDarkColor(Kirigami.Theme.backgroundColor) ? "white" : "black"
 
                                         RowLayout {
                                             Kirigami.Icon {
