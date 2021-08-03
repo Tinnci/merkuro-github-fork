@@ -75,7 +75,7 @@ Kirigami.ScrollablePage {
         /* Spacing in this view works thus:
          * 1. scheduleListView's spacing adds space between each day delegate component (including separators)
          * 2. Weekly listSectionHeader has spacing of the day delegate column removed from bottom margin
-         * 3. Delegate's Separator's spacing gives same sapce (minus some adjustment) between it and dayGrid
+         * 3. Delegate's Separator's spacing gives same space (minus some adjustment) between it and dayGrid
          */
         Layout.bottomMargin: Kirigami.Units.largeSpacing * 5
         highlightRangeMode: ListView.ApplyRange
@@ -108,6 +108,15 @@ Kirigami.ScrollablePage {
             addDate: periodStartDate
             onAddNewIncidence: addIncidence(type, addDate)
 
+            Rectangle {
+                anchors.top: parent.top
+                anchors.right: parent.right
+                anchors.left: parent.left
+                height: parent.height + Kirigami.Units.largeSpacing
+                Kirigami.Theme.colorSet: Kirigami.Theme.View
+                color: dayGrid.isToday ? Kirigami.Theme.activeBackgroundColor : Kirigami.Theme.backgroundColor
+            }
+
             ColumnLayout {
                 // Tip: do NOT hide an entire delegate.
                 // This will very much screw up use of positionViewAtIndex.
@@ -135,6 +144,7 @@ Kirigami.ScrollablePage {
                 }
 
                 Kirigami.Separator {
+                    id: topSeparator
                     Layout.fillWidth: true
                     Layout.bottomMargin: scheduleListView.spacing - Kirigami.Units.smallSpacing
                 }

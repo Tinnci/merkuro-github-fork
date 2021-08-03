@@ -45,7 +45,7 @@ Item {
     height: implicitHeight
 
     Column {
-        spacing: 1
+        spacing: 0 // 1
         anchors {
             fill: parent
         }
@@ -97,7 +97,7 @@ Item {
 
                         //Grid
                         Row {
-                            spacing: 1
+                            spacing: 0 //1
                             height: parent.height
                             Repeater {
                                 id: gridRepeater
@@ -117,7 +117,8 @@ Item {
                                         color: gridItem.isToday ? Kirigami.Theme.activeBackgroundColor :
                                             gridItem.isCurrentMonth ? Kirigami.Theme.backgroundColor : Kirigami.Theme.alternateBackgroundColor
 
-                                        border.color: Kirigami.Theme.alternateBackgroundColor
+                                        // Matches Kirigami Separator color
+                                        border.color: Kirigami.ColorUtils.linearInterpolation(Kirigami.Theme.backgroundColor, Kirigami.Theme.textColor, 0.15)
                                         border.width: 1
 
                                         DayMouseArea {
@@ -204,7 +205,7 @@ Item {
                                         id: incidencesRepeater
                                         model: modelData
                                         Rectangle {
-                                            x: (root.dayWidth + 1) * modelData.starts // +1 because of the spacing
+                                            x: (root.dayWidth /*+ 1*/) * modelData.starts // +1 because of the spacing
                                             y: 0
                                             width: root.dayWidth * modelData.duration
                                             height: parent.height
