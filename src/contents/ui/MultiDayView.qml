@@ -45,7 +45,7 @@ Item {
     height: implicitHeight
 
     Column {
-        spacing: 0 // 1
+        spacing: 0
         anchors {
             fill: parent
         }
