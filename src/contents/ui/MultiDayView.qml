@@ -97,7 +97,7 @@ Item {
 
                         //Grid
                         Row {
-                            spacing: 0 //1
+                            spacing: 0
                             height: parent.height
                             Repeater {
                                 id: gridRepeater
