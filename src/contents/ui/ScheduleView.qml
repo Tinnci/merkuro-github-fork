@@ -323,8 +323,9 @@ Kirigami.ScrollablePage {
 
                                         QQC2.Label {
                                             Layout.fillHeight: true
-                                            Layout.maximumWidth: Kirigami.Units.gridUnit * 6
-                                            Layout.minimumWidth: Kirigami.Units.gridUnit * 6
+                                            // This way all the icons are aligned
+                                            Layout.maximumWidth: Kirigami.Units.gridUnit * 7
+                                            Layout.minimumWidth: Kirigami.Units.gridUnit * 7
                                             Layout.column: root.isLarge ? 2 : 0
                                             Layout.row: root.isLarge ? 0 : 1
 
