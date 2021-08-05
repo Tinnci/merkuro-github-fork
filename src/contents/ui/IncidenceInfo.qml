@@ -352,6 +352,15 @@ Kirigami.OverlayDrawer {
                         wrapMode: Text.Wrap
                         visible: incidenceInfo.incidenceWrapper.location
                     }
+                    Loader {
+                        Layout.columnSpan: 2
+                        Layout.fillWidth: true
+                        height: Kirigami.Units.gridUnit * 16
+                        asynchronous: true
+                        active: incidenceInfo.visible
+
+                        sourceComponent: LocationMap {}
+                    }
 
                     QQC2.Label {
                         id: descriptionLabel
