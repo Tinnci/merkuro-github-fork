@@ -87,6 +87,11 @@ Kirigami.ApplicationWindow {
                 onTriggered: pageStack.layers.replace(scheduleViewComponent)
             },
             Kirigami.Action {
+                icon.name: "view-calendar-list"
+                text: i18n("Todo view")
+                onTriggered: pageStack.layers.replace(todoViewComponent)
+            },
+            Kirigami.Action {
                 icon.name: "settings-configure"
                 text: i18n("Settings")
                 onTriggered: pageStack.layers.push("qrc:/SettingsPage.qml")
@@ -304,6 +309,22 @@ Kirigami.ApplicationWindow {
             onCompleteTodo: root.completeTodo(incidencePtr)
 
             actions.contextualActions: addAction
+        }
+    }
+
+    Component {
+        id: todoViewComponent
+
+        TodoView {
+            id: todoView
+
+            actions.contextualActions: [
+                Kirigami.Action {
+                    text: i18n("Add todo")
+                    icon.name: "list-add"
+                    onTriggered: root.setUpAdd(IncidenceWrapper.TypeTodo);
+                }
+            ]
         }
     }
 }
