@@ -30,6 +30,8 @@
 #include <KCheckableProxyModel>
 #include <KDescendantsProxyModel>
 #include <QTimer>
+#include <EventViews/TodoModel>
+#include <EventViews/IncidenceTreeModel>
 
 using namespace Akonadi;
 
@@ -235,7 +237,7 @@ CalendarManager::CalendarManager(QObject *parent)
     m_treeModel->setSourceModel(collectionFilter);
     m_treeModel->setExpandsByDefault(true);
 
-    m_calendar = new Akonadi::ETMCalendar(this);
+    m_calendar = QSharedPointer<Akonadi::ETMCalendar>::create(); // QSharedPointer
     setCollectionSelectionProxyModel(m_calendar->checkableProxyModel());
 
     m_changer = m_calendar->incidenceChanger();
@@ -279,6 +281,17 @@ CalendarManager::CalendarManager(QObject *parent)
     m_todoRightsFilterModel->setAccessRights( Collection::CanCreateItem );
     m_todoRightsFilterModel->setSourceModel(m_todoMimeTypeFilterModel);
     m_todoRightsFilterModel->sort(0);
+
+    const QString todoMimeType = QStringLiteral("application/x-vnd.akonadi.calendar.todo");
+    auto todoTreeModel = new IncidenceTreeModel(QStringList() << todoMimeType, this);
+    const auto pref = EventViews::PrefsPtr();
+    auto todoModel = new TodoModel(pref, this);
+    todoModel->setCalendar(m_calendar);
+    todoModel->setIncidenceChanger(m_changer);
+    todoModel->setSourceModel(todoTreeModel);
+    m_todoModel = new KDescendantsProxyModel(this);
+    m_todoModel->setSourceModel(todoModel);
+    m_todoModel->setExpandsByDefault(true);
 
     Q_EMIT entityTreeModelChanged();
     Q_EMIT loadingChanged();
@@ -342,7 +355,7 @@ KCheckableProxyModel *CalendarManager::collectionSelectionProxyModel() const
 
 Akonadi::ETMCalendar *CalendarManager::calendar() const
 {
-    return m_calendar;
+    return m_calendar.get();
 }
 
 KDescendantsProxyModel * CalendarManager::allCalendars()
@@ -521,6 +534,12 @@ void CalendarManager::undoAction()
 void CalendarManager::redoAction()
 {
     m_changer->history()->redo();
+}
+
+KDescendantsProxyModel *CalendarManager::todoModel()
+{
+    qDebug() << "todoModel";
+    return m_todoModel;
 }
 
 Q_DECLARE_METATYPE(KCalendarCore::Incidence::Ptr);
