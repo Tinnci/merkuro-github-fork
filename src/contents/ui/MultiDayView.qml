@@ -165,8 +165,6 @@ Item {
                                 topMargin: root.showDayIndicator ? Kirigami.Units.gridUnit + Kirigami.Units.smallSpacing : 0
                             }
 
-                            ScrollBar.horizontal.policy: ScrollBar.AlwaysOff
-
                             ListView {
                                 Layout.fillWidth: true
                                 id: linesRepeater
