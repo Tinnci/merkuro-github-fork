@@ -9,10 +9,14 @@ import QtPositioning 5.15
 Map {
     id: map
     anchors.fill: parent
+
+    property alias pluginComponent: mapPlugin
+
     //center: QtPositioning.coordinate(0,0)
     //zoomLevel: 15
     gesture.enabled: true
     plugin: Plugin {
+        id: mapPlugin
         name: "osm"
     }
     onCopyrightLinkActivated: {
