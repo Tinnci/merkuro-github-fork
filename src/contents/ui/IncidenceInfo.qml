@@ -357,7 +357,8 @@ Kirigami.OverlayDrawer {
                         Layout.fillWidth: true
                         height: Kirigami.Units.gridUnit * 16
                         asynchronous: true
-                        active: incidenceInfo.visible
+                        active: incidenceInfo.visible && incidenceInfo.incidenceWrapper.location
+                        visible: incidenceInfo.incidenceWrapper.location
 
                         sourceComponent: LocationMap {}
                     }
