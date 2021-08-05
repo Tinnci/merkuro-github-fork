@@ -2,6 +2,7 @@ import QtQuick 2.15
 import org.kde.kirigami 2.14 as Kirigami
 import QtQuick.Controls 2.15 as QQC2
 import QtQuick.Layouts 1.15
+import QtLocation 5.15
 import "labelutils.js" as LabelUtils
 
 import org.kde.kalendar 1.0
@@ -364,7 +365,23 @@ Kirigami.OverlayDrawer {
                         active: incidenceInfo.visible && incidenceInfo.incidenceWrapper.location && !locationLabel.isLink
                         visible: incidenceInfo.incidenceWrapper.location && !locationLabel.isLink
 
-                        sourceComponent: LocationMap {}
+                        sourceComponent: LocationMap {
+                            id: map
+
+                            GeocodeModel {
+                                id: geocodeModel
+                                plugin: map.pluginComponent
+                                query: incidenceInfo.incidenceWrapper.location
+                                autoUpdate: true
+                                onLocationsChanged: {
+                                    if(count > 0) {
+                                        map.center.latitude = get(0).coordinate.latitude
+                                        map.center.longitude = get(0).coordinate.longitude
+                                    }
+                                    map.zoomLevel = 15
+                                }
+                            }
+                        }
                     }
 
                     QQC2.Label {
