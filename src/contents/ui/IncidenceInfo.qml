@@ -343,11 +343,15 @@ Kirigami.OverlayDrawer {
                         visible: incidenceInfo.incidenceWrapper.location
                     }
                     QQC2.Label {
+                        id: locationLabel
                         Layout.alignment: Qt.AlignTop
                         Layout.fillWidth: true
 
+                        property bool isLink: false
+
                         textFormat: Text.MarkdownText
                         text: incidenceInfo.incidenceWrapper.location.replace(LabelUtils.urlRegexp, (match) => `[${match}](${match})`)
+                        onTextChanged: isLink = LabelUtils.urlRegexp.test(incidenceInfo.incidenceWrapper.location);
                         onLinkActivated: Qt.openUrlExternally(link)
                         wrapMode: Text.Wrap
                         visible: incidenceInfo.incidenceWrapper.location
@@ -357,8 +361,8 @@ Kirigami.OverlayDrawer {
                         Layout.fillWidth: true
                         height: Kirigami.Units.gridUnit * 16
                         asynchronous: true
-                        active: incidenceInfo.visible && incidenceInfo.incidenceWrapper.location
-                        visible: incidenceInfo.incidenceWrapper.location
+                        active: incidenceInfo.visible && incidenceInfo.incidenceWrapper.location && !locationLabel.isLink
+                        visible: incidenceInfo.incidenceWrapper.location && !locationLabel.isLink
 
                         sourceComponent: LocationMap {}
                     }
