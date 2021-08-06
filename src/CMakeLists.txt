@@ -11,6 +11,7 @@ target_link_libraries(kalendar
     Qt5::Quick
     Qt5::QuickControls2
     Qt5::Svg
+    Qt5::Location
     KF5::I18n
     KF5::Package
     KF5::CoreAddons

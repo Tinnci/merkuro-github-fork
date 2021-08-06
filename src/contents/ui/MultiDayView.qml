@@ -165,6 +165,8 @@ Item {
                                 topMargin: root.showDayIndicator ? Kirigami.Units.gridUnit + Kirigami.Units.smallSpacing : 0
                             }
 
+                            contentWidth: linesRepeater.width
+
                             ListView {
                                 Layout.fillWidth: true
                                 id: linesRepeater
