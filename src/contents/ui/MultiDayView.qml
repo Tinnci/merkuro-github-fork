@@ -165,7 +165,7 @@ Item {
                                 topMargin: root.showDayIndicator ? Kirigami.Units.gridUnit + Kirigami.Units.smallSpacing : 0
                             }
 
-                            contentWidth: linesRepeater.width
+                            QQC2.ScrollBar.horizontal.policy: QQC2.ScrollBar.AlwaysOff
 
                             ListView {
                                 Layout.fillWidth: true
