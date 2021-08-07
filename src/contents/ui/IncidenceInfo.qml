@@ -377,27 +377,22 @@ Kirigami.OverlayDrawer {
                                     autoUpdate: true
                                     limit: 1
                                     onLocationsChanged: {
-                                        if(count > 0) {
-                                            map.center.latitude = get(0).coordinate.latitude
-                                            map.center.longitude = get(0).coordinate.longitude
+                                        map.fitViewportToGeoShape(get(0).boundingBox, 0);
+                                        if (map.zoomLevel > 18.0) {
+                                            map.zoomLevel = 18.0;
                                         }
-                                        map.zoomLevel = 15
                                     }
                                 }
 
-                                delegate: pointDelegate
-                                Component {
-                                    id: pointDelegate
-                                    MapCircle {
-                                        id: point
-                                        radius: 1500 / map.zoomLevel
-                                        color: Kirigami.Theme.highlightColor
-                                        border.color: Kirigami.Theme.linkColor
-                                        border.width: Kirigami.Units.devicePixelRatio * 2
-                                        smooth: true
-                                        opacity: 0.25
-                                        center: locationData.coordinate
-                                    }
+                                delegate: MapCircle {
+                                    id: point
+                                    radius: locationData.boundingBox.center.distanceTo(locationData.boundingBox.topRight) // map.zoomLevel
+                                    color: Kirigami.Theme.highlightColor
+                                    border.color: Kirigami.Theme.linkColor
+                                    border.width: Kirigami.Units.devicePixelRatio * 2
+                                    smooth: true
+                                    opacity: 0.25
+                                    center: locationData.coordinate
                                 }
                             }
                         }
