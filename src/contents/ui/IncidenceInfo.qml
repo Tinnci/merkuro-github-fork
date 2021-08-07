@@ -402,6 +402,21 @@ Kirigami.OverlayDrawer {
 
                                 property bool queryHasResults: geocodeModel.count > 0
                                 property int queryStatus: geocodeModel.status
+                                property bool containsLocation: visibleRegion.contains(geocodeModel.get(0).coordinate)
+
+                                function goToLocation() {
+                                    fitViewportToGeoShape(geocodeModel.get(0).boundingBox, 0);
+                                    if (map.zoomLevel > 18.0) {
+                                        map.zoomLevel = 18.0;
+                                    }
+                                }
+
+                                QQC2.Button {
+                                    anchors.right: parent.right
+                                    text: i18n("Return to location")
+                                    visible: !mapLoader.item.containsLocation
+                                    onClicked: mapLoader.item.goToLocation()
+                                }
 
                                 MapItemView {
                                     model: GeocodeModel {
@@ -410,12 +425,7 @@ Kirigami.OverlayDrawer {
                                         query: incidenceInfo.incidenceWrapper.location
                                         autoUpdate: true
                                         limit: 1
-                                        onLocationsChanged: {
-                                            map.fitViewportToGeoShape(get(0).boundingBox, 0);
-                                            if (map.zoomLevel > 18.0) {
-                                                map.zoomLevel = 18.0;
-                                            }
-                                        }
+                                        onLocationsChanged: goToLocation()
                                     }
 
                                     delegate: MapCircle {
