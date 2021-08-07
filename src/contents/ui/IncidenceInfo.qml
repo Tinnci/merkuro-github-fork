@@ -357,6 +357,7 @@ Kirigami.OverlayDrawer {
                         wrapMode: Text.Wrap
                         visible: incidenceInfo.incidenceWrapper.location
                     }
+
                     Loader {
                         Layout.columnSpan: 2
                         Layout.fillWidth: true
@@ -368,17 +369,35 @@ Kirigami.OverlayDrawer {
                         sourceComponent: LocationMap {
                             id: map
 
-                            GeocodeModel {
-                                id: geocodeModel
-                                plugin: map.pluginComponent
-                                query: incidenceInfo.incidenceWrapper.location
-                                autoUpdate: true
-                                onLocationsChanged: {
-                                    if(count > 0) {
-                                        map.center.latitude = get(0).coordinate.latitude
-                                        map.center.longitude = get(0).coordinate.longitude
+                            MapItemView {
+                                model: GeocodeModel {
+                                    id: geocodeModel
+                                    plugin: map.pluginComponent
+                                    query: incidenceInfo.incidenceWrapper.location
+                                    autoUpdate: true
+                                    limit: 1
+                                    onLocationsChanged: {
+                                        if(count > 0) {
+                                            map.center.latitude = get(0).coordinate.latitude
+                                            map.center.longitude = get(0).coordinate.longitude
+                                        }
+                                        map.zoomLevel = 15
                                     }
-                                    map.zoomLevel = 15
+                                }
+
+                                delegate: pointDelegate
+                                Component {
+                                    id: pointDelegate
+                                    MapCircle {
+                                        id: point
+                                        radius: 1500 / map.zoomLevel
+                                        color: Kirigami.Theme.highlightColor
+                                        border.color: Kirigami.Theme.linkColor
+                                        border.width: Kirigami.Units.devicePixelRatio * 2
+                                        smooth: true
+                                        opacity: 0.25
+                                        center: locationData.coordinate
+                                    }
                                 }
                             }
                         }
