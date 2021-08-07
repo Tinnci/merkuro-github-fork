@@ -358,41 +358,76 @@ Kirigami.OverlayDrawer {
                         visible: incidenceInfo.incidenceWrapper.location
                     }
 
-                    Loader {
+                    ColumnLayout {
                         Layout.columnSpan: 2
                         Layout.fillWidth: true
-                        height: Kirigami.Units.gridUnit * 16
-                        asynchronous: true
-                        active: incidenceInfo.visible && incidenceInfo.incidenceWrapper.location && !locationLabel.isLink
-                        visible: incidenceInfo.incidenceWrapper.location && !locationLabel.isLink
+                        visible: mapLoadingIndicator.visible || noLocationsMessage.visible || mapLoader.visible
 
-                        sourceComponent: LocationMap {
-                            id: map
+                        QQC2.BusyIndicator {
+                            id: mapLoadingIndicator
+                            Layout.fillWidth: true
 
-                            MapItemView {
-                                model: GeocodeModel {
-                                    id: geocodeModel
-                                    plugin: map.pluginComponent
-                                    query: incidenceInfo.incidenceWrapper.location
-                                    autoUpdate: true
-                                    limit: 1
-                                    onLocationsChanged: {
-                                        map.fitViewportToGeoShape(get(0).boundingBox, 0);
-                                        if (map.zoomLevel > 18.0) {
-                                            map.zoomLevel = 18.0;
+                            property bool showCondition: mapLoader.status === Loader.Loading ||
+                                mapLoader.item.queryStatus === GeocodeModel.Loading
+
+                            running: showCondition
+                            visible: showCondition
+                        }
+
+                        Kirigami.InlineMessage {
+                            id: noLocationsMessage
+
+                            Layout.fillWidth: true
+                            Layout.fillHeight: true
+
+                            showCloseButton: true
+                            visible: mapLoader.status === Loader.Ready &&
+                                mapLoader.item.queryStatus === GeocodeModel.Ready &&
+                                !mapLoader.item.queryHasResults
+                            type: Kirigami.MessageType.Warning
+                            text: i18n("Unable to find location.")
+                        }
+
+                        Loader {
+                            id: mapLoader
+
+                            Layout.fillWidth: true
+                            height: Kirigami.Units.gridUnit * 16
+                            asynchronous: true
+                            active: incidenceInfo.visible && incidenceInfo.incidenceWrapper.location && !locationLabel.isLink
+                            visible: incidenceInfo.incidenceWrapper.location && !locationLabel.isLink && item.queryHasResults
+
+                            sourceComponent: LocationMap {
+                                id: map
+
+                                property bool queryHasResults: geocodeModel.count > 0
+                                property int queryStatus: geocodeModel.status
+
+                                MapItemView {
+                                    model: GeocodeModel {
+                                        id: geocodeModel
+                                        plugin: map.pluginComponent
+                                        query: incidenceInfo.incidenceWrapper.location
+                                        autoUpdate: true
+                                        limit: 1
+                                        onLocationsChanged: {
+                                            map.fitViewportToGeoShape(get(0).boundingBox, 0);
+                                            if (map.zoomLevel > 18.0) {
+                                                map.zoomLevel = 18.0;
+                                            }
                                         }
                                     }
-                                }
 
-                                delegate: MapCircle {
-                                    id: point
-                                    radius: locationData.boundingBox.center.distanceTo(locationData.boundingBox.topRight) // map.zoomLevel
-                                    color: Kirigami.Theme.highlightColor
-                                    border.color: Kirigami.Theme.linkColor
-                                    border.width: Kirigami.Units.devicePixelRatio * 2
-                                    smooth: true
-                                    opacity: 0.25
-                                    center: locationData.coordinate
+                                    delegate: MapCircle {
+                                        id: point
+                                        radius: locationData.boundingBox.center.distanceTo(locationData.boundingBox.topRight) // map.zoomLevel
+                                        color: Kirigami.Theme.highlightColor
+                                        border.color: Kirigami.Theme.linkColor
+                                        border.width: Kirigami.Units.devicePixelRatio * 2
+                                        smooth: true
+                                        opacity: 0.25
+                                        center: locationData.coordinate
+                                    }
                                 }
                             }
                         }
