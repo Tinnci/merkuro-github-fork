@@ -207,6 +207,12 @@ public:
         return Qt::ItemIsSelectable | QSortFilterProxyModel::flags(index);
     }
 
+    QHash<int, QByteArray> roleNames() const override {
+        QHash<int, QByteArray> roleNames = QSortFilterProxyModel::roleNames();
+        roleNames[Qt::CheckStateRole] = "checkState";
+        return roleNames;
+    }
+
 private:
     mutable bool mInitDefaultCalendar;
 };
