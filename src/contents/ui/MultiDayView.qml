@@ -67,7 +67,7 @@ Item {
                 model: Kalendar.IncidenceOccurrenceModel {
                     id: occurrenceModel
                     objectName: "incidenceOccurrenceModel"
-                    start: dayLabels.startDate
+                    start: root.startDate
                     length: root.daysToShow
                     filter: root.filter ? root.filter : {}
                     calendar: Kalendar.CalendarManager.calendar
