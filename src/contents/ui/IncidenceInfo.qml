@@ -376,7 +376,7 @@ Kirigami.OverlayDrawer {
                     ColumnLayout {
                         Layout.columnSpan: 2
                         Layout.fillWidth: true
-                        visible: incidenceInfo.incidenceWrapper.location
+                        visible: Config.enableMaps && incidenceInfo.incidenceWrapper.location
 
                         QQC2.BusyIndicator {
                             id: mapLoadingIndicator
@@ -408,8 +408,11 @@ Kirigami.OverlayDrawer {
                             Layout.fillWidth: true
                             height: Kirigami.Units.gridUnit * 16
                             asynchronous: true
-                            active: incidenceInfo.visible && incidenceInfo.incidenceWrapper.location && !locationLabel.isLink
-                            visible: incidenceInfo.incidenceWrapper.location && !locationLabel.isLink && item.queryHasResults
+                            active: Config.enableMaps &&
+                                incidenceInfo.visible &&
+                                incidenceInfo.incidenceWrapper.location &&
+                                !locationLabel.isLink
+                            visible: active && item.queryHasResults
 
                             sourceComponent: LocationMap {
                                 id: map

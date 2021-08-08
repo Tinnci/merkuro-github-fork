@@ -200,13 +200,14 @@ Kirigami.ScrollablePage {
                     QQC2.CheckBox {
                         id: mapVisibleCheckBox
                         text: i18n("Show map")
+                        visible: Config.enableMaps
                     }
                 }
 
                 ColumnLayout {
                     id: mapLayout
                     Layout.fillWidth: true
-                    visible: mapVisibleCheckBox.checked
+                    visible: Config.enableMaps && mapVisibleCheckBox.checked
 
                     Loader {
                         id: mapLoader
