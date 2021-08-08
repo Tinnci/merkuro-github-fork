@@ -150,6 +150,11 @@ QVariantList MultiDayIncidenceModel::layoutLines(const QDate &rowStart) const
             });
         };
 
+        if(start >= mPeriodLength) {
+            qWarning() << "Skipping " << srcIdx.data(IncidenceOccurrenceModel::Summary);
+            continue;
+        }
+
         //Add first incidence of line
         addToLine(srcIdx, start, duration);
         const bool allDayLine = srcIdx.data(IncidenceOccurrenceModel::AllDay).toBool();
