@@ -149,13 +149,44 @@ Kirigami.ScrollablePage {
                     text: root.incidenceWrapper.summary
                     onTextChanged: root.incidenceWrapper.summary = text
                 }
-                QQC2.TextField {
-                    id: locationField
-
+                RowLayout {
                     Kirigami.FormData.label: i18n("Location:")
-                    placeholderText: i18n("Optional")
-                    text: root.incidenceWrapper.location
-                    onTextChanged: root.incidenceWrapper.location = text
+                    Layout.fillWidth: true
+
+                    QQC2.TextField {
+                        id: locationField
+
+                        Layout.fillWidth: true
+                        placeholderText: i18n("Optional")
+                        text: root.incidenceWrapper.location
+                        onTextChanged: root.incidenceWrapper.location = text
+                    }
+                    QQC2.CheckBox {
+                        id: mapVisibleCheckBox
+                        text: i18n("Show map")
+                    }
+                }
+
+                ColumnLayout {
+                    id: mapLayout
+                    Layout.fillWidth: true
+                    visible: mapVisibleCheckBox.checked
+
+                    Loader {
+                        id: mapLoader
+
+                        Layout.fillWidth: true
+                        height: Kirigami.Units.gridUnit * 16
+                        asynchronous: true
+                        active: visible || locationField.text
+
+                        sourceComponent: LocationMap {
+                            id: map
+                            selectMode: true
+                            query: locationField.text
+                            onQueryChanged: root.incidenceWrapper.location = query
+                        }
+                    }
                 }
 
                 // Restrain the descriptionTextArea from getting too chonky
