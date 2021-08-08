@@ -376,7 +376,7 @@ Kirigami.OverlayDrawer {
                     ColumnLayout {
                         Layout.columnSpan: 2
                         Layout.fillWidth: true
-                        visible: mapLoadingIndicator.visible || noLocationsMessage.visible || mapLoader.visible
+                        visible: incidenceInfo.incidenceWrapper.location
 
                         QQC2.BusyIndicator {
                             id: mapLoadingIndicator
@@ -395,7 +395,6 @@ Kirigami.OverlayDrawer {
                             Layout.fillWidth: true
                             Layout.fillHeight: true
 
-                            showCloseButton: true
                             visible: mapLoader.status === Loader.Ready &&
                                 mapLoader.item.queryStatus === GeocodeModel.Ready &&
                                 !mapLoader.item.queryHasResults
@@ -415,7 +414,11 @@ Kirigami.OverlayDrawer {
                             sourceComponent: LocationMap {
                                 id: map
                                 query: incidenceInfo.incidenceWrapper.location
-                                z: 10
+
+                                MouseArea {
+                                    anchors.fill: parent
+                                    onClicked: Qt.openUrlExternally("https://www.openstreetmap.org/search?query=" + incidenceInfo.incidenceWrapper.location)
+                                }
                             }
                         }
                     }
