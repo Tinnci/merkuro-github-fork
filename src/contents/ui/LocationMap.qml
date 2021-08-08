@@ -21,11 +21,10 @@ Map {
     property bool selectMode: false
 
     function goToLocation() {
-            fitViewportToGeoShape(geocodeModel.get(0).boundingBox, 0);
-            if (map.zoomLevel > 18.0) {
-                map.zoomLevel = 18.0;
-            }
-
+        fitViewportToGeoShape(geocodeModel.get(0).boundingBox, 0);
+        if (map.zoomLevel > 18.0) {
+            map.zoomLevel = 18.0;
+        }
     }
 
     gesture.enabled: true
