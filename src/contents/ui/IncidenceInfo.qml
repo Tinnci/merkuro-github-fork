@@ -356,6 +356,21 @@ Kirigami.OverlayDrawer {
                         onLinkActivated: Qt.openUrlExternally(link)
                         wrapMode: Text.Wrap
                         visible: incidenceInfo.incidenceWrapper.location
+
+                        MouseArea {
+                            TextEdit {  // HACK: TextEdit has copy to clipboard capabilities
+                                id: textEdit
+                                visible: false
+                            }
+
+                            anchors.fill: parent
+                            onClicked: {
+                                textEdit.text = locationLabel.text
+                                textEdit.selectAll()
+                                textEdit.copy()
+                                showPassiveNotification(i18n("Location copied to clipboard"))
+                            }
+                        }
                     }
 
                     ColumnLayout {
