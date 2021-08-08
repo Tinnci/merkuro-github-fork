@@ -5,6 +5,7 @@ import QtQuick 2.15
 import QtQuick.Controls 2.15 as QQC2
 import QtQuick.Layouts 1.15
 import QtQuick.Dialogs 1.0
+import QtLocation 5.15
 import org.kde.kirigami 2.15 as Kirigami
 import org.kde.kalendar 1.0
 import "labelutils.js" as LabelUtils
@@ -156,10 +157,45 @@ Kirigami.ScrollablePage {
                     QQC2.TextField {
                         id: locationField
 
+                        property bool typed: false
+
                         Layout.fillWidth: true
                         placeholderText: i18n("Optional")
                         text: root.incidenceWrapper.location
                         onTextChanged: root.incidenceWrapper.location = text
+                        Keys.onPressed: locationsMenu.open()
+
+                        QQC2.BusyIndicator {
+                            height: parent.height
+                            anchors.right: parent.right
+                            running: locationsModel.status === GeocodeModel.Loading
+                            visible: locationsModel.status === GeocodeModel.Loading
+                        }
+
+                        QQC2.Menu {
+                            id: locationsMenu
+                            width: parent.width
+                            y: parent.height // Y is relative to parent
+                            focus: false
+
+                            Repeater {
+                                model: GeocodeModel {
+                                    id: locationsModel
+                                    plugin: locationPlugin
+                                    query: root.incidenceWrapper.location
+                                    autoUpdate: true
+                                }
+                                delegate: QQC2.MenuItem {
+                                    text: locationData.address.text
+                                    onClicked: root.incidenceWrapper.location = locationData.address.text
+                                }
+                            }
+
+                            Plugin {
+                                id: locationPlugin
+                                name: "osm"
+                            }
+                        }
                     }
                     QQC2.CheckBox {
                         id: mapVisibleCheckBox
