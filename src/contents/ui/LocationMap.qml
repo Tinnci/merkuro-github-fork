@@ -69,6 +69,7 @@ Map {
 
                 if(map.userClicked) {
                     selectedLocationAddress(geocodeModel.get(0).address.text);
+                    map.userClicked = false;
                 }
             }
         }
