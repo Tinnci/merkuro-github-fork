@@ -206,16 +206,19 @@ Kirigami.Page {
             title: i18n("General")
 
             Kirigami.FormLayout {
-                Controls.CheckBox {
+                RowLayout {
                     Kirigami.FormData.label: i18n("Enable maps:")
-                    checked: Config.enableMaps
-                    onClicked: {
-                        Config.enableMaps = !Config.enableMaps
-                        Config.save()
+
+                    Controls.CheckBox {
+                        checked: Config.enableMaps
+                        onClicked: {
+                            Config.enableMaps = !Config.enableMaps;
+                            Config.save();
+                        }
                     }
-                    Controls.ToolTip {
-                        visible: parent.hovered
-                        text: i18n("Enable maps. NOTE: may cause crashing on some systems.")
+                    Controls.Label {
+                        font: Kirigami.Theme.smallFont
+                        text: i18n("May cause crashing on some systems.")
                     }
                 }
             }
