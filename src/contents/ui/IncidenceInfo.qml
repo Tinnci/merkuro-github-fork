@@ -2,7 +2,7 @@ import QtQuick 2.15
 import org.kde.kirigami 2.14 as Kirigami
 import QtQuick.Controls 2.15 as QQC2
 import QtQuick.Layouts 1.15
-import QtLocation 5.6
+import QtLocation 5.15
 import "labelutils.js" as LabelUtils
 
 import org.kde.kalendar 1.0
@@ -414,46 +414,7 @@ Kirigami.OverlayDrawer {
 
                             sourceComponent: LocationMap {
                                 id: map
-
-                                property bool queryHasResults: geocodeModel.count > 0
-                                property int queryStatus: geocodeModel.status
-                                property bool containsLocation: visibleRegion.contains(geocodeModel.get(0).coordinate)
-
-                                function goToLocation() {
-                                    fitViewportToGeoShape(geocodeModel.get(0).boundingBox, 0);
-                                    if (map.zoomLevel > 18.0) {
-                                        map.zoomLevel = 18.0;
-                                    }
-                                }
-
-                                QQC2.Button {
-                                    anchors.right: parent.right
-                                    text: i18n("Return to location")
-                                    visible: !mapLoader.item.containsLocation
-                                    onClicked: mapLoader.item.goToLocation()
-                                }
-
-                                MapItemView {
-                                    model: GeocodeModel {
-                                        id: geocodeModel
-                                        plugin: map.pluginComponent
-                                        query: incidenceInfo.incidenceWrapper.location
-                                        autoUpdate: true
-                                        limit: 1
-                                        onLocationsChanged: goToLocation()
-                                    }
-
-                                    delegate: MapCircle {
-                                        id: point
-                                        radius: locationData.boundingBox.center.distanceTo(locationData.boundingBox.topRight) // map.zoomLevel
-                                        color: Kirigami.Theme.highlightColor
-                                        border.color: Kirigami.Theme.linkColor
-                                        border.width: Kirigami.Units.devicePixelRatio * 2
-                                        smooth: true
-                                        opacity: 0.25
-                                        center: locationData.coordinate
-                                    }
-                                }
+                                query: incidenceInfo.incidenceWrapper.location
                             }
                         }
                     }
