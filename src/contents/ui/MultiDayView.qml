@@ -85,7 +85,7 @@ Item {
                     Loader {
                         id: weekHeader
                         sourceComponent: root.weekHeaderDelegate
-                        property var startDate: periodStartDate
+                        property date startDate: periodStartDate
                         Layout.preferredWidth: weekHeaderWidth
                         Layout.fillHeight: true
                     }
@@ -93,7 +93,7 @@ Item {
                         id: dayDelegate
                         Layout.fillWidth: true
                         Layout.fillHeight: true
-                        property var startDate: periodStartDate
+                        property date startDate: periodStartDate
 
                         //Grid
                         Row {
@@ -107,7 +107,7 @@ Item {
                                     height: parent.height
                                     width: root.dayWidth
                                     property date gridSquareDate: date
-                                    property var date: DateUtils.addDaysToDate(dayDelegate.startDate, modelData)
+                                    property date date: DateUtils.addDaysToDate(dayDelegate.startDate, modelData)
                                     property bool isInPast: DateUtils.roundToDay(date) < DateUtils.roundToDay(root.currentDate)
                                     property bool isToday: DateUtils.sameDay(root.currentDate, date)
                                     property bool isCurrentMonth: date.getMonth() == root.month
