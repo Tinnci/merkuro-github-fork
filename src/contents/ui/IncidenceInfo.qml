@@ -415,6 +415,7 @@ Kirigami.OverlayDrawer {
                             sourceComponent: LocationMap {
                                 id: map
                                 query: incidenceInfo.incidenceWrapper.location
+                                z: 10
                             }
                         }
                     }
