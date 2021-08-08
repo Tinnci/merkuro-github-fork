@@ -14,18 +14,18 @@ Map {
     signal selectedLocationAddress(string address)
 
     property alias pluginComponent: mapPlugin
-    property string query
+    property var query
     property bool queryHasResults: geocodeModel.count > 0
     property int queryStatus: geocodeModel.status
-    property bool containsLocation: visibleRegion.contains(geocodeModel.get(0).coordinate)
+    property bool containsLocation: queryHasResults ? visibleRegion.contains(geocodeModel.get(0).coordinate) : false
     property bool selectMode: false
-    property bool userClicked: false
 
     function goToLocation() {
-        fitViewportToGeoShape(geocodeModel.get(0).boundingBox, 0);
-        if (map.zoomLevel > 18.0) {
-            map.zoomLevel = 18.0;
-        }
+            fitViewportToGeoShape(geocodeModel.get(0).boundingBox, 0);
+            if (map.zoomLevel > 18.0) {
+                map.zoomLevel = 18.0;
+            }
+
     }
 
     gesture.enabled: true
@@ -35,6 +35,12 @@ Map {
     }
     onCopyrightLinkActivated: {
         Qt.openUrlExternally(link)
+    }
+
+    BusyIndicator {
+        anchors.centerIn: parent
+        running: map.queryStatus === GeocodeModel.Loading
+        visible: queryStatus === GeocodeModel.Loading
     }
 
     Button {
@@ -50,9 +56,16 @@ Map {
             anchors.fill: parent
             enabled: map.selectMode
             onClicked: {
-                map.userClicked = true;
                 var coords = map.toCoordinate(Qt.point(mouseX, mouseY), false);
-                geocodeModel.query = coords;
+                clickGeocodeModel.query = coords;
+                clickGeocodeModel.update();
+            }
+
+            GeocodeModel {
+                id: clickGeocodeModel
+                plugin: map.pluginComponent
+                limit: 1
+                onLocationsChanged: if(count) { selectedLocationAddress(get(0).address.text) }
             }
         }
 
@@ -63,13 +76,8 @@ Map {
             autoUpdate: true
             limit: 1
             onLocationsChanged: {
-                map.goToLocation();
-                map.query = geocodeModel.get(0).address.text;
-                query = map.query; // Restore correct binding when user clicked
-
-                if(map.userClicked) {
-                    selectedLocationAddress(geocodeModel.get(0).address.text);
-                    map.userClicked = false;
+                if(count > 0) {
+                    map.goToLocation();
                 }
             }
         }

@@ -183,7 +183,7 @@ Kirigami.ScrollablePage {
                         sourceComponent: LocationMap {
                             id: map
                             selectMode: true
-                            query: locationField.text
+                            query: root.incidenceWrapper.location
                             onSelectedLocationAddress: root.incidenceWrapper.location = address
                         }
                     }
