@@ -207,7 +207,7 @@ QVariant MultiDayIncidenceModel::data(const QModelIndex &idx, int role) const
     const auto rowStart = mSourceModel->start().addDays(idx.row() * mPeriodLength);
     switch (role) {
         case PeriodStartDate:
-            return rowStart;
+            return rowStart.startOfDay();
         case Incidences:
             return layoutLines(rowStart);
         default:
