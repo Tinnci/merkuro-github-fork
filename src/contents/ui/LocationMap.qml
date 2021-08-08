@@ -11,12 +11,15 @@ Map {
     id: map
     anchors.fill: parent
 
+    signal selectedLocationAddress(string address)
+
     property alias pluginComponent: mapPlugin
     property string query
     property bool queryHasResults: geocodeModel.count > 0
     property int queryStatus: geocodeModel.status
     property bool containsLocation: visibleRegion.contains(geocodeModel.get(0).coordinate)
     property bool selectMode: false
+    property bool userClicked: false
 
     function goToLocation() {
         fitViewportToGeoShape(geocodeModel.get(0).boundingBox, 0);
@@ -47,8 +50,9 @@ Map {
             anchors.fill: parent
             enabled: map.selectMode
             onClicked: {
-                var coords = map.toCoordinate(Qt.point(mouseX, mouseY), false)
-                geocodeModel.query = coords
+                map.userClicked = true;
+                var coords = map.toCoordinate(Qt.point(mouseX, mouseY), false);
+                geocodeModel.query = coords;
             }
         }
 
@@ -59,9 +63,13 @@ Map {
             autoUpdate: true
             limit: 1
             onLocationsChanged: {
-                goToLocation()
-                map.query = geocodeModel.get(0).address.text
-                query = map.query
+                map.goToLocation();
+                map.query = geocodeModel.get(0).address.text;
+                query = map.query; // Restore correct binding when user clicked
+
+                if(map.userClicked) {
+                    selectedLocationAddress(geocodeModel.get(0).address.text);
+                }
             }
         }
 

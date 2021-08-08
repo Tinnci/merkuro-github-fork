@@ -184,7 +184,7 @@ Kirigami.ScrollablePage {
                             id: map
                             selectMode: true
                             query: locationField.text
-                            onQueryChanged: root.incidenceWrapper.location = query
+                            onSelectedLocationAddress: root.incidenceWrapper.location = address
                         }
                     }
                 }
