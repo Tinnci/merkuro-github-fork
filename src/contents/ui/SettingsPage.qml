@@ -213,6 +213,10 @@ Kirigami.Page {
                         Config.enableMaps = !Config.enableMaps
                         Config.save()
                     }
+                    Controls.ToolTip {
+                        visible: parent.hovered
+                        text: i18n("Enable maps. NOTE: may cause crashing on some systems.")
+                    }
                 }
             }
         }
