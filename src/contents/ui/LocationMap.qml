@@ -16,6 +16,7 @@ Map {
     property bool queryHasResults: geocodeModel.count > 0
     property int queryStatus: geocodeModel.status
     property bool containsLocation: visibleRegion.contains(geocodeModel.get(0).coordinate)
+    property bool selectMode: false
 
     function goToLocation() {
         fitViewportToGeoShape(geocodeModel.get(0).boundingBox, 0);
@@ -36,18 +37,32 @@ Map {
     Button {
         anchors.right: parent.right
         text: i18n("Return to location")
-        visible: !map.containsLocation
+        visible: !map.containsLocation && map.query
         onClicked: map.goToLocation()
+        z: 10
     }
 
     MapItemView {
+        MouseArea {
+            anchors.fill: parent
+            enabled: map.selectMode
+            onClicked: {
+                var coords = map.toCoordinate(Qt.point(mouseX, mouseY), false)
+                geocodeModel.query = coords
+            }
+        }
+
         model: GeocodeModel {
             id: geocodeModel
             plugin: map.pluginComponent
             query: map.query
             autoUpdate: true
             limit: 1
-            onLocationsChanged: goToLocation()
+            onLocationsChanged: {
+                goToLocation()
+                map.query = geocodeModel.get(0).address.text
+                query = map.query
+            }
         }
 
         delegate: MapCircle {
