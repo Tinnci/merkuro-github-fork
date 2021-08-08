@@ -178,7 +178,7 @@ Kirigami.ScrollablePage {
                         Layout.fillWidth: true
                         height: Kirigami.Units.gridUnit * 16
                         asynchronous: true
-                        active: visible || locationField.text
+                        active: visible
 
                         sourceComponent: LocationMap {
                             id: map
