@@ -158,7 +158,6 @@ Item {
                         }
 
                         QQC2.ScrollView {
-
                             anchors {
                                 fill: parent
                                 // Offset for date
@@ -218,6 +217,7 @@ Item {
                                             property int rectRadius: 5
 
                                             Rectangle {
+                                                id: incidenceBackground
                                                 anchors.fill: parent
                                                 color: modelData.color
                                                 radius: parent.rectRadius
@@ -226,6 +226,7 @@ Item {
                                             }
 
                                             RowLayout {
+                                                id: incidenceContents
                                                 anchors {
                                                     fill: parent
                                                     leftMargin: Kirigami.Units.smallSpacing
