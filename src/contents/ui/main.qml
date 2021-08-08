@@ -243,8 +243,9 @@ Kirigami.ApplicationWindow {
             // Make sure we get day from correct date, that is in the month we want
             title: DateUtils.addDaysToDate(startDate, 7).toLocaleDateString(Qt.locale(), "<b>MMMM</b> yyyy")
             currentDate: root.currentDate
-            startDate: DateUtils.getFirstDayOfWeek(DateUtils.getFirstDayOfMonth(new Date(root.year, root.month)))
             month: root.month
+
+            Component.onCompleted: setToDate(DateUtils.getFirstDayOfWeek(DateUtils.getFirstDayOfMonth(new Date(root.year, root.month + 1))))
 
             onAddIncidenceReceived: root.setUpAdd(receivedType, receivedAddDate)
             onViewIncidenceReceived: root.setUpView(receivedModelData, receivedCollectionData)
