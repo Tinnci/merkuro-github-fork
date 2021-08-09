@@ -151,7 +151,7 @@ QVariantList MultiDayIncidenceModel::layoutLines(const QDate &rowStart) const
             });
         };
 
-        qDebug() << "FIRST: " << srcIdx.data(IncidenceOccurrenceModel::StartTime).toDateTime() << srcIdx.data(IncidenceOccurrenceModel::Summary).toString();
+        //qDebug() << "FIRST: " << srcIdx.data(IncidenceOccurrenceModel::StartTime).toDateTime() << srcIdx.data(IncidenceOccurrenceModel::Summary).toString();
 
         if(start >= mPeriodLength) {
             //qWarning() << "Skipping " << srcIdx.data(IncidenceOccurrenceModel::Summary);
