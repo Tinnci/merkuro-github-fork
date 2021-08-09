@@ -113,7 +113,7 @@ void IncidenceOccurrenceModel::updateFromSource()
 
         const auto allTodos = Calendar::sortTodos(
             m_coreCalendar->todos(mStart, mEnd),
-            TodoSortField::TodoSortStartDate,
+            TodoSortField::TodoSortDueDate, // Todos tend to not have a set start date
             SortDirection::SortDirectionAscending
         );
 
