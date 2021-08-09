@@ -170,7 +170,7 @@ QVariantList MultiDayIncidenceModel::layoutLines(const QDate &rowStart) const
 
         //Add first incidence of line
         addToLine(srcIdx, start, duration);
-        const bool allDayLine = srcIdx.data(IncidenceOccurrenceModel::AllDay).toBool();
+        //const bool allDayLine = srcIdx.data(IncidenceOccurrenceModel::AllDay).toBool();
 
         //Fill line with incidences that fit
         QBitArray takenSpaces(mPeriodLength);
@@ -207,7 +207,7 @@ QVariantList MultiDayIncidenceModel::layoutLines(const QDate &rowStart) const
 
             //qWarning() << "Checking " << idx.data(IncidenceOccurrenceModel::StartTime).toDateTime() << idx.data(IncidenceOccurrenceModel::Summary).toString() << start << end;
 
-            //Avoid mixing all-day and other incidences
+            // This leaves a space in rows with all day events, making this y area of the row exclusively for all day events
             /*if (allDayLine && !idx.data(IncidenceOccurrenceModel::AllDay).toBool()) {
                 continue;
             }*/
