@@ -6,6 +6,7 @@
 // SPDX-License-Identifier: LGPL-2.0-or-later
 
 #include "multidayincidencemodel.h"
+#include <QBitArray>
 
 enum Roles {
     Incidences = IncidenceOccurrenceModel::LastRole,
@@ -90,7 +91,7 @@ QList<QModelIndex> MultiDayIncidenceModel::sortedIncidencesFromSourceModel(const
             const auto rightDuration = getDuration(right.data(IncidenceOccurrenceModel::StartTime).toDateTime().date(), right.data(IncidenceOccurrenceModel::EndTime).toDateTime().date());
             return leftDuration < rightDuration;
         }
-        //The rest sored by start date
+        //The rest sorted by start date
         return left.data(IncidenceOccurrenceModel::StartTime).toDateTime() < right.data(IncidenceOccurrenceModel::StartTime).toDateTime();
     });
     return sorted;
@@ -150,8 +151,10 @@ QVariantList MultiDayIncidenceModel::layoutLines(const QDate &rowStart) const
             });
         };
 
+        qDebug() << "FIRST: " << srcIdx.data(IncidenceOccurrenceModel::StartTime).toDateTime() << srcIdx.data(IncidenceOccurrenceModel::Summary).toString();
+
         if(start >= mPeriodLength) {
-            qWarning() << "Skipping " << srcIdx.data(IncidenceOccurrenceModel::Summary);
+            //qWarning() << "Skipping " << srcIdx.data(IncidenceOccurrenceModel::Summary);
             continue;
         }
 
@@ -160,14 +163,23 @@ QVariantList MultiDayIncidenceModel::layoutLines(const QDate &rowStart) const
         const bool allDayLine = srcIdx.data(IncidenceOccurrenceModel::AllDay).toBool();
 
         //Fill line with incidences that fit
-        int lastStart = start;
-        int lastDuration = duration;
+        QBitArray takenSpaces(mPeriodLength);
+        // Set this incidence's space as taken
+        for(int i = start; i < start + duration; i++) {
+            takenSpaces[i] = true;
+        }
+
         auto doesIntersect = [&] (int start, int end) {
-            const auto lastEnd = lastStart + lastDuration;
-            if (((start <= lastStart) && (end >= lastStart)) ||
-                ((start < lastEnd) && (end > lastStart))) {
-                // qWarning() << "Found intersection " << start << end;
-                return true;
+            for(int i = start; i < end; i++) {
+                if(takenSpaces[i]) {
+                    //qWarning() << "Found intersection " << start << end;
+                    return true;
+                }
+            }
+
+            // If incidence fits on line, set its space as taken
+            for(int i = start; i < end; i++) {
+                takenSpaces[i] = true;
             }
             return false;
         };
@@ -180,7 +192,8 @@ QVariantList MultiDayIncidenceModel::layoutLines(const QDate &rowStart) const
             const auto duration = qMin(getDuration(startDate, idx.data(IncidenceOccurrenceModel::EndTime).toDateTime().date()), mPeriodLength - start);
             const auto end = start + duration;
 
-            // qWarning() << "Checking " << idx.data(IncidenceOccurrenceModel::StartTime).toDateTime() << duration << idx.data(IncidenceOccurrenceModel::Summary).toString();
+            //qWarning() << "Checking " << idx.data(IncidenceOccurrenceModel::StartTime).toDateTime() << idx.data(IncidenceOccurrenceModel::Summary).toString() << start << end;
+
             //Avoid mixing all-day and other incidences
             if (allDayLine && !idx.data(IncidenceOccurrenceModel::AllDay).toBool()) {
                 break;
@@ -190,8 +203,6 @@ QVariantList MultiDayIncidenceModel::layoutLines(const QDate &rowStart) const
                 it++;
             } else {
                 addToLine(idx, start, duration);
-                lastStart = start;
-                lastDuration = duration;
                 it = sorted.erase(it);
             }
         }
