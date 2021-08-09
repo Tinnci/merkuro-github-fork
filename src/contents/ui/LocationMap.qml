@@ -83,7 +83,7 @@ Map {
 
         delegate: MapCircle {
             id: point
-            radius: locationData.boundingBox.center.distanceTo(locationData.boundingBox.topRight) // map.zoomLevel
+            radius: locationData.boundingBox.center.distanceTo(locationData.boundingBox.topRight)
             color: Kirigami.Theme.highlightColor
             border.color: Kirigami.Theme.linkColor
             border.width: Kirigami.Units.devicePixelRatio * 2
