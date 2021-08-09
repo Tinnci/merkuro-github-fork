@@ -365,10 +365,10 @@ Kirigami.OverlayDrawer {
 
                             anchors.fill: parent
                             onClicked: {
-                                textEdit.text = locationLabel.text
-                                textEdit.selectAll()
-                                textEdit.copy()
-                                showPassiveNotification(i18n("Location copied to clipboard"))
+                                textEdit.text = locationLabel.text;
+                                textEdit.selectAll();
+                                textEdit.copy();
+                                showPassiveNotification(i18n("Location copied to clipboard"));
                             }
                         }
                     }
