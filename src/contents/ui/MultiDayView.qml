@@ -223,8 +223,10 @@ Item {
                                             Rectangle {
                                                 id: incidenceBackground
                                                 anchors.fill: parent
-                                                color: modelData.color
-                                                opacity: 0.5
+                                                color: LabelUtils.getDarkness(modelData.color) > 0.8 ? Qt.lighter(modelData.color, 1.8) :
+                                                    LabelUtils.getDarkness(modelData.color) > 0.5 ? Qt.lighter(modelData.color, 1.5) :
+                                                    modelData.color
+                                                opacity: LabelUtils.getDarkness(modelData.color) == 1 ? 0.3 : 0.7 // Can't lighten pure black
                                                 visible: modelData.endTime.getMonth() == root.month || modelData.startTime.getMonth() == root.month
                                                 radius: parent.rectRadius
                                             }
