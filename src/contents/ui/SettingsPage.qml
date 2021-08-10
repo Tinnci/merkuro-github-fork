@@ -250,6 +250,7 @@ Kirigami.Page {
                                 radius: 5
                                 color: collectionColor
                                 visible: collectionColor !== undefined
+                                Component.onCompleted: console.log(collectionColor)
                             }
                             label: display
                             icon: decoration
