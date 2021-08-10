@@ -170,6 +170,8 @@ Item {
                                 Layout.fillWidth: true
                                 id: linesRepeater
 
+                                spacing: Kirigami.Units.smallSpacing / 2 // ListView adds spacing to the bottom AND top of each item
+
                                 DayMouseArea {
                                     id: listViewMenu
                                     anchors.fill: parent
@@ -206,15 +208,16 @@ Item {
                                         id: incidencesRepeater
                                         model: modelData
                                         Rectangle {
-                                            x: (root.dayWidth /*+ 1*/) * modelData.starts // +1 because of the spacing
+                                            x: ((root.dayWidth /*+ 1*/) * modelData.starts) + horizontalSpacing // +1 because of the spacing between each day
                                             y: 0
-                                            width: root.dayWidth * modelData.duration
+                                            width: (root.dayWidth * modelData.duration) - (horizontalSpacing * 2) // Account for spacing added to x and for spacing at end of line
                                             height: parent.height
                                             opacity: modelData.endTime.getMonth() == root.month || modelData.startTime.getMonth() == root.month ?
                                                     1.0 : 0.5
                                             radius: rectRadius
 
                                             property int rectRadius: 5
+                                            property int horizontalSpacing: Kirigami.Units.smallSpacing
 
                                             Rectangle {
                                                 id: incidenceBackground
