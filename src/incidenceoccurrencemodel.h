@@ -15,7 +15,6 @@
 #include <QColor>
 #include <QDateTime>
 #include <etmcalendar.h>
-#include <EventViews/Prefs>
 
 namespace KCalendarCore {
     class MemoryCalendar;
@@ -83,7 +82,6 @@ public:
     void setFilter(const QVariantMap &);
 
     void load();
-    void save() const;
 
     struct Occurrence {
         QDateTime start;
@@ -113,7 +111,6 @@ private:
     QDate mEnd;
     int mLength{0};
     Akonadi::ETMCalendar *m_coreCalendar;
-    EventViews::PrefsPtr mEventViewsPrefs;
 
     QTimer mRefreshTimer;
 
