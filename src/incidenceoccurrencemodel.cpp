@@ -19,6 +19,7 @@
 #include <KSharedConfig>
 #include <KConfigGroup>
 #include <KLocalizedString>
+#include <KCoreConfigSkeleton>
 
 IncidenceOccurrenceModel::IncidenceOccurrenceModel(QObject *parent)
     : QAbstractItemModel(parent)
@@ -26,7 +27,16 @@ IncidenceOccurrenceModel::IncidenceOccurrenceModel(QObject *parent)
 {
     mRefreshTimer.setSingleShot(true);
     QObject::connect(&mRefreshTimer, &QTimer::timeout, this, &IncidenceOccurrenceModel::updateFromSource);
+
+    // Needed to read colorattribute of collections for incidence colors
     Akonadi::AttributeFactory::registerAttribute<Akonadi::CollectionColorAttribute>();
+
+    // Used to get color settings from KOrganizer as fallback
+    const auto korganizerrc = KSharedConfig::openConfig(QStringLiteral("korganizerrc"));
+    const auto skel = new KCoreConfigSkeleton(korganizerrc);
+    mEventViewsPrefs = EventViews::PrefsPtr(new EventViews::Prefs(skel));
+    mEventViewsPrefs->readConfig();
+
     load();
 }
 
@@ -268,18 +278,26 @@ QColor IncidenceOccurrenceModel::getColor(const KCalendarCore::Incidence::Ptr &i
     const QString id = QString::number(collection.id());
     //qDebug() << "Collection id: " << collection.id();
 
+    if (m_colors.contains(id)) {
+        //qDebug() << collection.id() << "Found in m_colors";
+        return m_colors[id];
+    }
+
     if (collection.hasAttribute<Akonadi::CollectionColorAttribute>()) {
         //qDebug() << collection.id() << "Color attribute found";
         const auto *colorAttr = collection.attribute<Akonadi::CollectionColorAttribute>();
         if (colorAttr && colorAttr->color().isValid()) {
             m_colors[id] = colorAttr->color();
+            save();
             return colorAttr->color();
         }
     }
 
-    if (m_colors.contains(id)) {
-        //qDebug() << collection.id() << "Found in m_colors";
-        return m_colors[id];
+    QColor korgColor = mEventViewsPrefs->resourceColorKnown(id);
+    if(korgColor.isValid()) {
+        m_colors[id] = korgColor;
+        save();
+        return korgColor;
     }
 
     QColor color;
