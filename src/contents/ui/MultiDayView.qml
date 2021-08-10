@@ -215,6 +215,7 @@ Item {
                                             opacity: modelData.endTime.getMonth() == root.month || modelData.startTime.getMonth() == root.month ?
                                                     1.0 : 0.5
                                             radius: rectRadius
+                                            color: Qt.rgba(0,0,0,0)
 
                                             property int rectRadius: 5
                                             property int horizontalSpacing: Kirigami.Units.smallSpacing
@@ -223,9 +224,9 @@ Item {
                                                 id: incidenceBackground
                                                 anchors.fill: parent
                                                 color: modelData.color
+                                                opacity: 0.5
+                                                visible: modelData.endTime.getMonth() == root.month || modelData.startTime.getMonth() == root.month
                                                 radius: parent.rectRadius
-                                                border.width: 1
-                                                border.color: Kirigami.Theme.alternateBackgroundColor
                                             }
 
                                             RowLayout {
@@ -241,14 +242,14 @@ Item {
                                                     Layout.maximumWidth: height
 
                                                     source: modelData.incidenceTypeIcon
-                                                    color: LabelUtils.isDarkColor(modelData.color) ? "white" : "black"
+                                                    color: Qt.darker(modelData.color, 3.5)
                                                 }
 
                                                 QQC2.Label {
                                                     Layout.fillWidth: true
                                                     text: modelData.text
                                                     elide: Text.ElideRight
-                                                    color: LabelUtils.isDarkColor(modelData.color) ? "white" : "black"
+                                                    color: Qt.darker(modelData.color, 3.5)
                                                 }
                                             }
 
