@@ -27,6 +27,10 @@
 #include <Akonadi/Calendar/History>
 #include <AkonadiCore/CollectionIdentificationAttribute>
 #include <AkonadiCore/ItemMoveJob>
+#include <AkonadiCore/AttributeFactory>
+#include <AkonadiCore/CollectionColorAttribute>
+#include <QRandomGenerator>
+#include <EventViews/Prefs>
 #include <KCheckableProxyModel>
 #include <KDescendantsProxyModel>
 #include <QTimer>
@@ -159,6 +163,16 @@ public:
         : QSortFilterProxyModel(parent)
         , mInitDefaultCalendar(false)
     {
+        // Needed to read colorattribute of collections for incidence colors
+        Akonadi::AttributeFactory::registerAttribute<Akonadi::CollectionColorAttribute>();
+
+        // Used to get color settings from KOrganizer as fallback
+        const auto korganizerrc = KSharedConfig::openConfig(QStringLiteral("korganizerrc"));
+        const auto skel = new KCoreConfigSkeleton(korganizerrc);
+        mEventViewsPrefs = EventViews::PrefsPtr(new EventViews::Prefs(skel));
+        mEventViewsPrefs->readConfig();
+
+        load();
     }
 
     QVariant data(const QModelIndex &index, int role) const override
@@ -197,6 +211,46 @@ public:
             if (colId == CalendarSupport::KCalPrefs::instance()->defaultCalendarId()) {
                 return i18nc("@item this is the default calendar", "%1 (Default)", collection.displayName());
             }
+        } else if (role == Qt::BackgroundRole) {
+            const Akonadi::Collection collection = CalendarSupport::collectionFromIndex(index);
+            const QString id = QString::number(collection.id());
+            auto supportsMimeType = collection.contentMimeTypes().contains(QLatin1String("application/x-vnd.akonadi.calendar.event")) ||
+                collection.contentMimeTypes().contains(QLatin1String("application/x-vnd.akonadi.calendar.todo")) ||
+                collection.contentMimeTypes().contains(QLatin1String("application/x-vnd.akonadi.calendar.journal"));
+            //qDebug() << "Collection id: " << collection.id();
+
+            if (!supportsMimeType) {
+                return {};
+            }
+
+            if (m_colors.contains(id)) {
+                //qDebug() << collection.id() << "Found in m_colors";
+                return m_colors[id];
+            }
+
+            if (collection.hasAttribute<Akonadi::CollectionColorAttribute>()) {
+                //qDebug() << collection.id() << "Color attribute found";
+                const auto *colorAttr = collection.attribute<Akonadi::CollectionColorAttribute>();
+                if (colorAttr && colorAttr->color().isValid()) {
+                    m_colors[id] = colorAttr->color();
+                    save();
+                    return colorAttr->color();
+                }
+            }
+
+            QColor korgColor = mEventViewsPrefs->resourceColorKnown(id);
+            if(korgColor.isValid()) {
+                m_colors[id] = korgColor;
+                save();
+                return korgColor;
+            }
+
+            QColor color;
+            color.setRgb(QRandomGenerator::global()->bounded(256), QRandomGenerator::global()->bounded(256), QRandomGenerator::global()->bounded(256));
+            m_colors[id] = color;
+            save();
+
+            return color;
         }
 
         return QSortFilterProxyModel::data(index, role);
@@ -210,11 +264,36 @@ public:
     QHash<int, QByteArray> roleNames() const override {
         QHash<int, QByteArray> roleNames = QSortFilterProxyModel::roleNames();
         roleNames[Qt::CheckStateRole] = "checkState";
+        roleNames[Qt::BackgroundRole] = "collectionColor";
         return roleNames;
+    }
+
+    void load()
+    {
+        KSharedConfig::Ptr config = KSharedConfig::openConfig();
+        KConfigGroup rColorsConfig(config, "Resources Colors");
+        const QStringList colorKeyList = rColorsConfig.keyList();
+
+        for (const QString &key : colorKeyList) {
+            QColor color = rColorsConfig.readEntry(key, QColor("blue"));
+            m_colors[key] = color;
+        }
+    }
+
+    void save() const
+    {
+        KSharedConfig::Ptr config = KSharedConfig::openConfig();
+        KConfigGroup rColorsConfig(config, "Resources Colors");
+        for (auto it = m_colors.constBegin(); it != m_colors.constEnd(); ++it) {
+            rColorsConfig.writeEntry(it.key(), it.value());
+        }
+        config->sync();
     }
 
 private:
     mutable bool mInitDefaultCalendar;
+    mutable QHash<QString, QColor> m_colors;
+    EventViews::PrefsPtr mEventViewsPrefs;
 };
 
 
