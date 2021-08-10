@@ -212,7 +212,13 @@ public:
                 return i18nc("@item this is the default calendar", "%1 (Default)", collection.displayName());
             }
         } else if (role == Qt::BackgroundRole) {
-            return getCollectionColor(CalendarSupport::collectionFromIndex(index));
+            auto color = getCollectionColor(CalendarSupport::collectionFromIndex(index));
+            // Otherwise QML will get black
+            if (color.isValid()) {
+                return color;
+            } else {
+                return {};
+            }
         }
 
         return QSortFilterProxyModel::data(index, role);
@@ -241,10 +247,10 @@ public:
             return {};
         }
 
-        /*if (m_colors.contains(id)) {
+        if (m_colors.contains(id)) {
             //qDebug() << collection.id() << "Found in m_colors";
             return m_colors[id];
-        }*/
+        }
 
         if (collection.hasAttribute<Akonadi::CollectionColorAttribute>()) {
             //qDebug() << collection.id() << "Color attribute found";
@@ -323,13 +329,13 @@ CalendarManager::CalendarManager(QObject *parent)
     m_treeModel->setSourceModel(collectionFilter);
     m_treeModel->setExpandsByDefault(true);
 
-    auto refreshColors = [=] () {
+    /*auto refreshColors = [=] () {
         for(auto i = 0; i < m_treeModel->rowCount(); i++) {
             auto idx = m_treeModel->index(i, 0, {});
             colorProxy->getCollectionColor(CalendarSupport::collectionFromIndex(idx));
         }
     };
-    connect(m_treeModel, &QSortFilterProxyModel::rowsInserted, this, refreshColors);
+    connect(m_treeModel, &QSortFilterProxyModel::rowsInserted, this, refreshColors);*/
 
     m_calendar = new Akonadi::ETMCalendar(this);
     setCollectionSelectionProxyModel(m_calendar->checkableProxyModel());
