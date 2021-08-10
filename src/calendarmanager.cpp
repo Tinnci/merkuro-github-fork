@@ -368,6 +368,7 @@ Akonadi::EntityRightsFilterModel * CalendarManager::selectableTodoCalendars() co
 
 qint64 CalendarManager::defaultCalendarId(IncidenceWrapper *incidenceWrapper)
 {
+    // Checks if default collection accepts this type of incidence
     auto mimeType = incidenceWrapper->incidencePtr()->mimeType();
     Akonadi::Collection collection = m_calendar->collection(CalendarSupport::KCalPrefs::instance()->defaultCalendarId());
     bool supportsMimeType = collection.contentMimeTypes().contains(mimeType) || mimeType == QLatin1String("");
@@ -379,6 +380,7 @@ qint64 CalendarManager::defaultCalendarId(IncidenceWrapper *incidenceWrapper)
 
     // Should add last used collection by mimetype somewhere.
 
+    // Searches for first collection that will accept this incidence
     for (int i = 0; i < m_allCalendars->rowCount(); i++) {
         QModelIndex idx = m_allCalendars->index(i, 0);
         collection = idx.data(Akonadi::EntityTreeModel::Roles::CollectionRole).value<Akonadi::Collection>();
@@ -434,7 +436,7 @@ QVariant CalendarManager::getIncidenceSubclassed(KCalendarCore::Incidence::Ptr i
             return QVariant::fromValue(m_calendar->todo(incidencePtr->instanceIdentifier()));
             break;
         case(KCalendarCore::IncidenceBase::TypeJournal):
-            return QVariant::fromValue(m_calendar->todo(incidencePtr->instanceIdentifier()));
+            return QVariant::fromValue(m_calendar->journal(incidencePtr->instanceIdentifier()));
             break;
         default:
             return QVariant::fromValue(incidencePtr);

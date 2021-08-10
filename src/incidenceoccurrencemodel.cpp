@@ -13,6 +13,7 @@
 #include <KCalendarCore/MemoryCalendar>
 #include <KFormat>
 #include <etmcalendar.h>
+#include <AkonadiCore/AttributeFactory>
 #include <AkonadiCore/CollectionColorAttribute>
 #include <QRandomGenerator>
 #include <KSharedConfig>
@@ -25,6 +26,7 @@ IncidenceOccurrenceModel::IncidenceOccurrenceModel(QObject *parent)
 {
     mRefreshTimer.setSingleShot(true);
     QObject::connect(&mRefreshTimer, &QTimer::timeout, this, &IncidenceOccurrenceModel::updateFromSource);
+    Akonadi::AttributeFactory::registerAttribute<Akonadi::CollectionColorAttribute>();
     load();
 }
 
@@ -264,15 +266,20 @@ QColor IncidenceOccurrenceModel::getColor(const KCalendarCore::Incidence::Ptr &i
         return {};
     }
     const QString id = QString::number(collection.id());
-    if (m_colors.contains(id)) {
-        return m_colors[id];
-    }
+    //qDebug() << "Collection id: " << collection.id();
+
     if (collection.hasAttribute<Akonadi::CollectionColorAttribute>()) {
+        //qDebug() << collection.id() << "Color attribute found";
         const auto *colorAttr = collection.attribute<Akonadi::CollectionColorAttribute>();
         if (colorAttr && colorAttr->color().isValid()) {
             m_colors[id] = colorAttr->color();
             return colorAttr->color();
         }
+    }
+
+    if (m_colors.contains(id)) {
+        //qDebug() << collection.id() << "Found in m_colors";
+        return m_colors[id];
     }
 
     QColor color;
