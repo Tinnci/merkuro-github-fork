@@ -212,45 +212,7 @@ public:
                 return i18nc("@item this is the default calendar", "%1 (Default)", collection.displayName());
             }
         } else if (role == Qt::BackgroundRole) {
-            const Akonadi::Collection collection = CalendarSupport::collectionFromIndex(index);
-            const QString id = QString::number(collection.id());
-            auto supportsMimeType = collection.contentMimeTypes().contains(QLatin1String("application/x-vnd.akonadi.calendar.event")) ||
-                collection.contentMimeTypes().contains(QLatin1String("application/x-vnd.akonadi.calendar.todo")) ||
-                collection.contentMimeTypes().contains(QLatin1String("application/x-vnd.akonadi.calendar.journal"));
-            //qDebug() << "Collection id: " << collection.id();
-
-            if (!supportsMimeType) {
-                return {};
-            }
-
-            if (m_colors.contains(id)) {
-                //qDebug() << collection.id() << "Found in m_colors";
-                return m_colors[id];
-            }
-
-            if (collection.hasAttribute<Akonadi::CollectionColorAttribute>()) {
-                //qDebug() << collection.id() << "Color attribute found";
-                const auto *colorAttr = collection.attribute<Akonadi::CollectionColorAttribute>();
-                if (colorAttr && colorAttr->color().isValid()) {
-                    m_colors[id] = colorAttr->color();
-                    save();
-                    return colorAttr->color();
-                }
-            }
-
-            QColor korgColor = mEventViewsPrefs->resourceColorKnown(id);
-            if(korgColor.isValid()) {
-                m_colors[id] = korgColor;
-                save();
-                return korgColor;
-            }
-
-            QColor color;
-            color.setRgb(QRandomGenerator::global()->bounded(256), QRandomGenerator::global()->bounded(256), QRandomGenerator::global()->bounded(256));
-            m_colors[id] = color;
-            save();
-
-            return color;
+            return getCollectionColor(CalendarSupport::collectionFromIndex(index));
         }
 
         return QSortFilterProxyModel::data(index, role);
@@ -266,6 +228,47 @@ public:
         roleNames[Qt::CheckStateRole] = "checkState";
         roleNames[Qt::BackgroundRole] = "collectionColor";
         return roleNames;
+    }
+
+    QColor getCollectionColor(Akonadi::Collection collection) const {
+        const QString id = QString::number(collection.id());
+        auto supportsMimeType = collection.contentMimeTypes().contains(QLatin1String("application/x-vnd.akonadi.calendar.event")) ||
+        collection.contentMimeTypes().contains(QLatin1String("application/x-vnd.akonadi.calendar.todo")) ||
+        collection.contentMimeTypes().contains(QLatin1String("application/x-vnd.akonadi.calendar.journal"));
+        //qDebug() << "Collection id: " << collection.id();
+
+        if (!supportsMimeType) {
+            return {};
+        }
+
+        if (m_colors.contains(id)) {
+            //qDebug() << collection.id() << "Found in m_colors";
+            return m_colors[id];
+        }
+
+        if (collection.hasAttribute<Akonadi::CollectionColorAttribute>()) {
+            //qDebug() << collection.id() << "Color attribute found";
+            const auto *colorAttr = collection.attribute<Akonadi::CollectionColorAttribute>();
+            if (colorAttr && colorAttr->color().isValid()) {
+                m_colors[id] = colorAttr->color();
+                save();
+                return colorAttr->color();
+            }
+        }
+
+        QColor korgColor = mEventViewsPrefs->resourceColorKnown(id);
+        if(korgColor.isValid()) {
+            m_colors[id] = korgColor;
+            save();
+            return korgColor;
+        }
+
+        QColor color;
+        color.setRgb(QRandomGenerator::global()->bounded(256), QRandomGenerator::global()->bounded(256), QRandomGenerator::global()->bounded(256));
+        m_colors[id] = color;
+        save();
+
+        return color;
     }
 
     void load()
@@ -285,7 +288,7 @@ public:
         KSharedConfig::Ptr config = KSharedConfig::openConfig();
         KConfigGroup rColorsConfig(config, "Resources Colors");
         for (auto it = m_colors.constBegin(); it != m_colors.constEnd(); ++it) {
-            rColorsConfig.writeEntry(it.key(), it.value());
+            rColorsConfig.writeEntry(it.key(), it.value(), KConfigBase::Notify | KConfigBase::Normal);
         }
         config->sync();
     }
@@ -319,6 +322,14 @@ CalendarManager::CalendarManager(QObject *parent)
     m_treeModel = new KDescendantsProxyModel(this);
     m_treeModel->setSourceModel(collectionFilter);
     m_treeModel->setExpandsByDefault(true);
+
+    auto refreshColors = [=] () {
+        for(auto i = 0; i < m_treeModel->rowCount(); i++) {
+            auto idx = m_treeModel->index(i, 0, {});
+            colorProxy->getCollectionColor(CalendarSupport::collectionFromIndex(idx));
+        }
+    };
+    connect(m_treeModel, &QSortFilterProxyModel::rowsInserted, this, refreshColors);
 
     m_calendar = new Akonadi::ETMCalendar(this);
     setCollectionSelectionProxyModel(m_calendar->checkableProxyModel());
