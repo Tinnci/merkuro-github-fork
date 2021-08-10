@@ -14,6 +14,7 @@
 #include <QTimer>
 #include <QColor>
 #include <QDateTime>
+#include <KConfigWatcher>
 #include <etmcalendar.h>
 
 namespace KCalendarCore {
@@ -116,6 +117,7 @@ private:
 
     QList<Occurrence> m_incidences;
     QHash<QString, QColor> m_colors;
+    KConfigWatcher::Ptr colorWatcher;
     QVariantMap mFilter;
 };
 

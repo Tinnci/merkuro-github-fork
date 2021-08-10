@@ -24,6 +24,13 @@ IncidenceOccurrenceModel::IncidenceOccurrenceModel(QObject *parent)
     mRefreshTimer.setSingleShot(true);
     QObject::connect(&mRefreshTimer, &QTimer::timeout, this, &IncidenceOccurrenceModel::updateFromSource);
 
+    KSharedConfig::Ptr config = KSharedConfig::openConfig();
+    KConfigGroup rColorsConfig(config, "Resources Colors");
+    colorWatcher = KConfigWatcher::create(config);
+
+    // This is quite slow; would be nice to find a quicker way
+    QObject::connect(colorWatcher.data(), &KConfigWatcher::configChanged, this, &IncidenceOccurrenceModel::updateFromSource);
+
     load();
 }
 
@@ -99,6 +106,8 @@ void IncidenceOccurrenceModel::updateFromSource()
     beginResetModel();
 
     m_incidences.clear();
+
+    load();
 
     if (m_coreCalendar) {
         QMap<QByteArray, KCalendarCore::Incidence::Ptr> recurringIncidences;
