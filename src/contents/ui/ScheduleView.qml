@@ -244,12 +244,12 @@ Kirigami.ScrollablePage {
                                     Kirigami.Theme.colorSet: Kirigami.Theme.View
                                     Kirigami.Theme.backgroundColor: {
                                         let color = LabelUtils.getDarkness(modelData.color) > 0.9 ?
-                                            Qt.lighter(modelData.color, 1.5) :
-                                            modelData.color;
-                                        color.a = LabelUtils.getDarkness(modelData.color) == 1 ? 0.3 : 0.7; // Can't lighten pure black
+                                                    Qt.lighter(modelData.color, 1.5) :
+                                                    modelData.color;
+                                        color.a = 0.7; // Can't lighten pure black
                                         return color;
                                     }
-                                    Kirigami.Theme.highlightColor: Qt.darker(modelData.color, 2.5)
+                                    Kirigami.Theme.highlightColor: Qt.darker(Kirigami.Theme.backgroundColor, 3)
 
                                     property real paddingSize: Kirigami.Settings.isMobile ? Kirigami.Units.largeSpacing : Kirigami.Units.smallSpacing
 
@@ -274,7 +274,8 @@ Kirigami.ScrollablePage {
                                         columns: root.isLarge ? 3 : 2
                                         rows: root.isLarge ? 1 : 2
 
-                                        property color textColor: Qt.darker(modelData.color, 3)
+                                        property color textColor: LabelUtils.getDarkness(Kirigami.Theme.backgroundColor) >= 0.7 ?
+                                            "white" : Qt.darker(modelData.color, 3)
 
                                         RowLayout {
                                             Kirigami.Icon {
