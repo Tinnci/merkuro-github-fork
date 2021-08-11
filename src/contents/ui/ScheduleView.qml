@@ -274,8 +274,9 @@ Kirigami.ScrollablePage {
                                         columns: root.isLarge ? 3 : 2
                                         rows: root.isLarge ? 1 : 2
 
-                                        property color textColor: LabelUtils.getDarkness(Kirigami.Theme.backgroundColor) >= 0.7 ?
-                                            "white" : Qt.darker(modelData.color, 3)
+                                        property color textColor: LabelUtils.getDarkness(modelData.color) >= 0.7 ? "white" :
+                                                    LabelUtils.getDarkness(Kirigami.Theme.backgroundColor) >= 0.68 ? Qt.lighter(Kirigami.Theme.backgroundColor, 2.5) :
+                                                    Qt.darker(modelData.color, 3)
 
                                         RowLayout {
                                             Kirigami.Icon {
