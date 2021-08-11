@@ -225,8 +225,7 @@ Item {
                                             Rectangle {
                                                 id: incidenceBackground
                                                 anchors.fill: parent
-                                                color: LabelUtils.getIncidenceBackgroundColor(modelData.color)
-                                                opacity: root.isDark ? 0.4 : 0.7
+                                                color: LabelUtils.getIncidenceBackgroundColor(modelData.color, root.isDark)
                                                 visible: modelData.endTime.getMonth() == root.month || modelData.startTime.getMonth() == root.month
                                                 radius: parent.rectRadius
                                             }

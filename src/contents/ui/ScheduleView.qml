@@ -243,11 +243,7 @@ Kirigami.ScrollablePage {
 
                                     Kirigami.Theme.inherit: false
                                     Kirigami.Theme.colorSet: Kirigami.Theme.View
-                                    Kirigami.Theme.backgroundColor: {
-                                        let color = LabelUtils.getIncidenceBackgroundColor(modelData.color);
-                                        color.a = root.isDark ? 0.4 : 0.7; // Can't lighten pure black
-                                        return color;
-                                    }
+                                    Kirigami.Theme.backgroundColor: LabelUtils.getIncidenceBackgroundColor(modelData.color, root.isDark)
                                     Kirigami.Theme.highlightColor: Qt.darker(Kirigami.Theme.backgroundColor, 3)
 
                                     property real paddingSize: Kirigami.Settings.isMobile ? Kirigami.Units.largeSpacing : Kirigami.Units.smallSpacing
