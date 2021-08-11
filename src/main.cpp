@@ -50,7 +50,7 @@ int main(int argc, char *argv[])
     QQmlApplicationEngine engine;
 
     auto config = KalendarConfig::self();
-    auto manager = new CalendarManager(); // Parenting to QML engine will lose our collection settings with QML problems
+    CalendarManager manager;
     AgentConfiguration agentConfiguration;
     auto contactsManager = new ContactsManager(&engine);
 
