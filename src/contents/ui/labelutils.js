@@ -170,7 +170,7 @@ function getIncidenceBackgroundColor(color, darkMode) {
     let bgColor = getDarkness(color) > 0.9 ? Qt.lighter(color, 1.5) : color;
     if(darkMode) {
         if(LabelUtils.getDarkness(color) >= 0.5) {
-            bgColor.a = 0.5;
+            bgColor.a = 0.6;
         } else {
             bgColor.a = 0.4;
         }
@@ -186,9 +186,9 @@ function getIncidenceLabelColor(background, darkMode) {
         return "white";
     } else if(darkMode) {
         if(LabelUtils.getDarkness(background) >= 0.5) {
-            return Qt.lighter(background, 2.0);
+            return Qt.lighter(background, 2.1);
         } else {
-            return Qt.lighter(background, 1.4);
+            return Qt.lighter(background, 1.5);
         }
     }
     else if(LabelUtils.getDarkness(background) >= 0.68) {
