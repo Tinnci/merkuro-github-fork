@@ -247,7 +247,7 @@ Kirigami.ScrollablePage {
                                         let color = LabelUtils.getDarkness(modelData.color) > 0.9 ?
                                                     Qt.lighter(modelData.color, 1.5) :
                                                     modelData.color;
-                                        color.a = 0.7; // Can't lighten pure black
+                                        color.a = root.isDark ? 0.4 : 0.7; // Can't lighten pure black
                                         return color;
                                     }
                                     Kirigami.Theme.highlightColor: Qt.darker(Kirigami.Theme.backgroundColor, 3)
@@ -275,9 +275,7 @@ Kirigami.ScrollablePage {
                                         columns: root.isLarge ? 3 : 2
                                         rows: root.isLarge ? 1 : 2
 
-                                        property color textColor: LabelUtils.getDarkness(modelData.color) >= 0.7 ? "white" :
-                                                    root.isDark || LabelUtils.getDarkness(Kirigami.Theme.backgroundColor) >= 0.68 ? Qt.lighter(modelData.color, 2.5) :
-                                                    Qt.darker(modelData.color, 3)
+                                        property color textColor: LabelUtils.getIncidenceLabelColor(modelData.color, root.isDark)
 
                                         RowLayout {
                                             Kirigami.Icon {

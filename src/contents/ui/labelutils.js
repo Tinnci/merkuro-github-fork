@@ -164,3 +164,21 @@ function isDarkColor(background) {
     return temp.a > 0 && getDarkness(background) >= 0.4;
 }
 
+function getIncidenceLabelColor(background, darkMode) {
+
+    if(LabelUtils.getDarkness(background) >= 0.9) {
+        return "white";
+    } else if(darkMode) {
+        if(LabelUtils.getDarkness(background) >= 0.5) {
+            return Qt.lighter(background, 1.8);
+        } else {
+            return Qt.lighter(background, 1.4);
+        }
+    }
+    else if(LabelUtils.getDarkness(background) >= 0.68) {
+        return Qt.lighter(background, 2.5);
+    } else {
+        return Qt.darker(background, 2.1);
+    }
+
+}

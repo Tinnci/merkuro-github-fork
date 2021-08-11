@@ -228,7 +228,7 @@ Item {
                                                 color: LabelUtils.getDarkness(modelData.color) > 0.9 ?
                                                     Qt.lighter(modelData.color, 1.5) :
                                                     modelData.color;
-                                                opacity: 0.7
+                                                opacity: root.isDark ? 0.4 : 0.7
                                                 visible: modelData.endTime.getMonth() == root.month || modelData.startTime.getMonth() == root.month
                                                 radius: parent.rectRadius
                                             }
@@ -236,9 +236,7 @@ Item {
                                             RowLayout {
                                                 id: incidenceContents
 
-                                                property color textColor: LabelUtils.getDarkness(modelData.color) >= 0.7 ? "white" :
-                                                    root.isDark || LabelUtils.getDarkness(incidenceBackground.color) >= 0.68 ? Qt.lighter(modelData.color, 2.5) :
-                                                    Qt.darker(modelData.color, 3)
+                                                property color textColor: LabelUtils.getIncidenceLabelColor(modelData.color, root.isDark)
 
                                                 anchors {
                                                     fill: parent
@@ -252,7 +250,7 @@ Item {
 
                                                     source: modelData.incidenceTypeIcon
                                                     color: incidenceBackground.visible ? incidenceContents.textColor :
-                                                        root.isDark ? Qt.lighter(modelData.color, 2.5) : Qt.darker(modelData.color, 3)
+                                                        root.isDark ? Qt.lighter(modelData.color, 1.5) : Qt.darker(modelData.color, 3)
                                                 }
 
                                                 QQC2.Label {
@@ -260,7 +258,7 @@ Item {
                                                     text: modelData.text
                                                     elide: Text.ElideRight
                                                     color: incidenceBackground.visible ? incidenceContents.textColor :
-                                                        root.isDark ? Qt.lighter(modelData.color, 2.5) : Qt.darker(modelData.color, 3)
+                                                        root.isDark ? Qt.lighter(modelData.color, 1.5) : Qt.darker(modelData.color, 3)
                                                 }
                                             }
 
