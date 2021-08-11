@@ -235,6 +235,16 @@ Item {
 
                                                 property color textColor: LabelUtils.getIncidenceLabelColor(modelData.color, root.isDark)
 
+                                                function otherMonthTextColor(color) {
+                                                    if(root.isDark) {
+                                                        if(LabelUtils.getDarkness(color) >= 0.5) {
+                                                            return Qt.lighter(color, 2);
+                                                        }
+                                                        return Qt.lighter(color, 1.5);
+                                                    }
+                                                    return Qt.darker(color, 3);
+                                                }
+
                                                 anchors {
                                                     fill: parent
                                                     leftMargin: Kirigami.Units.smallSpacing
@@ -247,16 +257,16 @@ Item {
 
                                                     source: modelData.incidenceTypeIcon
                                                     color: incidenceBackground.visible ? incidenceContents.textColor :
-                                                        root.isDark ? Qt.lighter(modelData.color, 1.5) : Qt.darker(modelData.color, 3)
+                                                        incidenceContents.otherMonthTextColor(modelData.color)
                                                 }
 
                                                 QQC2.Label {
                                                     Layout.fillWidth: true
                                                     text: modelData.text
                                                     elide: Text.ElideRight
-                                                    font.weight: Text.Medium
+                                                    font.weight: Font.Medium
                                                     color: incidenceBackground.visible ? incidenceContents.textColor :
-                                                        root.isDark ? Qt.lighter(modelData.color, 1.5) : Qt.darker(modelData.color, 3)
+                                                        incidenceContents.otherMonthTextColor(modelData.color)
                                                 }
                                             }
 

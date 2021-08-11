@@ -294,6 +294,7 @@ Kirigami.ScrollablePage {
                                                     }
                                                 }
                                                 elide: Text.ElideRight
+                                                font.weight: Font.Medium
                                             }
                                         }
 
