@@ -185,7 +185,6 @@ Item {
                                             var localpos = child.mapFromGlobal(globalPos.x, globalPos.y);
 
                                             if(child.contains(localpos) && child.gridSquareDate) {
-                                                console.log(globalPos)
                                                 addIncidence(type, child.gridSquareDate);
                                             } else {
                                                 useGridSquareDate(type, child, globalPos);
