@@ -172,7 +172,7 @@ Item {
                                 Layout.fillWidth: true
                                 id: linesRepeater
 
-                                spacing: Kirigami.Units.smallSpacing / 2 // ListView adds spacing to the bottom AND top of each item
+                                spacing: Kirigami.Units.smallSpacing
 
                                 DayMouseArea {
                                     id: listViewMenu
@@ -185,6 +185,7 @@ Item {
                                             var localpos = child.mapFromGlobal(globalPos.x, globalPos.y);
 
                                             if(child.contains(localpos) && child.gridSquareDate) {
+                                                console.log(globalPos)
                                                 addIncidence(type, child.gridSquareDate);
                                             } else {
                                                 useGridSquareDate(type, child, globalPos);
