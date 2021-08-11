@@ -164,6 +164,11 @@ function isDarkColor(background) {
     return temp.a > 0 && getDarkness(background) >= 0.4;
 }
 
+function getIncidenceBackgroundColor(color) {
+    return getDarkness(color) > 0.9 ?
+        Qt.lighter(color, 1.5) : color;
+}
+
 function getIncidenceLabelColor(background, darkMode) {
 
     if(LabelUtils.getDarkness(background) >= 0.9) {

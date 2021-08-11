@@ -244,9 +244,7 @@ Kirigami.ScrollablePage {
                                     Kirigami.Theme.inherit: false
                                     Kirigami.Theme.colorSet: Kirigami.Theme.View
                                     Kirigami.Theme.backgroundColor: {
-                                        let color = LabelUtils.getDarkness(modelData.color) > 0.9 ?
-                                                    Qt.lighter(modelData.color, 1.5) :
-                                                    modelData.color;
+                                        let color = LabelUtils.getIncidenceBackgroundColor(modelData.color);
                                         color.a = root.isDark ? 0.4 : 0.7; // Can't lighten pure black
                                         return color;
                                     }
