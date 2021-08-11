@@ -25,6 +25,7 @@ Kirigami.ScrollablePage {
     property int year: startDate.getFullYear()
     property int daysInMonth: new Date(selectedDate.getFullYear(), selectedDate.getMonth(), 0).getDate()
     readonly property bool isLarge: width > Kirigami.Units.gridUnit * 30
+    readonly property bool isDark: LabelUtils.isDarkColor(Kirigami.Theme.backgroundColor)
 
     onSelectedDateChanged: moveToSelected()
 
@@ -275,7 +276,7 @@ Kirigami.ScrollablePage {
                                         rows: root.isLarge ? 1 : 2
 
                                         property color textColor: LabelUtils.getDarkness(modelData.color) >= 0.7 ? "white" :
-                                                    LabelUtils.getDarkness(Kirigami.Theme.backgroundColor) >= 0.68 ? Qt.lighter(Kirigami.Theme.backgroundColor, 2.5) :
+                                                    root.isDark || LabelUtils.getDarkness(Kirigami.Theme.backgroundColor) >= 0.68 ? Qt.lighter(modelData.color, 2.5) :
                                                     Qt.darker(modelData.color, 3)
 
                                         RowLayout {

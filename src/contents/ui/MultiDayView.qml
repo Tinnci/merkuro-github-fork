@@ -40,6 +40,8 @@ Item {
     property int numberOfRows: (daysToShow / daysPerRow)
     property var dayHeight: (height - dayLabels.height) / numberOfRows
 
+    readonly property bool isDark: LabelUtils.isDarkColor(Kirigami.Theme.backgroundColor)
+
     implicitHeight: (numberOfRows > 1 ? Kirigami.Units.gridUnit * 10 * numberOfRows: numberOfLinesShown * Kirigami.Units.gridUnit) + dayLabels.height
 
     height: implicitHeight
@@ -235,7 +237,7 @@ Item {
                                                 id: incidenceContents
 
                                                 property color textColor: LabelUtils.getDarkness(modelData.color) >= 0.7 ? "white" :
-                                                    LabelUtils.getDarkness(incidenceBackground.color) >= 0.68 ? Qt.lighter(modelData.color, 2.5) :
+                                                    root.isDark || LabelUtils.getDarkness(incidenceBackground.color) >= 0.68 ? Qt.lighter(modelData.color, 2.5) :
                                                     Qt.darker(modelData.color, 3)
 
                                                 anchors {
@@ -249,14 +251,16 @@ Item {
                                                     Layout.maximumWidth: height
 
                                                     source: modelData.incidenceTypeIcon
-                                                    color: incidenceBackground.visible ? incidenceContents.textColor : Qt.darker(modelData.color, 3)
+                                                    color: incidenceBackground.visible ? incidenceContents.textColor :
+                                                        root.isDark ? Qt.lighter(modelData.color, 2.5) : Qt.darker(modelData.color, 3)
                                                 }
 
                                                 QQC2.Label {
                                                     Layout.fillWidth: true
                                                     text: modelData.text
                                                     elide: Text.ElideRight
-                                                    color: incidenceBackground.visible ? incidenceContents.textColor : Qt.darker(modelData.color, 3)
+                                                    color: incidenceBackground.visible ? incidenceContents.textColor :
+                                                        root.isDark ? Qt.lighter(modelData.color, 2.5) : Qt.darker(modelData.color, 3)
                                                 }
                                             }
 
