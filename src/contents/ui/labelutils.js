@@ -154,6 +154,8 @@ function recurrenceEndToString(recurrenceData) {
 }
 
 function getDarkness(background) {
+    // Thanks to Gojir4 from the Qt forum
+    // https://forum.qt.io/topic/106362/best-way-to-set-text-color-for-maximum-contrast-on-background-color/
     var temp = Qt.darker(background, 1);
     var a = 1 - ( 0.299 * temp.r + 0.587 * temp.g + 0.114 * temp.b);
     return a;
