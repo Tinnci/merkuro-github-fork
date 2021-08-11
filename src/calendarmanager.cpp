@@ -248,12 +248,10 @@ public:
         }
 
         if (m_colors.contains(id)) {
-            //qDebug() << collection.id() << "Found in m_colors";
             return m_colors[id];
         }
 
         if (collection.hasAttribute<Akonadi::CollectionColorAttribute>()) {
-            //qDebug() << collection.id() << "Color attribute found";
             const auto *colorAttr = collection.attribute<Akonadi::CollectionColorAttribute>();
             if (colorAttr && colorAttr->color().isValid()) {
                 m_colors[id] = colorAttr->color();
@@ -492,8 +490,6 @@ qint64 CalendarManager::defaultCalendarId(IncidenceWrapper *incidenceWrapper)
 
 int CalendarManager::getCalendarSelectableIndex(IncidenceWrapper *incidenceWrapper)
 {
-    //auto index = m_rightsFilterModel->match(m_rightsFilterModel->index(0,0), Akonadi::EntityTreeModel::Roles::CollectionRole, cal, -1, Qt::MatchRecursive);
-
     Akonadi::EntityRightsFilterModel *model;
 
     switch(incidenceWrapper->incidencePtr()->type()) {

@@ -161,8 +161,6 @@ QVariantList MultiDayIncidenceModel::layoutLines(const QDate &rowStart) const
             });
         };
 
-        //qDebug() << "FIRST: " << srcIdx.data(IncidenceOccurrenceModel::StartTime).toDateTime() << srcIdx.data(IncidenceOccurrenceModel::Summary).toString();
-
         if(start >= mPeriodLength) {
             //qWarning() << "Skipping " << srcIdx.data(IncidenceOccurrenceModel::Summary);
             continue;
@@ -201,8 +199,6 @@ QVariantList MultiDayIncidenceModel::layoutLines(const QDate &rowStart) const
             const auto start = getStart(idx.data(IncidenceOccurrenceModel::StartTime).toDateTime().date());
             const auto duration = qMin(getDuration(startDate, idx.data(IncidenceOccurrenceModel::EndTime).toDateTime().date()), mPeriodLength - start);
             const auto end = start + duration;
-
-            //qWarning() << "Checking " << idx.data(IncidenceOccurrenceModel::StartTime).toDateTime() << idx.data(IncidenceOccurrenceModel::Summary).toString() << start << end;
 
             // This leaves a space in rows with all day events, making this y area of the row exclusively for all day events
             /*if (allDayLine && !idx.data(IncidenceOccurrenceModel::AllDay).toBool()) {
