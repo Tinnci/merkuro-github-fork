@@ -234,8 +234,8 @@ Item {
                                             RowLayout {
                                                 id: incidenceContents
 
-                                                property color textColor: LabelUtils.getDarkness(incidenceBackground.color) >= 0.7 ? "white" :
-                                                    LabelUtils.getDarkness(incidenceBackground.color) > 0.8 ? Qt.lighter(modelData.color, 1.6) :
+                                                property color textColor: LabelUtils.getDarkness(modelData.color) >= 0.7 ? "white" :
+                                                    LabelUtils.getDarkness(incidenceBackground.color) >= 0.68 ? Qt.lighter(modelData.color, 2.5) :
                                                     Qt.darker(modelData.color, 3)
 
                                                 anchors {
@@ -249,14 +249,14 @@ Item {
                                                     Layout.maximumWidth: height
 
                                                     source: modelData.incidenceTypeIcon
-                                                    color: incidenceContents.textColor
+                                                    color: incidenceBackground.visible ? incidenceContents.textColor : Qt.darker(modelData.color, 3)
                                                 }
 
                                                 QQC2.Label {
                                                     Layout.fillWidth: true
                                                     text: modelData.text
                                                     elide: Text.ElideRight
-                                                    color: incidenceContents.textColor
+                                                    color: incidenceBackground.visible ? incidenceContents.textColor : Qt.darker(modelData.color, 3)
                                                 }
                                             }
 
