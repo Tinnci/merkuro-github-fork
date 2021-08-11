@@ -247,10 +247,10 @@ public:
             return {};
         }
 
-        /*if (m_colors.contains(id)) {
+        if (m_colors.contains(id)) {
             //qDebug() << collection.id() << "Found in m_colors";
             return m_colors[id];
-        }*/
+        }
 
         if (collection.hasAttribute<Akonadi::CollectionColorAttribute>()) {
             //qDebug() << collection.id() << "Color attribute found";
