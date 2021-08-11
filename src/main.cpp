@@ -55,7 +55,7 @@ int main(int argc, char *argv[])
     auto contactsManager = new ContactsManager(&engine);
 
     qmlRegisterSingletonInstance("org.kde.kalendar", 1, 0, "Config", config);
-    qmlRegisterSingletonInstance("org.kde.kalendar", 1, 0, "CalendarManager", manager);
+    qmlRegisterSingletonInstance("org.kde.kalendar", 1, 0, "CalendarManager", &manager);
     qmlRegisterSingletonInstance("org.kde.kalendar", 1, 0, "AgentConfiguration", &agentConfiguration);
     qmlRegisterSingletonInstance("org.kde.kalendar", 1, 0, "ContactsManager", contactsManager);
 
