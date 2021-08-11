@@ -329,13 +329,13 @@ CalendarManager::CalendarManager(QObject *parent)
     m_treeModel->setSourceModel(collectionFilter);
     m_treeModel->setExpandsByDefault(true);
 
-    /*auto refreshColors = [=] () {
+    auto refreshColors = [=] () {
         for(auto i = 0; i < m_treeModel->rowCount(); i++) {
             auto idx = m_treeModel->index(i, 0, {});
             colorProxy->getCollectionColor(CalendarSupport::collectionFromIndex(idx));
         }
     };
-    connect(m_treeModel, &QSortFilterProxyModel::rowsInserted, this, refreshColors);*/
+    connect(m_treeModel, &QSortFilterProxyModel::rowsInserted, this, refreshColors);
 
     m_calendar = new Akonadi::ETMCalendar(this);
     setCollectionSelectionProxyModel(m_calendar->checkableProxyModel());
