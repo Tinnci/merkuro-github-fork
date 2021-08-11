@@ -254,6 +254,7 @@ Item {
                                                     Layout.fillWidth: true
                                                     text: modelData.text
                                                     elide: Text.ElideRight
+                                                    font.weight: Text.Medium
                                                     color: incidenceBackground.visible ? incidenceContents.textColor :
                                                         root.isDark ? Qt.lighter(modelData.color, 1.5) : Qt.darker(modelData.color, 3)
                                                 }

@@ -178,15 +178,15 @@ function getIncidenceLabelColor(background, darkMode) {
         return "white";
     } else if(darkMode) {
         if(LabelUtils.getDarkness(background) >= 0.5) {
-            return Qt.lighter(background, 1.8);
+            return Qt.lighter(background, 2.1);
         } else {
-            return Qt.lighter(background, 1.4);
+            return Qt.lighter(background, 1.7);
         }
     }
     else if(LabelUtils.getDarkness(background) >= 0.68) {
         return Qt.lighter(background, 2.5);
     } else {
-        return Qt.darker(background, 2.2);
+        return Qt.darker(background, 2.3);
     }
 
 }
