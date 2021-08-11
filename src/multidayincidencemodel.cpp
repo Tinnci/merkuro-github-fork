@@ -174,11 +174,9 @@ QVariantList MultiDayIncidenceModel::layoutLines(const QDate &rowStart) const
 
         //Fill line with incidences that fit
         QBitArray takenSpaces(mPeriodLength);
-        int freeSpaces = mPeriodLength;
         // Set this incidence's space as taken
         for(int i = start; i < start + duration; i++) {
             takenSpaces[i] = true;
-            freeSpaces--;
         }
 
         auto doesIntersect = [&] (int start, int end) {
@@ -192,7 +190,6 @@ QVariantList MultiDayIncidenceModel::layoutLines(const QDate &rowStart) const
             // If incidence fits on line, set its space as taken
             for(int i = start; i < end; i++) {
                 takenSpaces[i] = true;
-                freeSpaces--;
             }
             return false;
         };
