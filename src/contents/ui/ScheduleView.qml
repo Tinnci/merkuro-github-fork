@@ -114,7 +114,7 @@ Kirigami.ScrollablePage {
                 anchors.top: parent.top
                 anchors.right: parent.right
                 anchors.left: parent.left
-                height: parent.height + Kirigami.Units.largeSpacing
+                height: parent.height + Kirigami.Units.largeSpacing * 2
                 Kirigami.Theme.colorSet: Kirigami.Theme.View
                 color: dayGrid.isToday ? Kirigami.Theme.activeBackgroundColor : Kirigami.Theme.backgroundColor
             }
