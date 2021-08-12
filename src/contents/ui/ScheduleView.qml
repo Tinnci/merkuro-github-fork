@@ -19,6 +19,7 @@ Kirigami.ScrollablePage {
     signal deleteIncidence(var incidencePtr, date deleteDate)
     signal completeTodo(var incidencePtr)
 
+    property var openOccurrence
     property date selectedDate: new Date()
     property date startDate: DateUtils.getFirstDayOfMonth(selectedDate)
     property int month: startDate.getMonth()
