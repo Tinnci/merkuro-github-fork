@@ -5,6 +5,7 @@ import QtQuick 2.15
 import org.kde.kirigami 2.14 as Kirigami
 import QtQuick.Controls 2.15 as Controls
 import QtQuick.Layouts 1.15 
+import QtQuick.Dialogs 1.0
 import org.kde.kalendar 1.0
 
 Kirigami.Page {
@@ -36,12 +37,17 @@ Kirigami.Page {
                         onTriggered: pageSettingStack.push(generalSettingPage)
                     },
                     Kirigami.Action {
+                        text: i18n("Views")
+                        icon.name: "view-choose"
+                        onTriggered: pageSettingStack.push(viewsSettingPage)
+                    },
+                    Kirigami.Action {
                         text: i18n("Accounts")
                         icon.name: "preferences-system-users"
                         onTriggered: pageSettingStack.push(accountsSettingsComponent)
                     },
                     Kirigami.Action {
-                        text: i18n("Calendar")
+                        text: i18n("Calendars")
                         icon.name: "korganizer"
                         onTriggered: pageSettingStack.push(calendarsSettingsComponent)
                     },
@@ -188,7 +194,7 @@ Kirigami.Page {
                     Layout.fillWidth: true
                     Controls.Button {
                         Layout.alignment: Qt.AlignRight
-                        text: i18n("Add new Calendar")
+                        text: i18n("Add new calendar")
                         icon.name: "list-add"
                         onClicked: {
                             const item = addCalendarOverlay.createObject(addCalendarOverlay, calendarsSettingsPage.Controls.Overlay.overlay)
@@ -226,9 +232,34 @@ Kirigami.Page {
     }
 
     Component {
+        id: viewsSettingPage
+        Kirigami.Page {
+            title: i18n("Views")
+
+            Kirigami.FormLayout {
+                RowLayout {
+                    Kirigami.FormData.label: i18n("Enable maps:")
+
+                    Controls.CheckBox {
+                        checked: Config.enableMaps
+                        onClicked: {
+                            Config.enableMaps = !Config.enableMaps;
+                            Config.save();
+                        }
+                    }
+                    Controls.Label {
+                        font: Kirigami.Theme.smallFont
+                        text: i18n("May cause crashing on some systems.")
+                    }
+                }
+            }
+        }
+    }
+
+    Component {
         id: calendarsSettingsComponent
         Kirigami.Page {
-            title: i18n("Calendar")
+            title: i18n("Calendars")
             ColumnLayout {
                 anchors.fill: parent
                 Controls.ScrollView {
@@ -236,8 +267,11 @@ Kirigami.Page {
                     Layout.fillWidth: true
                     Layout.fillHeight: true
                     ListView {
+                        id: collectionsList
+
                         model: CalendarManager.collections
                         delegate: Kirigami.BasicListItem {
+                            property int itemCollectionId: collectionId
                             leftPadding: Kirigami.Units.largeSpacing * kDescendantLevel
                             leading: Controls.CheckBox {
                                 visible: model.checkState != null
@@ -250,10 +284,33 @@ Kirigami.Page {
                                 radius: 5
                                 color: collectionColor
                                 visible: collectionColor !== undefined
-                                Component.onCompleted: console.log(collectionColor)
                             }
                             label: display
                             icon: decoration
+                        }
+                    }
+                }
+                RowLayout {
+                    Layout.fillWidth: true
+                    Controls.Button {
+                        Layout.alignment: Qt.AlignRight
+                        text: i18n("Change calendar color")
+                        icon.name: "edit-entry"
+                        enabled: collectionsList.currentItem && collectionsList.currentItem.trailing.visible
+                        onClicked: {
+                            colorDialog.color = collectionsList.currentItem.trailing.color;
+                            colorDialog.open();
+                        }
+
+                        ColorDialog {
+                            id: colorDialog
+                            title: i18n("Choose calendar color")
+                            onAccepted: {
+                                CalendarManager.setCollectionColor(collectionsList.currentItem.itemCollectionId, color)
+                            }
+                            onRejected: {
+                                close();
+                            }
                         }
                     }
                 }
