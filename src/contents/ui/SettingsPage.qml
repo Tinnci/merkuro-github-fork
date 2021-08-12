@@ -42,9 +42,9 @@ Kirigami.Page {
                         onTriggered: pageSettingStack.push(viewsSettingPage)
                     },
                     Kirigami.Action {
-                        text: i18n("Accounts")
+                        text: i18n("Calendar sources")
                         icon.name: "preferences-system-users"
-                        onTriggered: pageSettingStack.push(accountsSettingsComponent)
+                        onTriggered: pageSettingStack.push(sourcesSettingsComponent)
                     },
                     Kirigami.Action {
                         text: i18n("Calendars")
@@ -67,10 +67,10 @@ Kirigami.Page {
     }
 
     Component {
-        id: accountsSettingsComponent
+        id: sourcesSettingsComponent
         Kirigami.Page {
-            id: calendarsSettingsPage
-            title: i18n("Calendars")
+            id: sourcesSettingsPage
+            title: i18n("Calendar sources")
 
             ColumnLayout {
                 anchors.fill: parent
@@ -168,10 +168,10 @@ Kirigami.Page {
                     id: addCalendarOverlay
                     Kirigami.OverlaySheet {
                         id: overlay
-                        parent: calendarsSettingsPage.Controls.Overlay.overlay
+                        parent: sourcesSettingsPage.Controls.Overlay.overlay
                         header: Kirigami.Heading {
                             level: 2
-                            text: i18n("Add new calendar")
+                            text: i18n("Add new calendar source")
                         }
                         ListView {
                             implicitWidth: Kirigami.Units.gridUnit * 20
@@ -194,10 +194,10 @@ Kirigami.Page {
                     Layout.fillWidth: true
                     Controls.Button {
                         Layout.alignment: Qt.AlignRight
-                        text: i18n("Add new calendar")
+                        text: i18n("Add new calendar source")
                         icon.name: "list-add"
                         onClicked: {
-                            const item = addCalendarOverlay.createObject(addCalendarOverlay, calendarsSettingsPage.Controls.Overlay.overlay)
+                            const item = addCalendarOverlay.createObject(addCalendarOverlay, sourcesSettingsPage.Controls.Overlay.overlay)
                             item.open();
                         }
                     }
