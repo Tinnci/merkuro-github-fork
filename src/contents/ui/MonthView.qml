@@ -7,6 +7,7 @@ import QtQuick 2.4
 import QtQuick.Layouts 1.1
 import QtQuick.Controls 2.15 as QQC2
 import org.kde.kirigami 2.14 as Kirigami
+import org.kde.kalendar 1.0 as Kalendar
 
 import "dateutils.js" as DateUtils
 
@@ -20,6 +21,7 @@ Kirigami.Page {
     signal deleteIncidenceReceived(var receivedIncidencePtr, date receivedDeleteDate)
     signal completeTodoReceived(var receivedIncidencePtr)
 
+    property var openOccurrence
     property alias startDate: dayView.startDate
     property alias currentDate: dayView.currentDate
     property alias calendarFilter: dayView.calendarFilter
@@ -102,6 +104,8 @@ Kirigami.Page {
             horizontalAlignment: Qt.AlignHCenter
             text: DateUtils.getWeek(startDate, Qt.locale().firstDayOfWeek)
         }
+
+        openOccurrence: monthPage.openOccurrence
 
         onAddIncidence: addIncidenceReceived(type, addDate)
         onViewIncidence: viewIncidenceReceived(modelData, collectionData)
