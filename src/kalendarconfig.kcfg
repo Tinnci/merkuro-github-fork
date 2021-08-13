@@ -12,5 +12,12 @@
         </entry>
     </group>
 
+    <group name="MonthView">
+        <entry name="showWeekNumbers" type="Bool">
+            <label>Show week numbers to the side of the month grid.</label>
+            <default>true</default>
+        </entry>
+    </group>
+
 </kcfg>
 

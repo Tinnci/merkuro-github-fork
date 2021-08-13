@@ -237,19 +237,12 @@ Kirigami.Page {
             title: i18n("Views")
 
             Kirigami.FormLayout {
-                RowLayout {
-                    Kirigami.FormData.label: i18n("Enable maps:")
-
-                    Controls.CheckBox {
-                        checked: Config.enableMaps
-                        onClicked: {
-                            Config.enableMaps = !Config.enableMaps;
-                            Config.save();
-                        }
-                    }
-                    Controls.Label {
-                        font: Kirigami.Theme.smallFont
-                        text: i18n("May cause crashing on some systems.")
+                Controls.CheckBox {
+                    Kirigami.FormData.label: i18n("Show week numbers:")
+                    checked: Config.showWeekNumbers
+                    onClicked: {
+                        Config.showWeekNumbers = !Config.showWeekNumbers;
+                        Config.save();
                     }
                 }
             }

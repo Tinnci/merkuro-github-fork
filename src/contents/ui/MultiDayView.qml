@@ -25,8 +25,8 @@ Item {
 
     property int daysToShow
     property int daysPerRow: daysToShow
-    property double weekHeaderWidth: Kirigami.Units.gridUnit * 1.5
-    property double dayWidth: (width - weekHeaderWidth - daysPerRow) / daysPerRow
+    property double weekHeaderWidth: Kalendar.Config.showWeekNumbers ? Kirigami.Units.gridUnit * 1.5 : 0
+    property double dayWidth: (width - weekHeaderWidth) / daysPerRow
     property date currentDate
     property date startDate
     property var calendarFilter
@@ -44,8 +44,7 @@ Item {
 
     readonly property bool isDark: LabelUtils.isDarkColor(Kirigami.Theme.backgroundColor)
 
-    implicitHeight: (numberOfRows > 1 ? Kirigami.Units.gridUnit * 10 * numberOfRows: numberOfLinesShown * Kirigami.Units.gridUnit) + dayLabels.height
-
+    implicitHeight: (numberOfRows > 1 ? Kirigami.Units.gridUnit * 10 * numberOfRows : numberOfLinesShown * Kirigami.Units.gridUnit) + dayLabels.height
     height: implicitHeight
 
     Column {
@@ -92,6 +91,7 @@ Item {
                         property date startDate: periodStartDate
                         Layout.preferredWidth: weekHeaderWidth
                         Layout.fillHeight: true
+                        visible: Kalendar.Config.showWeekNumbers
                     }
                     Item {
                         id: dayDelegate
@@ -174,6 +174,7 @@ Item {
                                 Layout.fillWidth: true
                                 id: linesRepeater
 
+                                clip: true
                                 spacing: Kirigami.Units.smallSpacing
 
                                 DayMouseArea {
