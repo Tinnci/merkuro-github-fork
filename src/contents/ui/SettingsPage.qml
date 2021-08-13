@@ -233,16 +233,47 @@ Kirigami.Page {
 
     Component {
         id: viewsSettingPage
+
         Kirigami.Page {
             title: i18n("Views")
 
-            Kirigami.FormLayout {
-                Controls.CheckBox {
-                    Kirigami.FormData.label: i18n("Show week numbers:")
-                    checked: Config.showWeekNumbers
-                    onClicked: {
-                        Config.showWeekNumbers = !Config.showWeekNumbers;
-                        Config.save();
+            header: Controls.TabBar {
+                id: viewTabBar
+                currentIndex: swipeView.currentIndex
+
+                Controls.TabButton {
+                    text: i18n("Month view")
+                }
+                Controls.TabButton {
+                    text: i18n("Schedule view")
+                }
+            }
+
+            Controls.SwipeView {
+                id: swipeView
+                anchors.fill: parent
+                currentIndex: viewTabBar.currentIndex
+                clip: true
+
+                Kirigami.FormLayout {
+                    Controls.CheckBox {
+                        Kirigami.FormData.label: i18n("Show week numbers:")
+                        checked: Config.showWeekNumbers
+                        onClicked: {
+                            Config.showWeekNumbers = !Config.showWeekNumbers;
+                            Config.save();
+                        }
+                    }
+                }
+
+                Kirigami.FormLayout {
+                    Controls.CheckBox {
+                        Kirigami.FormData.label: i18n("Show month header:")
+                        checked: Config.showMonthHeader
+                        onClicked: {
+                            Config.showMonthHeader = !Config.showMonthHeader;
+                            Config.save();
+                        }
                     }
                 }
             }
