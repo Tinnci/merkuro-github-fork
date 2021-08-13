@@ -120,9 +120,12 @@ Kirigami.ScrollablePage {
                 anchors.top: parent.top
                 anchors.right: parent.right
                 anchors.left: parent.left
-                height: parent.height + Kirigami.Units.largeSpacing * 2
+                height: Kirigami.Settings.isMobile ? // Mobile adds extra padding
+                    parent.height + Kirigami.Units.largeSpacing * 2 : parent.height + Kirigami.Units.largeSpacing
                 Kirigami.Theme.colorSet: Kirigami.Theme.View
-                color: dayGrid.isToday ? Kirigami.Theme.activeBackgroundColor : Kirigami.Theme.backgroundColor
+                color: Kirigami.Theme.activeBackgroundColor
+                visible: dayGrid.isToday
+                z: 0
             }
 
             ColumnLayout {
@@ -147,14 +150,16 @@ Kirigami.ScrollablePage {
 
                         return periodStartDate.toLocaleDateString(Qt.locale(), "dddd <b>dd</b>") + " - " + nextDay.toLocaleDateString(Qt.locale(), "dddd <b>dd</b> MMMM");
                     }
-                    visible: periodStartDate !== undefined &&
-                    (periodStartDate.getDay() === Qt.locale().firstDayOfWeek || index === 0)
+                    visible: Kalendar.Config.showWeekHeaders &&
+                        periodStartDate !== undefined &&
+                        (periodStartDate.getDay() === Qt.locale().firstDayOfWeek || index === 0)
                 }
 
                 Kirigami.Separator {
                     id: topSeparator
                     Layout.fillWidth: true
                     Layout.bottomMargin: scheduleListView.spacing - Kirigami.Units.smallSpacing
+                    z: 1
                 }
 
                 // Day + incidences
