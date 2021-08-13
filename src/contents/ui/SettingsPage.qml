@@ -259,6 +259,7 @@ Kirigami.Page {
                     id: monthViewForm
                     Controls.ComboBox {
                         Kirigami.FormData.label: i18n("Weekday label alignment:")
+                        Layout.fillWidth: true
                         model: [i18n("Left"), i18n("Center"), i18n("Right")]
                         currentIndex: Config.weekdayLabelAlignment
 
@@ -266,6 +267,21 @@ Kirigami.Page {
                             text: modelData
                             onClicked: {
                                 Config.weekdayLabelAlignment = index;
+                                Config.save();
+                            }
+                        }
+                    }
+
+                    Controls.ComboBox {
+                        Kirigami.FormData.label: i18n("Weekday label length:")
+                        Layout.fillWidth: true
+                        model: [i18n("Full name (Monday)"), i18n("Abbreviated (Mon)"), i18n("Letter only (M)")]
+                        currentIndex: Config.weekdayLabelLength
+
+                        delegate: Kirigami.BasicListItem {
+                            text: modelData
+                            onClicked: {
+                                Config.weekdayLabelLength = index;
                                 Config.save();
                             }
                         }
