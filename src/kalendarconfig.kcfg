@@ -17,6 +17,10 @@
             <label>Show week numbers to the side of the month grid.</label>
             <default>true</default>
         </entry>
+        <entry name="showMonthHeader" type="Bool">
+            <label>Show month header in schedule view.</label>
+            <default>true</default>
+        </entry>
     </group>
 
 </kcfg>

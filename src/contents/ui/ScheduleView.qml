@@ -83,10 +83,16 @@ Kirigami.ScrollablePage {
         highlightRangeMode: ListView.ApplyRange
         onCountChanged: root.moveToSelected()
 
-        header: Kirigami.ItemViewHeader {
-            //backgroundImage.source: "../banner.jpg"
-            title: Qt.locale().monthName(root.month)
+        Component {
+            id: monthHeaderComponent
+            Kirigami.ItemViewHeader {
+                //backgroundImage.source: "../banner.jpg"
+                title: Qt.locale().monthName(root.month)
+                visible: Kalendar.Config.showMonthHeader
+            }
         }
+
+        header: Kalendar.Config.showMonthHeader ? monthHeaderComponent : null
 
         model: Kalendar.MultiDayIncidenceModel {
             periodLength: 1
