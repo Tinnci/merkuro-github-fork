@@ -256,6 +256,7 @@ Kirigami.Page {
                 clip: true
 
                 Kirigami.FormLayout {
+                    id: monthViewHeaer
                     Controls.CheckBox {
                         Kirigami.FormData.label: i18n("Show week numbers:")
                         checked: Config.showWeekNumbers
@@ -267,11 +268,21 @@ Kirigami.Page {
                 }
 
                 Kirigami.FormLayout {
+                    id: scheduleViewForm
                     Controls.CheckBox {
                         Kirigami.FormData.label: i18n("Show month header:")
                         checked: Config.showMonthHeader
                         onClicked: {
                             Config.showMonthHeader = !Config.showMonthHeader;
+                            Config.save();
+                        }
+                    }
+
+                    Controls.CheckBox {
+                        Kirigami.FormData.label: i18n("Show week headers:")
+                        checked: Config.showWeekHeaders
+                        onClicked: {
+                            Config.showWeekHeaders = !Config.showWeekHeaders;
                             Config.save();
                         }
                     }
@@ -296,7 +307,7 @@ Kirigami.Page {
                         model: CalendarManager.collections
                         delegate: Kirigami.BasicListItem {
                             property int itemCollectionId: collectionId
-                            leftPadding: Kirigami.Units.largeSpacing * kDescendantLevel
+                            leftPadding: ((Kirigami.Units.gridUnit * 2) * (kDescendantLevel - 1)) + Kirigami.Units.largeSpacing
                             leading: Controls.CheckBox {
                                 visible: model.checkState != null
                                 checked: model.checkState == 2
