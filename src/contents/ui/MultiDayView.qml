@@ -145,7 +145,7 @@ Item {
                                             level: 4
                                             text: i18n("<b>Today</b>")
                                             color: Kirigami.Theme.highlightColor
-                                            visible: gridItem.isToday
+                                            visible: gridItem.isToday && gridItem.width > Kirigami.Units.gridUnit * 5
                                         }
                                         Kirigami.Heading {
                                             Layout.alignment: Qt.AlignRight | Qt.AlignTop
