@@ -90,7 +90,18 @@ Kirigami.Page {
             contentItem: Kirigami.Heading {
                 text: day.toLocaleString(Qt.locale(), monthPage.isLarge ? "dddd" : "ddd")
                 level: 2
-                horizontalAlignment: monthPage.isLarge ? Text.AlignRight : Text.AlignHCenter
+                horizontalAlignment: {
+                    switch(Kalendar.Config.weekdayLabelAlignment) {
+                        case 0: // Left
+                            return Text.AlignLeft;
+                        case 1: // Center
+                            return Text.AlignHCenter;
+                        case 2: // Right
+                            return Text.AlignRight;
+                        default:
+                            return Text.AlignHCenter;
+                    }
+                }
             }
             background: Rectangle {
                 Kirigami.Theme.colorSet: Kirigami.Theme.View
