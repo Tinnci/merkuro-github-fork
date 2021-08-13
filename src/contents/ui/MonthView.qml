@@ -50,8 +50,8 @@ Kirigami.Page {
     }
 
     topPadding: 0
-    rightPadding: Kirigami.Units.smallSpacing
-    bottomPadding: Kirigami.Units.largeSpacing
+    rightPadding: 0
+    bottomPadding: 0
     leftPadding: 0
 
     background: Rectangle {
