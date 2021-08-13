@@ -27,7 +27,8 @@ Kirigami.Page {
     property alias calendarFilter: dayView.calendarFilter
     property alias month: dayView.month
     property int year: dayView.currentDate.getFullYear()
-    readonly property bool isLarge: width > Kirigami.Units.gridUnit * 30
+    readonly property bool isLarge: width > Kirigami.Units.gridUnit * 40
+    readonly property bool isTiny: width < Kirigami.Units.gridUnit * 18
 
     function setToDate(date) {
         let newDate = new Date(date)
@@ -88,7 +89,21 @@ Kirigami.Page {
         dayHeaderDelegate: QQC2.Control {
             Layout.maximumHeight: Kirigami.Units.gridUnit * 2
             contentItem: Kirigami.Heading {
-                text: day.toLocaleString(Qt.locale(), monthPage.isLarge ? "dddd" : "ddd")
+                text: {
+                    let longText = day.toLocaleString(Qt.locale(), "dddd");
+                    let midText = day.toLocaleString(Qt.locale(), "ddd");
+                    let shortText = midText.slice(0,1);
+                    switch(Kalendar.Config.weekdayLabelLength) {
+                        case 0: // Full
+                            let chosenFormat = "dddd"
+                            return monthPage.isLarge ? longText : monthPage.isTiny ? shortText : midText;
+                        case 1: // Abbr
+                            return monthPage.isTiny ? shortText : midText;
+                        case 2: // Letter
+                        default:
+                            return shortText;
+                    }
+                }
                 level: 2
                 leftPadding: Kirigami.Units.smallSpacing
                 rightPadding: Kirigami.Units.smallSpacing
