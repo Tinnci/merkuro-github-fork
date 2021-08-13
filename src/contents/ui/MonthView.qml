@@ -90,6 +90,8 @@ Kirigami.Page {
             contentItem: Kirigami.Heading {
                 text: day.toLocaleString(Qt.locale(), monthPage.isLarge ? "dddd" : "ddd")
                 level: 2
+                leftPadding: Kirigami.Units.smallSpacing
+                rightPadding: Kirigami.Units.smallSpacing
                 horizontalAlignment: {
                     switch(Kalendar.Config.weekdayLabelAlignment) {
                         case 0: // Left
