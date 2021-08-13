@@ -13,6 +13,21 @@
     </group>
 
     <group name="MonthView">
+        <entry name="weekdayLabelAlignment" type="Enum">
+            <label>Alignment of week day header in month view.</label>
+            <choices>
+                <choice name="Left">
+                    <label>Left</label>
+                </choice>
+                <choice name="Center">
+                    <label>Center</label>
+                </choice>
+                <choice name="Right">
+                    <label>Right</label>
+                </choice>
+            </choices>
+            <default>Right</default>
+        </entry>
         <entry name="showWeekNumbers" type="Bool">
             <label>Show week numbers to the side of the month grid.</label>
             <default>true</default>

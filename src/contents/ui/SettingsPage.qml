@@ -256,7 +256,21 @@ Kirigami.Page {
                 clip: true
 
                 Kirigami.FormLayout {
-                    id: monthViewHeaer
+                    id: monthViewForm
+                    Controls.ComboBox {
+                        Kirigami.FormData.label: i18n("Weekday label alignment:")
+                        model: [i18n("Left"), i18n("Center"), i18n("Right")]
+                        currentIndex: Config.weekdayLabelAlignment
+
+                        delegate: Kirigami.BasicListItem {
+                            text: modelData
+                            onClicked: {
+                                Config.weekdayLabelAlignment = index;
+                                Config.save();
+                            }
+                        }
+                    }
+
                     Controls.CheckBox {
                         Kirigami.FormData.label: i18n("Show week numbers:")
                         checked: Config.showWeekNumbers
