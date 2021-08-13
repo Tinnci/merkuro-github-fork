@@ -251,7 +251,9 @@ Kirigami.ApplicationWindow {
             id: monthView
 
             // Make sure we get day from correct date, that is in the month we want
-            title: DateUtils.addDaysToDate(startDate, 7).toLocaleDateString(Qt.locale(), "<b>MMMM</b> yyyy")
+            titleDelegate: TitleDateButton {
+                date: DateUtils.addDaysToDate(startDate, 7)
+            }
             currentDate: root.currentDate
             startDate: DateUtils.getFirstDayOfWeek(DateUtils.getFirstDayOfMonth(new Date(root.year, root.month)))
             month: root.month
@@ -292,7 +294,9 @@ Kirigami.ApplicationWindow {
         ScheduleView {
             id: scheduleView
 
-            title: startDate.toLocaleDateString(Qt.locale(), "<b>MMMM</b> yyyy")
+            titleDelegate: TitleDateButton {
+                date: scheduleView.startDate
+            }
             selectedDate: root.currentDate.getMonth() === root.month ? root.currentDate : new Date(root.year, root.month)
             startDate: new Date(root.year, root.month)
             openOccurrence: root.openOccurrence

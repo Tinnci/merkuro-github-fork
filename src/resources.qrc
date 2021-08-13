@@ -18,5 +18,6 @@
     <file alias="ContactsPage.qml">contents/ui/ContactsPage.qml</file>
     <file alias="ContactListItem.qml">contents/ui/ContactListItem.qml</file>
     <file alias="LocationMap.qml">contents/ui/LocationMap.qml</file>
+    <file alias="TitleDateButton.qml">contents/ui/TitleDateButton.qml</file>
   </qresource>
 </RCC>
