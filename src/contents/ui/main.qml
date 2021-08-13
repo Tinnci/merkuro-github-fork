@@ -20,6 +20,21 @@ Kirigami.ApplicationWindow {
     property int year: currentDate.getFullYear()
 
     property var openOccurrence
+    property Kirigami.Action addAction: Kirigami.Action {
+        text: i18n("Add")
+        icon.name: "list-add"
+
+        Kirigami.Action {
+            text: i18n("New event")
+            icon.name: "resource-calendar-insert"
+            onTriggered: root.setUpAdd(IncidenceWrapper.TypeEvent);
+        }
+        Kirigami.Action {
+            text: i18n("New todo")
+            icon.name: "view-task-add"
+            onTriggered: root.setUpAdd(IncidenceWrapper.TypeTodo);
+        }
+    }
 
     title: i18n("Calendar")
 
@@ -266,23 +281,7 @@ Kirigami.ApplicationWindow {
             onMonthChanged: root.month = month
             onYearChanged: root.year = year
 
-            actions.contextualActions: [
-                Kirigami.Action {
-                    text: i18n("Add")
-                    icon.name: "list-add"
-
-                    Kirigami.Action {
-                        text: i18n("New event")
-                        icon.name: "resource-calendar-insert"
-                        onTriggered: root.setUpAdd(IncidenceWrapper.TypeEvent);
-                    }
-                    Kirigami.Action {
-                        text: i18n("New todo")
-                        icon.name: "view-task-add"
-                        onTriggered: root.setUpAdd(IncidenceWrapper.TypeTodo);
-                    }
-                }
-            ]
+            actions.contextualActions: addAction
         }
     }
 
@@ -306,23 +305,7 @@ Kirigami.ApplicationWindow {
             onDeleteIncidence: root.setUpDelete(incidencePtr, deleteDate)
             onCompleteTodo: root.completeTodo(incidencePtr)
 
-            actions.contextualActions: [
-                Kirigami.Action {
-                    text: i18n("Add")
-                    icon.name: "list-add"
-
-                    Kirigami.Action {
-                        text: i18n("New event")
-                        icon.name: "resource-calendar-insert"
-                        onTriggered: root.setUpAdd(IncidenceWrapper.TypeEvent);
-                    }
-                    Kirigami.Action {
-                        text: i18n("New todo")
-                        icon.name: "view-task-add"
-                        onTriggered: root.setUpAdd(IncidenceWrapper.TypeTodo);
-                    }
-                }
-            ]
+            actions.contextualActions: addAction
         }
     }
 }
