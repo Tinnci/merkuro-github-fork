@@ -65,11 +65,13 @@ Kirigami.Page {
             icon.name: "go-previous"
             text: i18n("Previous month")
             onTriggered: setToDate(new Date(startDate.getFullYear(), startDate.getMonth()))
+            displayHint: Kirigami.DisplayHint.IconOnly
         }
         right: Kirigami.Action {
             icon.name: "go-next"
             text: i18n("Next month")
             onTriggered: setToDate(new Date(startDate.getFullYear(), startDate.getMonth() + 2)) // Yes. I don't know.
+            displayHint: Kirigami.DisplayHint.IconOnly
         }
         main: Kirigami.Action {
             icon.name: "go-jump-today"
