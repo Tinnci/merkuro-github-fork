@@ -99,8 +99,10 @@ Map {
         property Component pin: MapQuickItem {
             id: mapPin
             coordinate: locationData.coordinate
+            center: locationData.coordinate
 
             sourceItem: Kirigami.Icon {
+                color: Kirigami.Theme.highlightColor
                 source: "mark-location"
             }
         }
