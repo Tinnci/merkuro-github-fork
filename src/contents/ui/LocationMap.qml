@@ -84,8 +84,8 @@ Map {
             }
         }
 
-        delegate: MapCircle {
-            id: point
+        property Component circle: MapCircle {
+            id: mapCircle
             radius: locationData.boundingBox.center.distanceTo(locationData.boundingBox.topRight)
             color: Kirigami.Theme.highlightColor
             border.color: Kirigami.Theme.linkColor
@@ -93,6 +93,23 @@ Map {
             smooth: true
             opacity: 0.25
             center: locationData.coordinate
+        }
+
+        property Component pin: MapQuickItem {
+            id: mapPin
+            coordinate: locationData.coordinate
+
+            sourceItem: Kirigami.Icon {
+                source: "mark-location"
+            }
+        }
+
+        delegate: switch(Kalendar.Config.locationMarker) {
+            case 0:
+                return circle;
+            case 1:
+            default:
+                return pin;
         }
     }
 
