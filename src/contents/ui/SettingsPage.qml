@@ -241,6 +241,19 @@ Kirigami.Page {
                 id: viewTabBar
                 currentIndex: swipeView.currentIndex
 
+                background: Rectangle { // HACK: Adds separator line that doesn't go over the active tabbutton
+                    anchors.fill: parent
+                    color: Kirigami.Theme.backgroundColor
+                    Kirigami.Separator {
+                        anchors {
+                            left: parent.left
+                            right: parent.right
+                            top: parent.bottom
+                            topMargin: -1
+                        }
+                    }
+                }
+
                 Controls.TabButton {
                     text: i18n("Month view")
                 }
