@@ -104,7 +104,7 @@ Map {
 
             sourceItem: Kirigami.Icon {
                 id: iconMarker
-                color: Kirigami.Theme.highlightColor
+                color: Kirigami.Theme.negativeTextColor // Easier to see
                 source: "mark-location"
             }
         }
