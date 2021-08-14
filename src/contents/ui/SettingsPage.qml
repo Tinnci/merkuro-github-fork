@@ -232,6 +232,17 @@ Kirigami.Page {
                         text: i18n("May cause crashing on some systems.")
                     }
                 }
+                Controls.ComboBox {
+                    Kirigami.FormData.label: i18n("Location marker:")
+                    Layout.fillWidth: true
+                    enabled: Config.enableMaps
+                    currentIndex: Config.locationMarker
+                    model: [i18n("Circle (shows area of location)"), i18n("Pin (shows exact location)")]
+                    delegate: Kirigami.BasicListItem {
+                        text: modelData
+                        onClicked: Config.locationMarker = index
+                    }
+                }
             }
         }
     }

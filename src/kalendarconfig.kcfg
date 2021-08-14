@@ -10,6 +10,18 @@
             <label>Enable maps. NOTE: may cause crashing on some systems.</label>
             <default>false</default>
         </entry>
+        <entry name="locationMarker" type="Enum">
+            <label>Type of marker for showing a place's location.</label>
+            <choices>
+                <choice name="Circle">
+                    <label>Left</label>
+                </choice>
+                <choice name="Pin">
+                    <label>Center</label>
+                </choice>
+            </choices>
+            <default>Pin</default>
+        </entry>
     </group>
 
     <group name="MonthView">
