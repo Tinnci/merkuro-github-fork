@@ -212,6 +212,11 @@ Kirigami.Page {
             title: i18n("General")
 
             Kirigami.FormLayout {
+                anchors.fill: parent
+                Item {
+                    Kirigami.FormData.isSection: true
+                    Kirigami.FormData.label: "Maps"
+                }
                 RowLayout {
                     Kirigami.FormData.label: i18n("Enable maps:")
 
@@ -270,6 +275,10 @@ Kirigami.Page {
 
                 Kirigami.FormLayout {
                     id: monthViewForm
+                    Item {
+                        Kirigami.FormData.isSection: true
+                        Kirigami.FormData.label: "Month view settings"
+                    }
                     Controls.ComboBox {
                         Kirigami.FormData.label: i18n("Weekday label alignment:")
                         Layout.fillWidth: true
@@ -312,6 +321,10 @@ Kirigami.Page {
 
                 Kirigami.FormLayout {
                     id: scheduleViewForm
+                    Item {
+                        Kirigami.FormData.isSection: true
+                        Kirigami.FormData.label: "Schedule view settings"
+                    }
                     Controls.CheckBox {
                         Kirigami.FormData.label: i18n("Show month header:")
                         checked: Config.showMonthHeader
