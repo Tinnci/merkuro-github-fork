@@ -58,7 +58,7 @@ Kirigami.Page {
                     }
                 ]
                 model: actions
-                Component.onCompleted: actions[0].trigger();
+                Component.onCompleted: if(!Kirigami.Settings.isMobile) { actions[0].trigger(); }
                 delegate: Kirigami.BasicListItem {
                     action: modelData
                 }
@@ -74,38 +74,20 @@ Kirigami.Page {
 
             ColumnLayout {
                 anchors.fill: parent
+
                 Controls.ScrollView {
                     Component.onCompleted: background.visible = true
                     Layout.fillWidth: true
                     Layout.fillHeight: true
                     ListView {
+                        Layout.fillWidth: true
+                        Layout.fillHeight: true
                         clip: true
                         model: AgentConfiguration.runningAgents // CalendarManager.collections
-                        delegate: Kirigami.SwipeListItem {
+                        delegate: Kirigami.BasicListItem { // Originally swipelistitem, caused issues in mobile mode
                             leftPadding: Kirigami.Units.largeSpacing * 2
                             topPadding: Kirigami.Units.largeSpacing
                             bottomPadding: Kirigami.Units.largeSpacing
-
-                            actions: [
-                                Kirigami.Action {
-                                    iconName: "view-refresh"
-                                    text: i18n("Restart")
-                                    onTriggered: AgentConfiguration.restart(index);
-                                },
-                                Kirigami.Action {
-                                    iconName: "entry-edit"
-                                    text: i18n("Edit")
-                                    onTriggered: AgentConfiguration.edit(index);
-                                },
-                                Kirigami.Action {
-                                    iconName: "delete"
-                                    text: i18n("Remove")
-                                    onTriggered: {
-                                        // TODO add confirmation dialog
-                                        AgentConfiguration.remove(index);
-                                    }
-                                }
-                            ]
 
                             contentItem: Item {
                                 implicitWidth: delegateLayout.implicitWidth
@@ -122,7 +104,7 @@ Kirigami.Page {
                                     rowSpacing: Kirigami.Units.smallSpacing
                                     columnSpacing: Kirigami.Units.smallSpacing
                                     columns: 2
-                                    rows: 2
+                                    rows: 3
 
                                     Kirigami.Icon {
                                         source: model.decoration
@@ -158,6 +140,30 @@ Kirigami.Page {
                                             }
                                         }
                                         text: model.statusMessage
+                                    }
+
+                                    RowLayout {
+                                        Layout.row: 2
+                                        Layout.columnSpan : 2
+                                        Layout.alignment: Qt.AlignRight
+                                        Controls.ToolButton {
+                                            icon.name: "view-refresh"
+                                            text: i18n("Restart")
+                                            onClicked: AgentConfiguration.restart(index);
+                                        }
+                                        Controls.ToolButton {
+                                            icon.name: "entry-edit"
+                                            text: i18n("Edit")
+                                            onClicked: AgentConfiguration.edit(index);
+                                        }
+                                        Controls.ToolButton {
+                                            icon.name: "delete"
+                                            text: i18n("Remove")
+                                            onClicked: {
+                                                // TODO add confirmation dialog
+                                                AgentConfiguration.remove(index);
+                                            }
+                                        }
                                     }
                                 }
                             }
