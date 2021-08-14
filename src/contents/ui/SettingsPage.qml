@@ -242,7 +242,7 @@ Kirigami.Page {
                     Kirigami.FormData.label: i18n("Location marker:")
                     Layout.fillWidth: true
                     enabled: Config.enableMaps
-                    currentIndex: Config.locationMarker
+                    currentIndex: Config.locationMarker // HACK: Ideally should use config enum
                     model: [i18n("Circle (shows area of location)"), i18n("Pin (shows exact location)")]
                     delegate: Kirigami.BasicListItem {
                         text: modelData
@@ -300,7 +300,7 @@ Kirigami.Page {
                         Kirigami.FormData.label: i18n("Weekday label alignment:")
                         Layout.fillWidth: true
                         model: [i18n("Left"), i18n("Center"), i18n("Right")]
-                        currentIndex: Config.weekdayLabelAlignment
+                        currentIndex: Config.weekdayLabelAlignment // HACK: Ideally should use config enum
 
                         delegate: Kirigami.BasicListItem {
                             text: modelData
@@ -315,7 +315,7 @@ Kirigami.Page {
                         Kirigami.FormData.label: i18n("Weekday label length:")
                         Layout.fillWidth: true
                         model: [i18n("Full name (Monday)"), i18n("Abbreviated (Mon)"), i18n("Letter only (M)")]
-                        currentIndex: Config.weekdayLabelLength
+                        currentIndex: Config.weekdayLabelLength // HACK: Ideally should use config enum
 
                         delegate: Kirigami.BasicListItem {
                             text: modelData

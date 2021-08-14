@@ -109,7 +109,7 @@ Map {
             }
         }
 
-        delegate: switch(Kalendar.Config.locationMarker) {
+        delegate: switch(Kalendar.Config.locationMarker) { // HACK: Ideally should use config enum
             case 0:
                 return circle;
             case 1:

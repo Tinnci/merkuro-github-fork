@@ -95,7 +95,7 @@ Kirigami.Page {
                     let longText = day.toLocaleString(Qt.locale(), "dddd");
                     let midText = day.toLocaleString(Qt.locale(), "ddd");
                     let shortText = midText.slice(0,1);
-                    switch(Kalendar.Config.weekdayLabelLength) {
+                    switch(Kalendar.Config.weekdayLabelLength) { // HACK: Ideally should use config enum
                         case 0: // Full
                             let chosenFormat = "dddd"
                             return monthPage.isLarge ? longText : monthPage.isTiny ? shortText : midText;
@@ -110,7 +110,7 @@ Kirigami.Page {
                 leftPadding: Kirigami.Units.smallSpacing
                 rightPadding: Kirigami.Units.smallSpacing
                 horizontalAlignment: {
-                    switch(Kalendar.Config.weekdayLabelAlignment) {
+                    switch(Kalendar.Config.weekdayLabelAlignment) { // HACK: Ideally should use config enum
                         case 0: // Left
                             return Text.AlignLeft;
                         case 1: // Center
