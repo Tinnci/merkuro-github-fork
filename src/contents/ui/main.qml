@@ -112,9 +112,7 @@ Kirigami.ApplicationWindow {
         handleVisible: enabled && pageStack.layers.depth < 2 && pageStack.depth < 3
         interactive: Kirigami.Settings.isMobile // Otherwise get weird bug where drawer gets dragged around despite no click
 
-        onIncidenceDataChanged: {
-            root.openOccurrence = incidenceData;
-        }
+        onIncidenceDataChanged: root.openOccurrence = incidenceData;
         onVisibleChanged: {
             if(visible) {
                 root.openOccurrence = incidenceData;
