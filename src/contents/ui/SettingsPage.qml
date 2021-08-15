@@ -239,15 +239,30 @@ Kirigami.Page {
                         text: i18n("May cause crashing on some systems.")
                     }
                 }
-                Controls.ComboBox {
+                Controls.ButtonGroup {
+                    buttons: locationMarkerButtonColumn.children
+                    exclusive: true
+                    onClicked: {
+                        Config.locationMarker = button.value;
+                        Config.save();
+                    }
+                }
+                Column {
+                    id: locationMarkerButtonColumn
                     Kirigami.FormData.label: i18n("Location marker:")
-                    Layout.fillWidth: true
-                    enabled: Config.enableMaps && !Config.isLocationMarkerImmutable
-                    currentIndex: Config.locationMarker // HACK: Ideally should use config enum
-                    model: [i18n("Circle (shows area of location)"), i18n("Pin (shows exact location)")]
-                    delegate: Kirigami.BasicListItem {
-                        text: modelData
-                        onClicked: Config.locationMarker = index
+                    Kirigami.FormData.labelAlignment: Qt.AlignTop
+
+                    Controls.RadioButton {
+                        property int value: 0 // HACK: Ideally should use config enum
+                        text: i18n("Circle (shows area of location)")
+                        enabled: Config.enableMaps && !Config.isLocationMarkerImmutable
+                        checked: Config.locationMarker === value
+                    }
+                    Controls.RadioButton {
+                        property int value: 1 // HACK: Ideally should use config enum
+                        text: i18n("Pin (shows exact location)")
+                        enabled: Config.enableMaps && !Config.isLocationMarkerImmutable
+                        checked: Config.locationMarker === value
                     }
                 }
             }
@@ -297,35 +312,69 @@ Kirigami.Page {
                         Kirigami.FormData.isSection: true
                         Kirigami.FormData.label: "Month view settings"
                     }
-                    Controls.ComboBox {
+                    Controls.ButtonGroup {
+                        buttons: weekdayLabelAlignmentButtonColumn.children
+                        exclusive: true
+                        onClicked: {
+                            Config.weekdayLabelAlignment = button.value;
+                            Config.save();
+                        }
+                    }
+                    Column {
+                        id: weekdayLabelAlignmentButtonColumn
                         Kirigami.FormData.label: i18n("Weekday label alignment:")
-                        Layout.fillWidth: true
-                        model: [i18n("Left"), i18n("Center"), i18n("Right")]
-                        currentIndex: Config.weekdayLabelAlignment // HACK: Ideally should use config enum
-                        enabled: !Config.isWeekdayLabelAlignmentImmutable
+                        Kirigami.FormData.labelAlignment: Qt.AlignTop
 
-                        delegate: Kirigami.BasicListItem {
-                            text: modelData
-                            onClicked: {
-                                Config.weekdayLabelAlignment = index;
-                                Config.save();
-                            }
+                        Controls.RadioButton {
+                            property int value: 0 // HACK: Ideally should use config enum
+                            text: i18n("Left")
+                            enabled: !Config.isWeekdayLabelAlignmentImmutable
+                            checked: Config.weekdayLabelAlignment === value
+                        }
+                        Controls.RadioButton {
+                            property int value: 1
+                            text: i18n("Center")
+                            enabled: !Config.isWeekdayLabelAlignmentImmutable
+                            checked: Config.weekdayLabelAlignment === value
+                        }
+                        Controls.RadioButton {
+                            property int value: 2
+                            text: i18n("Right")
+                            enabled: !Config.isWeekdayLabelAlignmentImmutable
+                            checked: Config.weekdayLabelAlignment === value
                         }
                     }
 
-                    Controls.ComboBox {
+                    Controls.ButtonGroup {
+                        buttons: weekdayLabelLengthButtonColumn.children
+                        exclusive: true
+                        onClicked: {
+                            Config.weekdayLabelLength = button.value;
+                            Config.save();
+                        }
+                    }
+                    Column {
+                        id: weekdayLabelLengthButtonColumn
                         Kirigami.FormData.label: i18n("Weekday label length:")
-                        Layout.fillWidth: true
-                        model: [i18n("Full name (Monday)"), i18n("Abbreviated (Mon)"), i18n("Letter only (M)")]
-                        currentIndex: Config.weekdayLabelLength // HACK: Ideally should use config enum
-                        enabled: !Config.isWeekdayLabelLengthImmutable
+                        Kirigami.FormData.labelAlignment: Qt.AlignTop
 
-                        delegate: Kirigami.BasicListItem {
-                            text: modelData
-                            onClicked: {
-                                Config.weekdayLabelLength = index;
-                                Config.save();
-                            }
+                        Controls.RadioButton {
+                            property int value: 0 // HACK: Ideally should use config enum
+                            text: i18n("Full name (Monday)")
+                            enabled: !Config.isWeekdayLabelLengthImmutable
+                            checked: Config.weekdayLabelLength === value
+                        }
+                        Controls.RadioButton {
+                            property int value: 1
+                            text: i18n("Abbreviated (Mon)")
+                            enabled: !Config.isWeekdayLabelLengthImmutable
+                            checked: Config.weekdayLabelLength === value
+                        }
+                        Controls.RadioButton {
+                            property int value: 2
+                            text: i18n("Letter only (M)")
+                            enabled: !Config.isWeekdayLabelLengthImmutable
+                            checked: Config.weekdayLabelLength === value
                         }
                     }
 
