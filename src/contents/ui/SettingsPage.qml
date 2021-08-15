@@ -221,7 +221,7 @@ Kirigami.Page {
                 anchors.fill: parent
                 Item {
                     Kirigami.FormData.isSection: true
-                    Kirigami.FormData.label: "Maps"
+                    Kirigami.FormData.label: i18n("Maps")
                 }
                 RowLayout {
                     Kirigami.FormData.label: i18n("Enable maps:")
