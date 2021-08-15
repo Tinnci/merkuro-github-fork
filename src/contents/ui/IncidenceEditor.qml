@@ -370,13 +370,13 @@ Kirigami.ScrollablePage {
                         timePicker: incidenceEndTimeCombo.timePicker
                         dateTime: root.incidenceWrapper.incidenceEnd
                         onNewDateChosen: root.incidenceWrapper.incidenceEnd = newDate
-                        enabled: !allDayCheckBox.checked && (!incidenceForm.isTodo || incidenceEndCheckBox.checked)
+                        enabled: (!incidenceForm.isTodo && !allDayCheckBox.checked) || (incidenceForm.isTodo && incidenceEndCheckBox.checked)
                     }
                     TimeCombo {
                         id: incidenceEndTimeCombo
                         dateTime: root.incidenceWrapper.incidenceEnd
                         onNewTimeChosen: root.incidenceWrapper.incidenceEnd = newTime
-                        enabled: !allDayCheckBox.checked && (!incidenceForm.isTodo || incidenceStartCheckBox.checked)
+                        enabled: (!incidenceForm.isTodo && !allDayCheckBox.checked) || (incidenceForm.isTodo && incidenceEndCheckBox.checked)
                         visible: !allDayCheckBox.checked
                     }
                 }
