@@ -11,9 +11,10 @@ import "dateutils.js" as DateUtils
 
 Kirigami.ScrollablePage {
     ListView {
-        model: Kalendar.CalendarManager.totoModel
+        model: Kalendar.CalendarManager.todoModel
         delegate: Kirigami.BasicListItem {
-            label: model.summary + "rjeoi"
+            label: model.summary
         }
+        Component.onCompleted: console.log(Kalendar.CalendarManager.todoModel.rowCount());
     }
 }

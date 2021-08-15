@@ -36,8 +36,8 @@
 #include <KCheckableProxyModel>
 #include <KDescendantsProxyModel>
 #include <QTimer>
-#include <EventViews/TodoModel>
-#include <EventViews/IncidenceTreeModel>
+#include <todomodel.h>
+#include <incidencetreemodel.h>
 
 using namespace Akonadi;
 
@@ -387,6 +387,7 @@ CalendarManager::CalendarManager(QObject *parent)
 
     const QString todoMimeType = QStringLiteral("application/x-vnd.akonadi.calendar.todo");
     auto todoTreeModel = new IncidenceTreeModel(QStringList() << todoMimeType, this);
+    todoTreeModel->setSourceModel(m_calendar->model());
     const auto pref = EventViews::PrefsPtr();
     auto todoModel = new TodoModel(pref, this);
     todoModel->setCalendar(m_calendar);
@@ -658,7 +659,6 @@ void CalendarManager::redoAction()
 
 KDescendantsProxyModel *CalendarManager::todoModel()
 {
-    qDebug() << "todoModel";
     return m_todoModel;
 }
 
