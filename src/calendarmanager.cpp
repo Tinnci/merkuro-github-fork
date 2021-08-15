@@ -36,6 +36,7 @@
 #include <KCheckableProxyModel>
 #include <KDescendantsProxyModel>
 #include <QTimer>
+#include <KFormat>
 #include <todomodel.h>
 #include <incidencetreemodel.h>
 
@@ -617,6 +618,15 @@ void CalendarManager::deleteIncidence(KCalendarCore::Incidence::Ptr incidence)
     m_calendar->deleteIncidence(incidence);
 }
 
+QVariantMap CalendarManager::getTodoModelCollectionDetails(int row)
+{
+    auto idx = m_todoModel->index(row, 0);
+    auto todoItem = idx.data(TodoModel::TodoRole).value<Akonadi::Item>();
+    auto collection = todoItem.parentCollection();
+    auto collectionId = collection.id();
+    return getCollectionDetails(collectionId);
+}
+
 QVariantMap CalendarManager::getCollectionDetails(qint64 collectionId)
 {
     QVariantMap collectionDetails;
@@ -646,6 +656,49 @@ void CalendarManager::setCollectionColor(qint64 collectionId, QColor color)
         }
     });
 }
+
+QVariantMap CalendarManager::getTodoData(int row)
+{
+    auto idx = m_todoModel->index(row, 0);
+    auto todoItem = idx.data(TodoModel::TodoRole).value<Akonadi::Item>();
+    auto todoPtr = CalendarSupport::todo(todoItem);
+    auto collectionId = todoItem.parentCollection().id();
+
+    QString durationString;
+    KFormat format;
+    if (todoPtr->allDay()) {
+        durationString = format.formatSpelloutDuration(24*60*60*1000); // format milliseconds in 1 day
+    } else {
+        durationString = format.formatSpelloutDuration(todoPtr->duration().asSeconds() * 1000);
+    }
+
+    QColor color;
+    if (m_baseModel->colorCache.contains(QString::number(collectionId))) {
+        color = m_baseModel->colorCache[QString::number(collectionId)];
+    }
+
+    return QVariantMap{
+        {QStringLiteral("text"), todoPtr->summary()},
+        {QStringLiteral("description"), todoPtr->description()},
+        {QStringLiteral("location"), todoPtr->location()},
+        {QStringLiteral("startTime"), todoPtr->dtStart()},
+        {QStringLiteral("endTime"), todoPtr->dtDue()},
+        {QStringLiteral("allDay"), todoPtr->allDay()},
+        {QStringLiteral("todoCompleted"), todoPtr->isCompleted()},
+        //{QStringLiteral("starts"), start},
+        //{QStringLiteral("duration"), duration},
+        {QStringLiteral("durationString"), durationString},
+        {QStringLiteral("color"), color},
+        {QStringLiteral("collectionId"), collectionId},
+        {QStringLiteral("incidenceId"), todoPtr->uid()},
+        {QStringLiteral("incidenceType"), todoPtr->type()},
+        {QStringLiteral("incidenceTypeStr"), todoPtr->typeStr()},
+        {QStringLiteral("incidenceTypeIcon"), todoPtr->iconName()},
+        {QStringLiteral("incidencePtr"), QVariant::fromValue(todoPtr)},
+        //{QStringLiteral("incidenceOccurrence"), idx.data(IncidenceOccurrenceModel::IncidenceOccurrence)},
+    };
+}
+
 
 void CalendarManager::undoAction()
 {
