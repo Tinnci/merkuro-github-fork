@@ -661,8 +661,9 @@ QVariantMap CalendarManager::getTodoData(int row)
 {
     auto idx = m_todoModel->index(row, 0);
     auto todoItem = idx.data(TodoModel::TodoRole).value<Akonadi::Item>();
-    auto todoPtr = CalendarSupport::todo(todoItem);
     auto collectionId = todoItem.parentCollection().id();
+    auto todoPtr = CalendarSupport::todo(todoItem);
+    auto todoIncidencePtr = CalendarSupport::incidence(todoItem);
 
     QString durationString;
     KFormat format;
@@ -694,7 +695,7 @@ QVariantMap CalendarManager::getTodoData(int row)
         {QStringLiteral("incidenceType"), todoPtr->type()},
         {QStringLiteral("incidenceTypeStr"), todoPtr->typeStr()},
         {QStringLiteral("incidenceTypeIcon"), todoPtr->iconName()},
-        {QStringLiteral("incidencePtr"), QVariant::fromValue(todoPtr)},
+        {QStringLiteral("incidencePtr"), QVariant::fromValue(todoIncidencePtr)},
         //{QStringLiteral("incidenceOccurrence"), idx.data(IncidenceOccurrenceModel::IncidenceOccurrence)},
     };
 }
