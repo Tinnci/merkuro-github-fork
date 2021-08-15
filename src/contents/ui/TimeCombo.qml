@@ -11,10 +11,13 @@ QQC2.ComboBox {
 
     Layout.fillWidth: true
 
+    signal newTimeChosen(date newTime)
+
     property date dateTime
     property RegularExpressionValidator timeValidator: RegularExpressionValidator {
         regularExpression: /^([0-1]?[0-9]|2[0-3]):([0-5][0-9])(:[0-5][0-9])?$/
     }
+    property alias timePicker: popupTimePicker
 
     editable: true
     editText: activeFocus ? editText : dateTime.toLocaleTimeString(Qt.locale(), Locale.ShortFormat)
@@ -24,8 +27,8 @@ QQC2.ComboBox {
 
     onEditTextChanged: {
         if (acceptableInput && activeFocus) { // Need to check for activeFocus or on load the text gets reset to 00:00
-            timePicker.setToTimeFromString(editText);
-            dateTime = new Date(dateTime.setHours(timePicker.hours, timePicker.minutes));
+            popupTimePicker.setToTimeFromString(editText);
+            newTimeChosen(new Date(dateTime.setHours(popupTimePicker.hours, popupTimePicker.minutes)));
         }
     }
 
@@ -37,18 +40,18 @@ QQC2.ComboBox {
         z: 1000
 
         TimePicker {
-            id: timePicker
+            id: popupTimePicker
 
-            Component.onCompleted: minuteMultiples = 15
+            Component.onCompleted: minuteMultiples = 5
             Connections {
                 target: root
                 function onDateTimeChanged() {
-                    timePicker.dateTime = root.dateTime;
+                    popupTimePicker.dateTime = root.dateTime;
                 }
             }
 
             dateTime: root.dateTime
-            onDateTimeChanged: root.dateTime = dateTime
+            onDateTimeChanged: root.newTimeChosen(dateTime)
 
             onDone: timePopup.close();
         }

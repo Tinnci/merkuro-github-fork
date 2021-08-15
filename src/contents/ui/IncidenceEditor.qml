@@ -325,57 +325,16 @@ Kirigami.ScrollablePage {
                     }
 
 
-                    QQC2.ComboBox {
+                    DateCombo {
                         id: incidenceStartDateCombo
-                        Layout.fillWidth: true
-
-                        enabled: !incidenceForm.isTodo || incidenceStartCheckBox.checked
-                        editable: true
-                        editText: root.incidenceWrapper.incidenceStart.toLocaleDateString(Qt.locale(), Locale.NarrowFormat)
-
-                        inputMethodHints: Qt.ImhDate
-
-                        property date dateFromText: Date.fromLocaleDateString(Qt.locale(), editText, Locale.NarrowFormat)
-                        property bool validDate: !isNaN(dateFromText.getTime())
-
-                        onEditTextChanged: {
-                            // Set date from text here because it otherwise updates after this handler
-                            dateFromText = Date.fromLocaleDateString(Qt.locale(), editText, Locale.NarrowFormat)
-                            let datePicker = incidenceStartDatePicker
-
-                            if (validDate && activeFocus) {
-                                var timePicker = incidenceStartTimePicker
-                                datePicker.selectedDate = dateFromText;
-                                datePicker.clickedDate = dateFromText;
-                                root.incidenceWrapper.incidenceStart = new Date(dateFromText.setHours(timePicker.hours, timePicker.minutes));
-                            }
-                        }
-
-                        popup: QQC2.Popup {
-                            id: incidenceStartDatePopup
-
-                            width: Kirigami.Units.gridUnit * 18
-                            height: Kirigami.Units.gridUnit * 18
-                            y: parent.y + parent.height
-                            z: 1000
-
-                            DatePicker {
-                                id: incidenceStartDatePicker
-
-                                anchors.fill: parent
-                                onDatePicked: {
-                                    incidenceStartDatePopup.close();
-                                    let hours = root.incidenceWrapper.incidenceStart.getHours();
-                                    let minutes = root.incidenceWrapper.incidenceStart.getMinutes();
-                                    root.incidenceWrapper.incidenceStart = new Date(pickedDate.setHours(hours, minutes));
-                                }
-                            }
-                        }
+                        timePicker: incidenceStartTimeCombo.timePicker
+                        dateTime: root.incidenceWrapper.incidenceStart
+                        onNewDateChosen: root.incidenceWrapper.incidenceStart = newDate
                     }
                     TimeCombo {
-                        //id: incidenceStartTimeCombo
+                        id: incidenceStartTimeCombo
                         dateTime: root.incidenceWrapper.incidenceStart
-                        onDateTimeChanged: root.incidenceWrapper.incidenceStart = dateTime
+                        onNewTimeChosen: root.incidenceWrapper.incidenceStart = newTime
                         enabled: !allDayCheckBox.checked && (!incidenceForm.isTodo || incidenceStartCheckBox.checked)
                         visible: !allDayCheckBox.checked
                     }
@@ -404,55 +363,17 @@ Kirigami.ScrollablePage {
                         visible: incidenceForm.isTodo
                     }
 
-                    QQC2.ComboBox {
+                    DateCombo {
                         id: incidenceEndDateCombo
-
-                        Layout.fillWidth: true
-
-                        property date dateFromText: Date.fromLocaleDateString(Qt.locale(), editText, Locale.NarrowFormat)
-                        property bool validDate: !isNaN(dateFromText.getTime())
-
-                        editable: true
-                        editText: root.incidenceWrapper.incidenceEnd.toLocaleDateString(Qt.locale(), Locale.NarrowFormat)
+                        timePicker: incidenceEndTimeCombo.timePicker
+                        dateTime: root.incidenceWrapper.incidenceEnd
+                        onNewDateChosen: root.incidenceWrapper.incidenceEnd = newDate
                         enabled: !allDayCheckBox.checked && (!incidenceForm.isTodo || incidenceEndCheckBox.checked)
-
-                        onEditTextChanged: {
-                            // Set date from text here because it otherwise updates after this handler
-                            dateFromText = Date.fromLocaleDateString(Qt.locale(), editText, Locale.NarrowFormat);
-                            let datePicker = incidenceEndDatePicker;
-
-                            if (validDate && activeFocus) {
-                                var timePicker = incidenceEndTimePicker
-                                datePicker.selectedDate = dateFromText;
-                                datePicker.clickedDate = dateFromText;
-                                root.incidenceWrapper.incidenceEnd = new Date(dateFromText.setHours(timePicker.hours, timePicker.minutes));
-                            }
-                        }
-
-                        popup: QQC2.Popup {
-                            id: incidenceEndDatePopup
-
-                            width: Kirigami.Units.gridUnit * 18
-                            height: Kirigami.Units.gridUnit * 18
-                            y: parent.y + parent.height
-                            z: 1000
-
-                            DatePicker {
-                                id: incidenceEndDatePicker
-                                anchors.fill: parent
-                                onDatePicked: {
-                                    incidenceEndDatePopup.close();
-                                    let hours = root.incidenceWrapper.incidenceEnd.getHours();
-                                    let minutes = root.incidenceWrapper.incidenceEnd.getMinutes();
-                                    root.incidenceWrapper.incidenceEnd = new Date(pickedDate.setHours(hours, minutes));
-                                }
-                            }
-                        }
                     }
                     TimeCombo {
-                        //id: incidenceStartTimeCombo
+                        id: incidenceEndTimeCombo
                         dateTime: root.incidenceWrapper.incidenceEnd
-                        onDateTimeChanged: root.incidenceWrapper.incidenceEnd = dateTime
+                        onNewTimeChosen: root.incidenceWrapper.incidenceEnd = newTime
                         enabled: !allDayCheckBox.checked && (!incidenceForm.isTodo || incidenceStartCheckBox.checked)
                         visible: !allDayCheckBox.checked
                     }
