@@ -343,7 +343,7 @@ Kirigami.Page {
                         Kirigami.FormData.label: "Schedule view settings"
                     }
                     Controls.CheckBox {
-                        Kirigami.FormData.label: i18n("Show month header:")
+                        text: i18n("Show month header")
                         checked: Config.showMonthHeader
                         onClicked: {
                             Config.showMonthHeader = !Config.showMonthHeader;
