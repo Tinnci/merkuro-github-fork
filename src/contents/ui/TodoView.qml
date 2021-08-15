@@ -1,4 +1,6 @@
 // SPDX-FileCopyrightText: 2021 Carl Schwan <carl@carlschwan.eu>
+// SPDX-FileCopyrightText: 2021 Claudio Cambra <claudio.cambra@gmail.com>
+
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 import QtQuick 2.15

@@ -459,7 +459,7 @@ Kirigami.ScrollablePage {
 
                         editable: true
                         editText: root.incidenceWrapper.incidenceEnd.toLocaleDateString(Qt.locale(), Locale.NarrowFormat)
-                        enabled: !allDayCheckBox.checked && (!incidenceForm.isTodo || incidenceEndCheckBox.checked)
+                        enabled: !allDayCheckBox.checked || (!incidenceForm.isTodo || incidenceEndCheckBox.checked)
 
                         onEditTextChanged: {
                             // Set date from text here because it otherwise updates after this handler

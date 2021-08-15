@@ -1,4 +1,5 @@
-// SPDX-FileCopyrightText: 2021 Carl Schwan <carlschwan@kde.org>
+//  SPDX-FileCopyrightText: 2021 Carl Schwan <carlschwan@kde.org>
+//  SPDX-FileCopyrightText: 2021 Claudio Cambra <claudio.cambra@gmail.com>
 //  SPDX-FileCopyrightText: 2003, 2004 Cornelius Schumacher <schumacher@kde.org>
 //  SPDX-FileCopyrightText: 2003-2004 Reinhold Kainhofer <reinhold@kainhofer.com>
 //  SPDX-FileCopyrightText: 2009 Sebastian Sauer <sebsauer@kdab.net>
