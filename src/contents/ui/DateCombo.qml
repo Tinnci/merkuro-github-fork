@@ -18,6 +18,10 @@ QQC2.ComboBox {
     property bool validDate: !isNaN(dateFromText.getTime())
     property TimePicker timePicker
 
+    validator: RegularExpressionValidator {
+        regularExpression: /[0-9]{0,2}[/|.|-][0-9]{0,2}[/|.|-][0-9]*/
+    }
+
     editable: true
     editText: activeFocus ? editText : dateTime.toLocaleDateString(Qt.locale(), Locale.NarrowFormat)
 
