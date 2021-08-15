@@ -372,57 +372,12 @@ Kirigami.ScrollablePage {
                             }
                         }
                     }
-                    QQC2.ComboBox {
-                        id: incidenceStartTimeCombo
-
-                        Layout.fillWidth: true
-
-                        editable: true
-                        editText: root.incidenceWrapper.incidenceStart.toLocaleTimeString(Qt.locale(), Locale.ShortFormat)
+                    TimeCombo {
+                        //id: incidenceStartTimeCombo
+                        dateTime: root.incidenceWrapper.incidenceStart
+                        onDateTimeChanged: root.incidenceWrapper.incidenceStart = dateTime
                         enabled: !allDayCheckBox.checked && (!incidenceForm.isTodo || incidenceStartCheckBox.checked)
                         visible: !allDayCheckBox.checked
-
-                        inputMethodHints: Qt.ImhTime
-                        validator: RegularExpressionValidator {
-                            regularExpression: /^([0-1]?[0-9]|2[0-3]):([0-5][0-9])(:[0-5][0-9])?$/
-                        }
-
-                        onEditTextChanged: {
-                            let timePicker = incidenceStartTimePicker
-
-                            if (acceptableInput && activeFocus) { // Need to check for activeFocus or on load the text gets reset to 00:00
-                                timePicker.setToTimeFromString(editText);
-                                root.incidenceWrapper.incidenceStart = new Date(root.incidenceWrapper.incidenceStart.setHours(timePicker.hours, timePicker.minutes));
-                            }
-                        }
-
-                        popup: QQC2.Popup {
-                            id: incidenceStartTimePopup
-                            width: parent.width
-                            height: parent.width * 2
-                            y: parent.y + parent.height
-                            z: 1000
-
-                            TimePicker {
-                                id: incidenceStartTimePicker
-
-                                Component.onCompleted: minuteMultiples = 15
-                                Connections {
-                                    target: root.incidenceWrapper
-                                    function onIncidenceStartChanged() {
-                                        incidenceStartTimePicker.dateTime = root.incidenceWrapper.incidenceStart
-                                    }
-                                }
-
-                                dateTime: root.incidenceWrapper.incidenceStart
-
-                                onDone: {
-                                    incidenceStartTimePopup.close();
-                                    root.incidenceWrapper.incidenceStart = new Date(root.incidenceWrapper.incidenceStart.setHours(hours, minutes));
-
-                                }
-                            }
-                        }
                     }
                 }
                 RowLayout {
@@ -494,57 +449,12 @@ Kirigami.ScrollablePage {
                             }
                         }
                     }
-                    QQC2.ComboBox {
-                        id: incidenceEndTimeCombo
-
-                        Layout.fillWidth: true
-
-                        editable: true
-                        editText: root.incidenceWrapper.incidenceEnd.toLocaleTimeString(Qt.locale(), Locale.ShortFormat)
-                        enabled: !allDayCheckBox.checked && (!incidenceForm.isTodo || incidenceEndCheckBox.checked)
+                    TimeCombo {
+                        //id: incidenceStartTimeCombo
+                        dateTime: root.incidenceWrapper.incidenceEnd
+                        onDateTimeChanged: root.incidenceWrapper.incidenceEnd = dateTime
+                        enabled: !allDayCheckBox.checked && (!incidenceForm.isTodo || incidenceStartCheckBox.checked)
                         visible: !allDayCheckBox.checked
-
-                        inputMethodHints: Qt.ImhTime
-                        validator: RegularExpressionValidator {
-                            regularExpression: /^([0-1]?[0-9]|2[0-3]):([0-5][0-9])(:[0-5][0-9])?$/
-                        }
-
-                        onEditTextChanged: {
-                            let timePicker = incidenceEndTimePicker
-
-                            if (acceptableInput && activeFocus) {
-                                timePicker.setToTimeFromString(editText);
-                                root.incidenceWrapper.incidenceEnd = new Date(root.incidenceWrapper.incidenceEnd.setHours(timePicker.hours, timePicker.minutes));
-                            }
-                        }
-
-                        popup: QQC2.Popup {
-                            id: incidenceEndTimePopup
-
-                            width: parent.width
-                            height: parent.width * 2
-                            y: parent.y + parent.height
-                            z: 1000
-
-                            TimePicker {
-                                id: incidenceEndTimePicker
-
-                                Component.onCompleted: minuteMultiples = 15
-                                Connections {
-                                    target: root.incidenceWrapper
-                                    function onIncidenceEndChanged() {
-                                        incidenceEndTimePicker.dateTime = root.incidenceWrapper.incidenceEnd
-                                    }
-                                }
-
-                                dateTime: root.incidenceWrapper.incidenceEnd
-
-                                onDone: {
-                                    incidenceEndTimePopup.close();
-                                    root.incidenceWrapper.incidenceEnd = new Date(root.incidenceWrapper.incidenceEnd.setHours(hours, minutes));
-                                }
-                            }
-                        }
                     }
                 }
 
