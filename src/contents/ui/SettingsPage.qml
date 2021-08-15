@@ -354,6 +354,7 @@ Kirigami.Page {
                     Controls.CheckBox {
                         text: i18n("Show week headers")
                         checked: Config.showWeekHeaders
+                        enabled: !Config.isShowWeekHeadersImmutable
                         onClicked: {
                             Config.showWeekHeaders = !Config.showWeekHeaders;
                             Config.save();
