@@ -10,11 +10,21 @@ import org.kde.kalendar 1.0 as Kalendar
 import "dateutils.js" as DateUtils
 
 Kirigami.ScrollablePage {
+    title: i18n("Todos")
+
+    signal viewTodo(var todoData, var collectionData)
+
     ListView {
         model: Kalendar.CalendarManager.todoModel
         delegate: Kirigami.BasicListItem {
             label: model.summary
+            subtitle: model.dueDate
+            leftPadding: ((Kirigami.Units.gridUnit * 1.5) * (kDescendantLevel - 1)) + Kirigami.Units.largeSpacing
+            leading: QQC2.CheckBox {
+                checked: model.checked
+            }
+            Component.onCompleted: console.log(Kalendar.CalendarManager.getTodoData(index));
+            onClicked: viewTodo( Kalendar.CalendarManager.getTodoData(index), Kalendar.CalendarManager.getTodoModelCollectionDetails(index))
         }
-        Component.onCompleted: console.log(Kalendar.CalendarManager.todoModel.rowCount());
     }
 }

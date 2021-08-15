@@ -325,6 +325,8 @@ Kirigami.ApplicationWindow {
                     onTriggered: root.setUpAdd(IncidenceWrapper.TypeTodo);
                 }
             ]
+
+            onViewTodo: root.setUpView(todoData, collectionData)
         }
     }
 }
