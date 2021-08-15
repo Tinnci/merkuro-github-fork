@@ -228,6 +228,7 @@ Kirigami.Page {
 
                     Controls.CheckBox {
                         checked: Config.enableMaps
+                        enabled: !Config.isEnableMapsImmutable
                         onClicked: {
                             Config.enableMaps = !Config.enableMaps;
                             Config.save();
@@ -241,7 +242,7 @@ Kirigami.Page {
                 Controls.ComboBox {
                     Kirigami.FormData.label: i18n("Location marker:")
                     Layout.fillWidth: true
-                    enabled: Config.enableMaps
+                    enabled: Config.enableMaps && !Config.isLocationMarkerImmutable
                     currentIndex: Config.locationMarker // HACK: Ideally should use config enum
                     model: [i18n("Circle (shows area of location)"), i18n("Pin (shows exact location)")]
                     delegate: Kirigami.BasicListItem {
@@ -301,6 +302,7 @@ Kirigami.Page {
                         Layout.fillWidth: true
                         model: [i18n("Left"), i18n("Center"), i18n("Right")]
                         currentIndex: Config.weekdayLabelAlignment // HACK: Ideally should use config enum
+                        enabled: !Config.isWeekdayLabelAlignmentImmutable
 
                         delegate: Kirigami.BasicListItem {
                             text: modelData
@@ -316,6 +318,7 @@ Kirigami.Page {
                         Layout.fillWidth: true
                         model: [i18n("Full name (Monday)"), i18n("Abbreviated (Mon)"), i18n("Letter only (M)")]
                         currentIndex: Config.weekdayLabelLength // HACK: Ideally should use config enum
+                        enabled: !Config.isWeekdayLabelLengthImmutable
 
                         delegate: Kirigami.BasicListItem {
                             text: modelData
@@ -329,6 +332,7 @@ Kirigami.Page {
                     Controls.CheckBox {
                         text: i18n("Show week numbers")
                         checked: Config.showWeekNumbers
+                        enabled: !Config.isShowWeekNumbersImmutable
                         onClicked: {
                             Config.showWeekNumbers = !Config.showWeekNumbers;
                             Config.save();
@@ -345,6 +349,7 @@ Kirigami.Page {
                     Controls.CheckBox {
                         text: i18n("Show month header")
                         checked: Config.showMonthHeader
+                        enabled: !Config.isShowMonthHeaderImmutable
                         onClicked: {
                             Config.showMonthHeader = !Config.showMonthHeader;
                             Config.save();
