@@ -9,8 +9,6 @@ import org.kde.kirigami 2.15 as Kirigami
 QQC2.ComboBox {
     id: root
 
-    Layout.fillWidth: true
-
     signal newDateChosen(date newDate)
 
     property date dateTime

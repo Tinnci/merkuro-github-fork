@@ -9,8 +9,6 @@ import org.kde.kirigami 2.15 as Kirigami
 QQC2.ComboBox {
     id: root
 
-    Layout.fillWidth: true
-
     signal newTimeChosen(date newTime)
 
     property date dateTime
@@ -23,7 +21,7 @@ QQC2.ComboBox {
     property alias timePicker: popupTimePicker
 
     editable: true
-    editText: activeFocus ? editText : dateTime.toLocaleTimeString(Qt.locale(), Locale.ShortFormat)
+    editText: activeFocus ? editText : dateTime.toLocaleTimeString(Qt.locale(), "HH:mm")
 
     inputMethodHints: Qt.ImhTime
     validator: activeFocus ? inputValidator : timeValidator

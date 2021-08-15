@@ -327,6 +327,7 @@ Kirigami.ScrollablePage {
 
                     DateCombo {
                         id: incidenceStartDateCombo
+                        Layout.fillWidth: true
                         timePicker: incidenceStartTimeCombo.timePicker
                         dateTime: root.incidenceWrapper.incidenceStart
                         onNewDateChosen: root.incidenceWrapper.incidenceStart = newDate
@@ -365,6 +366,7 @@ Kirigami.ScrollablePage {
 
                     DateCombo {
                         id: incidenceEndDateCombo
+                        Layout.fillWidth: true
                         timePicker: incidenceEndTimeCombo.timePicker
                         dateTime: root.incidenceWrapper.incidenceEnd
                         onNewDateChosen: root.incidenceWrapper.incidenceEnd = newDate
