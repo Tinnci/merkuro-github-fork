@@ -352,7 +352,7 @@ Kirigami.Page {
                     }
 
                     Controls.CheckBox {
-                        Kirigami.FormData.label: i18n("Show week headers:")
+                        text: i18n("Show week headers")
                         checked: Config.showWeekHeaders
                         onClicked: {
                             Config.showWeekHeaders = !Config.showWeekHeaders;
