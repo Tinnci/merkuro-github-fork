@@ -17,13 +17,16 @@ QQC2.ComboBox {
     property RegularExpressionValidator timeValidator: RegularExpressionValidator {
         regularExpression: /^([0-1]?[0-9]|2[0-3]):([0-5][0-9])(:[0-5][0-9])?$/
     }
+    property RegularExpressionValidator inputValidator: RegularExpressionValidator {
+        regularExpression: /[0-9]{0,2}[:][0-9]{0,2}/
+    }
     property alias timePicker: popupTimePicker
 
     editable: true
     editText: activeFocus ? editText : dateTime.toLocaleTimeString(Qt.locale(), Locale.ShortFormat)
 
     inputMethodHints: Qt.ImhTime
-    validator: activeFocus ? null : timeValidator
+    validator: activeFocus ? inputValidator : timeValidator
 
     onEditTextChanged: {
         if (acceptableInput && activeFocus) { // Need to check for activeFocus or on load the text gets reset to 00:00
