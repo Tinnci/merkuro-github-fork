@@ -327,7 +327,7 @@ Kirigami.Page {
                     }
 
                     Controls.CheckBox {
-                        Kirigami.FormData.label: i18n("Show week numbers:")
+                        text: i18n("Show week numbers")
                         checked: Config.showWeekNumbers
                         onClicked: {
                             Config.showWeekNumbers = !Config.showWeekNumbers;
