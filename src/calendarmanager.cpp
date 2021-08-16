@@ -38,8 +38,6 @@
 #include <KDescendantsProxyModel>
 #include <QTimer>
 #include <KFormat>
-#include <todomodel.h>
-#include <incidencetreemodel.h>
 
 using namespace Akonadi;
 
@@ -387,17 +385,10 @@ CalendarManager::CalendarManager(QObject *parent)
     m_todoRightsFilterModel->setSourceModel(m_todoMimeTypeFilterModel);
     m_todoRightsFilterModel->sort(0);
 
-    const QString todoMimeType = QStringLiteral("application/x-vnd.akonadi.calendar.todo");
-    auto todoTreeModel = new IncidenceTreeModel(QStringList() << todoMimeType, this);
-    todoTreeModel->setSourceModel(m_calendar->model());
-    const auto pref = EventViews::PrefsPtr();
-    auto todoModel = new TodoModel(pref, this);
-    todoModel->setCalendar(m_calendar);
-    todoModel->setIncidenceChanger(m_changer);
-    todoModel->setSourceModel(todoTreeModel);
-    m_todoModel = new KDescendantsProxyModel(this);
-    m_todoModel->setSourceModel(todoModel);
-    m_todoModel->setExpandsByDefault(true);
+    m_todoModel = new TodoSortFilterProxyModel(this);
+    m_todoModel->setCalendar(m_calendar);
+    m_todoModel->setIncidenceChanger(m_changer);
+    m_todoModel->setColorCache(colorProxy->colorCache);
 
     Q_EMIT entityTreeModelChanged();
     Q_EMIT loadingChanged();
@@ -619,15 +610,6 @@ void CalendarManager::deleteIncidence(KCalendarCore::Incidence::Ptr incidence)
     m_calendar->deleteIncidence(incidence);
 }
 
-QVariantMap CalendarManager::getTodoModelCollectionDetails(int row)
-{
-    auto idx = m_todoModel->index(row, 0);
-    auto todoItem = idx.data(TodoModel::TodoRole).value<Akonadi::Item>();
-    auto collection = todoItem.parentCollection();
-    auto collectionId = collection.id();
-    return getCollectionDetails(collectionId);
-}
-
 QVariantMap CalendarManager::getCollectionDetails(qint64 collectionId)
 {
     QVariantMap collectionDetails;
@@ -658,50 +640,6 @@ void CalendarManager::setCollectionColor(qint64 collectionId, QColor color)
     });
 }
 
-QVariantMap CalendarManager::getTodoData(int row)
-{
-    auto idx = m_todoModel->index(row, 0);
-    auto todoItem = idx.data(TodoModel::TodoRole).value<Akonadi::Item>();
-    auto collectionId = todoItem.parentCollection().id();
-    auto todoPtr = CalendarSupport::todo(todoItem);
-    auto todoIncidencePtr = CalendarSupport::incidence(todoItem);
-
-    QString durationString;
-    KFormat format;
-    if (todoPtr->allDay()) {
-        durationString = format.formatSpelloutDuration(24*60*60*1000); // format milliseconds in 1 day
-    } else {
-        durationString = format.formatSpelloutDuration(todoPtr->duration().asSeconds() * 1000);
-    }
-
-    QColor color;
-    if (m_baseModel->colorCache.contains(QString::number(collectionId))) {
-        color = m_baseModel->colorCache[QString::number(collectionId)];
-    }
-
-    return QVariantMap{
-        {QStringLiteral("text"), todoPtr->summary()},
-        {QStringLiteral("description"), todoPtr->description()},
-        {QStringLiteral("location"), todoPtr->location()},
-        {QStringLiteral("startTime"), todoPtr->dtStart()},
-        {QStringLiteral("endTime"), todoPtr->dtDue()},
-        {QStringLiteral("allDay"), todoPtr->allDay()},
-        {QStringLiteral("todoCompleted"), todoPtr->isCompleted()},
-        //{QStringLiteral("starts"), start},
-        //{QStringLiteral("duration"), duration},
-        {QStringLiteral("durationString"), durationString},
-        {QStringLiteral("color"), color},
-        {QStringLiteral("collectionId"), collectionId},
-        {QStringLiteral("incidenceId"), todoPtr->uid()},
-        {QStringLiteral("incidenceType"), todoPtr->type()},
-        {QStringLiteral("incidenceTypeStr"), todoPtr->typeStr()},
-        {QStringLiteral("incidenceTypeIcon"), todoPtr->iconName()},
-        {QStringLiteral("incidencePtr"), QVariant::fromValue(todoIncidencePtr)},
-        //{QStringLiteral("incidenceOccurrence"), idx.data(IncidenceOccurrenceModel::IncidenceOccurrence)},
-    };
-}
-
-
 void CalendarManager::undoAction()
 {
     m_changer->history()->undo();
@@ -712,7 +650,7 @@ void CalendarManager::redoAction()
     m_changer->history()->redo();
 }
 
-KDescendantsProxyModel *CalendarManager::todoModel()
+TodoSortFilterProxyModel *CalendarManager::todoModel()
 {
     return m_todoModel;
 }
