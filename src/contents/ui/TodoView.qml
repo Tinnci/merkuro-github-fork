@@ -28,17 +28,19 @@ Kirigami.ScrollablePage {
 
             highlighted: ListView.isCurrentItem
             label: model.summary
+            labelItem.font.strikeout: model.checked
             subtitle: model.dueDate
             leftPadding: ((Kirigami.Units.gridUnit * 1.5) * (kDescendantLevel - 1)) + Kirigami.Units.largeSpacing
+
             leading: QQC2.CheckBox {
                 id: todoCheckbox
 
                 indicator: Rectangle {
-                    implicitWidth: Kirigami.Settings.isMobile ? Kirigami.Units.gridUnit : Kirigami.Units.gridUnit * 0.75
-                    implicitHeight: Kirigami.Settings.isMobile ? Kirigami.Units.gridUnit : Kirigami.Units.gridUnit * 0.75
+                    implicitWidth: Kirigami.Settings.isMobile ? Kirigami.Units.gridUnit * 1.25 : Kirigami.Units.gridUnit * 0.75
+                    implicitHeight: Kirigami.Settings.isMobile ? Kirigami.Units.gridUnit * 1.25 : Kirigami.Units.gridUnit * 0.75
                     x: todoCheckbox.leftPadding
                     y: parent.height / 2 - height / 2
-                    radius: 3
+                    radius: 100
                     border.color: todoData.color
                     color: {
                         let color = LabelUtils.getIncidenceBackgroundColor(todoData.color, root.isDark);
@@ -50,7 +52,7 @@ Kirigami.ScrollablePage {
                         width: parent.width * 0.66
                         height: parent.width * 0.66
                         anchors.centerIn: parent
-                        radius: 2
+                        radius: 100
                         color: LabelUtils.getIncidenceLabelColor(todoData.color, root.isDark)
                         visible: todoCheckbox.checked
                     }
