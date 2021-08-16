@@ -318,14 +318,6 @@ Kirigami.ApplicationWindow {
         TodoView {
             id: todoView
 
-            actions.contextualActions: [
-                Kirigami.Action {
-                    text: i18n("Add todo")
-                    icon.name: "list-add"
-                    onTriggered: root.setUpAdd(IncidenceWrapper.TypeTodo);
-                }
-            ]
-
             onViewTodo: root.setUpView(todoData, collectionData)
         }
     }

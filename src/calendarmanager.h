@@ -14,7 +14,7 @@
 #include <CalendarSupport/KCalPrefs>
 #include <CalendarSupport/Utils>
 #include <incidencewrapper.h>
-#include <todomodel.h>
+#include <todosortfilterproxymodel.h>
 
 namespace Akonadi {
     class ETMCalendar;
@@ -34,7 +34,7 @@ class CalendarManager : public QObject
     Q_PROPERTY(Akonadi::EntityRightsFilterModel *selectableTodoCalendars READ selectableTodoCalendars CONSTANT)
     Q_PROPERTY(Akonadi::ETMCalendar *calendar READ calendar CONSTANT)
     Q_PROPERTY(QVariantMap undoRedoData READ undoRedoData NOTIFY undoRedoDataChanged)
-    Q_PROPERTY(KDescendantsProxyModel *todoModel READ todoModel NOTIFY loadingChanged)
+    Q_PROPERTY(TodoSortFilterProxyModel *todoModel READ todoModel NOTIFY loadingChanged)
 
 public:
     CalendarManager(QObject *parent = nullptr);
@@ -48,7 +48,7 @@ public:
     Q_INVOKABLE void save();
     Akonadi::ETMCalendar *calendar() const;
     KDescendantsProxyModel *allCalendars();
-    KDescendantsProxyModel *todoModel();
+    TodoSortFilterProxyModel *todoModel();
     Akonadi::EntityRightsFilterModel *selectableEventCalendars() const;
     Akonadi::EntityRightsFilterModel *selectableTodoCalendars() const;
     Q_INVOKABLE qint64 defaultCalendarId(IncidenceWrapper *incidenceWrapper);
@@ -58,11 +58,9 @@ public:
     Q_INVOKABLE void addIncidence(IncidenceWrapper *incidenceWrapper);
     Q_INVOKABLE void editIncidence(IncidenceWrapper *incidenceWrapper);
     Q_INVOKABLE void deleteIncidence(KCalendarCore::Incidence::Ptr incidence);
-    Q_INVOKABLE QVariantMap getTodoModelCollectionDetails(int row);
     Q_INVOKABLE QVariantMap getCollectionDetails(qint64 collectionId);
     Q_INVOKABLE void setCollectionColor(qint64 collectionId, QColor color);
     Q_INVOKABLE QVariant getIncidenceSubclassed(KCalendarCore::Incidence::Ptr incidencePtr);
-    Q_INVOKABLE QVariantMap getTodoData(int row);
     Q_INVOKABLE void undoAction();
     Q_INVOKABLE void redoAction();
 
@@ -79,7 +77,7 @@ private:
     Akonadi::IncidenceChanger *m_changer;
     KDescendantsProxyModel *m_treeModel;
     ColorProxyModel *m_baseModel = nullptr;
-    KDescendantsProxyModel *m_todoModel = nullptr;
+    TodoSortFilterProxyModel *m_todoModel = nullptr;
     KCheckableProxyModel *m_selectionProxyModel = nullptr;
     Akonadi::ETMViewStateSaver *mCollectionSelectionModelStateSaver = nullptr;
     KDescendantsProxyModel *m_allCalendars = nullptr;
