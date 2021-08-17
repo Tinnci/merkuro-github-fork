@@ -18,7 +18,7 @@ Kirigami.ScrollablePage {
 
     signal viewTodo(var todoData, var collectionData)
 
-    property int sortBy: Kalendar.TodoSortFilterProxyModel.SortDueDate
+    property int sortBy: Kalendar.TodoSortFilterProxyModel.EndTimeColumn
     onSortByChanged: Kalendar.CalendarManager.todoModel.sortTodoModel(sortBy, ascendingOrder)
     property bool ascendingOrder: headerButtonGroup.checkedButton.ascending
     onAscendingOrderChanged: Kalendar.CalendarManager.todoModel.sortTodoModel(sortBy, ascendingOrder)
@@ -37,15 +37,15 @@ Kirigami.ScrollablePage {
 
             Kirigami.Action {
                 text: i18n("By due date")
-                onTriggered: root.sortBy = Kalendar.TodoSortFilterProxyModel.SortDueDate
+                onTriggered: root.sortBy = Kalendar.TodoSortFilterProxyModel.EndTimeColumn
             }
             Kirigami.Action {
                 text: i18n("By priority")
-                onTriggered: root.sortBy = Kalendar.TodoSortFilterProxyModel.SortPriority
+                onTriggered: root.sortBy = Kalendar.TodoSortFilterProxyModel.PriorityIntColumn
             }
             Kirigami.Action {
                 text: i18n("Alphabetically")
-                onTriggered: root.sortBy = Kalendar.TodoSortFilterProxyModel.SortName
+                onTriggered: root.sortBy = Kalendar.TodoSortFilterProxyModel.SummaryColumn
             }
         }
 
@@ -73,9 +73,9 @@ Kirigami.ScrollablePage {
         model: Kalendar.CalendarManager.todoModel
         delegate: Kirigami.BasicListItem {
             highlighted: ListView.isCurrentItem
-            label: model.summary
+            label: model.text
             labelItem.font.strikeout: model.checked
-            subtitle: model.dueDate
+            subtitle: model.endTime
             leftPadding: ((Kirigami.Units.gridUnit * 1.5) * (kDescendantLevel - 1)) + Kirigami.Units.largeSpacing
 
             leading: QQC2.CheckBox {
@@ -105,7 +105,7 @@ Kirigami.ScrollablePage {
                 }
                 checked: model.checked
             }
-            onClicked: viewTodo(Kalendar.CalendarManager.todoModel.getTodoData(index), Kalendar.CalendarManager.todoModel.getCollectionDetails(index))
+            onClicked: viewTodo(model, Kalendar.CalendarManager.todoModel.getCollectionDetails(index))
         }
     }
 }
