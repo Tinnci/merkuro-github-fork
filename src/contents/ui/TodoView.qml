@@ -60,16 +60,22 @@ Kirigami.Page {
             }
             RowLayout {
                 id: headerLayout
-                QQC2.RadioButton {
-                    readonly property bool ascending: true
-                    text: i18n("Ascending")
-                    QQC2.ButtonGroup.group: headerButtonGroup
+                Kirigami.Heading {
+                    Layout.fillWidth: true
+                    text: i18n("All todos")
                 }
-                QQC2.RadioButton {
-                    readonly property bool ascending: false
-                    text: i18n("Descending")
-                    checked: true
-                    QQC2.ButtonGroup.group: headerButtonGroup
+                Column {
+                    QQC2.RadioButton {
+                        readonly property bool ascending: true
+                        text: i18n("Ascending")
+                        QQC2.ButtonGroup.group: headerButtonGroup
+                    }
+                    QQC2.RadioButton {
+                        readonly property bool ascending: false
+                        text: i18n("Descending")
+                        checked: true
+                        QQC2.ButtonGroup.group: headerButtonGroup
+                    }
                 }
             }
         QQC1.TreeView {
@@ -91,14 +97,14 @@ Kirigami.Page {
                     label: model.text
                     labelItem.font.strikeout: model.checked
                     subtitle: model.endTime
-                    Layout.leftMargin: Kirigami.Units.gridUnit * (model.treeDepth + 1)
+                    Layout.leftMargin: Kirigami.Units.smallSpacing + (Kirigami.Units.gridUnit * (model.treeDepth + 1))
 
                     leading: QQC2.CheckBox {
                         id: todoCheckbox
 
                         indicator: Rectangle {
-                            implicitWidth: Kirigami.Settings.isMobile ? Kirigami.Units.gridUnit * 1.25 : Kirigami.Units.gridUnit * 0.75
-                            implicitHeight: Kirigami.Settings.isMobile ? Kirigami.Units.gridUnit * 1.25 : Kirigami.Units.gridUnit * 0.75
+                            implicitWidth: Kirigami.Settings.isMobile ? Kirigami.Units.gridUnit : Kirigami.Units.gridUnit * 0.75
+                            implicitHeight: Kirigami.Settings.isMobile ? Kirigami.Units.gridUnit : Kirigami.Units.gridUnit * 0.75
                             x: todoCheckbox.leftPadding
                             y: parent.height / 2 - height / 2
                             radius: 100

@@ -21,5 +21,6 @@
     <file alias="LocationMap.qml">contents/ui/LocationMap.qml</file>
     <file alias="TimeCombo.qml">contents/ui/TimeCombo.qml</file>
     <file alias="DateCombo.qml">contents/ui/DateCombo.qml</file>
+    <file alias="TodoCollectionPage.qml">contents/ui/TodoCollectionPage.qml</file>
   </qresource>
 </RCC>
