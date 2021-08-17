@@ -88,6 +88,7 @@ Kirigami.Page {
                 role: "summary"
             }
             headerVisible: false
+            flickableItem.interactive: Kirigami.Settings.isMobile
             model: Kalendar.CalendarManager.todoModel
             rowDelegate: RowLayout {
                 height: listItem.height
