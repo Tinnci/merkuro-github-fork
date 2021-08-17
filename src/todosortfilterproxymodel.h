@@ -3,38 +3,40 @@
 
 #pragma once
 #include <QSortFilterProxyModel>
+#include <QAbstractProxyModel>
 #include <CalendarSupport/KCalPrefs>
 #include <CalendarSupport/Utils>
 #include <KCheckableProxyModel>
 #include <KDescendantsProxyModel>
+#include <KExtraColumnsProxyModel>
 #include <KFormat>
 #include <todomodel.h>
 #include <incidencetreemodel.h>
+
+class ExtraTodoModel;
 
 class TodoSortFilterProxyModel : public QSortFilterProxyModel
 {
     Q_OBJECT
 
 public:
-    enum Roles {
-        LocationRole = TodoModel::CalendarRole + 1,
-        AllDayRole,
-        CompletedRole,
-        ColorRole,
-        CollectionIdRole,
-        DurationStringRole,
-        IncidenceIdRole,
-        IncidenceTypeRole,
-        IncidenceTypeStrRole,
-        IncidenceTypeIconRole,
-        IncidencePtrRole
+    enum BaseTodoModelColumns {
+        SummaryColumn = TodoModel::SummaryColumn,
+        PriorityColumn = TodoModel::PriorityColumn,
+        PercentColumn = TodoModel::PercentColumn,
+        StartDateColumn = TodoModel::StartDateColumn,
+        DueDateColumn = TodoModel::DueDateColumn,
+        CategoriesColumn = TodoModel::CategoriesColumn,
+        DescriptionColumn = TodoModel::DescriptionColumn,
+        CalendarColumn = TodoModel::CalendarColumn,
     };
-    enum TodoModelSort {
-        SortDueDate = 0,
-        SortName,
-        SortPriority,
+    Q_ENUM(BaseTodoModelColumns);
+    enum ExtraTodoModelColumns {
+        StartTimeColumn = TodoModel::ColumnCount,
+        EndTimeColumn,
+        PriorityIntColumn
     };
-    Q_ENUM(TodoModelSort);
+    Q_ENUM(ExtraTodoModelColumns);
 
     TodoSortFilterProxyModel(QObject *parent = nullptr);
     ~TodoSortFilterProxyModel() = default;
@@ -43,16 +45,9 @@ public:
     void setIncidenceChanger(Akonadi::IncidenceChanger *changer);
     void setColorCache(QHash<QString, QColor> colorCache);
 
-    QVariant data(const QModelIndex &index, int role) const override;
-    QHash<int, QByteArray> roleNames() const override;
-
     Q_INVOKABLE QVariantMap getCollectionDetails(int row);
-    Q_INVOKABLE QVariantMap getTodoData(int row);
     Q_INVOKABLE void sortTodoModel(int sort, bool ascending);
 
 private:
-    IncidenceTreeModel *m_todoTreeModel = nullptr;
-    TodoModel *m_baseTodoModel = nullptr;
-    KDescendantsProxyModel *m_todoModel = nullptr;
-    QHash<QString, QColor> m_colors;
+    ExtraTodoModel *m_extraTodoModel = nullptr;
 };
