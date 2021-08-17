@@ -424,6 +424,10 @@ QAbstractProxyModel *CalendarManager::collections()
     return m_treeModel;
 }
 
+Akonadi::CollectionFilterProxyModel * CalendarManager::todoCollections()
+{
+    return m_todoMimeTypeFilterModel;
+}
 
 bool CalendarManager::loading() const
 {
