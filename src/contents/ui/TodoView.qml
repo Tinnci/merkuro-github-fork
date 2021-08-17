@@ -103,18 +103,14 @@ Kirigami.Page {
                             y: parent.height / 2 - height / 2
                             radius: 100
                             border.color: model.color
-                            color: {
-                                let color = LabelUtils.getIncidenceBackgroundColor(model.color, root.isDark);
-                                color.a = 0.3;
-                                return color;
-                            }
+                            color: Qt.rgba(0,0,0,0)
 
                             Rectangle {
                                 width: parent.width * 0.66
                                 height: parent.width * 0.66
                                 anchors.centerIn: parent
                                 radius: 100
-                                color: LabelUtils.getIncidenceLabelColor(model.color, root.isDark)
+                                color: model.color
                                 visible: todoCheckbox.checked
                             }
                         }
