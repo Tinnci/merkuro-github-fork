@@ -38,9 +38,6 @@ public:
         const auto pref = EventViews::PrefsPtr();
         m_baseTodoModel = new TodoModel(pref, this);
         m_baseTodoModel->setSourceModel(m_todoTreeModel);
-        m_todoModel = new KDescendantsProxyModel(this);
-        m_todoModel->setSourceModel(m_baseTodoModel);
-        m_todoModel->setExpandsByDefault(true);
         setSourceModel(m_baseTodoModel);
 
         appendColumn(QLatin1String("StartDateTime"));
@@ -164,7 +161,6 @@ public:
 private:
     IncidenceTreeModel *m_todoTreeModel = nullptr;
     TodoModel *m_baseTodoModel = nullptr;
-    KDescendantsProxyModel *m_todoModel = nullptr;
     QHash<QString, QColor> m_colors;
 };
 
