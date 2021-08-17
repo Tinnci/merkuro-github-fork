@@ -15,6 +15,9 @@ Kirigami.PageRow {
     signal viewTodo(var todoData, var collectionData)
 
     globalToolBar.style: Kirigami.ApplicationHeaderStyle.Auto
+    globalToolBar.canContainHandles: true
+    globalToolBar.showNavigationButtons: true
+    Component.onCompleted: console.log(globalToolBar.objectName)
 
     initialPage: Kirigami.ScrollablePage {
         title: i18n("Calendars")
