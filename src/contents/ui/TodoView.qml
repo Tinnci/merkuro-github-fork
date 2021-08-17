@@ -5,6 +5,7 @@
 
 import QtQuick 2.15
 import QtQuick.Layouts 1.1
+import QtQuick.Controls 1.4 as QQC1
 import QtQuick.Controls 2.15 as QQC2
 import org.kde.kirigami 2.14 as Kirigami
 
@@ -12,7 +13,7 @@ import org.kde.kalendar 1.0 as Kalendar
 import "dateutils.js" as DateUtils
 import "labelutils.js" as LabelUtils
 
-Kirigami.ScrollablePage {
+Kirigami.Page {
     id: root
     title: i18n("Todos")
 
@@ -51,62 +52,78 @@ Kirigami.ScrollablePage {
 
     }
 
-    ListView {
+    ColumnLayout {
+        anchors.fill: parent
         QQC2.ButtonGroup {
-            id: headerButtonGroup
-            exclusive: true
-        }
-        header: RowLayout {
-            id: headerLayout
-            QQC2.RadioButton {
-                readonly property bool ascending: true
-                text: i18n("Ascending")
-                QQC2.ButtonGroup.group: headerButtonGroup
+                id: headerButtonGroup
+                exclusive: true
             }
-            QQC2.RadioButton {
-                readonly property bool ascending: false
-                text: i18n("Descending")
-                checked: true
-                QQC2.ButtonGroup.group: headerButtonGroup
-            }
-        }
-        model: Kalendar.CalendarManager.todoModel
-        delegate: Kirigami.BasicListItem {
-            highlighted: ListView.isCurrentItem
-            label: model.text
-            labelItem.font.strikeout: model.checked
-            subtitle: model.endTime
-            leftPadding: ((Kirigami.Units.gridUnit * 1.5) * (kDescendantLevel - 1)) + Kirigami.Units.largeSpacing
-
-            leading: QQC2.CheckBox {
-                id: todoCheckbox
-
-                indicator: Rectangle {
-                    implicitWidth: Kirigami.Settings.isMobile ? Kirigami.Units.gridUnit * 1.25 : Kirigami.Units.gridUnit * 0.75
-                    implicitHeight: Kirigami.Settings.isMobile ? Kirigami.Units.gridUnit * 1.25 : Kirigami.Units.gridUnit * 0.75
-                    x: todoCheckbox.leftPadding
-                    y: parent.height / 2 - height / 2
-                    radius: 100
-                    border.color: model.color
-                    color: {
-                        let color = LabelUtils.getIncidenceBackgroundColor(model.color, root.isDark);
-                        color.a = 0.3;
-                        return color;
-                    }
-
-                    Rectangle {
-                        width: parent.width * 0.66
-                        height: parent.width * 0.66
-                        anchors.centerIn: parent
-                        radius: 100
-                        color: LabelUtils.getIncidenceLabelColor(model.color, root.isDark)
-                        visible: todoCheckbox.checked
-                    }
+            RowLayout {
+                id: headerLayout
+                QQC2.RadioButton {
+                    readonly property bool ascending: true
+                    text: i18n("Ascending")
+                    QQC2.ButtonGroup.group: headerButtonGroup
                 }
-                checked: model.checked
-                onClicked: model.checked = model.checked === 0 ? 2 : 0
+                QQC2.RadioButton {
+                    readonly property bool ascending: false
+                    text: i18n("Descending")
+                    checked: true
+                    QQC2.ButtonGroup.group: headerButtonGroup
+                }
             }
-            onClicked: viewTodo(model, Kalendar.CalendarManager.todoModel.getCollectionDetails(index))
+        QQC1.TreeView {
+            Layout.fillWidth: true
+            Layout.fillHeight: true
+
+            QQC1.TableViewColumn {
+                Layout.fillWidth: true
+                title: "Summary"
+                role: "summary"
+            }
+            headerVisible: false
+            model: Kalendar.CalendarManager.todoModel
+            rowDelegate: RowLayout {
+                height: listItem.height
+                Kirigami.BasicListItem {
+                    id: listItem
+                    highlighted: ListView.isCurrentItem
+                    label: model.text
+                    labelItem.font.strikeout: model.checked
+                    subtitle: model.endTime
+                    Layout.leftMargin: Kirigami.Units.gridUnit * (model.treeDepth + 1)
+
+                    leading: QQC2.CheckBox {
+                        id: todoCheckbox
+
+                        indicator: Rectangle {
+                            implicitWidth: Kirigami.Settings.isMobile ? Kirigami.Units.gridUnit * 1.25 : Kirigami.Units.gridUnit * 0.75
+                            implicitHeight: Kirigami.Settings.isMobile ? Kirigami.Units.gridUnit * 1.25 : Kirigami.Units.gridUnit * 0.75
+                            x: todoCheckbox.leftPadding
+                            y: parent.height / 2 - height / 2
+                            radius: 100
+                            border.color: model.color
+                            color: {
+                                let color = LabelUtils.getIncidenceBackgroundColor(model.color, root.isDark);
+                                color.a = 0.3;
+                                return color;
+                            }
+
+                            Rectangle {
+                                width: parent.width * 0.66
+                                height: parent.width * 0.66
+                                anchors.centerIn: parent
+                                radius: 100
+                                color: LabelUtils.getIncidenceLabelColor(model.color, root.isDark)
+                                visible: todoCheckbox.checked
+                            }
+                        }
+                        checked: model.checked
+                        onClicked: model.checked = model.checked === 0 ? 2 : 0
+                    }
+                    onClicked: viewTodo(model, Kalendar.CalendarManager.todoModel.getCollectionDetails(styleData.row))
+                }
+            }
         }
     }
 }

@@ -28,6 +28,7 @@ public:
         IncidenceTypeStrRole,
         IncidenceTypeIconRole,
         IncidencePtrRole,
+        TreeDepthRole
     };
     Q_ENUM(Roles);
 
@@ -40,7 +41,7 @@ public:
         m_todoModel = new KDescendantsProxyModel(this);
         m_todoModel->setSourceModel(m_baseTodoModel);
         m_todoModel->setExpandsByDefault(true);
-        setSourceModel(m_todoModel);
+        setSourceModel(m_baseTodoModel);
 
         appendColumn(QLatin1String("StartDateTime"));
         appendColumn(QLatin1String("EndDateTime"));
@@ -109,6 +110,14 @@ public:
             return todoPtr->iconName();
         } else if(role == Roles::IncidencePtrRole) {
             return QVariant::fromValue(CalendarSupport::incidence(todoItem));
+        } else if(role == Roles::TreeDepthRole) {
+            int depth = 0;
+            auto idx = index;
+            while(idx.parent().isValid()) {
+                idx = idx.parent();
+                depth++;
+            }
+            return depth;
         }
 
         return KExtraColumnsProxyModel::data(index, role);
@@ -130,6 +139,7 @@ public:
         roleNames[Roles::IncidenceTypeStrRole] = "incidenceTypeStr";
         roleNames[Roles::IncidenceTypeIconRole] = "incidenceTypeIcon";
         roleNames[Roles::IncidencePtrRole] = "incidencePtr";
+        roleNames[Roles::TreeDepthRole] = "treeDepth";
 
         return roleNames;
     }
