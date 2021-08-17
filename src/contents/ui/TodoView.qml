@@ -104,6 +104,7 @@ Kirigami.ScrollablePage {
                     }
                 }
                 checked: model.checked
+                onClicked: model.checked = model.checked === 0 ? 2 : 0
             }
             onClicked: viewTodo(model, Kalendar.CalendarManager.todoModel.getCollectionDetails(index))
         }
