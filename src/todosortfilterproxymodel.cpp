@@ -1,6 +1,7 @@
 // SPDX-FileCopyrightText: 2021 Claudio Cambra <claudio.cambra@gmail.com>
 // SPDX-License-Identifier: LGPL-2.1-or-later
 
+#include <KConfigWatcher>
 #include <todosortfilterproxymodel.h>
 
 class ExtraTodoModel : public KExtraColumnsProxyModel
@@ -43,6 +44,14 @@ public:
         appendColumn(QLatin1String("StartDateTime"));
         appendColumn(QLatin1String("EndDateTime"));
         appendColumn(QLatin1String("PriorityInt"));
+
+        KSharedConfig::Ptr config = KSharedConfig::openConfig();
+        KConfigGroup rColorsConfig(config, "Resources Colors");
+        m_colorWatcher = KConfigWatcher::create(config);
+
+        QObject::connect(m_colorWatcher.data(), &KConfigWatcher::configChanged, this, &ExtraTodoModel::loadColors);
+
+        loadColors();
     };
     ~ExtraTodoModel() = default;
 
@@ -150,18 +159,27 @@ public:
         m_baseTodoModel->setIncidenceChanger(changer);
     };
 
-    QHash<QString, QColor> colorCache() {
-        return m_colors;
-    };
-
     void setColorCache(QHash<QString, QColor> colorCache) {
         m_colors = colorCache;
     };
+
+    void loadColors() {
+        KSharedConfig::Ptr config = KSharedConfig::openConfig();
+        KConfigGroup rColorsConfig(config, "Resources Colors");
+        const QStringList colorKeyList = rColorsConfig.keyList();
+
+        for (const QString &key : colorKeyList) {
+            QColor color = rColorsConfig.readEntry(key, QColor("blue"));
+            m_colors[key] = color;
+        }
+        Q_EMIT layoutChanged();
+    }
 
 private:
     IncidenceTreeModel *m_todoTreeModel = nullptr;
     TodoModel *m_baseTodoModel = nullptr;
     QHash<QString, QColor> m_colors;
+    KConfigWatcher::Ptr m_colorWatcher;
 };
 
 
@@ -178,14 +196,17 @@ TodoSortFilterProxyModel::TodoSortFilterProxyModel(QObject* parent)
     setFilterCaseSensitivity(Qt::CaseInsensitive);
 }
 
-void TodoSortFilterProxyModel::setCalendar(Akonadi::ETMCalendar::Ptr calendar)
+void TodoSortFilterProxyModel::setCalendar(Akonadi::ETMCalendar *calendar)
 {
-    m_extraTodoModel->setCalendar(calendar);
+    Akonadi::ETMCalendar::Ptr calendarPtr(calendar);
+    m_extraTodoModel->setCalendar(calendarPtr);
+    Q_EMIT calendarChanged();
 }
 
 void TodoSortFilterProxyModel::setIncidenceChanger(Akonadi::IncidenceChanger* changer)
 {
     m_extraTodoModel->setIncidenceChanger(changer);
+    Q_EMIT incidenceChangerChanged();
 }
 
 void TodoSortFilterProxyModel::setColorCache(QHash<QString, QColor> colorCache)

@@ -385,11 +385,6 @@ CalendarManager::CalendarManager(QObject *parent)
     m_todoRightsFilterModel->setSourceModel(m_todoMimeTypeFilterModel);
     m_todoRightsFilterModel->sort(0);
 
-    m_todoModel = new TodoSortFilterProxyModel(this);
-    m_todoModel->setCalendar(m_calendar);
-    m_todoModel->setIncidenceChanger(m_changer);
-    m_todoModel->setColorCache(colorProxy->colorCache);
-
     Q_EMIT entityTreeModelChanged();
     Q_EMIT loadingChanged();
 }
@@ -458,6 +453,12 @@ Akonadi::ETMCalendar *CalendarManager::calendar() const
 {
     return m_calendar.get();
 }
+
+Akonadi::IncidenceChanger * CalendarManager::incidenceChanger() const
+{
+    return m_changer;
+}
+
 
 KDescendantsProxyModel * CalendarManager::allCalendars()
 {
