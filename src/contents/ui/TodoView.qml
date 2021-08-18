@@ -60,28 +60,28 @@ Kirigami.Page {
             id: headerButtonGroup
             exclusive: true
         }
-            RowLayout {
-                id: headerLayout
-                Kirigami.Heading {
-                    Layout.fillWidth: true
-                    text: root.filterCollectionDetails ? root.filterCollectionDetails.displayName : i18n("All todos")
-                    color: root.filterCollectionDetails ?
-                        LabelUtils.getIncidenceLabelColor(root.filterCollectionDetails.color, root.isDark) : Kirigami.Theme.textColor
+        RowLayout {
+            id: headerLayout
+            Kirigami.Heading {
+                Layout.fillWidth: true
+                text: root.filterCollectionDetails ? root.filterCollectionDetails.displayName : i18n("All todos")
+                color: root.filterCollectionDetails ?
+                LabelUtils.getIncidenceLabelColor(root.filterCollectionDetails.color, root.isDark) : Kirigami.Theme.textColor
+            }
+            Column {
+                QQC2.RadioButton {
+                    readonly property bool ascending: true
+                    text: i18n("Ascending")
+                    QQC2.ButtonGroup.group: headerButtonGroup
                 }
-                Column {
-                    QQC2.RadioButton {
-                        readonly property bool ascending: true
-                        text: i18n("Ascending")
-                        QQC2.ButtonGroup.group: headerButtonGroup
-                    }
-                    QQC2.RadioButton {
-                        readonly property bool ascending: false
-                        text: i18n("Descending")
-                        checked: true
-                        QQC2.ButtonGroup.group: headerButtonGroup
-                    }
+                QQC2.RadioButton {
+                    readonly property bool ascending: false
+                    text: i18n("Descending")
+                    checked: true
+                    QQC2.ButtonGroup.group: headerButtonGroup
                 }
             }
+        }
         QQC1.TreeView {
             Layout.fillWidth: true
             Layout.fillHeight: true
