@@ -51,7 +51,6 @@ public:
     Akonadi::ETMCalendar *calendar() const;
     Akonadi::IncidenceChanger *incidenceChanger() const;
     KDescendantsProxyModel *allCalendars();
-    TodoSortFilterProxyModel *todoModel();
     Akonadi::EntityRightsFilterModel *selectableEventCalendars() const;
     Akonadi::EntityRightsFilterModel *selectableTodoCalendars() const;
     Q_INVOKABLE qint64 defaultCalendarId(IncidenceWrapper *incidenceWrapper);
@@ -78,9 +77,8 @@ Q_SIGNALS:
 private:
     Akonadi::ETMCalendar::Ptr m_calendar = nullptr;
     Akonadi::IncidenceChanger *m_changer;
-    KDescendantsProxyModel *m_treeModel;
+    KDescendantsProxyModel *m_flatCollectionTreeModel;
     ColorProxyModel *m_baseModel = nullptr;
-    TodoSortFilterProxyModel *m_todoModel = nullptr;
     KCheckableProxyModel *m_selectionProxyModel = nullptr;
     Akonadi::ETMViewStateSaver *mCollectionSelectionModelStateSaver = nullptr;
     KDescendantsProxyModel *m_allCalendars = nullptr;

@@ -19,6 +19,7 @@ Kirigami.Page {
 
     signal viewTodo(var todoData, var collectionData)
 
+    property var filterCollectionId: -1
     property int sortBy: Kalendar.TodoSortFilterProxyModel.EndTimeColumn
     onSortByChanged: todoModel.sortTodoModel(sortBy, ascendingOrder)
     property bool ascendingOrder: headerButtonGroup.checkedButton.ascending
@@ -93,6 +94,7 @@ Kirigami.Page {
                 id: todoModel
                 calendar: Kalendar.CalendarManager.calendar
                 incidenceChanger: Kalendar.CalendarManager.incidenceChanger
+                filterCollectionId: root.filterCollectionId
             }
             rowDelegate: RowLayout {
                 height: listItem.height
