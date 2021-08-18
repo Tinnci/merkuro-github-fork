@@ -20,9 +20,9 @@ Kirigami.Page {
     signal viewTodo(var todoData, var collectionData)
 
     property int sortBy: Kalendar.TodoSortFilterProxyModel.EndTimeColumn
-    onSortByChanged: Kalendar.CalendarManager.todoModel.sortTodoModel(sortBy, ascendingOrder)
+    onSortByChanged: todoModel.sortTodoModel(sortBy, ascendingOrder)
     property bool ascendingOrder: headerButtonGroup.checkedButton.ascending
-    onAscendingOrderChanged: Kalendar.CalendarManager.todoModel.sortTodoModel(sortBy, ascendingOrder)
+    onAscendingOrderChanged: todoModel.sortTodoModel(sortBy, ascendingOrder)
     readonly property color standardTextColor: Kirigami.Theme.textColor
     readonly property bool isDark: LabelUtils.isDarkColor(Kirigami.Theme.backgroundColor)
 
@@ -89,7 +89,11 @@ Kirigami.Page {
             }
             headerVisible: false
             flickableItem.interactive: Kirigami.Settings.isMobile
-            model: Kalendar.CalendarManager.todoModel
+            model: Kalendar.TodoSortFilterProxyModel {
+                id: todoModel
+                calendar: Kalendar.CalendarManager.calendar
+                incidenceChanger: Kalendar.CalendarManager.incidenceChanger
+            }
             rowDelegate: RowLayout {
                 height: listItem.height
                 Kirigami.BasicListItem {
@@ -124,7 +128,7 @@ Kirigami.Page {
                         checked: model.checked
                         onClicked: model.checked = model.checked === 0 ? 2 : 0
                     }
-                    onClicked: viewTodo(model, Kalendar.CalendarManager.todoModel.getCollectionDetails(styleData.row))
+                    onClicked: viewTodo(model, todoModel.getCollectionDetails(styleData.row))
                 }
             }
         }

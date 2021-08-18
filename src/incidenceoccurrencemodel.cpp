@@ -26,10 +26,10 @@ IncidenceOccurrenceModel::IncidenceOccurrenceModel(QObject *parent)
 
     KSharedConfig::Ptr config = KSharedConfig::openConfig();
     KConfigGroup rColorsConfig(config, "Resources Colors");
-    colorWatcher = KConfigWatcher::create(config);
+    m_colorWatcher = KConfigWatcher::create(config);
 
     // This is quite slow; would be nice to find a quicker way
-    QObject::connect(colorWatcher.data(), &KConfigWatcher::configChanged, this, &IncidenceOccurrenceModel::updateFromSource);
+    QObject::connect(m_colorWatcher.data(), &KConfigWatcher::configChanged, this, &IncidenceOccurrenceModel::updateFromSource);
 
     load();
 }
