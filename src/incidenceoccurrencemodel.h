@@ -118,7 +118,7 @@ private:
 
     QList<Occurrence> m_incidences;
     QHash<QString, QColor> m_colors;
-    KConfigWatcher::Ptr colorWatcher;
+    KConfigWatcher::Ptr m_colorWatcher;
     QVariantMap mFilter;
 };
 

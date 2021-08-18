@@ -10,6 +10,8 @@
 #include <KDescendantsProxyModel>
 #include <KExtraColumnsProxyModel>
 #include <KFormat>
+#include <Akonadi/Calendar/IncidenceChanger>
+#include <Akonadi/Calendar/ETMCalendar>
 #include <todomodel.h>
 #include <incidencetreemodel.h>
 
@@ -18,6 +20,8 @@ class ExtraTodoModel;
 class TodoSortFilterProxyModel : public QSortFilterProxyModel
 {
     Q_OBJECT
+    Q_PROPERTY(Akonadi::IncidenceChanger *incidenceChanger WRITE setIncidenceChanger NOTIFY incidenceChangerChanged)
+    Q_PROPERTY(Akonadi::ETMCalendar *calendar WRITE setCalendar NOTIFY calendarChanged)
 
 public:
     enum BaseTodoModelColumns {
@@ -41,12 +45,16 @@ public:
     TodoSortFilterProxyModel(QObject *parent = nullptr);
     ~TodoSortFilterProxyModel() = default;
 
-    void setCalendar(Akonadi::ETMCalendar::Ptr calendar);
+    void setCalendar(Akonadi::ETMCalendar *calendar);
     void setIncidenceChanger(Akonadi::IncidenceChanger *changer);
     void setColorCache(QHash<QString, QColor> colorCache);
 
     Q_INVOKABLE QVariantMap getCollectionDetails(int row);
     Q_INVOKABLE void sortTodoModel(int sort, bool ascending);
+
+Q_SIGNALS:
+    void incidenceChangerChanged();
+    void calendarChanged();
 
 private:
     ExtraTodoModel *m_extraTodoModel = nullptr;
