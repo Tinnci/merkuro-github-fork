@@ -20,13 +20,13 @@ Kirigami.Page {
     signal viewTodo(var todoData, var collectionData)
 
     property int filterCollectionId
-    property var filterCollectionDetails: filterCollectionId ? todoModel.getCollectionDetails(filterCollectionId) : null
-    property int sortBy: Kalendar.TodoSortFilterProxyModel.EndTimeColumn
-    onSortByChanged: todoModel.sortTodoModel(sortBy, ascendingOrder)
+    property var filterCollectionDetails: filterCollectionId ? Kalendar.CalendarManager.getCollectionDetails(filterCollectionId) : null
+    property int sortBy
     property bool ascendingOrder: false
-    onAscendingOrderChanged: todoModel.sortTodoModel(sortBy, ascendingOrder)
     readonly property color standardTextColor: Kirigami.Theme.textColor
     readonly property bool isDark: LabelUtils.isDarkColor(Kirigami.Theme.backgroundColor)
+
+    Component.onCompleted: sortBy = Kalendar.TodoSortFilterProxyModel.EndTimeColumn // Otherwise crashes...
 
     //padding: Kirigami.Units.largeSpacing
 
@@ -53,7 +53,41 @@ Kirigami.Page {
                 onTriggered: root.sortBy = Kalendar.TodoSortFilterProxyModel.SummaryColumn
             }
         }
+        right: Kirigami.Action {
+            text: i18n("Show completed")
+            icon.name: "task-complete"
+            onTriggered: completedDrawer.open()
+        }
 
+    }
+
+    Kirigami.OverlayDrawer {
+        id: completedDrawer
+        edge: Qt.BottomEdge
+
+        height: applicationWindow().height * 0.75
+
+        ColumnLayout {
+            anchors.fill: parent
+            Kirigami.Heading {
+                text: root.filterCollectionDetails ?
+                    i18n("Completed todos in %1", root.filterCollectionDetails.displayName) : i18n("Completed todos")
+                color: root.filterCollectionDetails ?
+                    LabelUtils.getIncidenceLabelColor(root.filterCollectionDetails.color, root.isDark) : Kirigami.Theme.textColor
+            }
+            TodoTreeView {
+                Layout.fillWidth: true
+                Layout.fillHeight: true
+                filterCollectionId: root.filterCollectionId
+                showCompleted: Kalendar.TodoSortFilterProxyModel.ShowCompleteOnly
+                sortBy: root.sortBy
+                ascendingOrder: root.ascendingOrder
+                onViewTodo: {
+                    root.viewTodo(todoData, collectionData);
+                    completedDrawer.close();
+                }
+            }
+        }
     }
 
     ColumnLayout {
@@ -70,7 +104,7 @@ Kirigami.Page {
                 Layout.fillWidth: true
                 text: root.filterCollectionDetails ? root.filterCollectionDetails.displayName : i18n("All todos")
                 color: root.filterCollectionDetails ?
-                LabelUtils.getIncidenceLabelColor(root.filterCollectionDetails.color, root.isDark) : Kirigami.Theme.textColor
+                    LabelUtils.getIncidenceLabelColor(root.filterCollectionDetails.color, root.isDark) : Kirigami.Theme.textColor
             }
             QQC2.ToolButton {
                 property string sortTypeString: {
@@ -92,60 +126,15 @@ Kirigami.Page {
                 onClicked: root.ascendingOrder = !root.ascendingOrder
             }
         }
-        QQC1.TreeView {
+
+        TodoTreeView {
             Layout.fillWidth: true
             Layout.fillHeight: true
-
-            QQC1.TableViewColumn {
-                Layout.fillWidth: true
-                title: "Summary"
-                role: "summary"
-            }
-            headerVisible: false
-            flickableItem.interactive: Kirigami.Settings.isMobile
-            model: Kalendar.TodoSortFilterProxyModel {
-                id: todoModel
-                calendar: Kalendar.CalendarManager.calendar
-                incidenceChanger: Kalendar.CalendarManager.incidenceChanger
-                filterCollectionId: root.filterCollectionId ? root.filterCollectionId : -1
-            }
-            rowDelegate: RowLayout {
-                height: listItem.height
-                Kirigami.BasicListItem {
-                    id: listItem
-                    highlighted: ListView.isCurrentItem
-                    label: model.text
-                    labelItem.font.strikeout: model.checked
-                    subtitle: model.endTime
-                    Layout.leftMargin: Kirigami.Units.smallSpacing + (Kirigami.Units.gridUnit * (model.treeDepth + 1))
-
-                    leading: QQC2.CheckBox {
-                        id: todoCheckbox
-
-                        indicator: Rectangle {
-                            implicitWidth: Kirigami.Settings.isMobile ? Kirigami.Units.gridUnit : Kirigami.Units.gridUnit * 0.75
-                            implicitHeight: Kirigami.Settings.isMobile ? Kirigami.Units.gridUnit : Kirigami.Units.gridUnit * 0.75
-                            x: todoCheckbox.leftPadding
-                            y: parent.height / 2 - height / 2
-                            radius: 100
-                            border.color: model.color
-                            color: Qt.rgba(0,0,0,0)
-
-                            Rectangle {
-                                width: parent.width * 0.66
-                                height: parent.width * 0.66
-                                anchors.centerIn: parent
-                                radius: 100
-                                color: model.color
-                                visible: todoCheckbox.checked
-                            }
-                        }
-                        checked: model.checked
-                        onClicked: model.checked = model.checked === 0 ? 2 : 0
-                    }
-                    onClicked: viewTodo(model, todoModel.getCollectionDetails(model.collectionId))
-                }
-            }
+            filterCollectionId: root.filterCollectionId
+            showCompleted: Kalendar.TodoSortFilterProxyModel.ShowIncompleteOnly
+            sortBy: root.sortBy
+            ascendingOrder: root.ascendingOrder
+            onViewTodo: root.viewTodo(todoData, collectionData);
         }
     }
 }
