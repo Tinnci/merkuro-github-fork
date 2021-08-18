@@ -328,17 +328,17 @@ CalendarManager::CalendarManager(QObject *parent)
     auto collectionFilter = new CollectionFilter(this);
     collectionFilter->setSourceModel(colorProxy);
 
-    m_treeModel = new KDescendantsProxyModel(this);
-    m_treeModel->setSourceModel(collectionFilter);
-    m_treeModel->setExpandsByDefault(true);
+    m_flatCollectionTreeModel = new KDescendantsProxyModel(this);
+    m_flatCollectionTreeModel->setSourceModel(collectionFilter);
+    m_flatCollectionTreeModel->setExpandsByDefault(true);
 
     auto refreshColors = [=] () {
-        for(auto i = 0; i < m_treeModel->rowCount(); i++) {
-            auto idx = m_treeModel->index(i, 0, {});
+        for(auto i = 0; i < m_flatCollectionTreeModel->rowCount(); i++) {
+            auto idx = m_flatCollectionTreeModel->index(i, 0, {});
             colorProxy->getCollectionColor(CalendarSupport::collectionFromIndex(idx));
         }
     };
-    connect(m_treeModel, &QSortFilterProxyModel::rowsInserted, this, refreshColors);
+    connect(m_flatCollectionTreeModel, &QSortFilterProxyModel::rowsInserted, this, refreshColors);
 
     m_calendar = QSharedPointer<Akonadi::ETMCalendar>::create(); // QSharedPointer
     setCollectionSelectionProxyModel(m_calendar->checkableProxyModel());
@@ -416,7 +416,7 @@ void CalendarManager::delayedInit()
 
 QAbstractProxyModel *CalendarManager::collections()
 {
-    return m_treeModel;
+    return m_flatCollectionTreeModel;
 }
 
 Akonadi::CollectionFilterProxyModel * CalendarManager::todoCollections()
@@ -653,11 +653,6 @@ void CalendarManager::undoAction()
 void CalendarManager::redoAction()
 {
     m_changer->history()->redo();
-}
-
-TodoSortFilterProxyModel *CalendarManager::todoModel()
-{
-    return m_todoModel;
 }
 
 Q_DECLARE_METATYPE(KCalendarCore::Incidence::Ptr);

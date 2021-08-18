@@ -23,9 +23,9 @@ Kirigami.PageRow {
 
         actions.main: Kirigami.Action {
             text: i18n("View all")
-            onTriggered: pageStack.push(allTodosPage)
+            onTriggered: todoPageRow.push("qrc:/TodoView.qml")
         }
-        Component.onCompleted: todoPageRow.push(allTodosPage)
+        Component.onCompleted: todoPageRow.push("qrc:/TodoView.qml")
 
         Component {
             id: allTodosPage
@@ -38,7 +38,6 @@ Kirigami.PageRow {
             model: Kalendar.CalendarManager.todoCollections
             delegate: Kirigami.BasicListItem {
                 property int itemCollectionId: collectionId
-                leftPadding: ((Kirigami.Units.gridUnit * 2) * (kDescendantLevel - 1)) + Kirigami.Units.largeSpacing
                 leading: QQC2.CheckBox {
                     visible: model.checkState != null
                     checked: model.checkState == 2
@@ -53,6 +52,7 @@ Kirigami.PageRow {
                 }
                 label: display
                 icon: decoration
+                onClicked: todoPageRow.push("qrc:/TodoView.qml", {filterCollectionId: collectionId})
             }
         }
     }

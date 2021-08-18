@@ -22,6 +22,7 @@ class TodoSortFilterProxyModel : public QSortFilterProxyModel
     Q_OBJECT
     Q_PROPERTY(Akonadi::IncidenceChanger *incidenceChanger WRITE setIncidenceChanger NOTIFY incidenceChangerChanged)
     Q_PROPERTY(Akonadi::ETMCalendar *calendar WRITE setCalendar NOTIFY calendarChanged)
+    Q_PROPERTY(qint64 filterCollectionId READ filterCollectionId WRITE setFilterCollectionId NOTIFY filterCollectionIdChanged)
 
 public:
     enum BaseTodoModelColumns {
@@ -45,9 +46,13 @@ public:
     TodoSortFilterProxyModel(QObject *parent = nullptr);
     ~TodoSortFilterProxyModel() = default;
 
+    bool filterAcceptsRow(int row, const QModelIndex &sourceParent) const override;
+
     void setCalendar(Akonadi::ETMCalendar *calendar);
     void setIncidenceChanger(Akonadi::IncidenceChanger *changer);
     void setColorCache(QHash<QString, QColor> colorCache);
+    qint64 filterCollectionId();
+    void setFilterCollectionId(qint64 filterCollectionId);
 
     Q_INVOKABLE QVariantMap getCollectionDetails(int row);
     Q_INVOKABLE void sortTodoModel(int sort, bool ascending);
@@ -55,7 +60,9 @@ public:
 Q_SIGNALS:
     void incidenceChangerChanged();
     void calendarChanged();
+    void filterCollectionIdChanged();
 
 private:
     ExtraTodoModel *m_extraTodoModel = nullptr;
+    qint64 m_filterCollectionId;
 };

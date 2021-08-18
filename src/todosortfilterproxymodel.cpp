@@ -196,6 +196,18 @@ TodoSortFilterProxyModel::TodoSortFilterProxyModel(QObject* parent)
     setFilterCaseSensitivity(Qt::CaseInsensitive);
 }
 
+bool TodoSortFilterProxyModel::filterAcceptsRow(int row, const QModelIndex &sourceParent) const
+{
+    const QModelIndex sourceIndex = sourceModel()->index(row, 0, sourceParent);
+    Q_ASSERT(sourceIndex.isValid());
+
+    if(m_filterCollectionId > -1) {
+        return sourceIndex.data(ExtraTodoModel::CollectionIdRole).toInt() == m_filterCollectionId;
+    }
+
+    return QSortFilterProxyModel::filterAcceptsRow(row, sourceParent);
+}
+
 void TodoSortFilterProxyModel::setCalendar(Akonadi::ETMCalendar *calendar)
 {
     Akonadi::ETMCalendar::Ptr calendarPtr(calendar);
@@ -212,6 +224,17 @@ void TodoSortFilterProxyModel::setIncidenceChanger(Akonadi::IncidenceChanger* ch
 void TodoSortFilterProxyModel::setColorCache(QHash<QString, QColor> colorCache)
 {
     m_extraTodoModel->setColorCache(colorCache);
+}
+
+qint64 TodoSortFilterProxyModel::filterCollectionId()
+{
+    return m_filterCollectionId;
+}
+
+void TodoSortFilterProxyModel::setFilterCollectionId(qint64 filterCollectionId)
+{
+    m_filterCollectionId = filterCollectionId;
+    Q_EMIT filterCollectionIdChanged();
 }
 
 QVariantMap TodoSortFilterProxyModel::getCollectionDetails(int row)
