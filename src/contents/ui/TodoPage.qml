@@ -69,11 +69,18 @@ Kirigami.Page {
 
         ColumnLayout {
             anchors.fill: parent
-            Kirigami.Heading {
-                text: root.filterCollectionDetails ?
-                    i18n("Completed todos in %1", root.filterCollectionDetails.displayName) : i18n("Completed todos")
-                color: root.filterCollectionDetails ?
-                    LabelUtils.getIncidenceLabelColor(root.filterCollectionDetails.color, root.isDark) : Kirigami.Theme.textColor
+            RowLayout {
+                Kirigami.Heading {
+                    Layout.fillWidth: true
+                    text: root.filterCollectionDetails ?
+                        i18n("Completed todos in %1", root.filterCollectionDetails.displayName) : i18n("Completed todos")
+                    color: root.filterCollectionDetails ?
+                        LabelUtils.getIncidenceLabelColor(root.filterCollectionDetails.color, root.isDark) : Kirigami.Theme.textColor
+                }
+                QQC2.ToolButton {
+                    icon.name: "dialog-close"
+                    onClicked: completedDrawer.close()
+                }
             }
             TodoTreeView {
                 Layout.fillWidth: true
