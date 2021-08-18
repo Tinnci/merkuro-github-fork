@@ -256,12 +256,6 @@ QVariantMap TodoSortFilterProxyModel::getCollectionDetails(qint64 collectionId)
     return collectionDetails;
 }
 
-QVariantMap TodoSortFilterProxyModel::getCollectionDetailsFromRow(int row)
-{
-    auto idx = m_extraTodoModel->index(row, 0);
-    return getCollectionDetails(idx.data(ExtraTodoModel::CollectionIdRole).toInt());
-}
-
 void TodoSortFilterProxyModel::sortTodoModel(int column, bool ascending)
 {
     Q_EMIT layoutAboutToBeChanged();
