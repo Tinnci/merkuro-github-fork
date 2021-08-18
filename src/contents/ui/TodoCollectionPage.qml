@@ -28,13 +28,18 @@ Kirigami.PageRow {
     initialPage: Kirigami.ScrollablePage {
         title: i18n("Todo calendars")
 
-        actions.main: Kirigami.Action {
-            text: i18n("View all")
-            onTriggered: todoPageRow.push("qrc:/TodoPage.qml")
-        }
         Component.onCompleted: todoPageRow.push("qrc:/TodoPage.qml")
 
         ListView {
+            header: ColumnLayout {
+                anchors.left: parent.left
+                anchors.right: parent.right
+                QQC2.ToolButton {
+                    Layout.fillWidth: true
+                    text: i18n("View all todos")
+                    onClicked: todoPageRow.push("qrc:/TodoPage.qml")
+                }
+            }
             model: Kalendar.CalendarManager.todoCollections
             delegate: Kirigami.BasicListItem {
                 property int itemCollectionId: collectionId
