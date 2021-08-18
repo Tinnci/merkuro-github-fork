@@ -211,11 +211,24 @@ bool TodoSortFilterProxyModel::filterAcceptsRow(int row, const QModelIndex &sour
     const QModelIndex sourceIndex = sourceModel()->index(row, 0, sourceParent);
     Q_ASSERT(sourceIndex.isValid());
 
+    bool acceptRow = true;
+
     if(m_filterCollectionId > -1) {
-        return sourceIndex.data(ExtraTodoModel::CollectionIdRole).toInt() == m_filterCollectionId;
+        acceptRow = acceptRow && sourceIndex.data(ExtraTodoModel::CollectionIdRole).toInt() == m_filterCollectionId;
     }
 
-    return QSortFilterProxyModel::filterAcceptsRow(row, sourceParent);
+    switch(m_showCompleted) {
+        case ShowComplete::ShowCompleteOnly:
+            acceptRow = acceptRow && sourceIndex.data(ExtraTodoModel::CompletedRole).toBool();
+            break;
+        case ShowComplete::ShowIncompleteOnly:
+            acceptRow = acceptRow && sourceIndex.data(ExtraTodoModel::CompletedRole).toBool() == false;
+        case ShowComplete::ShowAll:
+        default:
+            break;
+    }
+
+    return acceptRow ? QSortFilterProxyModel::filterAcceptsRow(row, sourceParent) : acceptRow;
 }
 
 void TodoSortFilterProxyModel::setCalendar(Akonadi::ETMCalendar *calendar)
@@ -247,18 +260,14 @@ void TodoSortFilterProxyModel::setFilterCollectionId(qint64 filterCollectionId)
     Q_EMIT filterCollectionIdChanged();
 }
 
-QVariantMap TodoSortFilterProxyModel::getCollectionDetails(qint64 collectionId)
+int TodoSortFilterProxyModel::showCompleted()
 {
-    auto collection = m_extraTodoModel->calendar()->collection(collectionId);
-    QVariantMap collectionDetails;
+    return m_showCompleted;
+}
 
-    collectionDetails[QLatin1String("id")] = collection.id();
-    collectionDetails[QLatin1String("name")] = collection.name();
-    collectionDetails[QLatin1String("displayName")] = collection.displayName();
-    collectionDetails[QLatin1String("color")] = m_extraTodoModel->colorCache()[QString::number(collection.id())];
-    collectionDetails[QLatin1String("readOnly")] = collection.rights().testFlag(Akonadi::Collection::ReadOnly);
-
-    return collectionDetails;
+void TodoSortFilterProxyModel::setShowCompleted(int showCompleted)
+{
+    m_showCompleted = showCompleted;
 }
 
 void TodoSortFilterProxyModel::sortTodoModel(int column, bool ascending)

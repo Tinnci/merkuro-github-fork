@@ -316,7 +316,6 @@ Kirigami.ApplicationWindow {
         id: todoCollectionPageComponent
 
         TodoCollectionPage {
-
             onViewTodo: root.setUpView(todoData, collectionData)
         }
     }

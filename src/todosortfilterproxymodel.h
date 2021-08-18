@@ -23,6 +23,7 @@ class TodoSortFilterProxyModel : public QSortFilterProxyModel
     Q_PROPERTY(Akonadi::IncidenceChanger *incidenceChanger WRITE setIncidenceChanger NOTIFY incidenceChangerChanged)
     Q_PROPERTY(Akonadi::ETMCalendar *calendar WRITE setCalendar NOTIFY calendarChanged)
     Q_PROPERTY(qint64 filterCollectionId READ filterCollectionId WRITE setFilterCollectionId NOTIFY filterCollectionIdChanged)
+    Q_PROPERTY(int showCompleted READ showCompleted WRITE setShowCompleted NOTIFY showCompletedChanged)
 
 public:
     enum BaseTodoModelColumns {
@@ -36,12 +37,20 @@ public:
         CalendarColumn = TodoModel::CalendarColumn,
     };
     Q_ENUM(BaseTodoModelColumns);
+
     enum ExtraTodoModelColumns {
         StartTimeColumn = TodoModel::ColumnCount,
         EndTimeColumn,
         PriorityIntColumn
     };
     Q_ENUM(ExtraTodoModelColumns);
+
+    enum ShowComplete {
+        ShowAll = 0,
+        ShowCompleteOnly,
+        ShowIncompleteOnly
+    };
+    Q_ENUM(ShowComplete);
 
     TodoSortFilterProxyModel(QObject *parent = nullptr);
     ~TodoSortFilterProxyModel() = default;
@@ -51,18 +60,22 @@ public:
     void setCalendar(Akonadi::ETMCalendar *calendar);
     void setIncidenceChanger(Akonadi::IncidenceChanger *changer);
     void setColorCache(QHash<QString, QColor> colorCache);
+
     qint64 filterCollectionId();
     void setFilterCollectionId(qint64 filterCollectionId);
+    int showCompleted();
+    void setShowCompleted(int showCompleted);
 
-    Q_INVOKABLE QVariantMap getCollectionDetails(qint64 collectionId);
     Q_INVOKABLE void sortTodoModel(int sort, bool ascending);
 
 Q_SIGNALS:
     void incidenceChangerChanged();
     void calendarChanged();
     void filterCollectionIdChanged();
+    void showCompletedChanged();
 
 private:
     ExtraTodoModel *m_extraTodoModel = nullptr;
     qint64 m_filterCollectionId;
+    int m_showCompleted = ShowComplete::ShowAll;
 };
