@@ -19,7 +19,8 @@ Kirigami.Page {
 
     signal viewTodo(var todoData, var collectionData)
 
-    property var filterCollectionId: -1
+    property int filterCollectionId
+    property var filterCollectionDetails: filterCollectionId ? todoModel.getCollectionDetails(filterCollectionId) : null
     property int sortBy: Kalendar.TodoSortFilterProxyModel.EndTimeColumn
     onSortByChanged: todoModel.sortTodoModel(sortBy, ascendingOrder)
     property bool ascendingOrder: headerButtonGroup.checkedButton.ascending
@@ -63,7 +64,7 @@ Kirigami.Page {
                 id: headerLayout
                 Kirigami.Heading {
                     Layout.fillWidth: true
-                    text: i18n("All todos")
+                    text: root.filterCollectionDetails ? root.filterCollectionDetails.displayName : i18n("All todos")
                 }
                 Column {
                     QQC2.RadioButton {
@@ -94,7 +95,7 @@ Kirigami.Page {
                 id: todoModel
                 calendar: Kalendar.CalendarManager.calendar
                 incidenceChanger: Kalendar.CalendarManager.incidenceChanger
-                filterCollectionId: root.filterCollectionId
+                filterCollectionId: root.filterCollectionId ? root.filterCollectionId : -1
             }
             rowDelegate: RowLayout {
                 height: listItem.height
@@ -130,7 +131,7 @@ Kirigami.Page {
                         checked: model.checked
                         onClicked: model.checked = model.checked === 0 ? 2 : 0
                     }
-                    onClicked: viewTodo(model, todoModel.getCollectionDetails(styleData.row))
+                    onClicked: viewTodo(model, todoModel.getCollectionDetailsFromRow(styleData.row))
                 }
             }
         }
