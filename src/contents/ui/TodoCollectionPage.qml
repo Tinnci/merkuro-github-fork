@@ -18,6 +18,13 @@ Kirigami.PageRow {
     globalToolBar.canContainHandles: true
     globalToolBar.showNavigationButtons: true
 
+    Connections {
+        target: todoPageRow.currentItem
+        function onViewTodo(todoData, collectionData) {
+            todoPageRow.viewTodo(todoData, collectionData)
+        }
+    }
+
     initialPage: Kirigami.ScrollablePage {
         title: i18n("Calendars")
 
@@ -26,13 +33,6 @@ Kirigami.PageRow {
             onTriggered: todoPageRow.push("qrc:/TodoView.qml")
         }
         Component.onCompleted: todoPageRow.push("qrc:/TodoView.qml")
-
-        Component {
-            id: allTodosPage
-            TodoView {
-                onViewTodo: todoPageRow.viewTodo(todoData, collectionData)
-            }
-        }
 
         ListView {
             model: Kalendar.CalendarManager.todoCollections
