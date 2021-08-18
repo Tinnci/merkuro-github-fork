@@ -26,13 +26,13 @@ Kirigami.PageRow {
     }
 
     initialPage: Kirigami.ScrollablePage {
-        title: i18n("Calendars")
+        title: i18n("Todo calendars")
 
         actions.main: Kirigami.Action {
             text: i18n("View all")
-            onTriggered: todoPageRow.push("qrc:/TodoView.qml")
+            onTriggered: todoPageRow.push("qrc:/TodoPage.qml")
         }
-        Component.onCompleted: todoPageRow.push("qrc:/TodoView.qml")
+        Component.onCompleted: todoPageRow.push("qrc:/TodoPage.qml")
 
         ListView {
             model: Kalendar.CalendarManager.todoCollections
@@ -52,7 +52,7 @@ Kirigami.PageRow {
                 }
                 label: display
                 icon: decoration
-                onClicked: todoPageRow.push("qrc:/TodoView.qml", {filterCollectionId: collectionId})
+                onClicked: todoPageRow.push("qrc:/TodoPage.qml", {filterCollectionId: collectionId})
             }
         }
     }
