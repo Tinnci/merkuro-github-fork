@@ -57,14 +57,16 @@ Kirigami.Page {
     ColumnLayout {
         anchors.fill: parent
         QQC2.ButtonGroup {
-                id: headerButtonGroup
-                exclusive: true
-            }
+            id: headerButtonGroup
+            exclusive: true
+        }
             RowLayout {
                 id: headerLayout
                 Kirigami.Heading {
                     Layout.fillWidth: true
                     text: root.filterCollectionDetails ? root.filterCollectionDetails.displayName : i18n("All todos")
+                    color: root.filterCollectionDetails ?
+                        LabelUtils.getIncidenceLabelColor(root.filterCollectionDetails.color, root.isDark) : Kirigami.Theme.textColor
                 }
                 Column {
                     QQC2.RadioButton {
