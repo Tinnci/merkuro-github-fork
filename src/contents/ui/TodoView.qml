@@ -131,7 +131,7 @@ Kirigami.Page {
                         checked: model.checked
                         onClicked: model.checked = model.checked === 0 ? 2 : 0
                     }
-                    onClicked: viewTodo(model, todoModel.getCollectionDetailsFromRow(styleData.row))
+                    onClicked: viewTodo(model, todoModel.getCollectionDetails(model.collectionId))
                 }
             }
         }
