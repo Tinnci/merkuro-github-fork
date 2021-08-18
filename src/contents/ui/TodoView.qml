@@ -23,10 +23,12 @@ Kirigami.Page {
     property var filterCollectionDetails: filterCollectionId ? todoModel.getCollectionDetails(filterCollectionId) : null
     property int sortBy: Kalendar.TodoSortFilterProxyModel.EndTimeColumn
     onSortByChanged: todoModel.sortTodoModel(sortBy, ascendingOrder)
-    property bool ascendingOrder: headerButtonGroup.checkedButton.ascending
+    property bool ascendingOrder: false
     onAscendingOrderChanged: todoModel.sortTodoModel(sortBy, ascendingOrder)
     readonly property color standardTextColor: Kirigami.Theme.textColor
     readonly property bool isDark: LabelUtils.isDarkColor(Kirigami.Theme.backgroundColor)
+
+    //padding: Kirigami.Units.largeSpacing
 
     actions {
         main: Kirigami.Action {
@@ -56,30 +58,38 @@ Kirigami.Page {
 
     ColumnLayout {
         anchors.fill: parent
+
         QQC2.ButtonGroup {
             id: headerButtonGroup
             exclusive: true
         }
         RowLayout {
             id: headerLayout
+
             Kirigami.Heading {
                 Layout.fillWidth: true
                 text: root.filterCollectionDetails ? root.filterCollectionDetails.displayName : i18n("All todos")
                 color: root.filterCollectionDetails ?
                 LabelUtils.getIncidenceLabelColor(root.filterCollectionDetails.color, root.isDark) : Kirigami.Theme.textColor
             }
-            Column {
-                QQC2.RadioButton {
-                    readonly property bool ascending: true
-                    text: i18n("Ascending")
-                    QQC2.ButtonGroup.group: headerButtonGroup
+            QQC2.ToolButton {
+                property string sortTypeString: {
+                    let directionString = root.ascendingOrder ? i18n("(ascending)") : i18n("(descending)");
+                    switch(root.sortBy) {
+                        case Kalendar.TodoSortFilterProxyModel.EndTimeColumn:
+                            return i18n("by due date %1", directionString);
+                            break;
+                        case Kalendar.TodoSortFilterProxyModel.PriorityIntColumn:
+                            return i18n("by priority %1", directionString);
+                            break;
+                        case Kalendar.TodoSortFilterProxyModel.SummaryColumn:
+                            return i18n("alphabetically %1", directionString);
+                            break;
+                    }
                 }
-                QQC2.RadioButton {
-                    readonly property bool ascending: false
-                    text: i18n("Descending")
-                    checked: true
-                    QQC2.ButtonGroup.group: headerButtonGroup
-                }
+                icon.name: root.ascendingOrder ? "view-sort-ascending" : "view-sort-descending"
+                text: i18n("Sorted %1", sortTypeString)
+                onClicked: root.ascendingOrder = !root.ascendingOrder
             }
         }
         QQC1.TreeView {
