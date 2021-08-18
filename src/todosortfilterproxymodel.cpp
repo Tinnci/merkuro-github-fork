@@ -150,7 +150,12 @@ public:
         return roleNames;
     }
 
+    Akonadi::ETMCalendar::Ptr calendar() {
+        return m_calendar;
+    }
+
     void setCalendar(Akonadi::ETMCalendar::Ptr calendar) {
+        m_calendar = calendar;
         m_todoTreeModel->setSourceModel(calendar->model());
         m_baseTodoModel->setCalendar(calendar);
     };
@@ -176,6 +181,7 @@ public:
     }
 
 private:
+    Akonadi::ETMCalendar::Ptr m_calendar;
     IncidenceTreeModel *m_todoTreeModel = nullptr;
     TodoModel *m_baseTodoModel = nullptr;
     QHash<QString, QColor> m_colors;
@@ -237,11 +243,9 @@ void TodoSortFilterProxyModel::setFilterCollectionId(qint64 filterCollectionId)
     Q_EMIT filterCollectionIdChanged();
 }
 
-QVariantMap TodoSortFilterProxyModel::getCollectionDetails(int row)
+QVariantMap TodoSortFilterProxyModel::getCollectionDetails(qint64 collectionId)
 {
-    auto idx = m_extraTodoModel->index(row, 0);
-    auto todoItem = idx.data(TodoModel::TodoRole).value<Akonadi::Item>();
-    auto collection = todoItem.parentCollection();
+    auto collection = m_extraTodoModel->calendar()->collection(collectionId);
     QVariantMap collectionDetails;
 
     collectionDetails[QLatin1String("id")] = collection.id();
@@ -250,6 +254,12 @@ QVariantMap TodoSortFilterProxyModel::getCollectionDetails(int row)
     collectionDetails[QLatin1String("readOnly")] = collection.rights().testFlag(Akonadi::Collection::ReadOnly);
 
     return collectionDetails;
+}
+
+QVariantMap TodoSortFilterProxyModel::getCollectionDetailsFromRow(int row)
+{
+    auto idx = m_extraTodoModel->index(row, 0);
+    return getCollectionDetails(idx.data(ExtraTodoModel::CollectionIdRole).toInt());
 }
 
 void TodoSortFilterProxyModel::sortTodoModel(int column, bool ascending)

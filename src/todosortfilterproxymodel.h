@@ -54,7 +54,8 @@ public:
     qint64 filterCollectionId();
     void setFilterCollectionId(qint64 filterCollectionId);
 
-    Q_INVOKABLE QVariantMap getCollectionDetails(int row);
+    Q_INVOKABLE QVariantMap getCollectionDetails(qint64 collectionId);
+    Q_INVOKABLE QVariantMap getCollectionDetailsFromRow(int row);
     Q_INVOKABLE void sortTodoModel(int sort, bool ascending);
 
 Q_SIGNALS:
