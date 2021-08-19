@@ -4,15 +4,15 @@
 
 import QtQuick 2.15
 import QtQuick.Layouts 1.1
-import QtQuick.Controls 1.4 as QQC1
 import QtQuick.Controls 2.15 as QQC2
 import org.kde.kirigami 2.14 as Kirigami
+import org.kde.kirigamiaddons.treeview 1.0 as KirigamiAddonsTreeView
 
 import org.kde.kalendar 1.0 as Kalendar
 import "dateutils.js" as DateUtils
 import "labelutils.js" as LabelUtils
 
-QQC1.TreeView {
+KirigamiAddonsTreeView.TreeListView {
     id: root
 
     signal viewTodo(var todoData, var collectionData)
@@ -27,13 +27,9 @@ QQC1.TreeView {
     property bool ascendingOrder: false
     onAscendingOrderChanged: todoModel.sortTodoModel(sortBy, ascendingOrder)
 
-    QQC1.TableViewColumn {
-        id: summaryColumn
-        title: "Summary"
-        role: "summary"
-    }
-    headerVisible: false
-    flickableItem.interactive: Kirigami.Settings.isMobile
+    currentIndex: -1
+
+    //flickableItem.interactive: Kirigami.Settings.isMobile
     model: Kalendar.TodoSortFilterProxyModel {
         id: todoModel
         calendar: Kalendar.CalendarManager.calendar
@@ -41,23 +37,43 @@ QQC1.TreeView {
         filterCollectionId: root.filterCollectionId ? root.filterCollectionId : -1
         showCompleted: root.showCompleted
     }
-    rowDelegate: RowLayout {
-        height: listItem.height
-        Kirigami.BasicListItem {
-            id: listItem
+    delegate: KirigamiAddonsTreeView.BasicTreeItem {
+        id: listItem
 
-            property bool isOverdue: root.currentDate > model.endTime
+        Binding {
+            target: contentItem.anchors
+            property: "right"
+            value: this.right
+        }
 
-            highlighted: ListView.isCurrentItem
-            label: model.text
-            labelItem.font.strikeout: model.checked
-            subtitle: !isNaN(model.endTime.getTime()) ? LabelUtils.todoDateTimeLabel(model.endTime) : null
-            subtitleItem.color: isOverdue ? Kirigami.Theme.negativeTextColor : Kirigami.Theme.textColor
+        background.anchors.right: this.right
+        separatorVisible: true
 
-            Layout.leftMargin: Kirigami.Units.smallSpacing + (Kirigami.Units.gridUnit * (model.treeDepth + 1))
+        property bool isOverdue: root.currentDate > model.endTime
 
-            leading: QQC2.CheckBox {
+        IncidenceMouseArea {
+            anchors.fill: parent
+            incidenceData: model
+            collectionDetails: Kalendar.CalendarManager.getCollectionDetails(model.collectionId)
+
+            onViewClicked: root.viewTodo(model, Kalendar.CalendarManager.getCollectionDetails(model.collectionId))
+            onEditClicked: root.editTodo(model.incidencePtr, Kalendar.CalendarManager.getCollectionDetails(model.collectionId))
+            onDeleteClicked: root.deleteTodo(model.incidencePtr, model.endTime ? model.endTime : model.startTime ? model.startTime : null)
+            onTodoCompletedClicked: model.checked = model.checked === 0 ? 2 : 0
+        }
+
+        contentItem: GridLayout {
+            anchors.right: root.right
+            Layout.fillWidth: true
+            Layout.fillHeight: true
+            columns: 3
+            rows: 2
+
+            QQC2.CheckBox {
                 id: todoCheckbox
+
+                Layout.row: 0
+                Layout.column: 0
 
                 indicator: Rectangle {
                     implicitWidth: Kirigami.Settings.isMobile ? Kirigami.Units.gridUnit : Kirigami.Units.gridUnit * 0.75
@@ -81,18 +97,25 @@ QQC1.TreeView {
                 onClicked: model.checked = model.checked === 0 ? 2 : 0
             }
 
-            onClicked: root.viewTodo(model, Kalendar.CalendarManager.getCollectionDetails(model.collectionId))
+            QQC2.Label {
+                Layout.row: 0
+                Layout.column: 1
+                Layout.fillWidth: true
+                text: model.text
+                font.strikeout: model.checked
+            }
 
-            IncidenceMouseArea {
-                anchors.fill: parent
-                incidenceData: model
-                collectionDetails: Kalendar.CalendarManager.getCollectionDetails(model.collectionId)
-
-                onViewClicked: root.viewTodo(model, Kalendar.CalendarManager.getCollectionDetails(model.collectionId))
-                onEditClicked: root.editTodo(model.incidencePtr, Kalendar.CalendarManager.getCollectionDetails(model.collectionId))
-                onDeleteClicked: root.deleteTodo(model.incidencePtr, model.endTime ? model.endTime : model.startTime ? model.startTime : null)
-                onTodoCompletedClicked: model.checked = model.checked === 0 ? 2 : 0
+            QQC2.Label {
+                Layout.row: 1
+                Layout.column: 1
+                Layout.fillWidth: true
+                text: LabelUtils.todoDateTimeLabel(model.endTime)
+                color: listItem.isOverdue ? Kirigami.Theme.negativeTextColor : Kirigami.Theme.textColor
+                font: Kirigami.Theme.smallFont
+                visible: !isNaN(model.endTime.getTime())
             }
         }
+
+        onClicked: root.viewTodo(model, Kalendar.CalendarManager.getCollectionDetails(model.collectionId))
     }
 }
