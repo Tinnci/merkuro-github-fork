@@ -88,6 +88,7 @@ Kirigami.Page {
             TodoTreeView {
                 Layout.fillWidth: true
                 Layout.fillHeight: true
+
                 filterCollectionId: root.filterCollectionId
                 showCompleted: Kalendar.TodoSortFilterProxyModel.ShowCompleteOnly
                 sortBy: root.sortBy
@@ -111,10 +112,6 @@ Kirigami.Page {
     ColumnLayout {
         anchors.fill: parent
 
-        QQC2.ButtonGroup {
-            id: headerButtonGroup
-            exclusive: true
-        }
         RowLayout {
             id: headerLayout
 
@@ -148,6 +145,7 @@ Kirigami.Page {
         TodoTreeView {
             Layout.fillWidth: true
             Layout.fillHeight: true
+
             filterCollectionId: root.filterCollectionId
             showCompleted: Kalendar.TodoSortFilterProxyModel.ShowIncompleteOnly
             sortBy: root.sortBy

@@ -28,6 +28,7 @@ KirigamiAddonsTreeView.TreeListView {
     onAscendingOrderChanged: todoModel.sortTodoModel(sortBy, ascendingOrder)
 
     currentIndex: -1
+    clip: true
 
     //flickableItem.interactive: Kirigami.Settings.isMobile
     model: Kalendar.TodoSortFilterProxyModel {
@@ -103,6 +104,7 @@ KirigamiAddonsTreeView.TreeListView {
                 Layout.fillWidth: true
                 text: model.text
                 font.strikeout: model.checked
+                wrapMode: Text.Wrap
             }
 
             QQC2.Label {
