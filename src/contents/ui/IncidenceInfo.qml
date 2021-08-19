@@ -250,19 +250,7 @@ Kirigami.OverlayDrawer {
                     QQC2.Label {
                         Layout.alignment: Qt.AlignTop
                         Layout.fillWidth: true
-                        text: {
-                            if(incidenceInfo.incidenceWrapper.priority === 1) {
-                                i18nc("%1 is the priority level number", "%1 (Highest priority)", incidenceInfo.incidenceWrapper.priority)
-                            } else if (incidenceInfo.incidenceWrapper.priority < 5) {
-                                i18nc("%1 is the priority level number", "%1 (Mid-high priority)", incidenceInfo.incidenceWrapper.priority)
-                            } else if (incidenceInfo.incidenceWrapper.priority === 5) {
-                                i18nc("%1 is the priority level number", "%1 (Medium priority)", incidenceInfo.incidenceWrapper.priority)
-                            } else if (incidenceInfo.incidenceWrapper.priority < 9) {
-                                i18nc("%1 is the priority level number", "%1 (Mid-low priority)", incidenceInfo.incidenceWrapper.priority)
-                            } else if (incidenceInfo.incidenceWrapper.priority === 9) {
-                                i18nc("%1 is the priority level number", "%1 (Lowest priority)", incidenceInfo.incidenceWrapper.priority)
-                            }
-                        }
+                        text: LabelUtils.priorityString(incidenceInfo.incidenceWrapper.priority)
                         visible: incidenceInfo.incidenceWrapper.priority
                     }
 

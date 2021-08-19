@@ -28,7 +28,7 @@ QQC1.TreeView {
     onAscendingOrderChanged: todoModel.sortTodoModel(sortBy, ascendingOrder)
 
     QQC1.TableViewColumn {
-        Layout.fillWidth: true
+        id: summaryColumn
         title: "Summary"
         role: "summary"
     }
@@ -53,6 +53,7 @@ QQC1.TreeView {
             labelItem.font.strikeout: model.checked
             subtitle: !isNaN(model.endTime.getTime()) ? LabelUtils.todoDateTimeLabel(model.endTime) : null
             subtitleItem.color: isOverdue ? Kirigami.Theme.negativeTextColor : Kirigami.Theme.textColor
+
             Layout.leftMargin: Kirigami.Units.smallSpacing + (Kirigami.Units.gridUnit * (model.treeDepth + 1))
 
             leading: QQC2.CheckBox {
@@ -79,6 +80,7 @@ QQC1.TreeView {
                 checked: model.checked
                 onClicked: model.checked = model.checked === 0 ? 2 : 0
             }
+
             onClicked: root.viewTodo(model, Kalendar.CalendarManager.getCollectionDetails(model.collectionId))
 
             IncidenceMouseArea {

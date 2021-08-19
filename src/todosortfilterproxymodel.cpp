@@ -21,6 +21,7 @@ public:
         LocationRole,
         AllDayRole,
         CompletedRole,
+        PriorityRole,
         ColorRole,
         CollectionIdRole,
         DurationStringRole,
@@ -98,6 +99,8 @@ public:
             return m_colors.contains(QString::number(collectionId)) ? m_colors[QString::number(collectionId)] : nullcolor;
         } else if(role == Roles::CompletedRole) {
             return todoPtr->isCompleted();
+        } else if(role == Roles::PriorityRole) {
+            return todoPtr->priority();
         } else if(role == Roles::CollectionIdRole) {
             return collectionId;
         } else if (role == DurationStringRole) {
@@ -138,6 +141,7 @@ public:
         roleNames[Roles::AllDayRole] = "allDay";
         roleNames[Roles::ColorRole] = "color";
         roleNames[Roles::CompletedRole] = "todoCompleted";
+        roleNames[Roles::PriorityRole] = "priority";
         roleNames[Roles::CollectionIdRole] = "collectionId";
         roleNames[Roles::DurationStringRole] = "durationString";
         roleNames[Roles::IncidenceIdRole] = "incidenceId";

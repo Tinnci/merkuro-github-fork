@@ -203,7 +203,8 @@ function getIncidenceLabelColor(background, darkMode) {
 
 function todoDateTimeLabel(datetime) {
     let now = new Date();
-    let dateString = datetime.toLocaleDateString(Qt.locale(), 0);
+    let dateFormat = datetime.getFullYear() == now.getFullYear() ? "dddd dd MMMM" : "dddd dd MMMM yyyy";
+    let dateString = datetime.toLocaleDateString(Qt.locale(), dateFormat);
     let timeString = datetime.toLocaleTimeString(Qt.locale(), 1);
 
     if(DateUtils.sameDay(datetime, now)) {
@@ -214,5 +215,21 @@ function todoDateTimeLabel(datetime) {
         return i18n("Yesterday at %1 (overdue)", timeString);
     }
 
-    return datetime < now ? i18nc("%1 is date, %2 is time", "%1 %2 (Overdue)", dateString, timeString) : `${dateString} ${timeString}`
+    return datetime < now ? i18nc("%1 is date, %2 is time", "%1 %2 (overdue)", dateString, timeString) : `${dateString} ${timeString}`
+}
+
+function priorityString(priority) {
+    if(priority === 1) {
+        return i18nc("%1 is the priority level number", "%1 (Highest priority)", priority);
+    } else if (priority < 5) {
+        return i18nc("%1 is the priority level number", "%1 (Mid-high priority)", priority);
+    } else if (priority === 5) {
+        return i18nc("%1 is the priority level number", "%1 (Medium priority)", priority);
+    } else if (priority < 9) {
+        return i18nc("%1 is the priority level number", "%1 (Mid-low priority)", priority);
+    } else if (priority === 9) {
+        return i18nc("%1 is the priority level number", "%1 (Lowest priority)", priority);
+    } else {
+        return i18n("No set priority level");
+    }
 }
