@@ -13,6 +13,8 @@ Kirigami.PageRow {
     id: todoPageRow
 
     signal viewTodo(var todoData, var collectionData)
+    signal editTodo(var todoPtr, var collectionData)
+    signal deleteTodo(var todoPtr, date deleteDate)
 
     globalToolBar.style: Kirigami.ApplicationHeaderStyle.Auto
     globalToolBar.canContainHandles: true
@@ -21,7 +23,13 @@ Kirigami.PageRow {
     Connections {
         target: todoPageRow.currentItem
         function onViewTodo(todoData, collectionData) {
-            todoPageRow.viewTodo(todoData, collectionData)
+            todoPageRow.viewTodo(todoData, collectionData);
+        }
+        function onEditTodo(todoPtr, collectionData) {
+            todoPageRow.editTodo(todoPtr, collectionData);
+        }
+        function onDeleteTodo(todoPtr, deleteDate) {
+            todoPageRow.deleteTodo(todoPtr, deleteDate);
         }
     }
 

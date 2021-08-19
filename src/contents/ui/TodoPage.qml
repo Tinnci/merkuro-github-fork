@@ -18,6 +18,8 @@ Kirigami.Page {
     title: i18n("Todos")
 
     signal viewTodo(var todoData, var collectionData)
+    signal editTodo(var todoPtr, var collectionData)
+    signal deleteTodo(var todoPtr, date deleteDate)
 
     property int filterCollectionId
     property var filterCollectionDetails: filterCollectionId ? Kalendar.CalendarManager.getCollectionDetails(filterCollectionId) : null
@@ -93,6 +95,14 @@ Kirigami.Page {
                     root.viewTodo(todoData, collectionData);
                     completedDrawer.close();
                 }
+                onEditTodo: {
+                    root.editTodo(todoPtr, collectionData);
+                    completedDrawer.close();
+                }
+                onDeleteTodo: {
+                    root.deleteTodo(todoPtr, deleteDate);
+                    completedDrawer.close();
+                }
             }
         }
     }
@@ -141,7 +151,9 @@ Kirigami.Page {
             showCompleted: Kalendar.TodoSortFilterProxyModel.ShowIncompleteOnly
             sortBy: root.sortBy
             ascendingOrder: root.ascendingOrder
-            onViewTodo: root.viewTodo(todoData, collectionData);
+            onViewTodo: root.viewTodo(todoData, collectionData)
+            onEditTodo: root.editTodo(todoPtr, collectionData)
+            onDeleteTodo: root.deleteTodo(todoPtr, deleteDate)
         }
     }
 }
