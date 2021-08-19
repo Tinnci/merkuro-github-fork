@@ -201,21 +201,21 @@ function getIncidenceLabelColor(background, darkMode) {
 
 }
 
-function todoDateTimeLabel(datetime) {
+function todoDateTimeLabel(datetime, allDay) {
     let now = new Date();
     let dateFormat = datetime.getFullYear() == now.getFullYear() ? "dddd dd MMMM" : "dddd dd MMMM yyyy";
     let dateString = datetime.toLocaleDateString(Qt.locale(), dateFormat);
-    let timeString = datetime.toLocaleTimeString(Qt.locale(), 1);
+    let timeString = allDay === true ? "" : i18nc("%1 is the time", " at %1", datetime.toLocaleTimeString(Qt.locale(), 1));
 
     if(DateUtils.sameDay(datetime, now)) {
-        return datetime > now ? i18n("Today at %1", timeString) : i18n("Today at %1 (overdue)", timeString);
+        return datetime > now ? i18n("Today%1", timeString) : i18n("Today%1 (overdue)", timeString);
     } else if(DateUtils.sameDay(DateUtils.addDaysToDate(datetime, - 1), now)) { // Tomorrow
-        return i18n("Tomorrow at %1", timeString);
+        return i18n("Tomorrow%1", timeString);
     } else if(DateUtils.sameDay(DateUtils.addDaysToDate(datetime, 1), now)) { // Yesterday
-        return i18n("Yesterday at %1 (overdue)", timeString);
+        return i18n("Yesterday%1 (overdue)", timeString);
     }
 
-    return datetime < now ? i18nc("%1 is date, %2 is time", "%1 %2 (overdue)", dateString, timeString) : `${dateString} ${timeString}`
+    return datetime < now ? dateString + timeString + i18n(" (overdue)") : dateString + timeString;
 }
 
 function priorityString(priority) {
