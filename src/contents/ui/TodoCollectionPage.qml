@@ -12,6 +12,7 @@ import org.kde.kalendar 1.0 as Kalendar
 Kirigami.PageRow {
     id: todoPageRow
 
+    signal addTodo()
     signal viewTodo(var todoData, var collectionData)
     signal editTodo(var todoPtr, var collectionData)
     signal deleteTodo(var todoPtr, date deleteDate)
@@ -22,6 +23,9 @@ Kirigami.PageRow {
 
     Connections {
         target: todoPageRow.currentItem
+        function onAddTodo() {
+            todoPageRow.addTodo();
+        }
         function onViewTodo(todoData, collectionData) {
             todoPageRow.viewTodo(todoData, collectionData);
         }

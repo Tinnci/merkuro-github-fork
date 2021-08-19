@@ -19,6 +19,7 @@ QQC1.TreeView {
     signal editTodo(var todoPtr, var collectionData)
     signal deleteTodo(var todoPtr, date deleteDate)
 
+    property date currentDate: new Date()
     property int filterCollectionId
     property int showCompleted: Kalendar.TodoSortFilterProxyModel.ShowAll
     property int sortBy: Kalendar.TodoSortFilterProxyModel.EndTimeColumn
@@ -44,10 +45,14 @@ QQC1.TreeView {
         height: listItem.height
         Kirigami.BasicListItem {
             id: listItem
+
+            property bool isOverdue: root.currentDate > model.endTime
+
             highlighted: ListView.isCurrentItem
             label: model.text
             labelItem.font.strikeout: model.checked
-            subtitle: model.endTime
+            subtitle: !isNaN(model.endTime.getTime()) ? LabelUtils.todoDateTimeLabel(model.endTime) : null
+            subtitleItem.color: isOverdue ? Kirigami.Theme.negativeTextColor : Kirigami.Theme.textColor
             Layout.leftMargin: Kirigami.Units.smallSpacing + (Kirigami.Units.gridUnit * (model.treeDepth + 1))
 
             leading: QQC2.CheckBox {
