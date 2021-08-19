@@ -50,7 +50,7 @@ KirigamiAddonsTreeView.TreeListView {
         background.anchors.right: this.right
         separatorVisible: true
 
-        property bool isOverdue: root.currentDate > model.endTime
+        property bool isOverdue: root.currentDate > model.endTime && !model.checked
 
         IncidenceMouseArea {
             anchors.fill: parent
@@ -111,7 +111,7 @@ KirigamiAddonsTreeView.TreeListView {
                 Layout.row: 1
                 Layout.column: 1
                 Layout.fillWidth: true
-                text: LabelUtils.todoDateTimeLabel(model.endTime, model.allDay)
+                text: LabelUtils.todoDateTimeLabel(model.endTime, model.allDay, model.checked)
                 color: listItem.isOverdue ? Kirigami.Theme.negativeTextColor : Kirigami.Theme.textColor
                 font: Kirigami.Theme.smallFont
                 visible: !isNaN(model.endTime.getTime())
