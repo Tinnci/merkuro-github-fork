@@ -16,6 +16,8 @@ QQC1.TreeView {
     id: root
 
     signal viewTodo(var todoData, var collectionData)
+    signal editTodo(var todoPtr, var collectionData)
+    signal deleteTodo(var todoPtr, date deleteDate)
 
     property int filterCollectionId
     property int showCompleted: Kalendar.TodoSortFilterProxyModel.ShowAll
@@ -73,6 +75,17 @@ QQC1.TreeView {
                 onClicked: model.checked = model.checked === 0 ? 2 : 0
             }
             onClicked: root.viewTodo(model, Kalendar.CalendarManager.getCollectionDetails(model.collectionId))
+
+            IncidenceMouseArea {
+                anchors.fill: parent
+                incidenceData: model
+                collectionDetails: Kalendar.CalendarManager.getCollectionDetails(model.collectionId)
+
+                onViewClicked: root.viewTodo(model, Kalendar.CalendarManager.getCollectionDetails(model.collectionId))
+                onEditClicked: root.editTodo(model.incidencePtr, Kalendar.CalendarManager.getCollectionDetails(model.collectionId))
+                onDeleteClicked: root.deleteTodo(model.incidencePtr, model.endTime ? model.endTime : model.startTime ? model.startTime : null)
+                onTodoCompletedClicked: model.checked = model.checked === 0 ? 2 : 0
+            }
         }
     }
 }
