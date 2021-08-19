@@ -111,7 +111,7 @@ KirigamiAddonsTreeView.TreeListView {
                 Layout.row: 1
                 Layout.column: 1
                 Layout.fillWidth: true
-                text: LabelUtils.todoDateTimeLabel(model.endTime)
+                text: LabelUtils.todoDateTimeLabel(model.endTime, model.allDay)
                 color: listItem.isOverdue ? Kirigami.Theme.negativeTextColor : Kirigami.Theme.textColor
                 font: Kirigami.Theme.smallFont
                 visible: !isNaN(model.endTime.getTime())
