@@ -69,7 +69,10 @@ Kirigami.PageRow {
                 }
                 label: display
                 icon: decoration
-                onClicked: todoPageRow.push("qrc:/TodoPage.qml", {filterCollectionId: collectionId})
+                onClicked: {
+                    model.checkState = 2;
+                    todoPageRow.push("qrc:/TodoPage.qml", {filterCollectionId: collectionId});
+                }
             }
         }
     }
