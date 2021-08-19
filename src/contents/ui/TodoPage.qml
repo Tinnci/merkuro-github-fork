@@ -17,6 +17,7 @@ Kirigami.Page {
     id: root
     title: i18n("Todos")
 
+    signal addTodo()
     signal viewTodo(var todoData, var collectionData)
     signal editTodo(var todoPtr, var collectionData)
     signal deleteTodo(var todoPtr, date deleteDate)
@@ -36,7 +37,7 @@ Kirigami.Page {
         main: Kirigami.Action {
             text: i18n("Add todo")
             icon.name: "list-add"
-            onTriggered: root.setUpAdd(Kalendar.IncidenceWrapper.TypeTodo);
+            onTriggered: root.addTodo();
         }
         left: Kirigami.Action {
             text: i18n("Sort...")
