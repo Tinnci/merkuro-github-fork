@@ -1,6 +1,8 @@
 // SPDX-FileCopyrightText: 2021 Claudio Cambra <claudio.cambra@gmail.com>
 // SPDX-License-Identifier: LGPL-2.1-or-later
 
+.import "dateutils.js" as DateUtils;
+
 // This regex detects URLs in the description text, so we can turn them into links
 const urlRegexp = /^(?:(?:https?|ftp):\/\/)(?:\S+(?::\S*)?@)?(?:(?!(?:10|127)(?:\.\d{1,3}){3})(?!(?:169\.254|192\.168)(?:\.\d{1,3}){2})(?!172\.(?:1[6-9]|2\d|3[0-1])(?:\.\d{1,3}){2})(?:[1-9]\d?|1\d\d|2[01]\d|22[0-3])(?:\.(?:1?\d{1,2}|2[0-4]\d|25[0-5])){2}(?:\.(?:[1-9]\d?|1\d\d|2[0-4]\d|25[0-4]))|(?:(?:[a-z\u00a1-\uffff0-9]-*)*[a-z\u00a1-\uffff0-9]+)(?:\.(?:[a-z\u00a1-\uffff0-9]-*)*[a-z\u00a1-\uffff0-9]+)*(?:\.(?:[a-z\u00a1-\uffff]{2,}))\.?)(?::\d{2,5})?(?:[/?#]\S*)?$/ig
 
@@ -169,7 +171,7 @@ function isDarkColor(background) {
 function getIncidenceBackgroundColor(color, darkMode) {
     let bgColor = getDarkness(color) > 0.9 ? Qt.lighter(color, 1.5) : color;
     if(darkMode) {
-        if(LabelUtils.getDarkness(color) >= 0.5) {
+        if(getDarkness(color) >= 0.5) {
             bgColor.a = 0.6;
         } else {
             bgColor.a = 0.4;
@@ -182,19 +184,35 @@ function getIncidenceBackgroundColor(color, darkMode) {
 
 function getIncidenceLabelColor(background, darkMode) {
 
-    if(LabelUtils.getDarkness(background) >= 0.9) {
+    if(getDarkness(background) >= 0.9) {
         return "white";
     } else if(darkMode) {
-        if(LabelUtils.getDarkness(background) >= 0.5) {
+        if(getDarkness(background) >= 0.5) {
             return Qt.lighter(background, 2.1);
         } else {
             return Qt.lighter(background, 1.5);
         }
     }
-    else if(LabelUtils.getDarkness(background) >= 0.68) {
+    else if(getDarkness(background) >= 0.68) {
         return Qt.lighter(background, 2.4);
     } else {
         return Qt.darker(background, 2.1);
     }
 
+}
+
+function todoDateTimeLabel(datetime) {
+    let now = new Date();
+    let dateString = datetime.toLocaleDateString(Qt.locale(), 0);
+    let timeString = datetime.toLocaleTimeString(Qt.locale(), 1);
+
+    if(DateUtils.sameDay(datetime, now)) {
+        return datetime > now ? i18n("Today at %1", timeString) : i18n("Today at %1 (overdue)", timeString);
+    } else if(DateUtils.sameDay(DateUtils.addDaysToDate(datetime, - 1), now)) { // Tomorrow
+        return i18n("Tomorrow at %1", timeString);
+    } else if(DateUtils.sameDay(DateUtils.addDaysToDate(datetime, 1), now)) { // Yesterday
+        return i18n("Yesterday at %1 (overdue)", timeString);
+    }
+
+    return datetime < now ? i18nc("%1 is date, %2 is time", "%1 %2 (Overdue)", dateString, timeString) : `${dateString} ${timeString}`
 }
