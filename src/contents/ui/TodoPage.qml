@@ -85,25 +85,31 @@ Kirigami.Page {
                     onClicked: completedDrawer.close()
                 }
             }
-            TodoTreeView {
+            Loader {
                 Layout.fillWidth: true
                 Layout.fillHeight: true
+                active: completedDrawer.visible
+                asynchronous: true
+                sourceComponent: TodoTreeView {
+                    Layout.fillWidth: true
+                    Layout.fillHeight: true
 
-                filterCollectionId: root.filterCollectionId
-                showCompleted: Kalendar.TodoSortFilterProxyModel.ShowCompleteOnly
-                sortBy: root.sortBy
-                ascendingOrder: root.ascendingOrder
-                onViewTodo: {
-                    root.viewTodo(todoData, collectionData);
-                    completedDrawer.close();
-                }
-                onEditTodo: {
-                    root.editTodo(todoPtr, collectionData);
-                    completedDrawer.close();
-                }
-                onDeleteTodo: {
-                    root.deleteTodo(todoPtr, deleteDate);
-                    completedDrawer.close();
+                    filterCollectionId: root.filterCollectionId
+                    showCompleted: Kalendar.TodoSortFilterProxyModel.ShowCompleteOnly
+                    sortBy: root.sortBy
+                    ascendingOrder: root.ascendingOrder
+                    onViewTodo: {
+                        root.viewTodo(todoData, collectionData);
+                        completedDrawer.close();
+                    }
+                    onEditTodo: {
+                        root.editTodo(todoPtr, collectionData);
+                        completedDrawer.close();
+                    }
+                    onDeleteTodo: {
+                        root.deleteTodo(todoPtr, deleteDate);
+                        completedDrawer.close();
+                    }
                 }
             }
         }

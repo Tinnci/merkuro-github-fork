@@ -281,6 +281,8 @@ int TodoSortFilterProxyModel::showCompleted()
 void TodoSortFilterProxyModel::setShowCompleted(int showCompleted)
 {
     m_showCompleted = showCompleted;
+    invalidateFilter();
+    Q_EMIT showCompletedChanged();
 }
 
 void TodoSortFilterProxyModel::sortTodoModel(int column, bool ascending)
