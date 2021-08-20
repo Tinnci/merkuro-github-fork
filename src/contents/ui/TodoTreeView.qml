@@ -52,17 +52,6 @@ KirigamiAddonsTreeView.TreeListView {
 
         property bool isOverdue: root.currentDate > model.endTime && !model.checked
 
-        IncidenceMouseArea {
-            anchors.fill: parent
-            incidenceData: model
-            collectionDetails: Kalendar.CalendarManager.getCollectionDetails(model.collectionId)
-
-            onViewClicked: root.viewTodo(model, Kalendar.CalendarManager.getCollectionDetails(model.collectionId))
-            onEditClicked: root.editTodo(model.incidencePtr, Kalendar.CalendarManager.getCollectionDetails(model.collectionId))
-            onDeleteClicked: root.deleteTodo(model.incidencePtr, model.endTime ? model.endTime : model.startTime ? model.startTime : null)
-            onTodoCompletedClicked: model.checked = model.checked === 0 ? 2 : 0
-        }
-
         contentItem: GridLayout {
             anchors.right: root.right
             Layout.fillWidth: true
@@ -115,6 +104,17 @@ KirigamiAddonsTreeView.TreeListView {
                 color: listItem.isOverdue ? Kirigami.Theme.negativeTextColor : Kirigami.Theme.textColor
                 font: Kirigami.Theme.smallFont
                 visible: !isNaN(model.endTime.getTime())
+            }
+
+            IncidenceMouseArea {
+                anchors.fill: parent
+                incidenceData: model
+                collectionDetails: Kalendar.CalendarManager.getCollectionDetails(model.collectionId)
+
+                onViewClicked: root.viewTodo(model, Kalendar.CalendarManager.getCollectionDetails(model.collectionId))
+                onEditClicked: root.editTodo(model.incidencePtr, Kalendar.CalendarManager.getCollectionDetails(model.collectionId))
+                onDeleteClicked: root.deleteTodo(model.incidencePtr, model.endTime ? model.endTime : model.startTime ? model.startTime : null)
+                onTodoCompletedClicked: model.checked = model.checked === 0 ? 2 : 0
             }
         }
 
