@@ -38,9 +38,30 @@ Kirigami.PageRow {
     }
 
     initialPage: Kirigami.ScrollablePage {
+        id: listPage
         title: i18n("Todo lists")
 
-        Component.onCompleted: todoPageRow.push("qrc:/TodoPage.qml")
+        Loader {
+            id: allTodosPageLoader
+            active: true
+            asynchronous: true
+            sourceComponent: TodoPage {}
+            visible: false
+            onLoaded: if (loadingPage.visible) {
+                todoPageRow.pop(listPage);
+                todoPageRow.push(allTodosPageLoader.item);
+            }
+        }
+
+        Kirigami.Page {
+            id: loadingPage
+            QQC2.BusyIndicator {
+                anchors.centerIn: parent
+                running: true
+            }
+        }
+
+        Component.onCompleted: todoPageRow.push(loadingPage)
 
         ListView {
             currentIndex: -1
@@ -51,14 +72,6 @@ Kirigami.PageRow {
                     Layout.fillWidth: true
                     text: i18n("View all todos")
                     onClicked: todoPageRow.push(allTodosPageLoader.item)
-
-                    Loader {
-                        id: allTodosPageLoader
-                        active: true
-                        asynchronous: true
-                        sourceComponent: TodoPage {}
-                        visible: false
-                    }
                 }
             }
             model: Kalendar.CalendarManager.todoCollections
