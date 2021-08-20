@@ -28,9 +28,9 @@ KirigamiAddonsTreeView.TreeListView {
     onAscendingOrderChanged: todoModel.sortTodoModel(sortBy, ascendingOrder)
 
     currentIndex: -1
-    //clip: true
+    clip: true
 
-    model: Kalendar.TodoSortFilterProxyModel {
+    sourceModel: Kalendar.TodoSortFilterProxyModel {
         id: todoModel
         calendar: Kalendar.CalendarManager.calendar
         incidenceChanger: Kalendar.CalendarManager.incidenceChanger

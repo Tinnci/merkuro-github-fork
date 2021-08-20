@@ -50,7 +50,15 @@ Kirigami.PageRow {
                 QQC2.ToolButton {
                     Layout.fillWidth: true
                     text: i18n("View all todos")
-                    onClicked: todoPageRow.push("qrc:/TodoPage.qml")
+                    onClicked: todoPageRow.push(allTodosPageLoader.item)
+
+                    Loader {
+                        id: allTodosPageLoader
+                        active: true
+                        asynchronous: true
+                        sourceComponent: TodoPage {}
+                        visible: false
+                    }
                 }
             }
             model: Kalendar.CalendarManager.todoCollections
@@ -70,9 +78,20 @@ Kirigami.PageRow {
                 }
                 label: display
                 icon: decoration
+
+                Loader {
+                    id: todoPageLoader
+                    active: true
+                    asynchronous: true
+                    sourceComponent: TodoPage {
+                        filterCollectionId: collectionId
+                    }
+                    visible: false
+                }
+
                 onClicked: {
                     model.checkState = 2;
-                    todoPageRow.push("qrc:/TodoPage.qml", {filterCollectionId: collectionId});
+                    todoPageRow.push(todoPageLoader.item);
                 }
             }
         }
