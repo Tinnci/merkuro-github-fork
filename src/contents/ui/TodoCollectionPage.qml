@@ -38,7 +38,7 @@ Kirigami.PageRow {
     }
 
     initialPage: Kirigami.ScrollablePage {
-        title: i18n("Todo calendars")
+        title: i18n("Todo lists")
 
         Component.onCompleted: todoPageRow.push("qrc:/TodoPage.qml")
 
