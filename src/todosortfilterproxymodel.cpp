@@ -271,7 +271,6 @@ void TodoSortFilterProxyModel::setFilterCollectionId(qint64 filterCollectionId)
     m_filterCollectionId = filterCollectionId;
     invalidateFilter();
     Q_EMIT filterCollectionIdChanged();
-    Q_EMIT layoutChanged();
 }
 
 int TodoSortFilterProxyModel::showCompleted()
@@ -286,10 +285,8 @@ void TodoSortFilterProxyModel::setShowCompleted(int showCompleted)
 
 void TodoSortFilterProxyModel::sortTodoModel(int column, bool ascending)
 {
-    Q_EMIT layoutAboutToBeChanged();
     auto order = ascending ? Qt::AscendingOrder : Qt::DescendingOrder;
     this->sort(column, order);
-    Q_EMIT layoutChanged();
 }
 
 Q_DECLARE_METATYPE(KCalendarCore::Incidence::Ptr)
