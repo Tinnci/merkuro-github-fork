@@ -315,6 +315,10 @@ QVariant IncidenceOccurrenceModel::data(const QModelIndex &idx, int role) const
                 return format.formatSpelloutDuration(duration.asSeconds() * 1000);
             }
         }
+        case Recurs:
+            return incidence.incidence->recurs();
+        case Priority:
+            return incidence.incidence->priority();
         case Color:
             return incidence.color;
         case CollectionId:
@@ -329,6 +333,15 @@ QVariant IncidenceOccurrenceModel::data(const QModelIndex &idx, int role) const
 
             auto todo = incidence.incidence.staticCast<KCalendarCore::Todo>();
             return todo->isCompleted();
+        }
+        case IsOverdue:
+        {
+            if(incidence.incidence->type() != KCalendarCore::IncidenceBase::TypeTodo) {
+                return false;
+            }
+
+            auto todo = incidence.incidence.staticCast<KCalendarCore::Todo>();
+            return todo->isOverdue();
         }
         case IncidenceId:
             return incidence.incidence->uid();
