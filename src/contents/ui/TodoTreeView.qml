@@ -28,9 +28,8 @@ KirigamiAddonsTreeView.TreeListView {
     onAscendingOrderChanged: todoModel.sortTodoModel(sortBy, ascendingOrder)
 
     currentIndex: -1
-    clip: true
+    //clip: true
 
-    //flickableItem.interactive: Kirigami.Settings.isMobile
     model: Kalendar.TodoSortFilterProxyModel {
         id: todoModel
         calendar: Kalendar.CalendarManager.calendar
@@ -40,6 +39,7 @@ KirigamiAddonsTreeView.TreeListView {
     }
     delegate: KirigamiAddonsTreeView.BasicTreeItem {
         id: listItem
+        Layout.fillWidth: true
 
         Binding {
             target: contentItem.anchors
@@ -50,71 +50,101 @@ KirigamiAddonsTreeView.TreeListView {
         background.anchors.right: this.right
         separatorVisible: true
 
-        property bool isOverdue: root.currentDate > model.endTime && !model.checked
+        contentItem: IncidenceMouseArea {
+            implicitWidth: todoItemContents.implicitWidth
+            implicitHeight: todoItemContents.implicitHeight
+            incidenceData: model
+            collectionDetails: Kalendar.CalendarManager.getCollectionDetails(model.collectionId)
 
-        contentItem: GridLayout {
-            anchors.right: root.right
-            Layout.fillWidth: true
-            Layout.fillHeight: true
-            columns: 3
-            rows: 2
+            onViewClicked: root.viewTodo(model, Kalendar.CalendarManager.getCollectionDetails(model.collectionId))
+            onEditClicked: root.editTodo(model.incidencePtr, Kalendar.CalendarManager.getCollectionDetails(model.collectionId))
+            onDeleteClicked: root.deleteTodo(model.incidencePtr, model.endTime ? model.endTime : model.startTime ? model.startTime : null)
+            onTodoCompletedClicked: model.checked = model.checked === 0 ? 2 : 0
 
-            QQC2.CheckBox {
-                id: todoCheckbox
+            GridLayout {
+                id: todoItemContents
 
-                Layout.row: 0
-                Layout.column: 0
+                anchors.verticalCenter: parent.verticalCenter
+                width: parent.width
 
-                indicator: Rectangle {
-                    implicitWidth: Kirigami.Settings.isMobile ? Kirigami.Units.gridUnit : Kirigami.Units.gridUnit * 0.75
-                    implicitHeight: Kirigami.Settings.isMobile ? Kirigami.Units.gridUnit : Kirigami.Units.gridUnit * 0.75
-                    x: todoCheckbox.leftPadding
-                    y: parent.height / 2 - height / 2
-                    radius: 100
-                    border.color: model.color
-                    color: Qt.rgba(0,0,0,0)
+                columns: 3
+                rows: 2
+                columnSpacing: Kirigami.Units.largeSpacing
 
-                    Rectangle {
-                        width: parent.width * 0.66
-                        height: parent.width * 0.66
-                        anchors.centerIn: parent
+                QQC2.CheckBox {
+                    id: todoCheckbox
+
+                    Layout.row: 0
+                    Layout.column: 0
+
+                    indicator: Rectangle {
+                        implicitWidth: Kirigami.Settings.isMobile ? Kirigami.Units.gridUnit : Kirigami.Units.gridUnit * 0.75
+                        implicitHeight: Kirigami.Settings.isMobile ? Kirigami.Units.gridUnit : Kirigami.Units.gridUnit * 0.75
+                        x: todoCheckbox.leftPadding
+                        y: parent.height / 2 - height / 2
                         radius: 100
-                        color: model.color
-                        visible: todoCheckbox.checked
+                        border.color: model.color
+                        color: Qt.rgba(0,0,0,0)
+
+                        Rectangle {
+                            width: parent.width * 0.66
+                            height: parent.width * 0.66
+                            anchors.centerIn: parent
+                            radius: 100
+                            color: model.color
+                            visible: todoCheckbox.checked
+                        }
+                    }
+                    checked: model.checked
+                    onClicked: model.checked = model.checked === 0 ? 2 : 0
+                }
+
+                QQC2.Label {
+                    Layout.row: 0
+                    Layout.column: 1
+                    Layout.fillWidth: true
+                    text: model.text
+                    font.strikeout: model.checked
+                    wrapMode: Text.Wrap
+                }
+
+                RowLayout {
+                    Layout.row: 0
+                    Layout.column: 2
+                    Layout.rowSpan: 2
+                    Layout.alignment: Qt.AlignRight
+                    Layout.rightMargin: Kirigami.Units.largeSpacing
+                    spacing: 0
+                    visible: model.priority > 0
+
+                    Kirigami.Icon {
+                        Layout.maximumHeight: priorityLabel.height
+                        source: "emblem-important-symbolic"
+                    }
+                    QQC2.Label {
+                        id: priorityLabel
+                        text: model.priority
                     }
                 }
-                checked: model.checked
-                onClicked: model.checked = model.checked === 0 ? 2 : 0
-            }
 
-            QQC2.Label {
-                Layout.row: 0
-                Layout.column: 1
-                Layout.fillWidth: true
-                text: model.text
-                font.strikeout: model.checked
-                wrapMode: Text.Wrap
-            }
+                RowLayout {
+                    Layout.row: 1
+                    Layout.column: 1
+                    Layout.fillWidth: true
 
-            QQC2.Label {
-                Layout.row: 1
-                Layout.column: 1
-                Layout.fillWidth: true
-                text: LabelUtils.todoDateTimeLabel(model.endTime, model.allDay, model.checked)
-                color: listItem.isOverdue ? Kirigami.Theme.negativeTextColor : Kirigami.Theme.textColor
-                font: Kirigami.Theme.smallFont
-                visible: !isNaN(model.endTime.getTime())
-            }
-
-            IncidenceMouseArea {
-                anchors.fill: parent
-                incidenceData: model
-                collectionDetails: Kalendar.CalendarManager.getCollectionDetails(model.collectionId)
-
-                onViewClicked: root.viewTodo(model, Kalendar.CalendarManager.getCollectionDetails(model.collectionId))
-                onEditClicked: root.editTodo(model.incidencePtr, Kalendar.CalendarManager.getCollectionDetails(model.collectionId))
-                onDeleteClicked: root.deleteTodo(model.incidencePtr, model.endTime ? model.endTime : model.startTime ? model.startTime : null)
-                onTodoCompletedClicked: model.checked = model.checked === 0 ? 2 : 0
+                    QQC2.Label {
+                        id: dateLabel
+                        text: LabelUtils.todoDateTimeLabel(model.endTime, model.allDay, model.checked)
+                        color: model.isOverdue ? Kirigami.Theme.negativeTextColor : Kirigami.Theme.textColor
+                        font: Kirigami.Theme.smallFont
+                        visible: !isNaN(model.endTime.getTime())
+                    }
+                    Kirigami.Icon {
+                        source: "task-recurring"
+                        visible: model.recurs
+                        Layout.maximumHeight: parent.height
+                    }
+                }
             }
         }
 

@@ -25,6 +25,8 @@ public:
         ColorRole,
         CollectionIdRole,
         DurationStringRole,
+        RecursRole,
+        IsOverdueRole,
         IncidenceIdRole,
         IncidenceTypeRole,
         IncidenceTypeStrRole,
@@ -109,6 +111,10 @@ public:
                 return format.formatSpelloutDuration(24*60*60*1000); // format milliseconds in 1 day
             }
             return format.formatSpelloutDuration(todoPtr->duration().asSeconds() * 1000);
+        } else if (role == Roles::RecursRole) {
+            return todoPtr->recurs();
+        } else if (role == Roles::IsOverdueRole) {
+            return todoPtr->isOverdue();
         } else if(role == Roles::IncidenceIdRole) {
             return todoPtr->uid();
         } else if(role == Roles::IncidenceTypeRole) {
@@ -144,6 +150,8 @@ public:
         roleNames[Roles::PriorityRole] = "priority";
         roleNames[Roles::CollectionIdRole] = "collectionId";
         roleNames[Roles::DurationStringRole] = "durationString";
+        roleNames[Roles::RecursRole] = "recurs";
+        roleNames[Roles::IsOverdueRole] = "isOverdue";
         roleNames[Roles::IncidenceIdRole] = "incidenceId";
         roleNames[Roles::IncidenceTypeRole] = "incidenceType";
         roleNames[Roles::IncidenceTypeStrRole] = "incidenceTypeStr";
