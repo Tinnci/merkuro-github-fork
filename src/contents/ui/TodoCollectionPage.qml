@@ -43,6 +43,7 @@ Kirigami.PageRow {
         Component.onCompleted: todoPageRow.push("qrc:/TodoPage.qml")
 
         ListView {
+            currentIndex: -1
             header: ColumnLayout {
                 anchors.left: parent.left
                 anchors.right: parent.right
