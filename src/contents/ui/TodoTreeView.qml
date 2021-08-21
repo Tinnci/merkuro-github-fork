@@ -16,7 +16,7 @@ KirigamiAddonsTreeView.TreeListView {
     id: root
 
     signal viewTodo(var todoData, var collectionData)
-    signal editTodo(var todoPtr, var collectionData)
+    signal editTodo(var todoPtr, var collectionId)
     signal deleteTodo(var todoPtr, date deleteDate)
     signal completeTodo(var todoPtr)
 
@@ -58,7 +58,7 @@ KirigamiAddonsTreeView.TreeListView {
             collectionDetails: Kalendar.CalendarManager.getCollectionDetails(model.collectionId)
 
             onViewClicked: root.viewTodo(model, Kalendar.CalendarManager.getCollectionDetails(model.collectionId))
-            onEditClicked: root.editTodo(model.incidencePtr, Kalendar.CalendarManager.getCollectionDetails(model.collectionId))
+            onEditClicked: root.editTodo(model.incidencePtr, model.collectionId)
             onDeleteClicked: root.deleteTodo(model.incidencePtr, model.endTime ? model.endTime : model.startTime ? model.startTime : null)
             onTodoCompletedClicked: model.checked = model.checked === 0 ? 2 : 0
 
