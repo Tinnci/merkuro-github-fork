@@ -304,7 +304,7 @@ Kirigami.ApplicationWindow {
 
             onAddIncidence: root.setUpAdd(type, addDate)
             onViewIncidence: root.setUpView(modelData, collectionData)
-            onEditIncidence: root.setUpEdit(incidencePtr, collectionData)
+            onEditIncidence: root.setUpEdit(incidencePtr, collectionId)
             onDeleteIncidence: root.setUpDelete(incidencePtr, deleteDate)
             onCompleteTodo: root.completeTodo(incidencePtr)
 
@@ -318,7 +318,7 @@ Kirigami.ApplicationWindow {
         TodoCollectionPage {
             onAddTodo: root.setUpAdd(IncidenceWrapper.TypeTodo, new Date())
             onViewTodo: root.setUpView(todoData, collectionData)
-            onEditTodo: root.setUpEdit(todoPtr, collectionData)
+            onEditTodo: root.setUpEdit(todoPtr, collectionId)
             onDeleteTodo: root.setUpDelete(todoPtr, deleteDate)
             onCompleteTodo: root.completeTodo(todoPtr)
         }

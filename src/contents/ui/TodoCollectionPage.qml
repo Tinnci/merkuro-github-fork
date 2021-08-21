@@ -14,7 +14,7 @@ Kirigami.PageRow {
 
     signal addTodo()
     signal viewTodo(var todoData, var collectionData)
-    signal editTodo(var todoPtr, var collectionData)
+    signal editTodo(var todoPtr, var collectionId)
     signal deleteTodo(var todoPtr, date deleteDate)
     signal completeTodo (var todoPtr)
 
@@ -30,8 +30,8 @@ Kirigami.PageRow {
         function onViewTodo(todoData, collectionData) {
             todoPageRow.viewTodo(todoData, collectionData);
         }
-        function onEditTodo(todoPtr, collectionData) {
-            todoPageRow.editTodo(todoPtr, collectionData);
+        function onEditTodo(todoPtr, collectionId) {
+            todoPageRow.editTodo(todoPtr, collectionId);
         }
         function onDeleteTodo(todoPtr, deleteDate) {
             todoPageRow.deleteTodo(todoPtr, deleteDate);
