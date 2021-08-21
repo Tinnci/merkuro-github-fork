@@ -88,9 +88,8 @@ KirigamiAddonsTreeView.TreeListView {
                         color: Qt.rgba(0,0,0,0)
 
                         Rectangle {
-                            width: parent.width * 0.66
-                            height: parent.width * 0.66
-                            anchors.centerIn: parent
+                            anchors.margins: parent.height * 0.2
+                            anchors.fill: parent
                             radius: 100
                             color: model.color
                             visible: todoCheckbox.checked
