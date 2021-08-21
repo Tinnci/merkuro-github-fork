@@ -320,6 +320,7 @@ Kirigami.ApplicationWindow {
             onViewTodo: root.setUpView(todoData, collectionData)
             onEditTodo: root.setUpEdit(todoPtr, collectionData)
             onDeleteTodo: root.setUpDelete(todoPtr, deleteDate)
+            onCompleteTodo: root.completeTodo(todoPtr)
         }
     }
 }
