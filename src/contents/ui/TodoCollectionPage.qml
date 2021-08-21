@@ -16,6 +16,7 @@ Kirigami.PageRow {
     signal viewTodo(var todoData, var collectionData)
     signal editTodo(var todoPtr, var collectionData)
     signal deleteTodo(var todoPtr, date deleteDate)
+    signal completeTodo (var todoPtr)
 
     globalToolBar.style: Kirigami.ApplicationHeaderStyle.Auto
     globalToolBar.canContainHandles: true
@@ -34,6 +35,9 @@ Kirigami.PageRow {
         }
         function onDeleteTodo(todoPtr, deleteDate) {
             todoPageRow.deleteTodo(todoPtr, deleteDate);
+        }
+        function onCompleteTodo(todoPtr) {
+            todoPageRow.completeTodo(todoPtr);
         }
     }
 
