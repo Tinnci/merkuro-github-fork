@@ -56,6 +56,8 @@ public:
     ~TodoSortFilterProxyModel() = default;
 
     bool filterAcceptsRow(int row, const QModelIndex &sourceParent) const override;
+    bool filterAcceptsRowCheck(int row, const QModelIndex &sourceParent) const;
+    bool hasAcceptedChildren(int row, const QModelIndex &sourceParent) const;
 
     void setCalendar(Akonadi::ETMCalendar *calendar);
     void setIncidenceChanger(Akonadi::IncidenceChanger *changer);

@@ -18,6 +18,7 @@ KirigamiAddonsTreeView.TreeListView {
     signal viewTodo(var todoData, var collectionData)
     signal editTodo(var todoPtr, var collectionData)
     signal deleteTodo(var todoPtr, date deleteDate)
+    signal completeTodo(var todoPtr)
 
     property date currentDate: new Date()
     property int filterCollectionId
@@ -95,8 +96,8 @@ KirigamiAddonsTreeView.TreeListView {
                             visible: todoCheckbox.checked
                         }
                     }
-                    checked: model.checked
-                    onClicked: model.checked = model.checked === 0 ? 2 : 0
+                    checked: model.todoCompleted
+                    onClicked: completeTodo(model.incidencePtr)
                 }
 
                 QQC2.Label {
@@ -104,7 +105,7 @@ KirigamiAddonsTreeView.TreeListView {
                     Layout.column: 1
                     Layout.fillWidth: true
                     text: model.text
-                    font.strikeout: model.checked
+                    font.strikeout: model.todoCompleted
                     wrapMode: Text.Wrap
                 }
 
