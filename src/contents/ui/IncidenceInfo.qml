@@ -166,7 +166,7 @@ Kirigami.OverlayDrawer {
                             stepSize: 10.0
                             value: incidenceInfo.incidenceWrapper.todoPercentComplete
                             onValueChanged: {
-                                if (incidenceInfo.incidenceWrapper.incidenceType === IncidenceWrapper.TypeTodo) {
+                                if (incidenceInfo.incidenceWrapper.incidenceType === IncidenceWrapper.TypeTodo && activeFocus) {
                                     incidenceInfo.incidenceWrapper.todoPercentComplete = value
                                     CalendarManager.editIncidence(incidenceInfo.incidenceWrapper);
                                 }
