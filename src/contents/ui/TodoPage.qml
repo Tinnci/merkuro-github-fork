@@ -19,7 +19,7 @@ Kirigami.Page {
 
     signal addTodo()
     signal viewTodo(var todoData, var collectionData)
-    signal editTodo(var todoPtr, var collectionData)
+    signal editTodo(var todoPtr, var collectionId)
     signal deleteTodo(var todoPtr, date deleteDate)
     signal completeTodo(var todoPtr)
 
@@ -104,7 +104,7 @@ Kirigami.Page {
                         completedDrawer.close();
                     }
                     onEditTodo: {
-                        root.editTodo(todoPtr, collectionData);
+                        root.editTodo(todoPtr, collectionId);
                         completedDrawer.close();
                     }
                     onDeleteTodo: {
@@ -160,7 +160,7 @@ Kirigami.Page {
             sortBy: root.sortBy
             ascendingOrder: root.ascendingOrder
             onViewTodo: root.viewTodo(todoData, collectionData)
-            onEditTodo: root.editTodo(todoPtr, collectionData)
+            onEditTodo: root.editTodo(todoPtr, collectionId)
             onDeleteTodo: root.deleteTodo(todoPtr, deleteDate)
             onCompleteTodo: root.completeTodo(todoPtr);
         }
