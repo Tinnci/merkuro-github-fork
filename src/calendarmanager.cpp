@@ -32,6 +32,7 @@
 #include <AkonadiCore/CollectionModifyJob>
 #include <AkonadiCore/AttributeFactory>
 #include <AkonadiCore/CollectionColorAttribute>
+#include <AkonadiCore/CollectionUtils>
 #include <QRandomGenerator>
 #include <EventViews/Prefs>
 #include <KCheckableProxyModel>
@@ -355,7 +356,6 @@ CalendarManager::CalendarManager(QObject *parent)
     mCollectionSelectionModelStateSaver->restoreState(selectionGroup);
 
     // Below reimplements part of Akonadi::CollectionComboBox
-
     // Flatten the tree, e.g.
     // Kolab
     // Kolab / Inbox
@@ -373,6 +373,7 @@ CalendarManager::CalendarManager(QObject *parent)
     m_todoMimeTypeFilterModel = new Akonadi::CollectionFilterProxyModel(this);
     m_todoMimeTypeFilterModel->setSourceModel(m_allCalendars);
     m_todoMimeTypeFilterModel->addMimeTypeFilter(QStringLiteral("application/x-vnd.akonadi.calendar.todo"));
+    m_todoMimeTypeFilterModel->setExcludeVirtualCollections(true);
 
     // Filter by access rights
     m_eventRightsFilterModel = new Akonadi::EntityRightsFilterModel(this);
@@ -384,6 +385,16 @@ CalendarManager::CalendarManager(QObject *parent)
     m_todoRightsFilterModel->setAccessRights( Collection::CanCreateItem );
     m_todoRightsFilterModel->setSourceModel(m_todoMimeTypeFilterModel);
     m_todoRightsFilterModel->sort(0);
+
+    // Model for todo vie collection picker
+    auto todoCollectionModel = new Akonadi::CollectionFilterProxyModel(this);
+    todoCollectionModel->setSourceModel(collectionFilter);
+    todoCollectionModel->addMimeTypeFilter(QStringLiteral("application/x-vnd.akonadi.calendar.todo"));
+    todoCollectionModel->setExcludeVirtualCollections(true);
+    todoCollectionModel->sort(0, Qt::AscendingOrder);
+
+    m_todoViewCollectionModel = new KDescendantsProxyModel(this);
+    m_todoViewCollectionModel->setSourceModel(todoCollectionModel);
 
     Q_EMIT entityTreeModelChanged();
     Q_EMIT loadingChanged();
@@ -419,9 +430,9 @@ QAbstractProxyModel *CalendarManager::collections()
     return m_flatCollectionTreeModel;
 }
 
-Akonadi::CollectionFilterProxyModel * CalendarManager::todoCollections()
+KDescendantsProxyModel * CalendarManager::todoCollections()
 {
-    return m_todoMimeTypeFilterModel;
+    return m_todoViewCollectionModel;
 }
 
 bool CalendarManager::loading() const
@@ -624,7 +635,10 @@ QVariantMap CalendarManager::getCollectionDetails(qint64 collectionId)
     collectionDetails[QLatin1String("name")] = collection.name();
     collectionDetails[QLatin1String("displayName")] = collection.displayName();
     collectionDetails[QLatin1String("color")] = m_baseModel->colorCache[QString::number(collection.id())];
+    collectionDetails[QLatin1String("isResource")] = Akonadi::CollectionUtils::isResource(collection);
     collectionDetails[QLatin1String("readOnly")] = collection.rights().testFlag(Collection::ReadOnly);
+
+    qDebug() << collectionDetails;
 
     return collectionDetails;
 }

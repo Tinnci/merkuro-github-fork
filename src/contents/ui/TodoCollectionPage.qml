@@ -70,27 +70,43 @@ Kirigami.PageRow {
                 anchors.right: parent.right
                 QQC2.ToolButton {
                     Layout.fillWidth: true
+                    icon.name: "view-process-all"
                     text: i18n("View all todos")
                     onClicked: todoPageRow.push(allTodosPageLoader.item)
                 }
             }
+
             model: Kalendar.CalendarManager.todoCollections
             delegate: Kirigami.BasicListItem {
                 property int itemCollectionId: collectionId
-                leading: QQC2.CheckBox {
-                    visible: model.checkState != null
+
+                leftPadding: ((Kirigami.Units.gridUnit * 2) * (kDescendantLevel - 1)) + Kirigami.Units.largeSpacing
+                enabled: model.checkState != null
+                trailing: QQC2.CheckBox {
+                    id: collectionCheckbox
+
+                    indicator: Rectangle {
+                        height: parent.height * 0.8
+                        width: height
+                        x: collectionCheckbox.leftPadding
+                        y: parent.height / 2 - height / 2
+                        radius: 3
+                        border.color: model.collectionColor
+                        color: Qt.rgba(0,0,0,0)
+
+                        Rectangle {
+                            width: parent.width * 0.66
+                            height: parent.width * 0.66
+                            anchors.centerIn: parent
+                            color: model.collectionColor
+                            visible: model.checkState == 2
+                        }
+                    }
                     checked: model.checkState == 2
-                    onClicked: model.checkState = (checked ? 2 : 0)
+                    onClicked: model.checkState = model.checkState === 0 ? 2 : 0
                 }
-                trailing: Rectangle {
-                    Layout.fillHeight: true
-                    width: height
-                    radius: 5
-                    color: collectionColor
-                    visible: collectionColor !== undefined
-                }
+
                 label: display
-                icon: decoration
 
                 Loader {
                     id: todoPageLoader
@@ -102,7 +118,7 @@ Kirigami.PageRow {
                     visible: false
                 }
 
-                onClicked: {
+                onClicked: if(model.checkState != null) {
                     model.checkState = 2;
                     todoPageRow.push(todoPageLoader.item);
                 }
