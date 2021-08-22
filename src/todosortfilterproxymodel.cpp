@@ -325,6 +325,7 @@ int TodoSortFilterProxyModel::showCompleted()
 void TodoSortFilterProxyModel::setShowCompleted(int showCompleted)
 {
     m_showCompleted = showCompleted;
+    m_showCompletedStore = showCompleted; // For when we search
     invalidateFilter();
     Q_EMIT showCompletedChanged();
 }
@@ -334,6 +335,20 @@ void TodoSortFilterProxyModel::sortTodoModel(int column, bool ascending)
     auto order = ascending ? Qt::AscendingOrder : Qt::DescendingOrder;
     this->sort(column, order);
 }
+
+void TodoSortFilterProxyModel::filterTodoName(QString name, int showCompleted)
+{
+    Q_EMIT layoutAboutToBeChanged();
+    if(name.length() > 0) {
+        m_showCompleted = showCompleted;
+    } else {
+        m_showCompleted = m_showCompletedStore;
+    }
+    invalidateFilter();
+    setFilterFixedString(name);
+    Q_EMIT layoutChanged();
+}
+
 
 Q_DECLARE_METATYPE(KCalendarCore::Incidence::Ptr)
 #include "todosortfilterproxymodel.moc"
