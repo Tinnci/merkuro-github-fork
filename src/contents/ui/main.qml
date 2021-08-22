@@ -89,7 +89,10 @@ Kirigami.ApplicationWindow {
             Kirigami.Action {
                 icon.name: "view-calendar-list"
                 text: i18n("Todo view")
-                onTriggered: pageStack.layers.replace(todoCollectionPageComponent);
+                onTriggered: {
+                    pageStack.pop()
+                    pageStack.replace(todoCollectionPageComponent);
+                }
             },
             Kirigami.Action {
                 icon.name: "settings-configure"

@@ -9,8 +9,9 @@ import org.kde.kirigami 2.14 as Kirigami
 
 import org.kde.kalendar 1.0 as Kalendar
 
-Kirigami.PageRow {
-    id: todoPageRow
+Kirigami.ScrollablePage {
+    id: root
+    title: i18n("Calendars")
 
     signal addTodo()
     signal viewTodo(var todoData, var collectionData)
@@ -18,45 +19,8 @@ Kirigami.PageRow {
     signal deleteTodo(var todoPtr, date deleteDate)
     signal completeTodo (var todoPtr)
 
-    globalToolBar.style: Kirigami.ApplicationHeaderStyle.Auto
-    globalToolBar.canContainHandles: true
-    globalToolBar.showNavigationButtons: true
-
-    Connections {
-        target: todoPageRow.currentItem
-        function onAddTodo() {
-            todoPageRow.addTodo();
-        }
-        function onViewTodo(todoData, collectionData) {
-            todoPageRow.viewTodo(todoData, collectionData);
-        }
-        function onEditTodo(todoPtr, collectionId) {
-            todoPageRow.editTodo(todoPtr, collectionId);
-        }
-        function onDeleteTodo(todoPtr, deleteDate) {
-            todoPageRow.deleteTodo(todoPtr, deleteDate);
-        }
-        function onCompleteTodo(todoPtr) {
-            todoPageRow.completeTodo(todoPtr);
-        }
-    }
-
-    initialPage: Kirigami.ScrollablePage {
-        id: listPage
-        title: i18n("Calendars")
-
-        Loader {
-            id: allTodosPageLoader
-            active: true
-            asynchronous: true
-            sourceComponent: TodoPage {}
-            visible: false
-            onLoaded: if (loadingPage.visible) {
-                todoPageRow.pop(listPage);
-                todoPageRow.push(allTodosPageLoader.item);
-            }
-        }
-
+    Component {
+        id: loadingPageComponent
         Kirigami.Page {
             id: loadingPage
             QQC2.BusyIndicator {
@@ -64,68 +28,91 @@ Kirigami.PageRow {
                 running: true
             }
         }
+    }
 
-        Component.onCompleted: todoPageRow.push(loadingPage)
+    Loader {
+        id: allTodosPageLoader
+        active: true
+        asynchronous: true
+        sourceComponent: TodoPage {
+            onAddTodo: root.addTodo()
+            onViewTodo: root.viewTodo(todoData, collectionData)
+            onEditTodo: root.editTodo(todoPtr, collectionId)
+            onDeleteTodo: root.deleteTodo(todoPtr, deleteDate)
+            onCompleteTodo: root.completeTodo(todoPtr)
+        }
+        visible: false
+        onLoaded: {
+            if (loadingPageComponent.visible) {
+                pageStack.pop(root);
+            }
+            pageStack.push(allTodosPageLoader.item);
+        }
+    }
 
-        ListView {
-            currentIndex: -1
-            header: ColumnLayout {
-                anchors.left: parent.left
-                anchors.right: parent.right
-                QQC2.ToolButton {
-                    Layout.fillWidth: true
-                    icon.name: "view-process-all"
-                    text: i18n("View all todos")
-                    onClicked: todoPageRow.push(allTodosPageLoader.item)
+    ListView {
+        currentIndex: -1
+        header: ColumnLayout {
+            anchors.left: parent.left
+            anchors.right: parent.right
+            QQC2.ToolButton {
+                Layout.fillWidth: true
+                icon.name: "view-process-all"
+                text: i18n("View all todos")
+                onClicked: pageStack.push(allTodosPageLoader.item)
+            }
+        }
+
+        model: Kalendar.CalendarManager.todoCollections
+        delegate: Kirigami.BasicListItem {
+            property int itemCollectionId: collectionId
+
+            leftPadding: ((Kirigami.Units.gridUnit * 2) * (kDescendantLevel - 1)) + Kirigami.Units.largeSpacing
+            enabled: model.checkState != null
+            trailing: QQC2.CheckBox {
+                id: collectionCheckbox
+
+                indicator: Rectangle {
+                    height: parent.height * 0.8
+                    width: height
+                    x: collectionCheckbox.leftPadding
+                    y: parent.height / 2 - height / 2
+                    radius: 3
+                    border.color: model.collectionColor
+                    color: Qt.rgba(0,0,0,0)
+
+                    Rectangle {
+                        anchors.margins: parent.height * 0.2
+                        anchors.fill: parent
+                        radius: 1
+                        color: model.collectionColor
+                        visible: model.checkState == 2
+                    }
                 }
+                checked: model.checkState == 2
+                onClicked: model.checkState = model.checkState === 0 ? 2 : 0
             }
 
-            model: Kalendar.CalendarManager.todoCollections
-            delegate: Kirigami.BasicListItem {
-                property int itemCollectionId: collectionId
+            label: display
 
-                leftPadding: ((Kirigami.Units.gridUnit * 2) * (kDescendantLevel - 1)) + Kirigami.Units.largeSpacing
-                enabled: model.checkState != null
-                trailing: QQC2.CheckBox {
-                    id: collectionCheckbox
-
-                    indicator: Rectangle {
-                        height: parent.height * 0.8
-                        width: height
-                        x: collectionCheckbox.leftPadding
-                        y: parent.height / 2 - height / 2
-                        radius: 3
-                        border.color: model.collectionColor
-                        color: Qt.rgba(0,0,0,0)
-
-                        Rectangle {
-                            anchors.margins: parent.height * 0.2
-                            anchors.fill: parent
-                            radius: 1
-                            color: model.collectionColor
-                            visible: model.checkState == 2
-                        }
-                    }
-                    checked: model.checkState == 2
-                    onClicked: model.checkState = model.checkState === 0 ? 2 : 0
+            Loader {
+                id: todoPageLoader
+                active: true
+                asynchronous: true
+                sourceComponent: TodoPage {
+                    filterCollectionId: collectionId
+                    onAddTodo: root.addTodo()
+                    onViewTodo: root.viewTodo(todoData, collectionData)
+                    onEditTodo: root.editTodo(todoPtr, collectionId)
+                    onDeleteTodo: root.deleteTodo(todoPtr, deleteDate)
+                    onCompleteTodo: root.completeTodo(todoPtr)
                 }
+                visible: false
+            }
 
-                label: display
-
-                Loader {
-                    id: todoPageLoader
-                    active: true
-                    asynchronous: true
-                    sourceComponent: TodoPage {
-                        filterCollectionId: collectionId
-                    }
-                    visible: false
-                }
-
-                onClicked: if(model.checkState != null) {
-                    model.checkState = 2;
-                    todoPageRow.push(todoPageLoader.item);
-                }
+            onClicked: if(model.checkState != null) {
+                model.checkState = 2;
+                pageStack.push(todoPageLoader.item);
             }
         }
     }
