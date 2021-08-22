@@ -69,6 +69,7 @@ public:
     void setShowCompleted(int showCompleted);
 
     Q_INVOKABLE void sortTodoModel(int sort, bool ascending);
+    Q_INVOKABLE void filterTodoName(QString name, int showCompleted = ShowAll);
 
 Q_SIGNALS:
     void incidenceChangerChanged();
@@ -80,4 +81,5 @@ private:
     ExtraTodoModel *m_extraTodoModel = nullptr;
     qint64 m_filterCollectionId;
     int m_showCompleted = ShowComplete::ShowAll;
+    int m_showCompletedStore; // For when searches happen
 };

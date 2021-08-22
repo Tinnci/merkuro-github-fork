@@ -28,6 +28,8 @@ KirigamiAddonsTreeView.TreeListView {
     property bool ascendingOrder: false
     onAscendingOrderChanged: todoModel.sortTodoModel(sortBy, ascendingOrder)
 
+    property alias model: todoModel
+
     currentIndex: -1
     clip: true
 

@@ -151,7 +151,14 @@ Kirigami.Page {
             }
         }
 
+        Kirigami.SearchField {
+            id: searchField
+            Layout.fillWidth: true
+            onTextChanged: incompleteView.model.filterTodoName(text);
+        }
+
         TodoTreeView {
+            id: incompleteView
             Layout.fillWidth: true
             Layout.fillHeight: true
 
