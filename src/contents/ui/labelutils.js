@@ -205,17 +205,17 @@ function todoDateTimeLabel(datetime, allDay, completed) {
     let now = new Date();
     let dateFormat = datetime.getFullYear() == now.getFullYear() ? "dddd dd MMMM" : "dddd dd MMMM yyyy";
     let dateString = datetime.toLocaleDateString(Qt.locale(), dateFormat);
-    let timeString = allDay === true ? "" : i18nc("%1 is the time", " at %1", datetime.toLocaleTimeString(Qt.locale(), 1));
+    let timeString = allDay === true ? " " : i18nc("%1 is the time", " at %1 ", datetime.toLocaleTimeString(Qt.locale(), 1));
 
     if(DateUtils.sameDay(datetime, now)) {
-        return datetime > now && !completed ? i18n("Today%1", timeString) : i18n("Today%1 (overdue)", timeString);
+        return datetime > now && !completed ? i18n("Today%1", timeString) : i18n("Today%1(overdue)", timeString);
     } else if(DateUtils.sameDay(DateUtils.addDaysToDate(datetime, - 1), now)) { // Tomorrow
         return i18n("Tomorrow%1", timeString);
     } else if(DateUtils.sameDay(DateUtils.addDaysToDate(datetime, 1), now)) { // Yesterday
-        return !completed ? i18n("Yesterday%1 (overdue)", timeString) : i18n("Yesterday");
+        return !completed ? i18n("Yesterday%1(overdue)", timeString) : i18n("Yesterday");
     }
 
-    return datetime < now && !completed ? dateString + timeString + i18n(" (overdue)") : dateString + timeString;
+    return datetime < now && !completed ? dateString + timeString + i18n("(overdue)") : dateString + timeString;
 }
 
 function priorityString(priority) {
