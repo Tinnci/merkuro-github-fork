@@ -339,13 +339,13 @@ void TodoSortFilterProxyModel::sortTodoModel(int column, bool ascending)
 void TodoSortFilterProxyModel::filterTodoName(QString name, int showCompleted)
 {
     Q_EMIT layoutAboutToBeChanged();
+    setFilterFixedString(name);
     if(name.length() > 0) {
         m_showCompleted = showCompleted;
     } else {
-        m_showCompleted = m_showCompletedStore;
+        setShowCompleted(m_showCompletedStore);
     }
     invalidateFilter();
-    setFilterFixedString(name);
     Q_EMIT layoutChanged();
 }
 
