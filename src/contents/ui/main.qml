@@ -79,17 +79,24 @@ Kirigami.ApplicationWindow {
             Kirigami.Action {
                 icon.name: "view-calendar"
                 text: i18n("Month view")
-                onTriggered: pageStack.replace(monthViewComponent);
+                onTriggered: {
+                    pageStack.pop(null);
+                    pageStack.replace(monthViewComponent);
+                }
             },
             Kirigami.Action {
                 icon.name: "view-calendar-list"
                 text: i18n("Schedule view")
-                onTriggered: pageStack.replace(scheduleViewComponent)
+                onTriggered: {
+                    pageStack.pop(null);
+                    pageStack.replace(scheduleViewComponent);
+                }
             },
             Kirigami.Action {
                 icon.name: "view-calendar-list"
                 text: i18n("Todo view")
                 onTriggered: {
+                    pageStack.pop(null);
                     pageStack.replace(todoCollectionPageComponent);
                 }
             },
