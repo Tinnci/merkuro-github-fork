@@ -208,11 +208,15 @@ function todoDateTimeLabel(datetime, allDay, completed) {
     let timeString = allDay === true ? " " : i18nc("%1 is the time", " at %1 ", datetime.toLocaleTimeString(Qt.locale(), 1));
 
     if(DateUtils.sameDay(datetime, now)) {
-        return datetime > now && !completed ? i18n("Today%1", timeString) : i18n("Today%1(overdue)", timeString);
+        return datetime > now && !completed ?
+            i18nc("No space since the %1 string, which includes the time (or not), includes this space", "Today%1", timeString) :
+            i18nc("No space since the %1 string, which includes the time (or not), includes this space", "Today%1(overdue)", timeString);
     } else if(DateUtils.sameDay(DateUtils.addDaysToDate(datetime, - 1), now)) { // Tomorrow
-        return i18n("Tomorrow%1", timeString);
+        return i18nc("No space since the %1 string, which includes the time (or not), includes this space", "Tomorrow%1", timeString);
     } else if(DateUtils.sameDay(DateUtils.addDaysToDate(datetime, 1), now)) { // Yesterday
-        return !completed ? i18n("Yesterday%1(overdue)", timeString) : i18n("Yesterday");
+        return !completed ?
+            i18nc("No space since the %1 string, which includes the time (or not), includes this space", "Yesterday%1(overdue)", timeString) :
+            i18nc("No space since the %1 string, which includes the time (or not), includes this space", "Yesterday");
     }
 
     return datetime < now && !completed ? dateString + timeString + i18n("(overdue)") : dateString + timeString;
