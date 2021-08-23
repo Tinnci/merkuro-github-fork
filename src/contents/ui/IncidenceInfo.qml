@@ -167,7 +167,7 @@ Kirigami.OverlayDrawer {
                             value: incidenceInfo.incidenceWrapper.todoPercentComplete
                             onValueChanged: {
                                 if (incidenceInfo.incidenceWrapper.incidenceType === IncidenceWrapper.TypeTodo && activeFocus) {
-                                    incidenceInfo.incidenceWrapper.todoPercentComplete = value
+                                    incidenceInfo.incidenceWrapper.todoPercentComplete = value;
                                     CalendarManager.editIncidence(incidenceInfo.incidenceWrapper);
                                 }
                             }
