@@ -136,7 +136,6 @@ Kirigami.Page {
                     switch(root.sortBy) {
                         case Kalendar.TodoSortFilterProxyModel.EndTimeColumn:
                             return i18n("by due date %1", directionString);
-                            break;
                         case Kalendar.TodoSortFilterProxyModel.PriorityIntColumn:
                             return i18n("by priority %1", directionString);
                             break;
