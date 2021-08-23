@@ -104,7 +104,10 @@ Kirigami.ApplicationWindow {
                 icon.name: "settings-configure"
                 text: i18n("Settings")
                 shortcut: StandardKey.Preferences
-                onTriggered: pageStack.pushDialogLayer("qrc:/SettingsPage.qml", {
+
+                property string pageToPush: settingsPageLoader.item !== null ? "qrc:/SettingsPage.qml" : "qrc:/SettingsPageOld.qml"
+
+                onTriggered: pageStack.pushDialogLayer(pageToPush, {
                     width: root.width
                 }, {
                     title: i18n("Settings"),
@@ -120,6 +123,12 @@ Kirigami.ApplicationWindow {
                 visible: !Kirigami.Settings.isMobile
             }
         ]
+    }
+
+    Loader {
+        id: settingsPageLoader
+        source: "qrc:/SettingsPage.qml"
+        active: true
     }
 
     contextDrawer: IncidenceInfo {
