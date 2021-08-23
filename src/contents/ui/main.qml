@@ -125,10 +125,12 @@ Kirigami.ApplicationWindow {
         ]
     }
 
+    // If this loader fails to load the settings page then we'll know to use the old one
     Loader {
         id: settingsPageLoader
         source: "qrc:/SettingsPage.qml"
         active: true
+        visible: false
     }
 
     contextDrawer: IncidenceInfo {
