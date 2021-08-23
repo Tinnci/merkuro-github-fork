@@ -13,9 +13,9 @@ Kirigami.ScrollablePage {
     id: root
     title: i18n("Calendars")
 
-    signal addTodo()
+    signal addTodo(int collectionId)
     signal viewTodo(var todoData, var collectionData)
-    signal editTodo(var todoPtr, var collectionId)
+    signal editTodo(var todoPtr, int collectionId)
     signal deleteTodo(var todoPtr, date deleteDate)
     signal completeTodo (var todoPtr)
 
@@ -35,7 +35,7 @@ Kirigami.ScrollablePage {
         active: true
         asynchronous: true
         sourceComponent: TodoPage {
-            onAddTodo: root.addTodo()
+            onAddTodo: root.addTodo(collectionId)
             onViewTodo: root.viewTodo(todoData, collectionData)
             onEditTodo: root.editTodo(todoPtr, collectionId)
             onDeleteTodo: root.deleteTodo(todoPtr, deleteDate)
@@ -101,7 +101,7 @@ Kirigami.ScrollablePage {
                 asynchronous: true
                 sourceComponent: TodoPage {
                     filterCollectionId: collectionId
-                    onAddTodo: root.addTodo()
+                    onAddTodo: root.addTodo(collectionId)
                     onViewTodo: root.viewTodo(todoData, collectionData)
                     onEditTodo: root.editTodo(todoPtr, collectionId)
                     onDeleteTodo: root.deleteTodo(todoPtr, deleteDate)

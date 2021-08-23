@@ -195,7 +195,7 @@ Kirigami.ApplicationWindow {
         }
     }
 
-    function setUpAdd(type, addDate) {
+    function setUpAdd(type, addDate, collectionId) {
         let editorToUse = root.editorToUse();
         if (editorToUse.editMode || !editorToUse.incidenceWrapper) {
             editorToUse.incidenceWrapper = Qt.createQmlObject('import org.kde.kalendar 1.0; IncidenceWrapper {id: incidence}',
@@ -209,8 +209,6 @@ Kirigami.ApplicationWindow {
             editorToUse.incidenceWrapper.setNewTodo();
         }
 
-        editorToUse.incidenceWrapper.collectionId = CalendarManager.defaultCalendarId(editorToUse.incidenceWrapper)
-
         if(addDate !== undefined && !isNaN(addDate.getTime())) {
             let existingStart = editorToUse.incidenceWrapper.incidenceStart;
             let existingEnd = editorToUse.incidenceWrapper.incidenceEnd;
@@ -221,6 +219,12 @@ Kirigami.ApplicationWindow {
             } else if (type === IncidenceWrapper.TypeTodo) {
                 editorToUse.incidenceWrapper.incidenceEnd = new Date(addDate.setHours(existingEnd.getHours() + 1, existingEnd.getMinutes()));
             }
+        }
+
+        if(collectionId && collectionId >= 0) {
+            editorToUse.incidenceWrapper.collectionId = collectionId;
+        } else {
+            editorToUse.incidenceWrapper.collectionId = CalendarManager.defaultCalendarId(editorToUse.incidenceWrapper);
         }
     }
 
@@ -332,7 +336,7 @@ Kirigami.ApplicationWindow {
         id: todoCollectionPageComponent
 
         TodoCollectionPage {
-            onAddTodo: root.setUpAdd(IncidenceWrapper.TypeTodo, new Date())
+            onAddTodo: root.setUpAdd(IncidenceWrapper.TypeTodo, new Date(), collectionId)
             onViewTodo: root.setUpView(todoData, collectionData)
             onEditTodo: root.setUpEdit(todoPtr, collectionId)
             onDeleteTodo: root.setUpDelete(todoPtr, deleteDate)
