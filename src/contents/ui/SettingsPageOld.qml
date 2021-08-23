@@ -356,27 +356,31 @@ Kirigami.Page {
                     }
                 }
 
-                Kirigami.Heading {
-                    level: 3
+                Kirigami.Separator {
                     Kirigami.FormData.isSection: true
-                    text: i18n("Schedule view settings")
+                    Kirigami.FormData.label: i18n("Schedule view settings")
                 }
-                Controls.CheckBox {
-                    text: i18n("Show month header")
-                    checked: Config.showMonthHeader
-                    enabled: !Config.isShowMonthHeaderImmutable
-                    onClicked: {
-                        Config.showMonthHeader = !Config.showMonthHeader;
-                        Config.save();
+                Column {
+                    Kirigami.FormData.label: i18n("Headers:")
+                    Kirigami.FormData.labelAlignment: Qt.AlignTop
+
+                    Controls.CheckBox {
+                        text: i18n("Show month header")
+                        checked: Config.showMonthHeader
+                        enabled: !Config.isShowMonthHeaderImmutable
+                        onClicked: {
+                            Config.showMonthHeader = !Config.showMonthHeader;
+                            Config.save();
+                        }
                     }
-                }
-                Controls.CheckBox {
-                    text: i18n("Show week headers")
-                    checked: Config.showWeekHeaders
-                    enabled: !Config.isShowWeekHeadersImmutable
-                    onClicked: {
-                        Config.showWeekHeaders = !Config.showWeekHeaders;
-                        Config.save();
+                    Controls.CheckBox {
+                        text: i18n("Show week headers")
+                        checked: Config.showWeekHeaders
+                        enabled: !Config.isShowWeekHeadersImmutable
+                        onClicked: {
+                            Config.showWeekHeaders = !Config.showWeekHeaders;
+                            Config.save();
+                        }
                     }
                 }
             }
