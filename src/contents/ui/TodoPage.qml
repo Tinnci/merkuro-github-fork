@@ -140,7 +140,6 @@ Kirigami.Page {
                             return i18n("by priority %1", directionString);
                         case Kalendar.TodoSortFilterProxyModel.SummaryColumn:
                             return i18n("alphabetically %1", directionString);
-                            break;
                     }
                 }
                 icon.name: root.ascendingOrder ? "view-sort-ascending" : "view-sort-descending"
