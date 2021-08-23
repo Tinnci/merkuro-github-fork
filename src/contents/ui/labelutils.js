@@ -202,10 +202,12 @@ function getIncidenceLabelColor(background, darkMode) {
 }
 
 function todoDateTimeLabel(datetime, allDay, completed) {
-    const now = new Date();
+    let now = new Date();
     let dateFormat = datetime.getFullYear() == now.getFullYear() ? "dddd dd MMMM" : "dddd dd MMMM yyyy";
     let dateString = datetime.toLocaleDateString(Qt.locale(), dateFormat);
-    let timeString = allDay === true ? " " : i18nc("%1 is the time", " at %1 ", datetime.toLocaleTimeString(Qt.locale(), 1));
+    let timeString = allDay === true ?
+        " " :
+        i18nc("%1 is the time, spaces included to allow use of 'empty' string when an event is allday and has no time", " at %1 ", datetime.toLocaleTimeString(Qt.locale(), 1));
 
     if(DateUtils.sameDay(datetime, now)) {
         return datetime > now && !completed ?
