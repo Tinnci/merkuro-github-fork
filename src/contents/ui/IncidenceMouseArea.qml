@@ -73,7 +73,7 @@ MouseArea {
                 text: i18n("Add sub-todo")
                 enabled: !mouseArea.collectionDetails["readOnly"]
                 onClicked: {
-                    let parentWrapper = Qt.createQmlObject('import org.kde.kalendar 1.0; IncidenceWrapper {id: incidence}', this, "incidence");
+                    const parentWrapper = Qt.createQmlObject('import org.kde.kalendar 1.0; IncidenceWrapper {id: incidence}', this, "incidence");
                     parentWrapper.incidencePtr = mouseArea.incidenceData.incidencePtr;
                     parentWrapper.collectionId = mouseArea.collectionDetails.id;
                     addSubTodoClicked(parentWrapper);
