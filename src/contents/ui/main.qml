@@ -318,6 +318,7 @@ Kirigami.ApplicationWindow {
             onEditIncidenceReceived: root.setUpEdit(receivedIncidencePtr, receivedCollectionId)
             onDeleteIncidenceReceived: root.setUpDelete(receivedIncidencePtr, receivedDeleteDate)
             onCompleteTodoReceived: root.completeTodo(receivedIncidencePtr)
+            onAddSubTodo: root.setUpAddSubTodo(parentWrapper)
 
             onMonthChanged: root.month = month
             onYearChanged: root.year = year
@@ -345,6 +346,7 @@ Kirigami.ApplicationWindow {
             onEditIncidence: root.setUpEdit(incidencePtr, collectionId)
             onDeleteIncidence: root.setUpDelete(incidencePtr, deleteDate)
             onCompleteTodo: root.completeTodo(incidencePtr)
+            onAddSubTodo: root.setUpAddSubTodo(parentWrapper)
 
             actions.contextualActions: addAction
         }
@@ -359,6 +361,7 @@ Kirigami.ApplicationWindow {
             onEditTodo: root.setUpEdit(todoPtr, collectionId)
             onDeleteTodo: root.setUpDelete(todoPtr, deleteDate)
             onCompleteTodo: root.completeTodo(todoPtr)
+            onAddSubTodo: root.setUpAddSubTodo(parentWrapper)
         }
     }
 }

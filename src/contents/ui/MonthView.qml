@@ -20,6 +20,7 @@ Kirigami.Page {
     signal editIncidenceReceived(var receivedIncidencePtr, var receivedCollectionId)
     signal deleteIncidenceReceived(var receivedIncidencePtr, date receivedDeleteDate)
     signal completeTodoReceived(var receivedIncidencePtr)
+    signal addSubTodo(var parentWrapper)
 
     property var openOccurrence
     property alias startDate: dayView.startDate
@@ -139,6 +140,7 @@ Kirigami.Page {
         onEditIncidence: editIncidenceReceived(incidencePtr, collectionId)
         onDeleteIncidence: deleteIncidenceReceived(incidencePtr, deleteDate)
         onCompleteTodo: completeTodoReceived(incidencePtr)
+        onAddSubTodo: monthPage.addSubTodo(parentWrapper)
     }
 }
 

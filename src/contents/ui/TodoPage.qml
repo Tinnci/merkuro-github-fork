@@ -22,6 +22,7 @@ Kirigami.Page {
     signal editTodo(var todoPtr, int collectionId)
     signal deleteTodo(var todoPtr, date deleteDate)
     signal completeTodo(var todoPtr)
+    signal addSubTodo(var parentWrapper)
 
     property int filterCollectionId
     property var filterCollectionDetails: filterCollectionId ? Kalendar.CalendarManager.getCollectionDetails(filterCollectionId) : null
@@ -112,6 +113,7 @@ Kirigami.Page {
                         completedDrawer.close();
                     }
                     onCompleteTodo: root.completeTodo(todoPtr);
+                    onAddSubTodo: root.addSubTodo(parentWrapper)
                 }
             }
         }
@@ -167,6 +169,7 @@ Kirigami.Page {
             onEditTodo: root.editTodo(todoPtr, collectionId)
             onDeleteTodo: root.deleteTodo(todoPtr, deleteDate)
             onCompleteTodo: root.completeTodo(todoPtr);
+            onAddSubTodo: root.addSubTodo(parentWrapper)
         }
     }
 }

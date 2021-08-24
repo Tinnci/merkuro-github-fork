@@ -18,6 +18,7 @@ Kirigami.ScrollablePage {
     signal editTodo(var todoPtr, int collectionId)
     signal deleteTodo(var todoPtr, date deleteDate)
     signal completeTodo (var todoPtr)
+    signal addSubTodo(var parentWrapper)
 
     Component {
         id: loadingPageComponent
@@ -40,6 +41,7 @@ Kirigami.ScrollablePage {
             onEditTodo: root.editTodo(todoPtr, collectionId)
             onDeleteTodo: root.deleteTodo(todoPtr, deleteDate)
             onCompleteTodo: root.completeTodo(todoPtr)
+            onAddSubTodo: root.addSubTodo(parentWrapper)
         }
         visible: false
         onLoaded: {
@@ -106,6 +108,7 @@ Kirigami.ScrollablePage {
                     onEditTodo: root.editTodo(todoPtr, collectionId)
                     onDeleteTodo: root.deleteTodo(todoPtr, deleteDate)
                     onCompleteTodo: root.completeTodo(todoPtr)
+                    onAddSubTodo: root.addSubTodo(parentWrapper)
                 }
                 visible: false
             }
