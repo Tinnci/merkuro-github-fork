@@ -313,11 +313,11 @@ Kirigami.ApplicationWindow {
             month: root.month
             openOccurrence: root.openOccurrence
 
-            onAddIncidenceReceived: root.setUpAdd(receivedType, receivedAddDate)
-            onViewIncidenceReceived: root.setUpView(receivedModelData, receivedCollectionData)
-            onEditIncidenceReceived: root.setUpEdit(receivedIncidencePtr, receivedCollectionId)
-            onDeleteIncidenceReceived: root.setUpDelete(receivedIncidencePtr, receivedDeleteDate)
-            onCompleteTodoReceived: root.completeTodo(receivedIncidencePtr)
+            onAddIncidence: root.setUpAdd(type, addDate)
+            onViewIncidence: root.setUpView(modelData, collectionData)
+            onEditIncidence: root.setUpEdit(incidencePtr, collectionId)
+            onDeleteIncidence: root.setUpDelete(incidencePtr, deleteDate)
+            onCompleteTodo: root.completeTodo(incidencePtr)
             onAddSubTodo: root.setUpAddSubTodo(parentWrapper)
 
             onMonthChanged: root.month = month
