@@ -80,7 +80,7 @@ Kirigami.OverlayDrawer {
                             id: actionToolbar
                             Layout.fillWidth: true
                             Layout.fillHeight: true
-                            spacing: 0
+                            alignment: Qt.AlignRight
 
                             // If accessing directly, updated incidenceWrapper data not grabbed (???)
                             property string incidenceType: incidenceInfo.incidenceWrapper.incidenceTypeStr
