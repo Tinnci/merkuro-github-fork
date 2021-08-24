@@ -68,50 +68,57 @@ Kirigami.OverlayDrawer {
                     rightPadding: Kirigami.Units.smallSpacing
                     leftPadding: Kirigami.Units.smallSpacing
 
-
                     RowLayout {
                         anchors.fill: parent
+                    Kirigami.Heading {
+                        id: infoHeader
+                        Layout.fillHeight: true
+                        text: i18n(incidenceInfo.incidenceWrapper.incidenceTypeStr)
+                    }
+
+                    Kirigami.ActionToolBar {
+                        Layout.fillWidth: true
+                        Layout.fillHeight: true
                         spacing: 0
 
                         // If accessing directly, updated incidenceWrapper data not grabbed (???)
                         property string incidenceType: incidenceInfo.incidenceWrapper.incidenceTypeStr
 
-                        Kirigami.Heading {
-                            Layout.fillWidth: true
-                            text: i18n(incidenceInfo.incidenceWrapper.incidenceTypeStr)
-                        }
+                        actions: [
 
-                        QQC2.ToolButton {
+                        Kirigami.Action {
                             icon.name: "list-add"
                             text: i18n("Add sub-todo")
                             visible: parent.incidenceType === "Todo"
-                            onClicked: {
+                            onTriggered: {
                                 incidenceInfo.incidenceWrapper.collectionId = collectionData.id;
                                 addSubTodo(incidenceInfo.incidenceWrapper);
                             }
-                        }
-                        QQC2.ToolButton {
+                        },
+                        Kirigami.Action {
                             property bool todoCompleted: incidenceInfo.incidenceWrapper.todoCompleted
                             icon.name: todoCompleted ? "edit-undo" : "checkmark"
                             text: todoCompleted ? i18n("Mark incomplete") : i18n("Mark complete")
                             visible: parent.incidenceType === "Todo"
-                            onClicked: {
+                            onTriggered: {
                                 incidenceInfo.incidenceWrapper.todoCompleted = !incidenceInfo.incidenceWrapper.todoCompleted;
                                 CalendarManager.editIncidence(incidenceInfo.incidenceWrapper);
                             }
-                        }
-                        QQC2.ToolButton {
+                        },
+                        Kirigami.Action {
                             icon.name: "edit-entry"
                             text: i18n("Edit")
                             enabled: !incidenceInfo.collectionData.readOnly
-                            onClicked: editIncidence(incidenceInfo.incidenceData.incidencePtr, incidenceInfo.incidenceData.collectionId)
-                        }
-                        QQC2.ToolButton {
+                            onTriggered: editIncidence(incidenceInfo.incidenceData.incidencePtr, incidenceInfo.incidenceData.collectionId)
+                        },
+                        Kirigami.Action {
                             icon.name: "edit-delete"
                             text: i18n("Delete")
                             enabled: !incidenceInfo.collectionData.readOnly
-                            onClicked: deleteIncidence(incidenceInfo.incidenceData.incidencePtr, incidenceInfo.incidenceData.startTime)
+                            onTriggered: deleteIncidence(incidenceInfo.incidenceData.incidencePtr, incidenceInfo.incidenceData.startTime)
                         }
+                        ]
+                    }
                     }
                 }
 
