@@ -70,55 +70,55 @@ Kirigami.OverlayDrawer {
 
                     RowLayout {
                         anchors.fill: parent
-                    Kirigami.Heading {
-                        id: infoHeader
-                        Layout.fillHeight: true
-                        text: i18n(incidenceInfo.incidenceWrapper.incidenceTypeStr)
-                    }
-
-                    Kirigami.ActionToolBar {
-                        Layout.fillWidth: true
-                        Layout.fillHeight: true
-                        spacing: 0
-
-                        // If accessing directly, updated incidenceWrapper data not grabbed (???)
-                        property string incidenceType: incidenceInfo.incidenceWrapper.incidenceTypeStr
-
-                        actions: [
-
-                        Kirigami.Action {
-                            icon.name: "list-add"
-                            text: i18n("Add sub-todo")
-                            visible: parent.incidenceType === "Todo"
-                            onTriggered: {
-                                incidenceInfo.incidenceWrapper.collectionId = collectionData.id;
-                                addSubTodo(incidenceInfo.incidenceWrapper);
-                            }
-                        },
-                        Kirigami.Action {
-                            property bool todoCompleted: incidenceInfo.incidenceWrapper.todoCompleted
-                            icon.name: todoCompleted ? "edit-undo" : "checkmark"
-                            text: todoCompleted ? i18n("Mark incomplete") : i18n("Mark complete")
-                            visible: parent.incidenceType === "Todo"
-                            onTriggered: {
-                                incidenceInfo.incidenceWrapper.todoCompleted = !incidenceInfo.incidenceWrapper.todoCompleted;
-                                CalendarManager.editIncidence(incidenceInfo.incidenceWrapper);
-                            }
-                        },
-                        Kirigami.Action {
-                            icon.name: "edit-entry"
-                            text: i18n("Edit")
-                            enabled: !incidenceInfo.collectionData.readOnly
-                            onTriggered: editIncidence(incidenceInfo.incidenceData.incidencePtr, incidenceInfo.incidenceData.collectionId)
-                        },
-                        Kirigami.Action {
-                            icon.name: "edit-delete"
-                            text: i18n("Delete")
-                            enabled: !incidenceInfo.collectionData.readOnly
-                            onTriggered: deleteIncidence(incidenceInfo.incidenceData.incidencePtr, incidenceInfo.incidenceData.startTime)
+                        Kirigami.Heading {
+                            id: infoHeader
+                            Layout.fillHeight: true
+                            text: i18n(incidenceInfo.incidenceWrapper.incidenceTypeStr)
                         }
-                        ]
-                    }
+
+                        Kirigami.ActionToolBar {
+                            id: actionToolbar
+                            Layout.fillWidth: true
+                            Layout.fillHeight: true
+                            spacing: 0
+
+                            // If accessing directly, updated incidenceWrapper data not grabbed (???)
+                            property string incidenceType: incidenceInfo.incidenceWrapper.incidenceTypeStr
+
+                            actions: [
+                                Kirigami.Action {
+                                    icon.name: "list-add"
+                                    text: i18n("Add sub-todo")
+                                    visible: actionToolbar.incidenceType === "Todo"
+                                    onTriggered: {
+                                        incidenceInfo.incidenceWrapper.collectionId = collectionData.id;
+                                        addSubTodo(incidenceInfo.incidenceWrapper);
+                                    }
+                                },
+                                Kirigami.Action {
+                                    property bool todoCompleted: incidenceInfo.incidenceWrapper.todoCompleted
+                                    icon.name: todoCompleted ? "edit-undo" : "checkmark"
+                                    text: todoCompleted ? i18n("Mark incomplete") : i18n("Mark complete")
+                                    visible: actionToolbar.incidenceType === "Todo"
+                                    onTriggered: {
+                                        incidenceInfo.incidenceWrapper.todoCompleted = !incidenceInfo.incidenceWrapper.todoCompleted;
+                                        CalendarManager.editIncidence(incidenceInfo.incidenceWrapper);
+                                    }
+                                },
+                                Kirigami.Action {
+                                    icon.name: "edit-entry"
+                                    text: i18n("Edit")
+                                    enabled: !incidenceInfo.collectionData.readOnly
+                                    onTriggered: editIncidence(incidenceInfo.incidenceData.incidencePtr, incidenceInfo.incidenceData.collectionId)
+                                },
+                                Kirigami.Action {
+                                    icon.name: "edit-delete"
+                                    text: i18n("Delete")
+                                    enabled: !incidenceInfo.collectionData.readOnly
+                                    onTriggered: deleteIncidence(incidenceInfo.incidenceData.incidencePtr, incidenceInfo.incidenceData.startTime)
+                                }
+                            ]
+                        }
                     }
                 }
 
