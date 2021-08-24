@@ -142,6 +142,10 @@ Kirigami.ApplicationWindow {
             }
         }
 
+        onAddSubTodo: {
+            setUpAddSubTodo(parentWrapper);
+            if (modal) { incidenceInfo.close() }
+        }
         onEditIncidence: {
             setUpEdit(incidencePtr, collectionId);
             if (modal) { incidenceInfo.close() }
@@ -226,6 +230,20 @@ Kirigami.ApplicationWindow {
         } else {
             editorToUse.incidenceWrapper.collectionId = CalendarManager.defaultCalendarId(editorToUse.incidenceWrapper);
         }
+    }
+
+    function setUpAddSubTodo(parentWrapper) {
+        let editorToUse = root.editorToUse();
+        if (editorToUse.editMode || !editorToUse.incidenceWrapper) {
+            editorToUse.incidenceWrapper = Qt.createQmlObject('import org.kde.kalendar 1.0; IncidenceWrapper {id: incidence}',
+                editorToUse, "incidence");
+        }
+        editorToUse.editMode = false;
+        editorToUse.incidenceWrapper.setNewTodo();
+        editorToUse.incidenceWrapper.parent = parentWrapper.uid;
+        editorToUse.incidenceWrapper.collectionId = parentWrapper.collectionId;
+        editorToUse.incidenceWrapper.incidenceStart = parentWrapper.incidenceStart;
+        editorToUse.incidenceWrapper.incidenceEnd = parentWrapper.incidenceEnd;
     }
 
     function setUpView(modelData, collectionData) {
