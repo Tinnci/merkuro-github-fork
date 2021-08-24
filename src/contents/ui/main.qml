@@ -20,19 +20,60 @@ Kirigami.ApplicationWindow {
     property int year: currentDate.getFullYear()
 
     property var openOccurrence
+
+    readonly property var monthViewAction: KalendarApplication.action("open_month_view")
+    readonly property var scheduleViewAction: KalendarApplication.action("open_schedule_view")
+    readonly property var todoViewAction: KalendarApplication.action("open_todo_view")
+    readonly property var createEventAction: KalendarApplication.action("create_event")
+    readonly property var createTodoAction: KalendarApplication.action("create_todo")
+
+    Component.onCompleted: if (Kirigami.Settings.isMobile) {
+        scheduleViewAction.setChecked(true);
+    } else {
+        monthViewAction.setChecked(true);
+    }
+
+    Connections {
+        target: KalendarApplication
+        function onOpenMonthView() {
+            pageStack.pop(null);
+            pageStack.replace(monthViewComponent);
+        }
+
+        function onOpenScheduleView() {
+            pageStack.pop(null);
+            pageStack.replace(scheduleViewComponent);
+        }
+
+        function onOpenTodoView() {
+            pageStack.pop(null);
+            pageStack.replace(todoCollectionPageComponent);
+        }
+
+        function onCreateNewEvent() {
+            root.setUpAdd(IncidenceWrapper.TypeEvent);
+        }
+
+        function onCreateNewTodo() {
+            root.setUpAdd(IncidenceWrapper.TypeTodo);
+        }
+    }
+
     property Kirigami.Action addAction: Kirigami.Action {
         text: i18n("Add")
         icon.name: "list-add"
 
         Kirigami.Action {
+            id: newEventAction
             text: i18n("New event")
             icon.name: "resource-calendar-insert"
-            onTriggered: root.setUpAdd(IncidenceWrapper.TypeEvent);
+            onTriggered: createEventAction.trigger()
         }
         Kirigami.Action {
+            id: newTodoAction
             text: i18n("New todo")
             icon.name: "view-task-add"
-            onTriggered: root.setUpAdd(IncidenceWrapper.TypeTodo);
+            onTriggered: createTodoAction.trigger()
         }
     }
 
@@ -47,16 +88,7 @@ Kirigami.ApplicationWindow {
                 text: i18n("Add")
                 icon.name: "list-add"
 
-                Kirigami.Action {
-                    text: i18n("New event")
-                    icon.name: "resource-calendar-insert"
-                    onTriggered: root.setUpAdd(IncidenceWrapper.TypeEvent);
-                }
-                Kirigami.Action {
-                    text: i18n("New todo")
-                    icon.name: "view-task-add"
-                    onTriggered: root.setUpAdd(IncidenceWrapper.TypeTodo);
-                }
+                children: [newEventAction, newTodoAction]
             },
             Kirigami.Action {
                 icon.name: "edit-undo"
@@ -78,32 +110,30 @@ Kirigami.ApplicationWindow {
             },
             Kirigami.Action {
                 icon.name: "view-calendar"
-                text: i18n("Month view")
-                onTriggered: {
-                    pageStack.pop(null);
-                    pageStack.replace(monthViewComponent);
-                }
+                text: monthViewAction.text
+                shortcut: monthViewAction.shortcut
+                onTriggered: monthViewAction.trigger()
             },
             Kirigami.Action {
                 icon.name: "view-calendar-list"
-                text: i18n("Schedule view")
-                onTriggered: {
-                    pageStack.pop(null);
-                    pageStack.replace(scheduleViewComponent);
-                }
+                text: scheduleViewAction.text
+                shortcut: scheduleViewAction.shortcut
+                onTriggered: scheduleViewAction.trigger()
             },
             Kirigami.Action {
                 icon.name: "view-calendar-list"
                 text: i18n("Todo view")
-                onTriggered: {
-                    pageStack.pop(null);
-                    pageStack.replace(todoCollectionPageComponent);
-                }
+                onTriggered: todoViewAction.trigger()
             },
             Kirigami.Action {
                 icon.name: "settings-configure"
-                text: i18n("Settings")
+                text: i18n("Preferences…")
                 onTriggered: pageStack.layers.push("qrc:/SettingsPage.qml")
+            },
+            Kirigami.Action {
+                icon.name: "settings-configure"
+                text: i18n("Preferences…")
+                onTriggered: kcommandbarAction.trigger()
             },
             Kirigami.Action {
                 icon.name: "application-exit"
@@ -153,6 +183,11 @@ Kirigami.ApplicationWindow {
     }
 
     Loader {
+        active: !Kirigami.Settings.isMobile
+        source: Qt.resolvedUrl("qrc:/GlobalMenu.qml")
+    }
+
+    Loader {
         id: editorWindowedLoader
         active: false
         sourceComponent: Kirigami.ApplicationWindow {
@@ -160,6 +195,8 @@ Kirigami.ApplicationWindow {
 
             width: Kirigami.Units.gridUnit * 40
             height: Kirigami.Units.gridUnit * 32
+
+            flags: Qt.Dialog | Qt.WindowCloseButtonHint
 
             // Probably a more elegant way of accessing the editor from outside than this.
             property var incidenceEditor: incidenceEditorInLoader
