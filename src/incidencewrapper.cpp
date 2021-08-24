@@ -455,7 +455,6 @@ void IncidenceWrapper::setNewEvent()
 void IncidenceWrapper::setNewTodo()
 {
     auto todo = KCalendarCore::Todo::Ptr(new KCalendarCore::Todo);
-    todo->setDtDue(QDateTime::currentDateTime().addSecs(30 * 60));
     setIncidencePtr(todo);
 }
 
