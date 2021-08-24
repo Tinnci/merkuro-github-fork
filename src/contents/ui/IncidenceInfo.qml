@@ -10,6 +10,7 @@ import org.kde.kalendar 1.0
 Kirigami.OverlayDrawer {
     id: incidenceInfo
 
+    signal addSubTodo(var parentWrapper)
     signal editIncidence(var incidencePtr, var collectionId)
     signal deleteIncidence(var incidencePtr, date deleteDate)
 
@@ -72,18 +73,28 @@ Kirigami.OverlayDrawer {
                         anchors.fill: parent
                         spacing: 0
 
+                        // If accessing directly, updated incidenceWrapper data not grabbed (???)
+                        property string incidenceType: incidenceInfo.incidenceWrapper.incidenceTypeStr
+
                         Kirigami.Heading {
                             Layout.fillWidth: true
                             text: i18n(incidenceInfo.incidenceWrapper.incidenceTypeStr)
                         }
 
                         QQC2.ToolButton {
-                            // If accessing directly, updated incidenceWrapper data not grabbed (???)
-                            property string incidenceType: incidenceInfo.incidenceWrapper.incidenceTypeStr
+                            icon.name: "list-add"
+                            text: i18n("Add sub-todo")
+                            visible: parent.incidenceType === "Todo"
+                            onClicked: {
+                                incidenceInfo.incidenceWrapper.collectionId = collectionData.id;
+                                addSubTodo(incidenceInfo.incidenceWrapper);
+                            }
+                        }
+                        QQC2.ToolButton {
                             property bool todoCompleted: incidenceInfo.incidenceWrapper.todoCompleted
                             icon.name: todoCompleted ? "edit-undo" : "checkmark"
                             text: todoCompleted ? i18n("Mark incomplete") : i18n("Mark complete")
-                            visible: incidenceType === "Todo"
+                            visible: parent.incidenceType === "Todo"
                             onClicked: {
                                 incidenceInfo.incidenceWrapper.todoCompleted = !incidenceInfo.incidenceWrapper.todoCompleted;
                                 CalendarManager.editIncidence(incidenceInfo.incidenceWrapper);
