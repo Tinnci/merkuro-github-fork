@@ -236,6 +236,7 @@ Kirigami.Page {
 
         rightActions: Kirigami.Action {
             icon.name: "list-add"
+            tooltip: i18n("Quickly add a new todo.")
             onTriggered: addField.addTodo()
         }
         onAccepted: addField.addTodo()
