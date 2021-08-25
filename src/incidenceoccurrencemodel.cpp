@@ -110,15 +110,10 @@ void IncidenceOccurrenceModel::updateFromSource()
     load();
 
     if (m_coreCalendar) {
-        QMap<QByteArray, KCalendarCore::Incidence::Ptr> recurringIncidences;
-        QMultiMap<QByteArray, KCalendarCore::Incidence::Ptr> exceptions;
-
         const auto allEvents = m_coreCalendar->events(mStart, mEnd); // get all events
         const auto allTodos = m_coreCalendar->todos(mStart, mEnd);
 
         Incidence::List allIncidences = Calendar::mergeIncidenceList(allEvents, allTodos, {});
-
-        QMap<QByteArray, KCalendarCore::Incidence::Ptr> incidences;
 
         // process all recurring events and their exceptions.
         for (const auto &incidence : allIncidences) {
