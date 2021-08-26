@@ -117,7 +117,7 @@ Kirigami.Page {
                 (index == pathView.count - 1 && pathView.currentIndex == 0) ||
                 (index == 0 && pathView.currentIndex == pathView.count - 1)
 
-            active: true
+            active: index == pathView.currentIndex //isNextItem
             asynchronous: index != pathView.currentIndex
             visible: status == Loader.Ready
             sourceComponent: MultiDayView {
