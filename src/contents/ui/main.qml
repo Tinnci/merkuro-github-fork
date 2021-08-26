@@ -363,7 +363,7 @@ Kirigami.ApplicationWindow {
             title: DateUtils.addDaysToDate(startDate, 7).toLocaleDateString(Qt.locale(), "<b>MMMM</b> yyyy")
             currentDate: root.currentDate
             startDate: DateUtils.getFirstDayOfWeek(DateUtils.getFirstDayOfMonth(new Date(root.year, root.month)))
-            month: root.month
+            //month: root.month
             openOccurrence: root.openOccurrence
 
             onAddIncidence: root.setUpAdd(type, addDate)
@@ -373,8 +373,8 @@ Kirigami.ApplicationWindow {
             onCompleteTodo: root.completeTodo(incidencePtr)
             onAddSubTodo: root.setUpAddSubTodo(parentWrapper)
 
-            onMonthChanged: root.month = month
-            onYearChanged: root.year = year
+            //onMonthChanged: root.month = month
+            //onYearChanged: root.year = year
 
             actions.contextualActions: addAction
         }
