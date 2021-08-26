@@ -20,6 +20,7 @@ target_link_libraries(kalendar
     KF5::AkonadiContact
     KF5::AkonadiAgentBase
     KF5::AkonadiXml
+    KF5::PimCommonAkonadi
     KF5::CalendarSupport
     KF5::WindowSystem
     KF5::ConfigWidgets
