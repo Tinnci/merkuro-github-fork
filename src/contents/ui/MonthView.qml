@@ -88,7 +88,7 @@ Kirigami.Page {
         snapMode: PathView.SnapToItem
         focus: true
         interactive: true //Kirigami.Settings.isMobile
-        pathItemCount: 5
+        pathItemCount: 2
 
         path: Path {
             startX: - pathView.width * pathView.pathItemCount / 2 + pathView.width / 2
@@ -112,12 +112,15 @@ Kirigami.Page {
         }
 
         delegate: Loader {
+            id: viewLoader
+
+            property bool isCurrentItem: PathView.isCurrentItem
             property bool isNextItem: (index >= pathView.currentIndex -1 && index <= pathView.currentIndex + 1) ||
                 (index == pathView.count - 1 && pathView.currentIndex == 0) ||
                 (index == 0 && pathView.currentIndex == pathView.count - 1)
 
             active: isNextItem
-            //asynchronous: index != pathView.currentIndex
+            //asynchronous: true
             sourceComponent: MultiDayView {
                 id: dayView
                 objectName: "monthView"
@@ -127,6 +130,7 @@ Kirigami.Page {
                 daysPerRow: 7
                 paintGrid: true
                 showDayIndicator: true
+                loadModel: viewLoader.isCurrentItem || (viewLoader.isNextItem && pathView.moving)
 
                 startDate: model.startDate
                 //onStartDateChanged: monthPage.startDate = startDate
