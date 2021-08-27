@@ -62,7 +62,8 @@ Kirigami.Page {
         left: Kirigami.Action {
             icon.name: "go-previous"
             text: i18n("Previous month")
-            onTriggered: setToDate(new Date(startDate.getFullYear(), startDate.getMonth()))
+            onTriggered: pathView.decrementCurrentIndex()
+            //onTriggered: setToDate(new Date(startDate.getFullYear(), startDate.getMonth()))
             displayHint: Kirigami.DisplayHint.IconOnly
         }
         right: Kirigami.Action {
@@ -83,30 +84,33 @@ Kirigami.Page {
         id: pathView
 
         anchors.fill: parent
-        flickDeceleration: 500
+        flickDeceleration: 800
         preferredHighlightBegin: 0.5
         preferredHighlightEnd: 0.5
         snapMode: PathView.SnapToItem
         focus: true
-        interactive: true
+        interactive: true //Kirigami.Settings.isMobile
+        pathItemCount: 5
+
         path: Path {
-            startX: - pathView.width * pathView.count / 2 + pathView.width / 2
+            startX: - pathView.width * pathView.pathItemCount / 2 + pathView.width / 2
             startY: pathView.height / 2
             PathLine {
-                x: pathView.width * pathView.count / 2 + pathView.width / 2
+                x: pathView.width * pathView.pathItemCount / 2 + pathView.width / 2
                 y: pathView.height / 2
             }
         }
-        model: 4
+
+        model: 26
 
         property int oldIndex
-        currentIndex: 1
+        currentIndex: (count / 2) + 1
 
         onCurrentIndexChanged: {
             if(currentIndex == count - 1 && oldIndex == 0) {
-                monthPage.startDate = getStartDate(DateUtils.addMonthsToDate(monthPage.startDate, -count+1))
+                monthPage.startDate = getStartDate(DateUtils.addMonthsToDate(monthPage.startDate, -model+1))
             } else if (currentIndex == 0 && oldIndex == count - 1) {
-                monthPage.startDate = getStartDate(DateUtils.addMonthsToDate(monthPage.startDate, count+1))
+                monthPage.startDate = getStartDate(DateUtils.addMonthsToDate(monthPage.startDate, model+1))
             }
             oldIndex = currentIndex;
         }
@@ -117,9 +121,8 @@ Kirigami.Page {
                 (index == pathView.count - 1 && pathView.currentIndex == 0) ||
                 (index == 0 && pathView.currentIndex == pathView.count - 1)
 
-            active: index == pathView.currentIndex //isNextItem
-            asynchronous: index != pathView.currentIndex
-            visible: status == Loader.Ready
+            active: isNextItem
+            //asynchronous: index != pathView.currentIndex
             sourceComponent: MultiDayView {
                 id: dayView
                 objectName: "monthView"
@@ -130,7 +133,7 @@ Kirigami.Page {
                 paintGrid: true
                 showDayIndicator: true
 
-                startDate: getStartDate(DateUtils.addMonthsToDate(monthPage.startDate, index))
+                startDate: getStartDate(DateUtils.addMonthsToDate(monthPage.startDate, modelData -(pathView.count/2)))
                 //onStartDateChanged: monthPage.startDate = startDate
                 currentDate: monthPage.currentDate
                 //onCurrentDateChanged: monthPage.currentDate = currentDate
