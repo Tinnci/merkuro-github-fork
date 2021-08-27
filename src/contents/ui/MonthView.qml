@@ -130,7 +130,7 @@ Kirigami.Page {
                 daysPerRow: 7
                 paintGrid: true
                 showDayIndicator: true
-                loadModel: viewLoader.isCurrentItem || (viewLoader.isNextItem && pathView.moving)
+                loadModel: viewLoader.isNextItem
 
                 startDate: model.startDate
                 //onStartDateChanged: monthPage.startDate = startDate
