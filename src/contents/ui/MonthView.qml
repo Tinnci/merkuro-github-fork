@@ -101,22 +101,19 @@ Kirigami.Page {
             }
         }
 
-        model: 26
+        model: Kalendar.MonthViewModel {}
 
-        property int oldIndex
-        currentIndex: (count / 2) + 1
+        Component.onCompleted: currentIndex = (count / 2)
 
         onCurrentIndexChanged: {
-            if(currentIndex == count - 1 && oldIndex == 0) {
-                monthPage.startDate = getStartDate(DateUtils.addMonthsToDate(monthPage.startDate, -model+1))
-            } else if (currentIndex == 0 && oldIndex == count - 1) {
-                monthPage.startDate = getStartDate(DateUtils.addMonthsToDate(monthPage.startDate, model+1))
+            if(currentIndex >= count - 2) {
+                model.addDate(true);
+            } else if (currentIndex <= 1) {
+                model.addDate(false);
             }
-            oldIndex = currentIndex;
         }
 
         delegate: Loader {
-
             property bool isNextItem: (index >= pathView.currentIndex -1 && index <= pathView.currentIndex + 1) ||
                 (index == pathView.count - 1 && pathView.currentIndex == 0) ||
                 (index == 0 && pathView.currentIndex == pathView.count - 1)
@@ -133,7 +130,7 @@ Kirigami.Page {
                 paintGrid: true
                 showDayIndicator: true
 
-                startDate: getStartDate(DateUtils.addMonthsToDate(monthPage.startDate, modelData -(pathView.count/2)))
+                startDate: model.startDate
                 //onStartDateChanged: monthPage.startDate = startDate
                 currentDate: monthPage.currentDate
                 //onCurrentDateChanged: monthPage.currentDate = currentDate
