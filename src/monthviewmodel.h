@@ -17,7 +17,7 @@ class MonthViewModel : public QAbstractListModel
 public:
     enum Roles {
         StartDateRole = Qt::UserRole + 1,
-        FirstDateOfMonthRole,
+        FirstDayOfMonthRole,
         SelectedMonthRole
     };
     Q_ENUM(Roles);
