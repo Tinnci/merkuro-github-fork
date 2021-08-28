@@ -79,7 +79,7 @@ QHash<int, QByteArray> MonthViewModel::roleNames() const
 
 void MonthViewModel::addDates(bool atEnd)
 {
-    int newRow = atEnd ? rowCount() : 0;
+    const int newRow = atEnd ? rowCount() : 0;
 
     beginInsertRows(QModelIndex(), newRow, newRow + m_datesToAdd - 1);
 
