@@ -9,7 +9,7 @@ MonthViewModel::MonthViewModel(QObject* parent)
 {
     beginInsertRows(QModelIndex(), 0, m_datesToAdd);
 
-    QDate today = QDate::currentDate();
+    const QDate today = QDate::currentDate();
     QDate firstDay(today.year(), today.month(), 1);
     firstDay = firstDay.addMonths(-m_datesToAdd / 2);
     QDate startDate = firstDay;
