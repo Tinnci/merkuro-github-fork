@@ -10,6 +10,11 @@ import org.kde.kalendar 1.0
 Kirigami.OverlayDrawer {
     id: sidebar
 
+    signal calendarClicked(int collectionId)
+    signal viewAllTodosClicked
+
+    property bool todoMode: false
+
     edge: Qt.application.layoutDirection == Qt.RightToLeft ? Qt.RightEdge : Qt.LeftEdge
     modal: !wideScreen
     onModalChanged: drawerOpen = !modal
@@ -59,8 +64,8 @@ Kirigami.OverlayDrawer {
             id: generalView
             implicitWidth: Units.gridUnit * 12
             Layout.fillWidth: true
-            Layout.topMargin: -Units.smallSpacing - 1
-            Layout.bottomMargin: -Units.smallSpacing
+            Layout.topMargin: -Kirigami.Units.smallSpacing - 1
+            Layout.bottomMargin: -Kirigami.Units.smallSpacing
             QQC2.ScrollBar.horizontal.policy: QQC2.ScrollBar.AlwaysOff
             contentWidth: availableWidth
 
@@ -109,7 +114,7 @@ Kirigami.OverlayDrawer {
             Layout.fillWidth: true
             topPadding: Kirigami.Units.largeSpacing * 2
             leftPadding: Kirigami.Units.largeSpacing
-            text: i18n("Calendars")
+            text: i18n("<b>Calendars</b>")
             level: 6
             opacity: 0.7
         }
@@ -119,8 +124,8 @@ Kirigami.OverlayDrawer {
             implicitWidth: Units.gridUnit * 12
             Layout.fillWidth: true
             Layout.fillHeight: true
-            Layout.topMargin: -Units.smallSpacing - 1
-            Layout.bottomMargin: -Units.smallSpacing
+            Layout.topMargin: -Kirigami.Units.smallSpacing - 1
+            Layout.bottomMargin: -Kirigami.Units.smallSpacing
             QQC2.ScrollBar.horizontal.policy: QQC2.ScrollBar.AlwaysOff
             contentWidth: availableWidth
 
@@ -128,18 +133,19 @@ Kirigami.OverlayDrawer {
 
             ListView {
                 id: calendarList
+
                 Layout.fillWidth: true
                 Layout.topMargin: Kirigami.Units.largeSpacing
+
                 currentIndex: -1
-                highlight: Rectangle {
-                    color: Kirigami.Theme.backgroundColor
-                }
-                model: CalendarManager.viewCollections
+
+                model: sidebar.todoMode ? CalendarManager.todoCollections : CalendarManager.viewCollections
+                onModelChanged: currentIndex = -1
                 delegate: Kirigami.BasicListItem {
                     enabled: model.checkState != null
                     label: display
                     labelItem.color: Kirigami.Theme.textColor
-                    bold: model.checkState == null
+                    hoverEnabled: sidebar.todoMode
                     separatorVisible: false
                     trailing: QQC2.CheckBox {
                         id: calendarCheckbox
@@ -164,8 +170,22 @@ Kirigami.OverlayDrawer {
                         checked: model.checkState == 2
                         onClicked: model.checkState = model.checkState === 0 ? 2 : 0
                     }
+                    onClicked: calendarClicked(collectionId)
                 }
             }
+        }
+
+        Kirigami.Separator {
+            Layout.fillWidth: true
+        }
+        Kirigami.BasicListItem {
+            Layout.topMargin: -Kirigami.Units.smallSpacing
+            icon: "show-all-effects"
+            label: i18n("View all todos")
+            labelItem.color: Kirigami.Theme.textColor
+            visible: sidebar.todoMode
+            separatorVisible: false
+            onClicked: viewAllTodosClicked()
         }
     }
 }

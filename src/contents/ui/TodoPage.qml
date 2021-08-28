@@ -127,7 +127,8 @@ Kirigami.Page {
 
             Kirigami.Heading {
                 Layout.fillWidth: true
-                text: root.filterCollectionDetails ? root.filterCollectionDetails.displayName : i18n("All todos")
+                text: root.filterCollectionDetails && root.filterCollectionId > -1 ?
+                    root.filterCollectionDetails.displayName : i18n("All todos")
                 font.weight: Font.Bold
                 color: root.filterCollectionDetails ?
                     LabelUtils.getIncidenceLabelColor(root.filterCollectionDetails.color, root.isDark) : Kirigami.Theme.textColor

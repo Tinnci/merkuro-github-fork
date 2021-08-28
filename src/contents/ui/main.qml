@@ -163,7 +163,11 @@ Kirigami.ApplicationWindow {
         //]
     //}
 
-    globalDrawer: Sidebar {}
+    globalDrawer: Sidebar {
+        todoMode: pageStack.currentItem.filterCollectionId !== undefined
+        onCalendarClicked: if(todoMode) pageStack.currentItem.filterCollectionId = collectionId
+        onViewAllTodosClicked: if(todoMode) pageStack.currentItem.filterCollectionId = -1
+    }
 
     contextDrawer: IncidenceInfo {
         id: incidenceInfo
@@ -413,6 +417,7 @@ Kirigami.ApplicationWindow {
         id: todoPageComponent
 
         TodoPage {
+            id: todoPage
             onAddTodo: root.setUpAdd(IncidenceWrapper.TypeTodo, new Date(), collectionId)
             onViewTodo: root.setUpView(todoData, collectionData)
             onEditTodo: root.setUpEdit(todoPtr, collectionId)
