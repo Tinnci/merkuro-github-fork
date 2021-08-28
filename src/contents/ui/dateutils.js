@@ -78,7 +78,7 @@ function previousWeek(date) {
 }
 
 function addMonthsToDate(date, months) {
-    let d = date
+    const d = date
     d.setMonth(date.getMonth() + months);
     return d
 }
