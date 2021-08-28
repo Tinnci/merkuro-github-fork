@@ -370,8 +370,8 @@ Kirigami.ApplicationWindow {
             onCompleteTodo: root.completeTodo(incidencePtr)
             onAddSubTodo: root.setUpAddSubTodo(parentWrapper)
 
-            onMonthChanged: if(month != currentDate.getMonth()) root.month = month
-            onYearChanged: if(year != currentDate.getFullYear()) root.year = year
+            onMonthChanged: if(month !== currentDate.getMonth()) root.month = month
+            onYearChanged: if(year !== currentDate.getFullYear()) root.year = year
 
             Component.onCompleted: setToDate(new Date(root.year, root.month))
 
