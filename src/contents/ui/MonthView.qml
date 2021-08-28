@@ -130,7 +130,7 @@ Kirigami.Page {
                 (index == pathView.count - 1 && pathView.currentIndex == 0) ||
                 (index == 0 && pathView.currentIndex == pathView.count - 1)
 
-            active: isNextItem
+            active: isCurrentItem || (isNextItem && pathView.moving)
             //asynchronous: true
             sourceComponent: MultiDayView {
                 id: dayView
