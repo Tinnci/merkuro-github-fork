@@ -24,30 +24,29 @@ Kirigami.Page {
     property var openOccurrence
     property date startDate
     property date currentDate
-    //property var calendarFilter: pathView.currentItem.calendarFilter
-    //property int month: pathView.currentItem.month
-    //property int year: pathView.currentItem.currentDate.getFullYear()
+    property var calendarFilter: pathView.currentItem.calendarFilter
+    property int month
+    property int year
     readonly property bool isLarge: width > Kirigami.Units.gridUnit * 40
     readonly property bool isTiny: width < Kirigami.Units.gridUnit * 18
 
-    function getStartDate(date) {
-        let newDate = new Date(date)
-        //pathView.currentItem.month = newDate.getMonth()
-        year = newDate.getFullYear()
+    function setToDate(date) {
+        let monthDiff = date.getMonth() - pathView.currentItem.firstDayOfMonth.getMonth() + (12 * (date.getFullYear() - pathView.currentItem.firstDayOfMonth.getFullYear()))
+        let newIndex = pathView.currentIndex + monthDiff;
 
-        newDate = DateUtils.getFirstDayOfWeek(DateUtils.getFirstDayOfMonth(newDate))
+        let firstItemDate = pathView.model.data(pathView.model.index(1,0), Kalendar.MonthViewModel.FirstDayOfMonthRole);
+        let lastItemDate = pathView.model.data(pathView.model.index(pathView.model.rowCount() - 1,0), Kalendar.MonthViewModel.FirstDayOfMonthRole);
 
-        // Handling adding and subtracting months in Javascript can get *really* messy.
-        newDate = DateUtils.addDaysToDate(newDate, 7)
-
-        if (newDate.getMonth() === pathView.currentItem.month) {
-            newDate = DateUtils.addDaysToDate(newDate, - 7)
+        while(firstItemDate >= date) {
+            pathView.model.addDate(false)
+            firstItemDate = pathView.model.data(pathView.model.index(1,0), Kalendar.MonthViewModel.FirstDayOfMonthRole);
+            newIndex = 0;
         }
-        if (newDate.getDate() < 14) {
-            newDate = DateUtils.addDaysToDate(newDate, - 7)
+        while(lastItemDate <= date) {
+            pathView.model.addDate(true)
+            lastItemDate = pathView.model.data(pathView.model.index(pathView.model.rowCount() - 1,0), Kalendar.MonthViewModel.FirstDayOfMonthRole);
         }
-
-        return newDate;
+        pathView.currentIndex = newIndex;
     }
 
     padding: 0
@@ -63,20 +62,18 @@ Kirigami.Page {
             icon.name: "go-previous"
             text: i18n("Previous month")
             onTriggered: pathView.decrementCurrentIndex()
-            //onTriggered: setToDate(new Date(startDate.getFullYear(), startDate.getMonth()))
             displayHint: Kirigami.DisplayHint.IconOnly
         }
         right: Kirigami.Action {
             icon.name: "go-next"
             text: i18n("Next month")
             onTriggered: pathView.incrementCurrentIndex()
-            //onTriggered: setToDate(new Date(startDate.getFullYear(), startDate.getMonth() + 2)) // Yes. I don't know.
             displayHint: Kirigami.DisplayHint.IconOnly
         }
         main: Kirigami.Action {
             icon.name: "go-jump-today"
             text: i18n("Today")
-            onTriggered: setToDate(new Date())
+            onTriggered: pathView.positionViewAtIndex(pathView.startIndex, PathView.SnapPosition)
         }
     }
 
@@ -103,9 +100,12 @@ Kirigami.Page {
 
         model: Kalendar.MonthViewModel {}
 
-        Component.onCompleted: currentIndex = (count / 2)
-
+        property int startIndex: count / 2
+        Component.onCompleted: currentIndex = startIndex
         onCurrentIndexChanged: {
+            monthPage.startDate = currentItem.startDate;
+            monthPage.month = currentItem.firstDayOfMonth.getMonth();
+            monthPage.year = currentItem.firstDayOfMonth.getFullYear();
             if(currentIndex >= count - 2) {
                 model.addDate(true);
             } else if (currentIndex <= 1) {
@@ -116,6 +116,8 @@ Kirigami.Page {
         delegate: Loader {
             id: viewLoader
 
+            property date startDate: model.startDate
+            property date firstDayOfMonth: model.firstDay
             property bool isCurrentItem: PathView.isCurrentItem
             property bool isNextItem: (index >= pathView.currentIndex -1 && index <= pathView.currentIndex + 1) ||
                 (index == pathView.count - 1 && pathView.currentIndex == 0) ||
@@ -135,11 +137,8 @@ Kirigami.Page {
                 loadModel: viewLoader.isNextItem
 
                 startDate: model.startDate
-                //onStartDateChanged: monthPage.startDate = startDate
                 currentDate: monthPage.currentDate
-                //onCurrentDateChanged: monthPage.currentDate = currentDate
                 month: DateUtils.addDaysToDate(startDate, 10).getMonth()
-                //onMonthChanged: monthPage.month = month
 
                 dayHeaderDelegate: QQC2.Control {
                     Layout.maximumHeight: Kirigami.Units.gridUnit * 2

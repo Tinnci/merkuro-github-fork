@@ -12,22 +12,22 @@ MonthViewModel::MonthViewModel(QObject* parent)
     beginInsertRows(QModelIndex(), 0, startingRows);
 
     QDate today = QDate::currentDate();
-    QDate firstDate(today.year(), today.month(), 1);
-    firstDate = firstDate.addMonths(-startingRows / 2);
-    QDate startDate = firstDate;
+    QDate firstDay(today.year(), today.month(), 1);
+    firstDay = firstDay.addMonths(-startingRows / 2);
+    QDate startDate = firstDay;
 
     if(startDate.dayOfWeek() == m_locale.firstDayOfWeek()) {
-        startDate = startDate.addDays(-1);
+        startDate = startDate.addDays(-7);
     }
 
     for(int i = 0; i < startingRows; i++) {
-        m_firstDayOfMonthDates.append(firstDate);
+        m_firstDayOfMonthDates.append(firstDay);
         while(startDate.dayOfWeek() != m_locale.firstDayOfWeek()) {
             startDate = startDate.addDays(-1);
         }
         m_startDates.append(startDate);
-        firstDate = firstDate.addMonths(1);
-        startDate = firstDate;
+        firstDay = firstDay.addMonths(1);
+        startDate = firstDay;
     }
 
     endInsertRows();
@@ -40,15 +40,15 @@ QVariant MonthViewModel::data(const QModelIndex& idx, int role) const
     }
 
     QDate startDate = m_startDates[idx.row()];
-    QDate firstDate = m_firstDayOfMonthDates[idx.row()];
+    QDate firstDay = m_firstDayOfMonthDates[idx.row()];
 
     switch(role) {
         case StartDateRole:
             return startDate.startOfDay();
-        case FirstDateOfMonthRole:
-            return firstDate.startOfDay();
+        case FirstDayOfMonthRole:
+            return firstDay.startOfDay();
         case SelectedMonthRole:
-            return firstDate.month();
+            return firstDay.month();
         default:
             qWarning() << "Unknown role for startdate:" << QMetaEnum::fromType<Roles>().valueToKey(role);
             return {};
@@ -64,7 +64,7 @@ QHash<int, QByteArray> MonthViewModel::roleNames() const
 {
     return {
         { StartDateRole, QByteArrayLiteral("startDate") },
-        { FirstDateOfMonthRole, QByteArrayLiteral("firstDate") },
+        { FirstDayOfMonthRole, QByteArrayLiteral("firstDay") },
         { SelectedMonthRole, QByteArrayLiteral("selectedMonth") }
     };
 }
@@ -82,13 +82,13 @@ void MonthViewModel::addDate(bool atEnd)
 
     beginInsertRows(QModelIndex(), newRow, newRow);
 
-    QDate firstDate = atEnd ? m_firstDayOfMonthDates[rowCount()-1].addMonths(1) : m_firstDayOfMonthDates[0].addMonths(-1);
-    QDate startDate = firstDate;
+    QDate firstDay = atEnd ? m_firstDayOfMonthDates[rowCount()-1].addMonths(1) : m_firstDayOfMonthDates[0].addMonths(-1);
+    QDate startDate = firstDay;
 
     if(atEnd) {
-        m_firstDayOfMonthDates.append(firstDate);
+        m_firstDayOfMonthDates.append(firstDay);
     } else {
-        m_firstDayOfMonthDates.insert(0, firstDate);
+        m_firstDayOfMonthDates.insert(0, firstDay);
     }
 
     while(startDate.dayOfWeek() != m_locale.firstDayOfWeek()) {
