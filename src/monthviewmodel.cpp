@@ -47,6 +47,8 @@ QVariant MonthViewModel::data(const QModelIndex& idx, int role) const
             return firstDay.startOfDay();
         case SelectedMonthRole:
             return firstDay.month();
+        case SelectedYearRole:
+            return firstDay.year();
         default:
             qWarning() << "Unknown role for startdate:" << QMetaEnum::fromType<Roles>().valueToKey(role);
             return {};
@@ -63,7 +65,8 @@ QHash<int, QByteArray> MonthViewModel::roleNames() const
     return {
         { StartDateRole, QByteArrayLiteral("startDate") },
         { FirstDayOfMonthRole, QByteArrayLiteral("firstDay") },
-        { SelectedMonthRole, QByteArrayLiteral("selectedMonth") }
+        { SelectedMonthRole, QByteArrayLiteral("selectedMonth") },
+        { SelectedYearRole, QByteArrayLiteral("selectedYear") }
     };
 }
 
