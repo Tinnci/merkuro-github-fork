@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: LGPL-2.1-or-later
 
 #include <QMetaEnum>
+#include <QDebug>
 #include <monthviewmodel.h>
 
 MonthViewModel::MonthViewModel(QObject* parent)
