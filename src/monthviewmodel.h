@@ -33,7 +33,7 @@ public:
     int rowCount(const QModelIndex &parent = {}) const override;
     Q_INVOKABLE void addDates(bool atEnd);
 
-    int datesToAdd();
+    int datesToAdd() const;
     void setDatesToAdd(int datesToAdd);
 
 Q_SIGNALS:
