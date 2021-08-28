@@ -13,6 +13,8 @@
 class MonthViewModel : public QAbstractListModel
 {
     Q_OBJECT
+    // Amount of dates to add each time the model adds more dates
+    Q_PROPERTY(int datesToAdd READ datesToAdd WRITE setDatesToAdd NOTIFY datesToAddChanged)
 
 public:
     enum Roles {
@@ -28,11 +30,17 @@ public:
     QVariant data(const QModelIndex &idx, int role) const override;
     QHash<int, QByteArray> roleNames() const override;
     int rowCount(const QModelIndex &parent = {}) const override;
-    //bool canFetchMore(const QModelIndex &parent) const override;
-    Q_INVOKABLE void addDate(bool atEnd);
+    Q_INVOKABLE void addDates(bool atEnd);
+
+    int datesToAdd();
+    void setDatesToAdd(int datesToAdd);
+
+Q_SIGNALS:
+    void datesToAddChanged();
 
 private:
     QVector<QDate> m_startDates;
     QVector<QDate> m_firstDayOfMonthDates;
     QLocale m_locale;
+    int m_datesToAdd = 10;
 };
