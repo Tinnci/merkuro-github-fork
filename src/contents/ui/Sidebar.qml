@@ -53,9 +53,15 @@ Kirigami.OverlayDrawer {
                     verticalCenter: parent.verticalCenter
                 }
 
-                Kirigami.SearchField {
+                /*Kirigami.SearchField { // TODO: Make this open a new search results page
                     id: searchItem
                     Layout.fillWidth: true
+                }*/
+
+                Kirigami.Heading {
+                    Layout.fillWidth: true
+                    text: i18n("Kalendar")
+                    type: Kirigami.Heading.Type.Primary
                 }
 
                 Kirigami.ActionToolBar {
@@ -231,7 +237,10 @@ Kirigami.OverlayDrawer {
             labelItem.color: Kirigami.Theme.textColor
             visible: sidebar.todoMode
             separatorVisible: false
-            onClicked: viewAllTodosClicked()
+            onClicked: {
+                viewAllTodosClicked();
+                calendarList.currentIndex = -1;
+            }
         }
     }
 }
