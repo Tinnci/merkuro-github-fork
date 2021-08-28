@@ -25,7 +25,7 @@ Kirigami.Page {
     property date startDate
     property date currentDate
     property date firstDayOfMonth
-    property var calendarFilter: pathView.currentItem.calendarFilter
+    property var calendarFilter
     property int month
     property int year
     readonly property bool isLarge: width > Kirigami.Units.gridUnit * 40
@@ -106,6 +106,8 @@ Kirigami.Page {
             monthPage.firstDayOfMonth = currentItem.firstDayOfMonth;
             monthPage.month = currentItem.month;
             monthPage.year = currentItem.year;
+            monthPage.calendarFilter = pathView.currentItem.item.calendarFilter
+
             if(currentIndex >= count - 2) {
                 model.addDates(true);
             } else if (currentIndex <= 1) {
