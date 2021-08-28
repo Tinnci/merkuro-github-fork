@@ -418,6 +418,7 @@ Kirigami.ApplicationWindow {
 
         TodoPage {
             id: todoPage
+
             onAddTodo: root.setUpAdd(IncidenceWrapper.TypeTodo, new Date(), collectionId)
             onViewTodo: root.setUpView(todoData, collectionData)
             onEditTodo: root.setUpEdit(todoPtr, collectionId)

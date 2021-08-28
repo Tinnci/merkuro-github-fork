@@ -57,6 +57,48 @@ Kirigami.OverlayDrawer {
                     id: searchItem
                     Layout.fillWidth: true
                 }
+
+                Kirigami.ActionToolBar {
+                    id: menu
+                    anchors.fill: parent
+                    overflowIconName: "application-menu"
+
+                    actions: [
+                        Kirigami.Action {
+                            icon.name: "edit-undo"
+                            text: CalendarManager.undoRedoData.undoAvailable ?
+                                i18n("Undo: ") + CalendarManager.undoRedoData.nextUndoDescription :
+                                undoAction.text
+                            shortcut: undoAction.shortcut
+                            enabled: CalendarManager.undoRedoData.undoAvailable && !(root.activeFocusItem instanceof TextEdit || root.activeFocusItem instanceof TextInput)
+                            onTriggered: CalendarManager.undoAction();
+                        },
+                        Kirigami.Action {
+                            icon.name: KalendarApplication.iconName(redoAction.icon)
+                            text: CalendarManager.undoRedoData.redoAvailable ?
+                                i18n("Redo: ") + CalendarManager.undoRedoData.nextRedoDescription :
+                                redoAction.text
+                            shortcut: redoAction.shortcut
+                            enabled: CalendarManager.undoRedoData.redoAvailable && !(root.activeFocusItem instanceof TextEdit || root.activeFocusItem instanceof TextInput)
+
+                            onTriggered: CalendarManager.redoAction();
+                        },
+                        Kirigami.Action {
+                            icon.name: KalendarApplication.iconName(quitAction.icon)
+                            text: quitAction.text
+                            shortcut: quitAction.shortcut
+                            onTriggered: quitAction.trigger()
+                            visible: !Kirigami.Settings.isMobile
+                        }
+                    ]
+
+                    Component.onCompleted: {
+                        for (let i in actions) {
+                            let action = actions[i]
+                            action.displayHint = Kirigami.DisplayHint.AlwaysHide
+                        }
+                    }
+                }
             }
         }
 
@@ -114,8 +156,9 @@ Kirigami.OverlayDrawer {
             Layout.fillWidth: true
             topPadding: Kirigami.Units.largeSpacing * 2
             leftPadding: Kirigami.Units.largeSpacing
-            text: i18n("<b>Calendars</b>")
+            text: i18n("Calendars")
             level: 6
+            type: Kirigami.Heading.Type.Primary
             opacity: 0.7
         }
 
@@ -141,12 +184,15 @@ Kirigami.OverlayDrawer {
 
                 model: sidebar.todoMode ? CalendarManager.todoCollections : CalendarManager.viewCollections
                 onModelChanged: currentIndex = -1
+
                 delegate: Kirigami.BasicListItem {
                     enabled: model.checkState != null
                     label: display
                     labelItem.color: Kirigami.Theme.textColor
+
                     hoverEnabled: sidebar.todoMode
-                    separatorVisible: false
+
+                    separatorVisible: true
                     trailing: QQC2.CheckBox {
                         id: calendarCheckbox
 
