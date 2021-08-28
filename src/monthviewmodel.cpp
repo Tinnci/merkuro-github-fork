@@ -38,7 +38,7 @@ QVariant MonthViewModel::data(const QModelIndex& idx, int role) const
     }
 
     const QDate startDate = m_startDates[idx.row()];
-    QDate firstDay = m_firstDayOfMonthDates[idx.row()];
+    const QDate firstDay = m_firstDayOfMonthDates[idx.row()];
 
     switch(role) {
         case StartDateRole:
