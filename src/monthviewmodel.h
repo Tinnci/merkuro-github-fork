@@ -7,7 +7,6 @@
 #include <QCalendar>
 #include <QDateTime>
 #include <QLocale>
-#include <QDebug>
 
 
 class MonthViewModel : public QAbstractListModel
