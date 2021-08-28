@@ -111,7 +111,7 @@ void MonthViewModel::addDates(bool atEnd)
     endInsertRows();
 }
 
-int MonthViewModel::datesToAdd()
+int MonthViewModel::datesToAdd() const
 {
     return m_datesToAdd;
 }
