@@ -35,6 +35,12 @@ Kirigami.Page {
 
     //padding: Kirigami.Units.largeSpacing
 
+    background: Rectangle {
+        Kirigami.Theme.inherit: false
+        Kirigami.Theme.colorSet: Kirigami.Theme.View
+        color: Kirigami.Theme.backgroundColor
+    }
+
     actions {
         main: Kirigami.Action {
             text: i18n("Add todo")
