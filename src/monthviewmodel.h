@@ -20,7 +20,8 @@ public:
     enum Roles {
         StartDateRole = Qt::UserRole + 1,
         FirstDayOfMonthRole,
-        SelectedMonthRole
+        SelectedMonthRole,
+        SelectedYearRole
     };
     Q_ENUM(Roles);
 

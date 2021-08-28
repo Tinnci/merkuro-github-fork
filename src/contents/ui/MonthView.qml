@@ -24,6 +24,7 @@ Kirigami.Page {
     property var openOccurrence
     property date startDate
     property date currentDate
+    property date firstDayOfMonth
     property var calendarFilter: pathView.currentItem.calendarFilter
     property int month
     property int year
@@ -102,8 +103,9 @@ Kirigami.Page {
         Component.onCompleted: currentIndex = startIndex
         onCurrentIndexChanged: {
             monthPage.startDate = currentItem.startDate;
-            monthPage.month = currentItem.firstDayOfMonth.getMonth();
-            monthPage.year = currentItem.firstDayOfMonth.getFullYear();
+            monthPage.firstDayOfMonth = currentItem.firstDayOfMonth;
+            monthPage.month = currentItem.month;
+            monthPage.year = currentItem.year;
             if(currentIndex >= count - 2) {
                 model.addDates(true);
             } else if (currentIndex <= 1) {
@@ -116,6 +118,9 @@ Kirigami.Page {
 
             property date startDate: model.startDate
             property date firstDayOfMonth: model.firstDay
+            property int month: model.selectedMonth - 1 // Convert QDateTime month to JS month
+            property int year: model.selectedYear
+
             property bool isCurrentItem: PathView.isCurrentItem
             property bool isNextItem: (index >= pathView.currentIndex -1 && index <= pathView.currentIndex + 1) ||
                 (index == pathView.count - 1 && pathView.currentIndex == 0) ||
