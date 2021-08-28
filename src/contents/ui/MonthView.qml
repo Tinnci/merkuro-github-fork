@@ -38,12 +38,12 @@ Kirigami.Page {
         let lastItemDate = pathView.model.data(pathView.model.index(pathView.model.rowCount() - 1,0), Kalendar.MonthViewModel.FirstDayOfMonthRole);
 
         while(firstItemDate >= date) {
-            pathView.model.addDate(false)
+            pathView.model.addDates(false)
             firstItemDate = pathView.model.data(pathView.model.index(1,0), Kalendar.MonthViewModel.FirstDayOfMonthRole);
             newIndex = 0;
         }
         while(lastItemDate <= date) {
-            pathView.model.addDate(true)
+            pathView.model.addDates(true)
             lastItemDate = pathView.model.data(pathView.model.index(pathView.model.rowCount() - 1,0), Kalendar.MonthViewModel.FirstDayOfMonthRole);
         }
         pathView.currentIndex = newIndex;
@@ -105,9 +105,9 @@ Kirigami.Page {
             monthPage.month = currentItem.firstDayOfMonth.getMonth();
             monthPage.year = currentItem.firstDayOfMonth.getFullYear();
             if(currentIndex >= count - 2) {
-                model.addDate(true);
+                model.addDates(true);
             } else if (currentIndex <= 1) {
-                model.addDate(false);
+                model.addDates(false);
             }
         }
 
