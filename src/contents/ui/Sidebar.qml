@@ -198,7 +198,7 @@ Kirigami.OverlayDrawer {
 
                     hoverEnabled: sidebar.todoMode
 
-                    separatorVisible: true
+                    separatorVisible: false
                     trailing: QQC2.CheckBox {
                         id: calendarCheckbox
 
