@@ -16,10 +16,6 @@ MonthViewModel::MonthViewModel(QObject* parent)
     firstDay = firstDay.addMonths(-startingRows / 2);
     QDate startDate = firstDay;
 
-    if(startDate.dayOfWeek() == m_locale.firstDayOfWeek()) {
-        startDate = startDate.addDays(-7);
-    }
-
     for(int i = 0; i < startingRows; i++) {
         m_firstDayOfMonthDates.append(firstDay);
         while(startDate.dayOfWeek() != m_locale.firstDayOfWeek()) {
@@ -28,6 +24,10 @@ MonthViewModel::MonthViewModel(QObject* parent)
         m_startDates.append(startDate);
         firstDay = firstDay.addMonths(1);
         startDate = firstDay;
+
+        if(startDate.dayOfWeek() == m_locale.firstDayOfWeek()) {
+            startDate = startDate.addDays(-7);
+        }
     }
 
     endInsertRows();
@@ -84,6 +84,10 @@ void MonthViewModel::addDate(bool atEnd)
 
     QDate firstDay = atEnd ? m_firstDayOfMonthDates[rowCount()-1].addMonths(1) : m_firstDayOfMonthDates[0].addMonths(-1);
     QDate startDate = firstDay;
+
+    if(startDate.dayOfWeek() == m_locale.firstDayOfWeek()) {
+        startDate = startDate.addDays(-7);
+    }
 
     if(atEnd) {
         m_firstDayOfMonthDates.append(firstDay);
