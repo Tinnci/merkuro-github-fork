@@ -84,7 +84,7 @@ void MonthViewModel::addDates(bool atEnd)
     beginInsertRows(QModelIndex(), newRow, newRow + m_datesToAdd - 1);
 
     for(int i = 0; i < m_datesToAdd; i++) {
-        QDate firstDay = atEnd ? m_firstDayOfMonthDates[rowCount()-1].addMonths(1) : m_firstDayOfMonthDates[0].addMonths(-1);
+        const QDate firstDay = atEnd ? m_firstDayOfMonthDates[rowCount()-1].addMonths(1) : m_firstDayOfMonthDates[0].addMonths(-1);
         QDate startDate = firstDay;
 
         if(startDate.dayOfWeek() == m_locale.firstDayOfWeek()) {
