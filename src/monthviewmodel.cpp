@@ -71,13 +71,6 @@ QHash<int, QByteArray> MonthViewModel::roleNames() const
     };
 }
 
-/*bool MonthViewModel::canFetchMore(const QModelIndex& parent) const
-{
-    if (parent.isValid())
-        return false;
-    return true;
-}*/
-
 void MonthViewModel::addDates(bool atEnd)
 {
     const int newRow = atEnd ? rowCount() : 0;
