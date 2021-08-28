@@ -359,10 +359,8 @@ Kirigami.ApplicationWindow {
         MonthView {
             id: monthView
 
-            title: DateUtils.addDaysToDate(startDate, 10).toLocaleDateString(Qt.locale(), "<b>MMMM</b> yyyy")
+            title: firstDayOfMonth.toLocaleDateString(Qt.locale(), "<b>MMMM</b> yyyy")
             currentDate: root.currentDate
-            startDate: new Date(root.year, root.month)
-            month: root.month
             openOccurrence: root.openOccurrence
 
             onAddIncidence: root.setUpAdd(type, addDate)
