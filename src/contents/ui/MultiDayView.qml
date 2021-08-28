@@ -43,7 +43,7 @@ Item {
     property int numberOfRows: (daysToShow / daysPerRow)
     property var dayHeight: (height - dayLabels.height) / numberOfRows
 
-    property bool loadModel: true
+    required property bool loadModel
 
     readonly property bool isDark: LabelUtils.isDarkColor(Kirigami.Theme.backgroundColor)
 
