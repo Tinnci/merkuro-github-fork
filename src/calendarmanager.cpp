@@ -391,6 +391,7 @@ CalendarManager::CalendarManager(QObject *parent)
     todoCollectionModel->setSourceModel(collectionFilter);
     todoCollectionModel->addMimeTypeFilter(QStringLiteral("application/x-vnd.akonadi.calendar.todo"));
     todoCollectionModel->setExcludeVirtualCollections(true);
+    todoCollectionModel->setSortCaseSensitivity(Qt::CaseInsensitive);
     todoCollectionModel->sort(0, Qt::AscendingOrder);
 
     m_todoViewCollectionModel = new KDescendantsProxyModel(this);
@@ -402,6 +403,7 @@ CalendarManager::CalendarManager(QObject *parent)
     viewCollectionModel->addMimeTypeFilter(QStringLiteral("application/x-vnd.akonadi.calendar.event"));
     viewCollectionModel->addMimeTypeFilter(QStringLiteral("application/x-vnd.akonadi.calendar.todo"));
     viewCollectionModel->setExcludeVirtualCollections(true);
+    viewCollectionModel->setSortCaseSensitivity(Qt::CaseInsensitive);
     viewCollectionModel->sort(0, Qt::AscendingOrder);
 
     m_viewCollectionModel = new KDescendantsProxyModel(this);
