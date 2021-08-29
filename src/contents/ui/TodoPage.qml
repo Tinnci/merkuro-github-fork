@@ -74,9 +74,9 @@ Kirigami.Page {
 
     Kirigami.OverlayDrawer {
         id: completedDrawer
-        edge: Qt.BottomEdge
-        modal: false // Fixes issues with popup menu, reduces size on desktop, and stops issue causing info drawer to instantly retract
 
+        edge: Qt.BottomEdge
+        modal: false // Fixes issues with popup menu, reduces size on desktop
         height: applicationWindow().height * 0.6
 
         ColumnLayout {
@@ -98,11 +98,11 @@ Kirigami.Page {
             Loader {
                 Layout.fillWidth: true
                 Layout.fillHeight: true
-                active: completedDrawer.visible
                 asynchronous: true
                 sourceComponent: QQC2.ScrollView {
                     anchors.fill: parent
                     contentWidth: availableWidth
+                    QQC2.ScrollBar.horizontal.policy: QQC2.ScrollBar.AlwaysOff
 
                     TodoTreeView {
                         Layout.fillWidth: true
@@ -114,15 +114,15 @@ Kirigami.Page {
                         ascendingOrder: root.ascendingOrder
                         onViewTodo: {
                             root.viewTodo(todoData, collectionData);
-                            //completedDrawer.close();
+                            if(completedDrawer.modal) completedDrawer.close();
                         }
                         onEditTodo: {
                             root.editTodo(todoPtr, collectionId);
-                            completedDrawer.close();
+                            if(completedDrawer.modal) completedDrawer.close();
                         }
                         onDeleteTodo: {
                             root.deleteTodo(todoPtr, deleteDate);
-                            completedDrawer.close();
+                            if(completedDrawer.modal) completedDrawer.close();
                         }
                         onCompleteTodo: root.completeTodo(todoPtr);
                         onAddSubTodo: root.addSubTodo(parentWrapper)
