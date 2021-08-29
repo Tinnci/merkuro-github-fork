@@ -72,63 +72,47 @@ Kirigami.Page {
 
     }
 
-    Kirigami.OverlayDrawer {
+    Kirigami.OverlaySheet {
         id: completedDrawer
 
-        edge: Qt.BottomEdge
-        modal: false // Fixes issues with popup menu, reduces size on desktop
-        height: applicationWindow().height * 0.6
+        title: root.filterCollectionDetails ?
+        i18n("Completed todos in %1", root.filterCollectionDetails.displayName) : i18n("Completed todos")
+        showCloseButton: true
 
-        ColumnLayout {
-            anchors.fill: parent
+        contentItem: Loader {
+            Layout.maximumWidth: Kirigami.Units.gridUnit * 30
+            height: applicationWindow().height * 0.8
+            asynchronous: true
+            sourceComponent: QQC2.ScrollView {
+                anchors.fill: parent
+                contentWidth: availableWidth
+                QQC2.ScrollBar.horizontal.policy: QQC2.ScrollBar.AlwaysOff
 
-            RowLayout {
-                Kirigami.Heading {
+                TodoTreeView {
                     Layout.fillWidth: true
-                    text: root.filterCollectionDetails ?
-                        i18n("Completed todos in %1", root.filterCollectionDetails.displayName) : i18n("Completed todos")
-                    color: root.filterCollectionDetails ?
-                        LabelUtils.getIncidenceLabelColor(root.filterCollectionDetails.color, root.isDark) : Kirigami.Theme.textColor
-                }
-                QQC2.ToolButton {
-                    icon.name: "dialog-close"
-                    onClicked: completedDrawer.close()
-                }
-            }
-            Loader {
-                Layout.fillWidth: true
-                Layout.fillHeight: true
-                asynchronous: true
-                sourceComponent: QQC2.ScrollView {
-                    anchors.fill: parent
-                    contentWidth: availableWidth
-                    QQC2.ScrollBar.horizontal.policy: QQC2.ScrollBar.AlwaysOff
+                    Layout.fillHeight: true
 
-                    TodoTreeView {
-                        Layout.fillWidth: true
-                        Layout.fillHeight: true
-
-                        filterCollectionId: root.filterCollectionId
-                        showCompleted: Kalendar.TodoSortFilterProxyModel.ShowCompleteOnly
-                        sortBy: root.sortBy
-                        ascendingOrder: root.ascendingOrder
-                        onViewTodo: {
-                            root.viewTodo(todoData, collectionData);
-                            if(completedDrawer.modal) completedDrawer.close();
-                        }
-                        onEditTodo: {
-                            root.editTodo(todoPtr, collectionId);
-                            if(completedDrawer.modal) completedDrawer.close();
-                        }
-                        onDeleteTodo: {
-                            root.deleteTodo(todoPtr, deleteDate);
-                            if(completedDrawer.modal) completedDrawer.close();
-                        }
-                        onCompleteTodo: root.completeTodo(todoPtr);
-                        onAddSubTodo: root.addSubTodo(parentWrapper)
+                    filterCollectionId: root.filterCollectionId
+                    showCompleted: Kalendar.TodoSortFilterProxyModel.ShowCompleteOnly
+                    sortBy: root.sortBy
+                    ascendingOrder: root.ascendingOrder
+                    onViewTodo: {
+                        root.viewTodo(todoData, collectionData);
+                        if(completedDrawer.modal) completedDrawer.close();
                     }
+                    onEditTodo: {
+                        root.editTodo(todoPtr, collectionId);
+                        if(completedDrawer.modal) completedDrawer.close();
+                    }
+                    onDeleteTodo: {
+                        root.deleteTodo(todoPtr, deleteDate);
+                        if(completedDrawer.modal) completedDrawer.close();
+                    }
+                    onCompleteTodo: root.completeTodo(todoPtr);
+                    onAddSubTodo: root.addSubTodo(parentWrapper)
                 }
             }
+
         }
     }
 
