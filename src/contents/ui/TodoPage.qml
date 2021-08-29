@@ -67,13 +67,13 @@ Kirigami.Page {
         right: Kirigami.Action {
             text: i18n("Show completed")
             icon.name: "task-complete"
-            onTriggered: completedDrawer.open()
+            onTriggered: completedSheet.open()
         }
 
     }
 
     Kirigami.OverlaySheet {
-        id: completedDrawer
+        id: completedSheet
 
         title: root.filterCollectionDetails ?
         i18n("Completed todos in %1", root.filterCollectionDetails.displayName) : i18n("Completed todos")
@@ -98,15 +98,15 @@ Kirigami.Page {
                     ascendingOrder: root.ascendingOrder
                     onViewTodo: {
                         root.viewTodo(todoData, collectionData);
-                        if(completedDrawer.modal) completedDrawer.close();
+                        completedSheet.close();
                     }
                     onEditTodo: {
                         root.editTodo(todoPtr, collectionId);
-                        if(completedDrawer.modal) completedDrawer.close();
+                        completedSheet.close();
                     }
                     onDeleteTodo: {
                         root.deleteTodo(todoPtr, deleteDate);
-                        if(completedDrawer.modal) completedDrawer.close();
+                        completedSheet.close();
                     }
                     onCompleteTodo: root.completeTodo(todoPtr);
                     onAddSubTodo: root.addSubTodo(parentWrapper)
