@@ -35,7 +35,6 @@ Kirigami.OverlayDrawer {
 
     enabled: true
     interactive: enabled
-    clip: false
     edge: Kirigami.Settings.isMobile ? Qt.BottomEdge :
         Qt.application.layoutDirection == Qt.RightToLeft ? Qt.LeftEdge : Qt.RightEdge
 
@@ -119,6 +118,7 @@ Kirigami.OverlayDrawer {
                 Layout.fillWidth: true
                 Layout.fillHeight: true
                 contentWidth: this.availableWidth
+                clip: true
 
                 GridLayout {
                     id: infoBody
