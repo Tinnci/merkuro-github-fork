@@ -75,11 +75,13 @@ Kirigami.Page {
     Kirigami.OverlayDrawer {
         id: completedDrawer
         edge: Qt.BottomEdge
+        modal: false // Fixes issues with popup menu, reduces size on desktop, and stops issue causing info drawer to instantly retract
 
-        height: applicationWindow().height * 0.75
+        height: applicationWindow().height * 0.6
 
         ColumnLayout {
             anchors.fill: parent
+
             RowLayout {
                 Kirigami.Heading {
                     Layout.fillWidth: true
@@ -98,28 +100,33 @@ Kirigami.Page {
                 Layout.fillHeight: true
                 active: completedDrawer.visible
                 asynchronous: true
-                sourceComponent: TodoTreeView {
-                    Layout.fillWidth: true
-                    Layout.fillHeight: true
+                sourceComponent: QQC2.ScrollView {
+                    anchors.fill: parent
+                    contentWidth: availableWidth
 
-                    filterCollectionId: root.filterCollectionId
-                    showCompleted: Kalendar.TodoSortFilterProxyModel.ShowCompleteOnly
-                    sortBy: root.sortBy
-                    ascendingOrder: root.ascendingOrder
-                    onViewTodo: {
-                        root.viewTodo(todoData, collectionData);
-                        completedDrawer.close();
+                    TodoTreeView {
+                        Layout.fillWidth: true
+                        Layout.fillHeight: true
+
+                        filterCollectionId: root.filterCollectionId
+                        showCompleted: Kalendar.TodoSortFilterProxyModel.ShowCompleteOnly
+                        sortBy: root.sortBy
+                        ascendingOrder: root.ascendingOrder
+                        onViewTodo: {
+                            root.viewTodo(todoData, collectionData);
+                            //completedDrawer.close();
+                        }
+                        onEditTodo: {
+                            root.editTodo(todoPtr, collectionId);
+                            completedDrawer.close();
+                        }
+                        onDeleteTodo: {
+                            root.deleteTodo(todoPtr, deleteDate);
+                            completedDrawer.close();
+                        }
+                        onCompleteTodo: root.completeTodo(todoPtr);
+                        onAddSubTodo: root.addSubTodo(parentWrapper)
                     }
-                    onEditTodo: {
-                        root.editTodo(todoPtr, collectionId);
-                        completedDrawer.close();
-                    }
-                    onDeleteTodo: {
-                        root.deleteTodo(todoPtr, deleteDate);
-                        completedDrawer.close();
-                    }
-                    onCompleteTodo: root.completeTodo(todoPtr);
-                    onAddSubTodo: root.addSubTodo(parentWrapper)
                 }
             }
         }
