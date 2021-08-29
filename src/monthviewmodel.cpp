@@ -10,6 +10,7 @@ MonthViewModel::MonthViewModel(QObject* parent)
 {
     const QDate today = QDate::currentDate();
     QDate firstDay(today.year(), today.month(), 1);
+    // We create dates before and after where our view will start from (which is today)
     firstDay = firstDay.addMonths(-m_datesToAdd / 2);
 
     addDates(true, firstDay);
@@ -66,7 +67,7 @@ void MonthViewModel::addDates(bool atEnd, QDate startFrom)
         QDate startDate = firstDay;
 
         if(startDate.dayOfWeek() == m_locale.firstDayOfWeek()) {
-            startDate = startDate.addDays(-7);
+            startDate = startDate.addDays(-7); // We want to slightly center the month in the grid
         } else {
             startDate = startDate.addDays(-startDate.dayOfWeek() + m_locale.firstDayOfWeek());
         }
