@@ -82,7 +82,7 @@ Kirigami.Page {
         id: pathView
 
         anchors.fill: parent
-        flickDeceleration: 800
+        flickDeceleration: Kirigami.Units.longDuration
         preferredHighlightBegin: 0.5
         preferredHighlightEnd: 0.5
         snapMode: PathView.SnapToItem
