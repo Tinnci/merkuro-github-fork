@@ -181,10 +181,6 @@ Kirigami.Page {
                             }
                         }
                     }
-                    background: Rectangle {
-                        Kirigami.Theme.colorSet: Kirigami.Theme.View
-                        color: Kirigami.Theme.backgroundColor
-                    }
                 }
 
                 weekHeaderDelegate: QQC2.Label {
