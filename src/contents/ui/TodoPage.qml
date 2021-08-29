@@ -79,6 +79,9 @@ Kirigami.Page {
             i18n("Completed todos in %1", root.filterCollectionDetails.displayName) : i18n("Completed todos")
         showCloseButton: true
 
+        property var retainedTodoData
+        property var retainedCollectionData
+
         contentItem: Loader {
             Layout.maximumWidth: Kirigami.Units.gridUnit * 30
             height: applicationWindow().height * 0.8
@@ -97,7 +100,16 @@ Kirigami.Page {
                     sortBy: root.sortBy
                     ascendingOrder: root.ascendingOrder
                     onViewTodo: {
-                        root.viewTodo(todoData, collectionData);
+                        completedSheet.retainedTodoData = {
+                            incidencePtr: todoData.incidencePtr,
+                            text: todoData.text,
+                            color: todoData.color,
+                            startTime: todoData.startTime,
+                            endTime: todoData.endTime,
+                            durationString: todoData.durationString
+                        };
+                        completedSheet.retainedCollectionData = Kalendar.CalendarManager.getCollectionDetails(collectionData.id);
+                        root.viewTodo(completedSheet.retainedTodoData, completedSheet.retainedCollectionData);
                         completedSheet.close();
                     }
                     onEditTodo: {
