@@ -21,7 +21,7 @@ Kirigami.OverlayDrawer {
     handleVisible: !wideScreen
     handleClosedIcon.source: null
     handleOpenIcon.source: null
-    drawerOpen: !Settings.isMobile
+    drawerOpen: !Kirigami.Settings.isMobile
     width: Kirigami.Units.gridUnit * 16
 
     Kirigami.Theme.colorSet: Kirigami.Theme.Window
