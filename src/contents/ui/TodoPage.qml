@@ -75,14 +75,14 @@ Kirigami.Page {
     Kirigami.OverlaySheet {
         id: completedSheet
 
-        title: root.filterCollectionDetails ?
-        i18n("Completed todos in %1", root.filterCollectionDetails.displayName) : i18n("Completed todos")
+        title: root.filterCollectionDetails && root.filterCollectionId > -1 ?
+            i18n("Completed todos in %1", root.filterCollectionDetails.displayName) : i18n("Completed todos")
         showCloseButton: true
 
         contentItem: Loader {
             Layout.maximumWidth: Kirigami.Units.gridUnit * 30
             height: applicationWindow().height * 0.8
-            asynchronous: true
+            active: completedSheet.sheetOpen
             sourceComponent: QQC2.ScrollView {
                 anchors.fill: parent
                 contentWidth: availableWidth
