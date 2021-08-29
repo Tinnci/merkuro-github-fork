@@ -16,17 +16,17 @@ MonthViewModel::MonthViewModel(QObject* parent)
     QDate startDate = firstDay;
 
     for(int i = 0; i < m_datesToAdd; i++) {
-        m_firstDayOfMonthDates.append(firstDay);
-        while(startDate.dayOfWeek() != m_locale.firstDayOfWeek()) {
-            startDate = startDate.addDays(-1);
-        }
-        m_startDates.append(startDate);
-        firstDay = firstDay.addMonths(1);
-        startDate = firstDay;
-
         if(startDate.dayOfWeek() == m_locale.firstDayOfWeek()) {
             startDate = startDate.addDays(-7);
+        } else {
+            startDate = startDate.addDays(-startDate.dayOfWeek() + m_locale.firstDayOfWeek());
         }
+
+        m_firstDayOfMonthDates.append(firstDay);
+        m_startDates.append(startDate);
+
+        firstDay = firstDay.addMonths(1);
+        startDate = firstDay;
     }
 
     endInsertRows();
@@ -83,21 +83,15 @@ void MonthViewModel::addDates(bool atEnd)
 
         if(startDate.dayOfWeek() == m_locale.firstDayOfWeek()) {
             startDate = startDate.addDays(-7);
+        } else {
+            startDate = startDate.addDays(-startDate.dayOfWeek() + m_locale.firstDayOfWeek());
         }
 
         if(atEnd) {
             m_firstDayOfMonthDates.append(firstDay);
-        } else {
-            m_firstDayOfMonthDates.insert(0, firstDay);
-        }
-
-        while(startDate.dayOfWeek() != m_locale.firstDayOfWeek()) {
-            startDate = startDate.addDays(-1);
-        }
-
-        if(atEnd) {
             m_startDates.append(startDate);
         } else {
+            m_firstDayOfMonthDates.insert(0, firstDay);
             m_startDates.insert(0, startDate);
         }
     }
