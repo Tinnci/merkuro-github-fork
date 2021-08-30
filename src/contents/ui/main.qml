@@ -126,6 +126,7 @@ Kirigami.ApplicationWindow {
     }
 
     globalDrawer: Sidebar {
+        bottomPadding: windowMenu.visible ? windowMenu.height : 0
         todoMode: pageStack.currentItem.filterCollectionId !== undefined
         onCalendarClicked: if(todoMode) pageStack.currentItem.filterCollectionId = collectionId
         onViewAllTodosClicked: if(todoMode) pageStack.currentItem.filterCollectionId = -1
@@ -134,6 +135,7 @@ Kirigami.ApplicationWindow {
     contextDrawer: IncidenceInfo {
         id: incidenceInfo
 
+        bottomPadding: windowMenu.visible ? windowMenu.height : 0
         contentItem.implicitWidth: Kirigami.Units.gridUnit * 25
         modal: !root.wideScreen || !enabled
         onEnabledChanged: drawerOpen = enabled && !modal
