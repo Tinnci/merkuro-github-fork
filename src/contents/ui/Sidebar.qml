@@ -6,6 +6,8 @@ import QtQuick.Controls 2.15 as QQC2
 import QtQuick.Layouts 1.15
 import org.kde.kirigami 2.15 as Kirigami
 import org.kde.kalendar 1.0
+import Qt.labs.qmlmodels 1.0
+import org.kde.kitemmodels 1.0
 
 Kirigami.OverlayDrawer {
     id: sidebar
@@ -201,43 +203,76 @@ Kirigami.OverlayDrawer {
 
                 currentIndex: -1
 
-                model: sidebar.todoMode ? CalendarManager.todoCollections : CalendarManager.viewCollections
+                model: KDescendantsProxyModel {
+                    model: sidebar.todoMode ? CalendarManager.todoCollections : CalendarManager.viewCollections
+                }
+
                 onModelChanged: currentIndex = -1
 
-                delegate: Kirigami.BasicListItem {
-                    enabled: model.checkState != null
-                    label: display
-                    labelItem.color: Kirigami.Theme.textColor
+                delegate: DelegateChooser {
+                    role: 'kDescendantExpandable'
+                    DelegateChoice {
+                        roleValue: true
 
-                    hoverEnabled: sidebar.todoMode
+                        Kirigami.BasicListItem {
+                            label: display
+                            labelItem.color: Kirigami.Theme.disabledTextColor
+                            labelItem.font.weight: Font.DemiBold
+                            topPadding: 2 * Kirigami.Units.largeSpacing
+                            hoverEnabled: false
+                            background: Item {}
 
-                    separatorVisible: false
-                    trailing: QQC2.CheckBox {
-                        id: calendarCheckbox
+                            separatorVisible: false
 
-                        indicator: Rectangle {
-                            height: parent.height * 0.8
-                            width: height
-                            x: calendarCheckbox.leftPadding
-                            y: parent.height / 2 - height / 2
-                            radius: 3
-                            border.color: model.collectionColor
-                            color: Qt.rgba(0,0,0,0)
+                            trailing: Kirigami.Icon {
+                                width: Kirigami.Units.iconSizes.small
+                                height: Kirigami.Units.iconSizes.small
+                                source: model.kDescendantExpanded ? 'arrow-up' : 'arrow-down'
+                            }
 
-                            Rectangle {
-                                anchors.margins: parent.height * 0.2
-                                anchors.fill: parent
-                                radius: 1
-                                color: model.collectionColor
-                                visible: model.checkState === 2
+                            onClicked: calendarList.model.toggleChildren(index)
+                        }
+                    }
+
+                    DelegateChoice {
+                        roleValue: false
+                        Kirigami.BasicListItem {
+                            label: display
+                            labelItem.color: Kirigami.Theme.textColor
+
+                            hoverEnabled: sidebar.todoMode
+
+                            separatorVisible: false
+
+                            trailing: QQC2.CheckBox {
+                                id: calendarCheckbox
+
+                                indicator: Rectangle {
+                                    height: parent.height * 0.8
+                                    width: height
+                                    x: calendarCheckbox.leftPadding
+                                    y: parent.height / 2 - height / 2
+                                    radius: 3
+                                    border.color: model.collectionColor
+                                    color: Qt.rgba(0,0,0,0)
+
+                                    Rectangle {
+                                        anchors.margins: parent.height * 0.2
+                                        anchors.fill: parent
+                                        radius: 1
+                                        color: model.collectionColor ?? 'transparent'
+                                        visible: model.checkState === 2
+                                    }
+                                }
+                                checked: model.checkState === 2
+                                onClicked: model.checkState = model.checkState === 0 ? 2 : 0
+                            }
+
+                            onClicked: {
+                                calendarClicked(collectionId)
+                                if(sidebar.modal && sidebar.todoMode) sidebar.close()
                             }
                         }
-                        checked: model.checkState === 2
-                        onClicked: model.checkState = model.checkState === 0 ? 2 : 0
-                    }
-                    onClicked: {
-                        calendarClicked(collectionId)
-                        if(sidebar.modal && sidebar.todoMode) sidebar.close()
                     }
                 }
             }
