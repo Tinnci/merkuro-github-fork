@@ -10,6 +10,8 @@ import org.kde.kalendar 1.0
 
 QQC2.MenuBar {
     property var parentWindow: null
+    property bool todoMode: false
+
     QQC2.Menu {
         title: i18nc("@action:menu", "File")
 
