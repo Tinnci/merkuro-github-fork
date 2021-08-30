@@ -61,7 +61,6 @@ Kirigami.OverlayDrawer {
                 Kirigami.Heading {
                     Layout.fillWidth: true
                     text: i18n("Kalendar")
-                    type: Kirigami.Heading.Type.Primary
                 }
 
                 Kirigami.ActionToolBar {
@@ -187,9 +186,15 @@ Kirigami.OverlayDrawer {
                 Layout.fillWidth: true
                 Layout.topMargin: Kirigami.Units.largeSpacing
 
-                header: Kirigami.ListSectionHeader {
-                    label: i18n("<b>Calendars</b>")
+                header: Kirigami.Heading {
+                    anchors.left: parent.left
+                    anchors.right: parent.right
+                    leftPadding: Kirigami.Units.largeSpacing
+                    text: i18n("Calendars")
+                    font.weight: Font.Bold
+                    level: 5
                     z: 10
+                    background: Rectangle {color: Kirigami.Theme.backgroundColor}
                 }
                 headerPositioning: ListView.OverlayHeader
 
@@ -203,7 +208,9 @@ Kirigami.OverlayDrawer {
                     label: display
                     labelItem.color: Kirigami.Theme.textColor
                     labelItem.font.weight: model.checkState != null ? Font.Normal : Font.Medium
-                    leftPadding: model.checkState != null || kDescendantLevel > 0 ?
+
+                    topPadding: if(model.checkState == null) Kirigami.Units.largeSpacing
+                    leftPadding: model.checkState != null && kDescendantLevel > 1 ?
                         (Kirigami.Units.largeSpacing * 2) * kDescendantLevel : Kirigami.Units.largeSpacing
 
                     hoverEnabled: sidebar.todoMode
