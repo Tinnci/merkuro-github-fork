@@ -97,7 +97,15 @@ Kirigami.ApplicationWindow {
         }
     }
 
-    title: i18n("Calendar")
+    title: {
+        if (pageStack.currentItem.filterCollectionId !== undefined) {
+            return i18n("Todo View")
+        } else if (pageStack.currentItem.isTiny !== undefined) {
+            return i18n("Month View")
+        } else if (pageStack.currentItem.isDark !== undefined) {
+            return i18n("Schedule View")
+        }
+    }
 
     pageStack.initialPage: Kirigami.Settings.isMobile ? scheduleViewComponent : monthViewComponent
 
