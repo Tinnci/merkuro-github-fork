@@ -101,6 +101,16 @@ Kirigami.ApplicationWindow {
 
     pageStack.initialPage: Kirigami.Settings.isMobile ? scheduleViewComponent : monthViewComponent
 
+    menuBar: WindowMenu {
+        id: windowMenu
+        parentWindow: root
+        Kirigami.Theme.inherit: false
+        Kirigami.Theme.colorSet: Kirigami.Theme.Header
+        background: Rectangle {
+            color: Kirigami.Theme.backgroundColor
+        }
+    }
+
     globalDrawer: Sidebar {
         todoMode: pageStack.currentItem.filterCollectionId !== undefined
         onCalendarClicked: if(todoMode) pageStack.currentItem.filterCollectionId = collectionId
