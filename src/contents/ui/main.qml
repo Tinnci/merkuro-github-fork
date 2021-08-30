@@ -118,18 +118,21 @@ Kirigami.ApplicationWindow {
 
     pageStack.initialPage: Kirigami.Settings.isMobile ? scheduleViewComponent : monthViewComponent
 
-    menuBar: WindowMenu {
-        id: windowMenu
-        parentWindow: root
-        Kirigami.Theme.inherit: false
-        Kirigami.Theme.colorSet: Kirigami.Theme.Header
-        background: Rectangle {
-            color: Kirigami.Theme.backgroundColor
+    menuBar: Loader {
+        id: menuLoader
+        active: Kirigami.Settings.hasPlatformMenuBar != undefined ?
+                !Kirigami.Settings.hasPlatformMenuBar && !Kirigami.Settings.isMobile :
+                !Kirigami.Settings.isMobile
+
+        sourceComponent: WindowMenu {
+            parentWindow: root
+            todoMode: pageStack.currentItem.filterCollectionId !== undefined
+            Kirigami.Theme.colorSet: Kirigami.Theme.Header
         }
     }
 
     globalDrawer: Sidebar {
-        bottomPadding: windowMenu.visible ? windowMenu.height : 0
+        bottomPadding: menuLoader.active ? menuLoader.height : 0
         todoMode: pageStack.currentItem.filterCollectionId !== undefined
         onCalendarClicked: if(todoMode) pageStack.currentItem.filterCollectionId = collectionId
         onViewAllTodosClicked: if(todoMode) pageStack.currentItem.filterCollectionId = -1
@@ -138,7 +141,7 @@ Kirigami.ApplicationWindow {
     contextDrawer: IncidenceInfo {
         id: incidenceInfo
 
-        bottomPadding: windowMenu.visible ? windowMenu.height : 0
+        bottomPadding: menuLoader.active ? menuLoader.height : 0
         contentItem.implicitWidth: Kirigami.Units.gridUnit * 25
         modal: !root.wideScreen || !enabled
         onEnabledChanged: drawerOpen = enabled && !modal
@@ -179,7 +182,9 @@ Kirigami.ApplicationWindow {
 
     Loader {
         active: !Kirigami.Settings.isMobile
-        source: Qt.resolvedUrl("qrc:/GlobalMenu.qml")
+        sourceComponent: GlobalMenu {
+            todoMode: pageStack.currentItem.filterCollectionId !== undefined
+        }
         onLoaded: item.parentWindow = root;
     }
 

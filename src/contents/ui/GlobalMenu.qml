@@ -11,6 +11,8 @@ import QtQuick.Window 2.15
 
 Labs.MenuBar {
     property var parentWindow: null
+    property bool todoMode: false
+
     Labs.Menu {
         title: i18nc("@action:menu", "File")
 
