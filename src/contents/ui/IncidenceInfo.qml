@@ -410,7 +410,7 @@ Kirigami.OverlayDrawer {
                             id: mapLoader
 
                             Layout.fillWidth: true
-                            height: Kirigami.Units.gridUnit * 16
+                            height: Kirigami.Settings.isMobile ? Kirigami.Units.gridUnit * 12 : Kirigami.Units.gridUnit * 16
                             asynchronous: true
                             active: Config.enableMaps &&
                                 incidenceInfo.visible &&
