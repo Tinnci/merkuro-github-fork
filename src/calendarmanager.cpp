@@ -387,27 +387,21 @@ CalendarManager::CalendarManager(QObject *parent)
     m_todoRightsFilterModel->sort(0);
 
     // Model for todo vie collection picker
-    auto todoCollectionModel = new Akonadi::CollectionFilterProxyModel(this);
-    todoCollectionModel->setSourceModel(collectionFilter);
-    todoCollectionModel->addMimeTypeFilter(QStringLiteral("application/x-vnd.akonadi.calendar.todo"));
-    todoCollectionModel->setExcludeVirtualCollections(true);
-    todoCollectionModel->setSortCaseSensitivity(Qt::CaseInsensitive);
-    todoCollectionModel->sort(0, Qt::AscendingOrder);
-
-    m_todoViewCollectionModel = new KDescendantsProxyModel(this);
-    m_todoViewCollectionModel->setSourceModel(todoCollectionModel);
+    m_todoViewCollectionModel = new Akonadi::CollectionFilterProxyModel(this);
+    m_todoViewCollectionModel->setSourceModel(collectionFilter);
+    m_todoViewCollectionModel->addMimeTypeFilter(QStringLiteral("application/x-vnd.akonadi.calendar.todo"));
+    m_todoViewCollectionModel->setExcludeVirtualCollections(true);
+    m_todoViewCollectionModel->setSortCaseSensitivity(Qt::CaseInsensitive);
+    m_todoViewCollectionModel->sort(0, Qt::AscendingOrder);
 
     // Model for the sidebar
-    auto viewCollectionModel = new Akonadi::CollectionFilterProxyModel(this);
-    viewCollectionModel->setSourceModel(collectionFilter);
-    viewCollectionModel->addMimeTypeFilter(QStringLiteral("application/x-vnd.akonadi.calendar.event"));
-    viewCollectionModel->addMimeTypeFilter(QStringLiteral("application/x-vnd.akonadi.calendar.todo"));
-    viewCollectionModel->setExcludeVirtualCollections(true);
-    viewCollectionModel->setSortCaseSensitivity(Qt::CaseInsensitive);
-    viewCollectionModel->sort(0, Qt::AscendingOrder);
-
-    m_viewCollectionModel = new KDescendantsProxyModel(this);
-    m_viewCollectionModel->setSourceModel(viewCollectionModel);
+    m_viewCollectionModel = new Akonadi::CollectionFilterProxyModel(this);
+    m_viewCollectionModel->setSourceModel(collectionFilter);
+    m_viewCollectionModel->addMimeTypeFilter(QStringLiteral("application/x-vnd.akonadi.calendar.event"));
+    m_viewCollectionModel->addMimeTypeFilter(QStringLiteral("application/x-vnd.akonadi.calendar.todo"));
+    m_viewCollectionModel->setExcludeVirtualCollections(true);
+    m_viewCollectionModel->setSortCaseSensitivity(Qt::CaseInsensitive);
+    m_viewCollectionModel->sort(0, Qt::AscendingOrder);
 
     Q_EMIT entityTreeModelChanged();
     Q_EMIT loadingChanged();
@@ -440,15 +434,15 @@ void CalendarManager::delayedInit()
 
 QAbstractProxyModel *CalendarManager::collections()
 {
-    return m_flatCollectionTreeModel;
+    return static_cast<QAbstractProxyModel *>(m_flatCollectionTreeModel->sourceModel());
 }
 
-KDescendantsProxyModel * CalendarManager::todoCollections()
+QAbstractItemModel * CalendarManager::todoCollections()
 {
     return m_todoViewCollectionModel;
 }
 
-KDescendantsProxyModel * CalendarManager::viewCollections()
+QAbstractItemModel * CalendarManager::viewCollections()
 {
     return m_viewCollectionModel;
 }
