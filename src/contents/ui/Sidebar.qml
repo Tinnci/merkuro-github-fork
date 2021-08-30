@@ -170,24 +170,12 @@ Kirigami.OverlayDrawer {
             }
         }
 
-        Kirigami.Heading {
-            Layout.fillWidth: true
-            topPadding: Kirigami.Units.largeSpacing * 2
-            bottomPadding: Kirigami.Units.largeSpacing
-            leftPadding: Kirigami.Units.largeSpacing
-            text: i18n("Calendars")
-            level: 6
-            type: Kirigami.Heading.Type.Primary
-            opacity: 0.7
-        }
-
         QQC2.ScrollView {
             id: calendarView
             implicitWidth: Kirigami.Units.gridUnit * 16
             Layout.fillWidth: true
             Layout.fillHeight: true
-            Layout.topMargin: -Kirigami.Units.smallSpacing - 1
-            Layout.bottomMargin: -Kirigami.Units.smallSpacing
+            Layout.topMargin: Kirigami.Units.largeSpacing * 2
             QQC2.ScrollBar.horizontal.policy: QQC2.ScrollBar.AlwaysOff
             contentWidth: availableWidth
 
@@ -199,6 +187,12 @@ Kirigami.OverlayDrawer {
                 Layout.fillWidth: true
                 Layout.topMargin: Kirigami.Units.largeSpacing
 
+                header: Kirigami.ListSectionHeader {
+                    label: i18n("<b>Calendars</b>")
+                    z: 10
+                }
+                headerPositioning: ListView.OverlayHeader
+
                 currentIndex: -1
 
                 model: sidebar.todoMode ? CalendarManager.todoCollections : CalendarManager.viewCollections
@@ -208,11 +202,21 @@ Kirigami.OverlayDrawer {
                     enabled: model.checkState != null
                     label: display
                     labelItem.color: Kirigami.Theme.textColor
+                    labelItem.font.weight: model.checkState != null ? Font.Normal : Font.Medium
+                    leftPadding: model.checkState != null || kDescendantLevel > 0 ?
+                        (Kirigami.Units.largeSpacing * 2) * kDescendantLevel : Kirigami.Units.largeSpacing
 
                     hoverEnabled: sidebar.todoMode
 
                     separatorVisible: false
-                    trailing: CollectionCheckbox {}
+                    trailing: ColoredCheckbox {
+                        id: calendarCheckbox
+
+                        visible: model.checkState != null
+                        color: model.collectionColor
+                        checked: model.checkState === 2
+                        onClicked: model.checkState = model.checkState === 0 ? 2 : 0
+                    }
                     onClicked: {
                         calendarClicked(collectionId)
                         if(sidebar.modal && sidebar.todoMode) sidebar.close()
