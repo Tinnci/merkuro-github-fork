@@ -212,29 +212,7 @@ Kirigami.OverlayDrawer {
                     hoverEnabled: sidebar.todoMode
 
                     separatorVisible: false
-                    trailing: QQC2.CheckBox {
-                        id: calendarCheckbox
-
-                        indicator: Rectangle {
-                            height: parent.height * 0.8
-                            width: height
-                            x: calendarCheckbox.leftPadding
-                            y: parent.height / 2 - height / 2
-                            radius: 3
-                            border.color: model.collectionColor
-                            color: Qt.rgba(0,0,0,0)
-
-                            Rectangle {
-                                anchors.margins: parent.height * 0.2
-                                anchors.fill: parent
-                                radius: 1
-                                color: model.collectionColor
-                                visible: model.checkState === 2
-                            }
-                        }
-                        checked: model.checkState === 2
-                        onClicked: model.checkState = model.checkState === 0 ? 2 : 0
-                    }
+                    trailing: CollectionCheckbox {}
                     onClicked: {
                         calendarClicked(collectionId)
                         if(sidebar.modal && sidebar.todoMode) sidebar.close()

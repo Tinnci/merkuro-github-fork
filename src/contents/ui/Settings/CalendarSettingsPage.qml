@@ -23,18 +23,7 @@ Kirigami.Page {
                 delegate: Kirigami.BasicListItem {
                     property int itemCollectionId: collectionId
                     leftPadding: ((Kirigami.Units.gridUnit * 2) * (kDescendantLevel - 1)) + Kirigami.Units.largeSpacing
-                    leading: Controls.CheckBox {
-                        visible: model.checkState != null
-                        checked: model.checkState == 2
-                        onClicked: model.checkState = (checked ? 2 : 0)
-                    }
-                    trailing: Rectangle {
-                        Layout.fillHeight: true
-                        width: height
-                        radius: 5
-                        color: collectionColor
-                        visible: collectionColor !== undefined
-                    }
+                    trailing: CollectionCheckbox {}
                     label: display
                     icon: decoration
                 }
