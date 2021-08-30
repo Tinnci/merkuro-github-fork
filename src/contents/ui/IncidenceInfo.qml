@@ -386,8 +386,8 @@ Kirigami.OverlayDrawer {
                             id: mapLoadingIndicator
                             Layout.fillWidth: true
 
-                            property bool showCondition: mapLoader.status === Loader.Loading ||
-                            mapLoader.item.queryStatus === GeocodeModel.Loading
+                            property bool showCondition: !locationLabel.isLink &&
+                                (mapLoader.status === Loader.Loading || mapLoader.item.queryStatus === GeocodeModel.Loading)
 
                             running: showCondition
                             visible: showCondition
@@ -413,9 +413,9 @@ Kirigami.OverlayDrawer {
                             height: Kirigami.Units.gridUnit * 16
                             asynchronous: true
                             active: Config.enableMaps &&
-                            incidenceInfo.visible &&
-                            (incidenceInfo.incidenceWrapper.location || incidenceInfo.incidenceWrapper.hasGeo) &&
-                            !locationLabel.isLink
+                                incidenceInfo.visible &&
+                                (incidenceInfo.incidenceWrapper.location || incidenceInfo.incidenceWrapper.hasGeo) &&
+                                !locationLabel.isLink
                             visible: active && (item.queryHasResults || item.hasCoordinate)
 
                             sourceComponent: LocationMap {
