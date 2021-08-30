@@ -19,5 +19,6 @@ MenuItem {
     visible: __action.text !== ""
     checkable: __action.checkable
     checked: __action.checked
+    enabled: __action.enabled
 }
 

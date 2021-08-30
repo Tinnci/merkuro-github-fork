@@ -64,6 +64,14 @@ Kirigami.ApplicationWindow {
             root.setUpAdd(IncidenceWrapper.TypeTodo);
         }
 
+        function onUndo() {
+            CalendarManager.undoAction();
+        }
+
+        function onRedo() {
+            CalendarManager.redoAction();
+        }
+
         function onQuit() {
              Qt.quit();
         }
@@ -76,6 +84,15 @@ Kirigami.ApplicationWindow {
                 width: root.width - (Kirigami.Units.gridUnit * 4),
                 height: root.height - (Kirigami.Units.gridUnit * 3)
             })
+        }
+    }
+
+    Connections {
+        target: CalendarManager
+
+        function onUndoRedoDataChanged() {
+            undoAction.enabled = CalendarManager.undoRedoData.undoAvailable;
+            redoAction.enabled = CalendarManager.undoRedoData.redoAvailable;
         }
     }
 

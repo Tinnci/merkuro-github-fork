@@ -91,11 +91,13 @@ void KalendarApplication::setupActions(const QString &actionName)
 
     if (actionName == QLatin1String("edit_undo") && KAuthorized::authorizeAction(actionName)) {
         auto action = KStandardAction::undo(this, &KalendarApplication::undo, this);
+        action->setEnabled(false);
         mCollection.addAction(action->objectName(), action);
     }
 
     if (actionName == QLatin1String("edit_redo") && KAuthorized::authorizeAction(actionName)) {
         auto action = KStandardAction::redo(this, &KalendarApplication::redo, this);
+        action->setEnabled(false);
         mCollection.addAction(action->objectName(), action);
     }
 
