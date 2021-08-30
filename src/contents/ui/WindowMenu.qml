@@ -42,6 +42,7 @@ QQC2.MenuBar {
             icon.name: KalendarApplication.iconName(undoAction.icon)
             text: undoAction.text
             shortcut: undoAction.shortcut
+            enabled: undoAction.enabled
             onTriggered: undoAction.trigger()
         }
 
@@ -49,6 +50,7 @@ QQC2.MenuBar {
             icon.name: KalendarApplication.iconName(redoAction.icon)
             text: redoAction.text
             shortcut: redoAction.shortcut
+            enabled: redoAction.enabled
             onTriggered: redoAction.trigger()
         }
 
@@ -131,18 +133,24 @@ QQC2.MenuBar {
             icon.name: KalendarApplication.iconName(monthViewAction.icon)
             text: monthViewAction.text
             shortcut: monthViewAction.shortcut
+            checkable: true
+            checked: monthViewAction.checked
             onTriggered: monthViewAction.trigger()
         }
         Kirigami.Action {
             icon.name: KalendarApplication.iconName(scheduleViewAction.icon)
             text: scheduleViewAction.text
             shortcut: scheduleViewAction.shortcut
+            checkable: true
+            checked: scheduleViewAction.checked
             onTriggered: scheduleViewAction.trigger()
         }
         Kirigami.Action {
             icon.name: KalendarApplication.iconName(todoViewAction.icon)
             text: todoViewAction.text
             shortcut: todoViewAction.shortcut
+            checkable: true
+            checked: todoViewAction.checked
             onTriggered: todoViewAction.trigger()
         }
     }
