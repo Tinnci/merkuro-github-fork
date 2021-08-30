@@ -400,8 +400,8 @@ Kirigami.OverlayDrawer {
                             Layout.fillHeight: true
 
                             visible: mapLoader.status === Loader.Ready &&
-                            mapLoader.item.queryStatus === GeocodeModel.Ready &&
-                            !mapLoader.item.queryHasResults
+                                mapLoader.item.queryStatus === GeocodeModel.Ready &&
+                                !mapLoader.item.queryHasResults
                             type: Kirigami.MessageType.Warning
                             text: i18n("Unable to find location.")
                         }
@@ -520,8 +520,8 @@ Kirigami.OverlayDrawer {
 
                         textFormat: Text.MarkdownText
                         text: organizer.name ?
-                        `[${organizer.name}](mailto:${organizer.email})` :
-                        `[${organizer.email}](mailto:${organizer.email})`
+                            `[${organizer.name}](mailto:${organizer.email})` :
+                            `[${organizer.email}](mailto:${organizer.email})`
                         onLinkActivated: Qt.openUrlExternally(link)
                         wrapMode: Text.Wrap
                         visible: incidenceInfo.incidenceWrapper.organizer.fullName
