@@ -191,6 +191,7 @@ Kirigami.OverlayDrawer {
                     anchors.right: parent.right
                     leftPadding: Kirigami.Units.largeSpacing
                     text: i18n("Calendars")
+                    color: Kirigami.Theme.disabledTextColor
                     font.weight: Font.Bold
                     level: 5
                     z: 10
