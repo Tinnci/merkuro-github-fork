@@ -9,6 +9,7 @@ import QtQuick.Window 2.15
 import org.kde.kalendar 1.0
 
 QQC2.MenuBar {
+    id: bar
     property var parentWindow: null
     property bool todoMode: false
 
@@ -155,6 +156,54 @@ QQC2.MenuBar {
             checked: todoViewAction.checked
             onTriggered: todoViewAction.trigger()
         }
+
+        QQC2.MenuSeparator {
+        }
+
+        QQC2.Menu {
+            title: i18n("Sort todos")
+            enabled: bar.todoMode
+
+            Kirigami.Action {
+                icon.name: KalendarApplication.iconName(todoViewSortByDueDateAction.icon)
+                text: todoViewSortByDueDateAction.text
+                shortcut: todoViewSortByDueDateAction.shortcut
+                onTriggered: todoViewSortByDueDateAction.trigger()
+            }
+            Kirigami.Action {
+                icon.name: KalendarApplication.iconName(todoViewSortByPriorityAction.icon)
+                text: todoViewSortByPriorityAction.text
+                shortcut: todoViewSortByPriorityAction.shortcut
+                onTriggered: todoViewSortByPriorityAction.trigger()
+            }
+            Kirigami.Action {
+                icon.name: KalendarApplication.iconName(todoViewSortAlphabeticallyAction.icon)
+                text: todoViewSortAlphabeticallyAction.text
+                shortcut: todoViewSortAlphabeticallyAction.shortcut
+                onTriggered: todoViewSortAlphabeticallyAction.trigger()
+            }
+
+            QQC2.MenuSeparator {
+            }
+
+            Kirigami.Action {
+                icon.name: KalendarApplication.iconName(todoViewOrderAscendingAction.icon)
+                text: todoViewOrderAscendingAction.text
+                shortcut: todoViewOrderAscendingAction.shortcut
+                checkable: todoViewOrderAscendingAction.checkable
+                checked: todoViewOrderAscendingAction.checked
+                onTriggered: todoViewOrderAscendingAction.trigger()
+            }
+            Kirigami.Action {
+                icon.name: KalendarApplication.iconName(todoViewOrderDescendingAction.icon)
+                text: todoViewOrderDescendingAction.text
+                shortcut: todoViewOrderDescendingAction.shortcut
+                checkable: todoViewOrderDescendingAction.checkable
+                checked: todoViewOrderDescendingAction.checked
+                onTriggered: todoViewOrderDescendingAction.trigger()
+            }
+        }
+
     }
     QQC2.Menu {
         title: i18nc("@action:menu", "Actions")
