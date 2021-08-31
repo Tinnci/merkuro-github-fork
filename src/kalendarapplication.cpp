@@ -101,6 +101,45 @@ void KalendarApplication::setupActions(const QString &actionName)
         mCollection.addAction(action->objectName(), action);
     }
 
+    if (actionName == QLatin1String("todoview_sort_alphabetically") && KAuthorized::authorizeAction(actionName)) {
+        auto sortTodoViewAlphabeticallyAction = mCollection.addAction(actionName, this, &KalendarApplication::todoViewSortAlphabetically);
+        sortTodoViewAlphabeticallyAction->setText(i18n("Alphabetically"));
+        sortTodoViewAlphabeticallyAction->setIcon(QIcon::fromTheme(QStringLiteral("font")));
+        mCollection.addAction(sortTodoViewAlphabeticallyAction->objectName(), sortTodoViewAlphabeticallyAction);
+    }
+
+    if (actionName == QLatin1String("todoview_sort_by_due_date") && KAuthorized::authorizeAction(actionName)) {
+        auto sortTodoViewByDueDateAction = mCollection.addAction(actionName, this, &KalendarApplication::todoViewSortByDueDate);
+        sortTodoViewByDueDateAction->setText(i18n("By due date"));
+        sortTodoViewByDueDateAction->setIcon(QIcon::fromTheme(QStringLiteral("change-date-symbolic")));
+        mCollection.addAction(sortTodoViewByDueDateAction->objectName(), sortTodoViewByDueDateAction);
+    }
+
+    if (actionName == QLatin1String("todoview_sort_by_priority") && KAuthorized::authorizeAction(actionName)) {
+        auto sortTodoViewByPriorityAction = mCollection.addAction(actionName, this, &KalendarApplication::todoViewSortByPriority);
+        sortTodoViewByPriorityAction->setText(i18n("By priority level"));
+        sortTodoViewByPriorityAction->setIcon(QIcon::fromTheme(QStringLiteral("emblem-important-symbolic")));
+        mCollection.addAction(sortTodoViewByPriorityAction->objectName(), sortTodoViewByPriorityAction);
+    }
+
+    if (actionName == QLatin1String("todoview_order_ascending") && KAuthorized::authorizeAction(actionName)) {
+        auto orderTodoViewAscendingAction = mCollection.addAction(actionName, this, &KalendarApplication::todoViewOrderAscending);
+        orderTodoViewAscendingAction->setText(i18n("Ascending order"));
+        orderTodoViewAscendingAction->setIcon(QIcon::fromTheme(QStringLiteral("view-sort-ascending")));
+        orderTodoViewAscendingAction->setCheckable(true);
+        orderTodoViewAscendingAction->setActionGroup(m_todoViewOrderGroup);
+        mCollection.addAction(orderTodoViewAscendingAction->objectName(), orderTodoViewAscendingAction);
+    }
+
+    if (actionName == QLatin1String("todoview_order_descending") && KAuthorized::authorizeAction(actionName)) {
+        auto orderTodoViewDescendingAction = mCollection.addAction(actionName, this, &KalendarApplication::todoViewOrderDescending);
+        orderTodoViewDescendingAction->setText(i18n("Descending order"));
+        orderTodoViewDescendingAction->setIcon(QIcon::fromTheme(QStringLiteral("view-sort-descending")));
+        orderTodoViewDescendingAction->setCheckable(true);
+        orderTodoViewDescendingAction->setActionGroup(m_todoViewOrderGroup);
+        mCollection.addAction(orderTodoViewDescendingAction->objectName(), orderTodoViewDescendingAction);
+    }
+
     mCollection.readSettings();
 }
 
