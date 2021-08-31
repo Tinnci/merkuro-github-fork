@@ -10,6 +10,7 @@ import org.kde.kirigami 2.15 as Kirigami
 import QtQuick.Window 2.15
 
 Labs.MenuBar {
+    id: bar
     property var parentWindow: null
     property bool todoMode: false
 
@@ -54,6 +55,37 @@ Labs.MenuBar {
 
         NativeMenuItemFromAction {
             kalendarAction: 'open_todo_view'
+        }
+
+        Labs.MenuSeparator {
+        }
+
+        Labs.Menu {
+            title: i18nc("@action:menu", "Sort todos")
+            enabled: bar.todoMode
+
+            NativeMenuItemFromAction {
+                kalendarAction: 'todoview_sort_by_due_date'
+            }
+
+            NativeMenuItemFromAction {
+                kalendarAction: 'todoview_sort_by_priority'
+            }
+
+            NativeMenuItemFromAction {
+                kalendarAction: 'todoview_sort_alphabetically'
+            }
+
+            Labs.MenuSeparator {
+            }
+
+            NativeMenuItemFromAction {
+                kalendarAction: 'todoview_order_ascending'
+            }
+
+            NativeMenuItemFromAction {
+                kalendarAction: 'todoview_order_descending'
+            }
         }
     }
     Labs.Menu {

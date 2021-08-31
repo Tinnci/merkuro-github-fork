@@ -33,6 +33,12 @@ Kirigami.ApplicationWindow {
     readonly property var undoAction: KalendarApplication.action("edit_undo")
     readonly property var redoAction: KalendarApplication.action("edit_redo")
 
+    readonly property var todoViewSortAlphabeticallyAction: KalendarApplication.action("todoview_sort_alphabetically")
+    readonly property var todoViewSortByDueDateAction: KalendarApplication.action("todoview_sort_by_due_date")
+    readonly property var todoViewSortByPriorityAction: KalendarApplication.action("todoview_sort_by_priority")
+    readonly property var todoViewOrderAscendingAction: KalendarApplication.action("todoview_order_ascending")
+    readonly property var todoViewOrderDescendingAction: KalendarApplication.action("todoview_order_descending")
+
     Component.onCompleted: if (Kirigami.Settings.isMobile) {
         scheduleViewAction.setChecked(true);
     } else {
@@ -70,6 +76,26 @@ Kirigami.ApplicationWindow {
 
         function onRedo() {
             CalendarManager.redoAction();
+        }
+
+        function onTodoViewSortAlphabetically() {
+            pageStack.currentItem.sortBy = TodoSortFilterProxyModel.SummaryColumn;
+        }
+
+        function onTodoViewSortByDueDate() {
+            pageStack.currentItem.sortBy = TodoSortFilterProxyModel.EndTimeColumn;
+        }
+
+        function onTodoViewSortByPriority() {
+            pageStack.currentItem.sortBy = TodoSortFilterProxyModel.PriorityIntColumn;
+        }
+
+        function onTodoViewOrderAscending() {
+            pageStack.currentItem.ascendingOrder = true;
+        }
+
+        function onTodoViewOrderDescending() {
+            pageStack.currentItem.ascendingOrder = false;
         }
 
         function onQuit() {
@@ -120,9 +146,9 @@ Kirigami.ApplicationWindow {
 
     menuBar: Loader {
         id: menuLoader
-        active: Kirigami.Settings.hasPlatformMenuBar != undefined ?
+        active: true /*Kirigami.Settings.hasPlatformMenuBar != undefined ?
                 !Kirigami.Settings.hasPlatformMenuBar && !Kirigami.Settings.isMobile :
-                !Kirigami.Settings.isMobile
+                !Kirigami.Settings.isMobile*/
 
         sourceComponent: WindowMenu {
             parentWindow: root
