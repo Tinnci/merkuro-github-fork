@@ -62,12 +62,10 @@ Kirigami.Page {
 
                             separatorVisible: false
 
-                            trailing: Rectangle {
-                                width: parent.height
-                                height: parent.height
-                                radius: 5
-                                color: collectionColor ?? 'transparent'
-                                visible: collectionColor !== undefined
+                            trailing: ColoredCheckbox {
+                                color: model.collectionColor
+                                checked: model.checkState === 2
+                                onClicked: model.checkState = model.checkState === 0 ? 2 : 0
                             }
                         }
                     }
