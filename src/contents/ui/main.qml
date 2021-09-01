@@ -38,6 +38,7 @@ Kirigami.ApplicationWindow {
     readonly property var todoViewSortByPriorityAction: KalendarApplication.action("todoview_sort_by_priority")
     readonly property var todoViewOrderAscendingAction: KalendarApplication.action("todoview_order_ascending")
     readonly property var todoViewOrderDescendingAction: KalendarApplication.action("todoview_order_descending")
+    readonly property var todoViewShowCompletedAction: KalendarApplication.action("todoview_show_completed")
 
     Component.onCompleted: if (Kirigami.Settings.isMobile) {
         scheduleViewAction.setChecked(true);
@@ -96,6 +97,10 @@ Kirigami.ApplicationWindow {
 
         function onTodoViewOrderDescending() {
             pageStack.currentItem.ascendingOrder = false;
+        }
+
+        function onTodoViewShowCompleted() {
+            pageStack.currentItem.completedSheet.open();
         }
 
         function onQuit() {

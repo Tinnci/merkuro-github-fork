@@ -146,6 +146,13 @@ void KalendarApplication::setupActions(const QString &actionName)
         mCollection.addAction(orderTodoViewDescendingAction->objectName(), orderTodoViewDescendingAction);
     }
 
+    if (actionName == QLatin1String("todoview_show_completed") && KAuthorized::authorizeAction(actionName)) {
+        auto todoViewShowCompletedAction = mCollection.addAction(actionName, this, &KalendarApplication::todoViewShowCompleted);
+        todoViewShowCompletedAction->setText(i18n("Show completed todos"));
+        todoViewShowCompletedAction->setIcon(QIcon::fromTheme(QStringLiteral("task-complete")));
+        mCollection.addAction(todoViewShowCompletedAction->objectName(), todoViewShowCompletedAction);
+    }
+
     mCollection.readSettings();
 }
 
