@@ -127,8 +127,8 @@ Kirigami.ApplicationWindow {
         }
     }
 
-    property Kirigami.Action addAction: Kirigami.Action {
-        text: i18n("Add")
+    property Kirigami.Action createAction: Kirigami.Action {
+        text: i18n("Create")
         icon.name: "list-add"
 
         Kirigami.Action {
@@ -401,7 +401,7 @@ Kirigami.ApplicationWindow {
 
             Component.onCompleted: setToDate(new Date(root.year, root.month))
 
-            actions.contextualActions: addAction
+            actions.contextualActions: createAction
         }
     }
 
@@ -427,7 +427,7 @@ Kirigami.ApplicationWindow {
             onCompleteTodo: root.completeTodo(incidencePtr)
             onAddSubTodo: root.setUpAddSubTodo(parentWrapper)
 
-            actions.contextualActions: addAction
+            actions.contextualActions: createAction
         }
     }
 
