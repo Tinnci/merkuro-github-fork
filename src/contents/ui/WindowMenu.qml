@@ -168,18 +168,24 @@ QQC2.MenuBar {
                 icon.name: KalendarApplication.iconName(todoViewSortByDueDateAction.icon)
                 text: todoViewSortByDueDateAction.text
                 shortcut: todoViewSortByDueDateAction.shortcut
+                checkable: todoViewSortByDueDateAction.checkable
+                checked: todoViewSortByDueDateAction.checked
                 onTriggered: todoViewSortByDueDateAction.trigger()
             }
             Kirigami.Action {
                 icon.name: KalendarApplication.iconName(todoViewSortByPriorityAction.icon)
                 text: todoViewSortByPriorityAction.text
                 shortcut: todoViewSortByPriorityAction.shortcut
+                checkable: todoViewSortByPriorityAction.checkable
+                checked: todoViewSortByPriorityAction.checked
                 onTriggered: todoViewSortByPriorityAction.trigger()
             }
             Kirigami.Action {
                 icon.name: KalendarApplication.iconName(todoViewSortAlphabeticallyAction.icon)
                 text: todoViewSortAlphabeticallyAction.text
                 shortcut: todoViewSortAlphabeticallyAction.shortcut
+                checkable: todoViewSortAlphabeticallyAction.checkable
+                checked: todoViewSortAlphabeticallyAction.checked
                 onTriggered: todoViewSortAlphabeticallyAction.trigger()
             }
 

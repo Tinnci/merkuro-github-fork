@@ -105,6 +105,8 @@ void KalendarApplication::setupActions(const QString &actionName)
         auto sortTodoViewAlphabeticallyAction = mCollection.addAction(actionName, this, &KalendarApplication::todoViewSortAlphabetically);
         sortTodoViewAlphabeticallyAction->setText(i18n("Alphabetically"));
         sortTodoViewAlphabeticallyAction->setIcon(QIcon::fromTheme(QStringLiteral("font")));
+        sortTodoViewAlphabeticallyAction->setCheckable(true);
+        sortTodoViewAlphabeticallyAction->setActionGroup(m_todoViewSortGroup);
         mCollection.addAction(sortTodoViewAlphabeticallyAction->objectName(), sortTodoViewAlphabeticallyAction);
     }
 
@@ -112,6 +114,8 @@ void KalendarApplication::setupActions(const QString &actionName)
         auto sortTodoViewByDueDateAction = mCollection.addAction(actionName, this, &KalendarApplication::todoViewSortByDueDate);
         sortTodoViewByDueDateAction->setText(i18n("By due date"));
         sortTodoViewByDueDateAction->setIcon(QIcon::fromTheme(QStringLiteral("change-date-symbolic")));
+        sortTodoViewByDueDateAction->setCheckable(true);
+        sortTodoViewByDueDateAction->setActionGroup(m_todoViewSortGroup);
         mCollection.addAction(sortTodoViewByDueDateAction->objectName(), sortTodoViewByDueDateAction);
     }
 
@@ -119,6 +123,8 @@ void KalendarApplication::setupActions(const QString &actionName)
         auto sortTodoViewByPriorityAction = mCollection.addAction(actionName, this, &KalendarApplication::todoViewSortByPriority);
         sortTodoViewByPriorityAction->setText(i18n("By priority level"));
         sortTodoViewByPriorityAction->setIcon(QIcon::fromTheme(QStringLiteral("emblem-important-symbolic")));
+        sortTodoViewByPriorityAction->setCheckable(true);
+        sortTodoViewByPriorityAction->setActionGroup(m_todoViewSortGroup);
         mCollection.addAction(sortTodoViewByPriorityAction->objectName(), sortTodoViewByPriorityAction);
     }
 
