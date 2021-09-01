@@ -210,6 +210,16 @@ QQC2.MenuBar {
             }
         }
 
+        Kirigami.Action {
+            icon.name: KalendarApplication.iconName(todoViewShowCompletedAction.icon)
+            text: todoViewShowCompletedAction.text
+            shortcut: todoViewShowCompletedAction.shortcut
+            checkable: todoViewShowCompletedAction.checkable
+            checked: todoViewShowCompletedAction.checked
+            enabled: bar.todoMode
+            onTriggered: todoViewShowCompletedAction.trigger()
+        }
+
     }
     QQC2.Menu {
         title: i18nc("@action:menu", "Actions")

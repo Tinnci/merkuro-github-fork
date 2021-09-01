@@ -30,6 +30,7 @@ Kirigami.Page {
     property bool ascendingOrder: false
     readonly property color standardTextColor: Kirigami.Theme.textColor
     readonly property bool isDark: LabelUtils.isDarkColor(Kirigami.Theme.backgroundColor)
+    readonly property alias completedSheet: completedSheet
 
     Component.onCompleted: sortBy = Kalendar.TodoSortFilterProxyModel.EndTimeColumn // Otherwise crashes...
 
@@ -103,9 +104,12 @@ Kirigami.Page {
             }
         }
         right: Kirigami.Action {
-            text: i18n("Show completed")
-            icon.name: "task-complete"
-            onTriggered: completedSheet.open()
+            icon.name: Kalendar.KalendarApplication.iconName(todoViewShowCompletedAction.icon)
+            text: todoViewShowCompletedAction.text
+            shortcut: todoViewShowCompletedAction.shortcut
+            checkable: todoViewShowCompletedAction.checkable
+            checked: todoViewShowCompletedAction.checked
+            onTriggered: todoViewShowCompletedAction.trigger()
         }
 
     }
