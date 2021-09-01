@@ -32,6 +32,7 @@
     <file alias="WindowMenu.qml">contents/ui/WindowMenu.qml</file>
     <file alias="EditMenu.qml">contents/ui/EditMenu.qml</file>
     <file alias="NativeMenuItemFromAction.qml">contents/ui/NativeMenuItemFromAction.qml</file>
+    <file alias="KActionFromAction.qml">contents/ui/KActionFromAction.qml</file>
     <file alias="ColoredCheckbox.qml">contents/ui/ColoredCheckbox.qml</file>
   </qresource>
 </RCC>

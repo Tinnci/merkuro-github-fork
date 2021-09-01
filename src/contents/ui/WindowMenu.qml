@@ -41,20 +41,12 @@ QQC2.MenuBar {
 
         required property Item field
 
-        Kirigami.Action {
-            icon.name: KalendarApplication.iconName(undoAction.icon)
-            text: undoAction.text
-            shortcut: undoAction.shortcut
-            enabled: undoAction.enabled
-            onTriggered: undoAction.trigger()
+        KActionFromAction {
+            kalendarAction: "edit_undo"
         }
 
-        Kirigami.Action {
-            icon.name: KalendarApplication.iconName(redoAction.icon)
-            text: redoAction.text
-            shortcut: redoAction.shortcut
-            enabled: redoAction.enabled
-            onTriggered: redoAction.trigger()
+        KActionFromAction {
+            kalendarAction: "edit_redo"
         }
 
         QQC2.MenuSeparator {
@@ -132,29 +124,14 @@ QQC2.MenuBar {
     QQC2.Menu {
         title: i18nc("@action:menu", "View")
 
-        Kirigami.Action {
-            icon.name: KalendarApplication.iconName(monthViewAction.icon)
-            text: monthViewAction.text
-            shortcut: monthViewAction.shortcut
-            checkable: true
-            checked: monthViewAction.checked
-            onTriggered: monthViewAction.trigger()
+        KActionFromAction {
+            kalendarAction: "open_month_view"
         }
-        Kirigami.Action {
-            icon.name: KalendarApplication.iconName(scheduleViewAction.icon)
-            text: scheduleViewAction.text
-            shortcut: scheduleViewAction.shortcut
-            checkable: true
-            checked: scheduleViewAction.checked
-            onTriggered: scheduleViewAction.trigger()
+        KActionFromAction {
+            kalendarAction: "open_schedule_view"
         }
-        Kirigami.Action {
-            icon.name: KalendarApplication.iconName(todoViewAction.icon)
-            text: todoViewAction.text
-            shortcut: todoViewAction.shortcut
-            checkable: true
-            checked: todoViewAction.checked
-            onTriggered: todoViewAction.trigger()
+        KActionFromAction {
+            kalendarAction: "open_todo_view"
         }
 
         QQC2.MenuSeparator {
@@ -164,77 +141,41 @@ QQC2.MenuBar {
             title: i18n("Sort todos")
             enabled: bar.todoMode
 
-            Kirigami.Action {
-                icon.name: KalendarApplication.iconName(todoViewSortByDueDateAction.icon)
-                text: todoViewSortByDueDateAction.text
-                shortcut: todoViewSortByDueDateAction.shortcut
-                checkable: todoViewSortByDueDateAction.checkable
-                checked: todoViewSortByDueDateAction.checked
-                onTriggered: todoViewSortByDueDateAction.trigger()
+            KActionFromAction {
+                kalendarAction: "todoview_sort_by_due_date"
             }
-            Kirigami.Action {
-                icon.name: KalendarApplication.iconName(todoViewSortByPriorityAction.icon)
-                text: todoViewSortByPriorityAction.text
-                shortcut: todoViewSortByPriorityAction.shortcut
-                checkable: todoViewSortByPriorityAction.checkable
-                checked: todoViewSortByPriorityAction.checked
-                onTriggered: todoViewSortByPriorityAction.trigger()
+            KActionFromAction {
+                kalendarAction: "todoview_sort_by_priority"
             }
-            Kirigami.Action {
-                icon.name: KalendarApplication.iconName(todoViewSortAlphabeticallyAction.icon)
-                text: todoViewSortAlphabeticallyAction.text
-                shortcut: todoViewSortAlphabeticallyAction.shortcut
-                checkable: todoViewSortAlphabeticallyAction.checkable
-                checked: todoViewSortAlphabeticallyAction.checked
-                onTriggered: todoViewSortAlphabeticallyAction.trigger()
+            KActionFromAction {
+                kalendarAction: "todoview_sort_alphabetically"
             }
 
             QQC2.MenuSeparator {
             }
 
-            Kirigami.Action {
-                icon.name: KalendarApplication.iconName(todoViewOrderAscendingAction.icon)
-                text: todoViewOrderAscendingAction.text
-                shortcut: todoViewOrderAscendingAction.shortcut
-                checkable: todoViewOrderAscendingAction.checkable
-                checked: todoViewOrderAscendingAction.checked
-                onTriggered: todoViewOrderAscendingAction.trigger()
+            KActionFromAction {
+                kalendarAction: "todoview_order_ascending"
             }
-            Kirigami.Action {
-                icon.name: KalendarApplication.iconName(todoViewOrderDescendingAction.icon)
-                text: todoViewOrderDescendingAction.text
-                shortcut: todoViewOrderDescendingAction.shortcut
-                checkable: todoViewOrderDescendingAction.checkable
-                checked: todoViewOrderDescendingAction.checked
-                onTriggered: todoViewOrderDescendingAction.trigger()
+            KActionFromAction {
+                kalendarAction: "todoview_order_descending"
             }
         }
 
-        Kirigami.Action {
-            icon.name: KalendarApplication.iconName(todoViewShowCompletedAction.icon)
-            text: todoViewShowCompletedAction.text
-            shortcut: todoViewShowCompletedAction.shortcut
-            checkable: todoViewShowCompletedAction.checkable
-            checked: todoViewShowCompletedAction.checked
+        KActionFromAction {
+            kalendarAction: "todoview_show_completed"
             enabled: bar.todoMode
-            onTriggered: todoViewShowCompletedAction.trigger()
         }
 
     }
     QQC2.Menu {
         title: i18nc("@action:menu", "Create")
 
-        Kirigami.Action {
-            icon.name: KalendarApplication.iconName(createEventAction.icon)
-            text: createEventAction.text
-            shortcut: createEventAction.shortcut
-            onTriggered: createEventAction.trigger()
+        KActionFromAction {
+            kalendarAction: "create_event"
         }
-        Kirigami.Action {
-            icon.name: KalendarApplication.iconName(createTodoAction.icon)
-            text: createTodoAction.text
-            shortcut: createTodoAction.shortcut
-            onTriggered: createTodoAction.trigger()
+        KActionFromAction {
+            kalendarAction: "create_todo"
         }
     }
     QQC2.Menu {
@@ -247,11 +188,8 @@ QQC2.MenuBar {
     }
     QQC2.Menu {
         title: i18nc("@action:menu", "Settings")
-        Kirigami.Action {
-            text: i18n("Settings")
-            icon.name: KalendarApplication.iconName(configureAction.icon)
-            onTriggered: configureAction.trigger()
-            shortcut: configureAction.shortcut
+        KActionFromAction {
+            kalendarAction: "options_configure"
         }
     }
     QQC2.Menu {
