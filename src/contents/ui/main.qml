@@ -171,14 +171,14 @@ Kirigami.ApplicationWindow {
 
         sourceComponent: WindowMenu {
             parentWindow: root
-            todoMode: pageStack.currentItem.filterCollectionId !== undefined
+            todoMode: pageStack.currentItem.objectName == "todoView"
             Kirigami.Theme.colorSet: Kirigami.Theme.Header
         }
     }
 
     globalDrawer: Sidebar {
         bottomPadding: menuLoader.active ? menuLoader.height : 0
-        todoMode: pageStack.currentItem.filterCollectionId !== undefined
+        todoMode: pageStack.currentItem.objectName == "todoView"
         onCalendarClicked: if(todoMode) pageStack.currentItem.filterCollectionId = collectionId
         onViewAllTodosClicked: if(todoMode) pageStack.currentItem.filterCollectionId = -1
     }
