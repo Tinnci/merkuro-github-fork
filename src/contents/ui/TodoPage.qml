@@ -52,21 +52,30 @@ Kirigami.Page {
             icon.name: "view-sort"
 
             Kirigami.Action {
-                icon.name: KalendarApplication.iconName(todoViewSortByDueDateAction.icon)
+                icon.name: Kalendar.KalendarApplication.iconName(todoViewSortByDueDateAction.icon)
                 text: todoViewSortByDueDateAction.text
                 shortcut: todoViewSortByDueDateAction.shortcut
+                checkable: todoViewSortByDueDateAction.checkable
+                checked: root.sortBy === Kalendar.TodoSortFilterProxyModel.EndTimeColumn
+                onCheckedChanged: todoViewSortByDueDateAction.checked = checked
                 onTriggered: todoViewSortByDueDateAction.trigger()
             }
             Kirigami.Action {
-                icon.name: KalendarApplication.iconName(todoViewSortByPriorityAction.icon)
+                icon.name: Kalendar.KalendarApplication.iconName(todoViewSortByPriorityAction.icon)
                 text: todoViewSortByPriorityAction.text
                 shortcut: todoViewSortByPriorityAction.shortcut
+                checkable: todoViewSortByPriorityAction.checkable
+                checked: root.sortBy === Kalendar.TodoSortFilterProxyModel.PriorityIntColumn
+                onCheckedChanged: todoViewSortByPriorityAction.checked = checked
                 onTriggered: todoViewSortByPriorityAction.trigger()
             }
             Kirigami.Action {
-                icon.name: KalendarApplication.iconName(todoViewSortAlphabeticallyAction.icon)
+                icon.name: Kalendar.KalendarApplication.iconName(todoViewSortAlphabeticallyAction.icon)
                 text: todoViewSortAlphabeticallyAction.text
                 shortcut: todoViewSortAlphabeticallyAction.shortcut
+                checkable: todoViewSortAlphabeticallyAction.checkable
+                checked: root.sortBy === Kalendar.TodoSortFilterProxyModel.SummaryColumn
+                onCheckedChanged: todoViewSortAlphabeticallyAction.checked = checked
                 onTriggered: todoViewSortAlphabeticallyAction.trigger()
             }
 
@@ -74,7 +83,7 @@ Kirigami.Page {
 
             Kirigami.Action {
                 id: ascendingOrderAction
-                icon.name: KalendarApplication.iconName(todoViewOrderAscendingAction.icon)
+                icon.name: Kalendar.KalendarApplication.iconName(todoViewOrderAscendingAction.icon)
                 text: todoViewOrderAscendingAction.text
                 shortcut: todoViewOrderAscendingAction.shortcut
                 checkable: todoViewOrderAscendingAction.checkable
@@ -84,7 +93,7 @@ Kirigami.Page {
             }
             Kirigami.Action {
                 id: descendingOrderAction
-                icon.name: KalendarApplication.iconName(todoViewOrderDescendingAction.icon)
+                icon.name: Kalendar.KalendarApplication.iconName(todoViewOrderDescendingAction.icon)
                 text: todoViewOrderDescendingAction.text
                 shortcut: todoViewOrderDescendingAction.shortcut
                 checkable: todoViewOrderDescendingAction.checkable
