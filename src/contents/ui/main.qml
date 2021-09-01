@@ -165,9 +165,9 @@ Kirigami.ApplicationWindow {
 
     menuBar: Loader {
         id: menuLoader
-        active: true/*Kirigami.Settings.hasPlatformMenuBar != undefined ?
+        active: Kirigami.Settings.hasPlatformMenuBar != undefined ?
                 !Kirigami.Settings.hasPlatformMenuBar && !Kirigami.Settings.isMobile :
-                !Kirigami.Settings.isMobile*/
+                !Kirigami.Settings.isMobile
 
         sourceComponent: WindowMenu {
             parentWindow: root
