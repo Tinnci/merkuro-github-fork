@@ -44,12 +44,12 @@ Kirigami.Page {
 
     actions {
         main: Kirigami.Action {
-            text: i18n("Add todo")
+            text: i18n("Create")
             icon.name: "list-add"
             onTriggered: root.addTodo(filterCollectionId);
         }
         left: Kirigami.Action {
-            text: i18n("Sort...")
+            text: i18n("Sort")
             icon.name: "view-sort"
 
             Kirigami.Action {
@@ -105,7 +105,7 @@ Kirigami.Page {
         }
         right: Kirigami.Action {
             icon.name: Kalendar.KalendarApplication.iconName(todoViewShowCompletedAction.icon)
-            text: todoViewShowCompletedAction.text
+            text: i18n("Show completed")
             shortcut: todoViewShowCompletedAction.shortcut
             checkable: todoViewShowCompletedAction.checkable
             checked: todoViewShowCompletedAction.checked

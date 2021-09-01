@@ -222,7 +222,7 @@ QQC2.MenuBar {
 
     }
     QQC2.Menu {
-        title: i18nc("@action:menu", "Actions")
+        title: i18nc("@action:menu", "Create")
 
         Kirigami.Action {
             icon.name: KalendarApplication.iconName(createEventAction.icon)

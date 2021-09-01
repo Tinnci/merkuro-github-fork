@@ -94,7 +94,7 @@ Labs.MenuBar {
         }
     }
     Labs.Menu {
-        title: i18nc("@action:menu", "Actions")
+        title: i18nc("@action:menu", "Create")
 
         NativeMenuItemFromAction {
             kalendarAction: 'create_event'
