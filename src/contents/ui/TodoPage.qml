@@ -52,64 +52,37 @@ Kirigami.Page {
             text: i18n("Sort")
             icon.name: "view-sort"
 
-            Kirigami.Action {
-                icon.name: Kalendar.KalendarApplication.iconName(todoViewSortByDueDateAction.icon)
-                text: todoViewSortByDueDateAction.text
-                shortcut: todoViewSortByDueDateAction.shortcut
-                checkable: todoViewSortByDueDateAction.checkable
+            KActionFromAction {
+                kalendarAction: "todoview_sort_by_due_date"
                 checked: root.sortBy === Kalendar.TodoSortFilterProxyModel.EndTimeColumn
-                onCheckedChanged: todoViewSortByDueDateAction.checked = checked
-                onTriggered: todoViewSortByDueDateAction.trigger()
+                onCheckedChanged: __action.checked = checked // Needed for the actions in the menu bars to be checked on load
             }
-            Kirigami.Action {
-                icon.name: Kalendar.KalendarApplication.iconName(todoViewSortByPriorityAction.icon)
-                text: todoViewSortByPriorityAction.text
-                shortcut: todoViewSortByPriorityAction.shortcut
-                checkable: todoViewSortByPriorityAction.checkable
+            KActionFromAction {
+                kalendarAction: "todoview_sort_by_priority"
                 checked: root.sortBy === Kalendar.TodoSortFilterProxyModel.PriorityIntColumn
-                onCheckedChanged: todoViewSortByPriorityAction.checked = checked
-                onTriggered: todoViewSortByPriorityAction.trigger()
+                onCheckedChanged: __action.checked = checked
             }
-            Kirigami.Action {
-                icon.name: Kalendar.KalendarApplication.iconName(todoViewSortAlphabeticallyAction.icon)
-                text: todoViewSortAlphabeticallyAction.text
-                shortcut: todoViewSortAlphabeticallyAction.shortcut
-                checkable: todoViewSortAlphabeticallyAction.checkable
+            KActionFromAction {
+                kalendarAction: "todoview_sort_alphabetically"
                 checked: root.sortBy === Kalendar.TodoSortFilterProxyModel.SummaryColumn
-                onCheckedChanged: todoViewSortAlphabeticallyAction.checked = checked
-                onTriggered: todoViewSortAlphabeticallyAction.trigger()
+                onCheckedChanged: __action.checked = checked
             }
 
             Kirigami.Action { separator: true }
 
-            Kirigami.Action {
-                id: ascendingOrderAction
-                icon.name: Kalendar.KalendarApplication.iconName(todoViewOrderAscendingAction.icon)
-                text: todoViewOrderAscendingAction.text
-                shortcut: todoViewOrderAscendingAction.shortcut
-                checkable: todoViewOrderAscendingAction.checkable
+            KActionFromAction {
+                kalendarAction: "todoview_order_ascending"
                 checked: root.ascendingOrder
-                onCheckedChanged: todoViewOrderAscendingAction.checked = checked
-                onTriggered: todoViewOrderAscendingAction.trigger()
+                onCheckedChanged: __action.checked = checked
             }
-            Kirigami.Action {
-                id: descendingOrderAction
-                icon.name: Kalendar.KalendarApplication.iconName(todoViewOrderDescendingAction.icon)
-                text: todoViewOrderDescendingAction.text
-                shortcut: todoViewOrderDescendingAction.shortcut
-                checkable: todoViewOrderDescendingAction.checkable
+            KActionFromAction {
+                kalendarAction: "todoview_order_descending"
                 checked: !root.ascendingOrder
-                onCheckedChanged: todoViewOrderDescendingAction.checked = checked
-                onTriggered: todoViewOrderDescendingAction.trigger()
+                onCheckedChanged: __action.checked = checked
             }
         }
-        right: Kirigami.Action {
-            icon.name: Kalendar.KalendarApplication.iconName(todoViewShowCompletedAction.icon)
-            text: i18n("Show completed")
-            shortcut: todoViewShowCompletedAction.shortcut
-            checkable: todoViewShowCompletedAction.checkable
-            checked: todoViewShowCompletedAction.checked
-            onTriggered: todoViewShowCompletedAction.trigger()
+        right: KActionFromAction {
+            kalendarAction: "todoview_show_completed"
         }
 
     }
