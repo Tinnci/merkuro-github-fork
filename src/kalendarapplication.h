@@ -47,4 +47,5 @@ private:
     QWindow *m_window = nullptr;
     QActionGroup *m_viewGroup = nullptr;
     QActionGroup *m_todoViewOrderGroup = nullptr;
+    QActionGroup *m_todoViewSortGroup = nullptr;
 };
