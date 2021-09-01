@@ -87,6 +87,11 @@ Labs.MenuBar {
                 kalendarAction: 'todoview_order_descending'
             }
         }
+
+        NativeMenuItemFromAction {
+            kalendarAction: 'todoview_show_completed'
+            enabled: bar.todoMode
+        }
     }
     Labs.Menu {
         title: i18nc("@action:menu", "Actions")

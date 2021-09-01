@@ -41,6 +41,7 @@ Q_SIGNALS:
     void todoViewSortByPriority();
     void todoViewOrderAscending();
     void todoViewOrderDescending();
+    void todoViewShowCompleted();
 
 private:
     KActionCollection mCollection;
