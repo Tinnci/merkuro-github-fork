@@ -127,7 +127,6 @@ Kirigami.Page {
             root.startDate = currentItem.firstDayOfMonth;
             root.month = currentItem.month;
             root.year = currentItem.year;
-            //root.calendarFilter = pathView.currentItem.item.calendarFilter
 
             if(currentIndex >= count - 2) {
                 model.addDates(true);
