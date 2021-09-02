@@ -56,6 +56,7 @@ Kirigami.Page {
             lastItemDate = pathView.model.data(pathView.model.index(pathView.model.rowCount() - 1,0), Kalendar.MonthViewModel.FirstDayOfMonthRole);
         }
         pathView.currentIndex = newIndex;
+        pathView.currentItem.item.scheduleListView.positionViewAtIndex(date.getDate() - 1, ListView.Beginning);
     }
 
     background: Rectangle {
@@ -95,7 +96,7 @@ Kirigami.Page {
         preferredHighlightEnd: 0.5
         snapMode: PathView.SnapToItem
         focus: true
-        interactive: true //Kirigami.Settings.tabletMode
+        interactive: Kirigami.Settings.tabletMode
         pathItemCount: 2
 
         path: Path {
@@ -121,6 +122,7 @@ Kirigami.Page {
                 model.addDates(true);
             } else if (currentIndex <= 1) {
                 model.addDates(false);
+                startIndex += model.datesToAdd;
             }
         }
 
