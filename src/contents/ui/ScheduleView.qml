@@ -96,7 +96,7 @@ Kirigami.Page {
         snapMode: PathView.SnapToItem
         focus: true
         interactive: true //Kirigami.Settings.tabletMode
-        pathItemCount: 5
+        pathItemCount: 2
 
         path: Path {
             startX: - pathView.width * pathView.pathItemCount / 2 + pathView.width / 2
@@ -138,7 +138,7 @@ Kirigami.Page {
                 (index == 0 && pathView.currentIndex == pathView.count - 1)
 
             active: isCurrentItem || (isNextItem && pathView.moving)
-            asynchronous: true
+            //asynchronous: true
             sourceComponent: QQC2.ScrollView {
                 width: pathView.width
                 height: pathView.height
