@@ -88,7 +88,7 @@ Kirigami.Page {
         snapMode: PathView.SnapToItem
         focus: true
         interactive: true //Kirigami.Settings.tabletMode
-        pathItemCount: 2
+        pathItemCount: 3
 
         path: Path {
             startX: - pathView.width * pathView.pathItemCount / 2 + pathView.width / 2
@@ -108,7 +108,7 @@ Kirigami.Page {
             monthPage.firstDayOfMonth = currentItem.firstDayOfMonth;
             monthPage.month = currentItem.month;
             monthPage.year = currentItem.year;
-            monthPage.calendarFilter = pathView.currentItem.item.calendarFilter
+            //monthPage.calendarFilter = pathView.currentItem.item.calendarFilter
 
             if(currentIndex >= count - 2) {
                 model.addDates(true);
@@ -131,7 +131,8 @@ Kirigami.Page {
                 (index == 0 && pathView.currentIndex == pathView.count - 1)
 
             active: isCurrentItem || (isNextItem && pathView.moving)
-            asynchronous: true
+            //asynchronous: true
+            //visible: status === Loader.Ready
             sourceComponent: MultiDayView {
                 id: dayView
                 objectName: "monthView"
