@@ -40,9 +40,22 @@ Kirigami.Page {
     }
 
     function setToDate(date) {
-        selectedDate = date
-        startDate = DateUtils.getFirstDayOfMonth(date);
-        month = startDate.getMonth();
+        let monthDiff = date.getMonth() - pathView.currentItem.firstDayOfMonth.getMonth() + (12 * (date.getFullYear() - pathView.currentItem.firstDayOfMonth.getFullYear()))
+        let newIndex = pathView.currentIndex + monthDiff;
+
+        let firstItemDate = pathView.model.data(pathView.model.index(1,0), Kalendar.MonthViewModel.FirstDayOfMonthRole);
+        let lastItemDate = pathView.model.data(pathView.model.index(pathView.model.rowCount() - 1,0), Kalendar.MonthViewModel.FirstDayOfMonthRole);
+
+        while(firstItemDate >= date) {
+            pathView.model.addDates(false)
+            firstItemDate = pathView.model.data(pathView.model.index(1,0), Kalendar.MonthViewModel.FirstDayOfMonthRole);
+            newIndex = 0;
+        }
+        while(lastItemDate <= date) {
+            pathView.model.addDates(true)
+            lastItemDate = pathView.model.data(pathView.model.index(pathView.model.rowCount() - 1,0), Kalendar.MonthViewModel.FirstDayOfMonthRole);
+        }
+        pathView.currentIndex = newIndex;
     }
 
     background: Rectangle {
@@ -96,8 +109,10 @@ Kirigami.Page {
 
         model: Kalendar.MonthViewModel {}
 
+        property int startIndex: count / 2
+        Component.onCompleted: currentIndex = startIndex
         onCurrentIndexChanged: {
-            root.startDate = currentItem.startDate;
+            root.startDate = currentItem.firstDayOfMonth;
             root.month = currentItem.month;
             root.year = currentItem.year;
             //root.calendarFilter = pathView.currentItem.item.calendarFilter
@@ -145,7 +160,7 @@ Kirigami.Page {
                     id: monthHeaderComponent
                     Kirigami.ItemViewHeader {
                         //backgroundImage.source: "../banner.jpg"
-                        title: Qt.locale().monthName(viewLoader.firstDayOfMonth.month)
+                        title: Qt.locale().monthName(viewLoader.month)
                         visible: Kalendar.Config.showMonthHeader
                     }
                 }
