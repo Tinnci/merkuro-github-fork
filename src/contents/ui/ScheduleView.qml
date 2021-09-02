@@ -31,6 +31,12 @@ Kirigami.Page {
 
     onSelectedDateChanged: moveToSelected()
 
+    background: Rectangle {
+        Kirigami.Theme.inherit: false
+        Kirigami.Theme.colorSet: Kirigami.Theme.View
+        color: Kirigami.Theme.backgroundColor
+    }
+
     function moveToSelected() {
         if (selectedDate.getDate() > 1) {
             pathView.currentItem.item.scheduleListView.positionViewAtIndex(selectedDate.getDate() - 1, ListView.Beginning);
@@ -57,11 +63,6 @@ Kirigami.Page {
         }
         pathView.currentIndex = newIndex;
         pathView.currentItem.item.scheduleListView.positionViewAtIndex(date.getDate() - 1, ListView.Beginning);
-    }
-
-    background: Rectangle {
-        Kirigami.Theme.colorSet: root.isLarge ? Kirigami.Theme.Header : Kirigami.Theme.View
-        color: Kirigami.Theme.backgroundColor
     }
 
     actions {
