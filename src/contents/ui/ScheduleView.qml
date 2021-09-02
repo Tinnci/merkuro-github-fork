@@ -25,7 +25,7 @@ Kirigami.Page {
     property date startDate: DateUtils.getFirstDayOfMonth(selectedDate)
     property int month: startDate.getMonth()
     property int year: startDate.getFullYear()
-    property int daysInMonth: new Date(selectedDate.getFullYear(), selectedDate.getMonth(), 0).getDate()
+    property bool initialMonth: true
     readonly property bool isLarge: width > Kirigami.Units.gridUnit * 30
     readonly property bool isDark: LabelUtils.isDarkColor(Kirigami.Theme.backgroundColor)
 
@@ -62,20 +62,22 @@ Kirigami.Page {
             lastItemDate = pathView.model.data(pathView.model.index(pathView.model.rowCount() - 1,0), Kalendar.MonthViewModel.FirstDayOfMonthRole);
         }
         pathView.currentIndex = newIndex;
-        pathView.currentItem.item.scheduleListView.positionViewAtIndex(date.getDate() - 1, ListView.Beginning);
+        selectedDate = date;
+        date.getDate() === currentDate.getDate() && date.getMonth() === currentDate.getMonth() && date.getFullYear() === currentDate.getFullYear() ?
+            initialMonth = true : initialMonth = false;
     }
 
     actions {
         left: Kirigami.Action {
             icon.name: "go-previous"
             text: i18n("Previous month")
-            onTriggered: pathView.decrementCurrentIndex()
+            onTriggered: setToDate(DateUtils.addMonthsToDate(pathView.currentItem.firstDayOfMonth, -1))
             displayHint: Kirigami.DisplayHint.IconOnly
         }
         right: Kirigami.Action {
             icon.name: "go-next"
             text: i18n("Next month")
-            onTriggered: pathView.incrementCurrentIndex()
+            onTriggered: setToDate(DateUtils.addMonthsToDate(pathView.currentItem.firstDayOfMonth, 1))
             displayHint: Kirigami.DisplayHint.IconOnly
         }
         main: Kirigami.Action {
@@ -111,8 +113,12 @@ Kirigami.Page {
 
         model: Kalendar.MonthViewModel {}
 
-        property int startIndex: count / 2
-        Component.onCompleted: currentIndex = startIndex
+        property date dateToUse
+        property int startIndex
+        Component.onCompleted: {
+            startIndex = count / 2;
+            currentIndex = startIndex;
+        }
         onCurrentIndexChanged: {
             root.startDate = currentItem.firstDayOfMonth;
             root.month = currentItem.month;
@@ -135,6 +141,7 @@ Kirigami.Page {
             property int month: model.selectedMonth - 1 // Convert QDateTime month to JS month
             property int year: model.selectedYear
 
+            property int index: model.index
             property bool isCurrentItem: PathView.isCurrentItem
             property bool isNextItem: (index >= pathView.currentIndex -1 && index <= pathView.currentIndex + 1) ||
                 (index == pathView.count - 1 && pathView.currentIndex == 0) ||
