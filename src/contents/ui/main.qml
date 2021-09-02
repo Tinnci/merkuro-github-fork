@@ -352,8 +352,10 @@ Kirigami.ApplicationWindow {
             startDate: new Date(root.year, root.month)
             openOccurrence: root.openOccurrence
 
-            onMonthChanged: root.month = month
-            onYearChanged: root.year = year
+            onMonthChanged: if(month !== currentDate.getMonth()) root.month = month
+            onYearChanged: if(year !== currentDate.getFullYear()) root.year = year
+
+            Component.onCompleted: setToDate(new Date(root.year, root.month))
 
             onAddIncidence: root.setUpAdd(type, addDate)
             onViewIncidence: root.setUpView(modelData, collectionData)
