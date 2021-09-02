@@ -124,7 +124,6 @@ Kirigami.Page {
             monthPage.firstDayOfMonth = currentItem.firstDayOfMonth;
             monthPage.month = currentItem.month;
             monthPage.year = currentItem.year;
-            //monthPage.calendarFilter = pathView.currentItem.item.calendarFilter
 
             if(currentIndex >= count - 2) {
                 model.addDates(true);
@@ -149,7 +148,6 @@ Kirigami.Page {
 
             active: isCurrentItem || (isNextItem && pathView.moving)
             //asynchronous: true
-            //visible: status === Loader.Ready
             sourceComponent: MultiDayView {
                 id: dayView
                 objectName: "monthView"
