@@ -20,6 +20,7 @@ Kirigami.ApplicationWindow {
     property date selectedDate: currentDate
     property int month: currentDate.getMonth()
     property int year: currentDate.getFullYear()
+    onMonthChanged: console.log(month)
 
     property var openOccurrence
 
@@ -396,8 +397,8 @@ Kirigami.ApplicationWindow {
             onCompleteTodo: root.completeTodo(incidencePtr)
             onAddSubTodo: root.setUpAddSubTodo(parentWrapper)
 
-            onMonthChanged: if(month !== currentDate.getMonth()) root.month = month
-            onYearChanged: if(year !== currentDate.getFullYear()) root.year = year
+            onMonthChanged: if(month !== root.month && !initialMonth) root.month = month
+            onYearChanged: if(year !== root.year && !initialMonth) root.year = year
 
             Component.onCompleted: setToDate(new Date(root.year, root.month))
 
@@ -413,14 +414,14 @@ Kirigami.ApplicationWindow {
             objectName: "scheduleView"
 
             title: startDate.toLocaleDateString(Qt.locale(), "<b>MMMM</b> yyyy")
-            selectedDate: root.currentDate.getMonth() === root.month ? root.currentDate : new Date(root.year, root.month)
-            startDate: new Date(root.year, root.month)
+            selectedDate: root.currentDate
             openOccurrence: root.openOccurrence
 
-            onMonthChanged: if(month !== currentDate.getMonth()) root.month = month
-            onYearChanged: if(year !== currentDate.getFullYear()) root.year = year
+            onMonthChanged: if(month !== root.month && !initialMonth) root.month = month
+            onYearChanged: if(year !== root.year && !initialMonth) root.year = year
 
-            Component.onCompleted: setToDate(new Date(root.year, root.month))
+            Component.onCompleted: month === root.month && year === root.year ?
+                setToDate(root.currentDate) : setToDate(new Date(root.year, root.month))
 
             onAddIncidence: root.setUpAdd(type, addDate)
             onViewIncidence: root.setUpView(modelData, collectionData)
