@@ -34,6 +34,15 @@ KirigamiAddonsTreeView.TreeListView {
     currentIndex: -1
     clip: true
 
+    Kirigami.PlaceholderMessage {
+        anchors.centerIn: parent
+        visible: parent.count === 0
+        text: i18n("No todos left to complete")
+        helpfulAction: KActionFromAction {
+            kalendarAction: "create_todo"
+        }
+    }
+
     sourceModel: Kalendar.TodoSortFilterProxyModel {
         id: todoModel
         calendar: Kalendar.CalendarManager.calendar
