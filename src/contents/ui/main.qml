@@ -20,7 +20,6 @@ Kirigami.ApplicationWindow {
     property date selectedDate: currentDate
     property int month: currentDate.getMonth()
     property int year: currentDate.getFullYear()
-    onMonthChanged: console.log(month)
 
     property var openOccurrence
 
