@@ -87,7 +87,7 @@ Kirigami.Page {
         preferredHighlightEnd: 0.5
         snapMode: PathView.SnapToItem
         focus: true
-        interactive: Kirigami.Settings.tabletMode
+        interactive: true //Kirigami.Settings.tabletMode
         pathItemCount: 2
 
         path: Path {
@@ -135,7 +135,7 @@ Kirigami.Page {
                 (index == 0 && pathView.currentIndex == pathView.count - 1)
 
             active: isCurrentItem || (isNextItem && pathView.moving)
-            //asynchronous: true
+            asynchronous: true
             sourceComponent: MultiDayView {
                 id: dayView
                 objectName: "monthView"
