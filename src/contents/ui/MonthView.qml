@@ -28,6 +28,7 @@ Kirigami.Page {
     property var calendarFilter
     property int month
     property int year
+    property bool initialMonth: true
     readonly property bool isLarge: width > Kirigami.Units.gridUnit * 40
     readonly property bool isTiny: width < Kirigami.Units.gridUnit * 18
 
@@ -48,6 +49,8 @@ Kirigami.Page {
             lastItemDate = pathView.model.data(pathView.model.index(pathView.model.rowCount() - 1,0), Kalendar.MonthViewModel.FirstDayOfMonthRole);
         }
         pathView.currentIndex = newIndex;
+        date.getDate() === currentDate.getDate() && date.getMonth() === currentDate.getMonth() && date.getFullYear() === currentDate.getFullYear() ?
+            initialMonth = true : initialMonth = false;
     }
 
     padding: 0
@@ -62,13 +65,19 @@ Kirigami.Page {
         left: Kirigami.Action {
             icon.name: "go-previous"
             text: i18n("Previous month")
-            onTriggered: pathView.decrementCurrentIndex()
+            onTriggered: {
+                pathView.decrementCurrentIndex();
+                monthPage.initialMonth = false;
+            }
             displayHint: Kirigami.DisplayHint.IconOnly
         }
         right: Kirigami.Action {
             icon.name: "go-next"
             text: i18n("Next month")
-            onTriggered: pathView.incrementCurrentIndex()
+            onTriggered: {
+                pathView.incrementCurrentIndex();
+                monthPage.initialMonth = false;
+            }
             displayHint: Kirigami.DisplayHint.IconOnly
         }
         main: Kirigami.Action {
