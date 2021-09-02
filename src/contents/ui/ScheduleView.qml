@@ -57,6 +57,10 @@ Kirigami.Page {
             firstItemDate = pathView.model.data(pathView.model.index(1,0), Kalendar.MonthViewModel.FirstDayOfMonthRole);
             newIndex = 0;
         }
+        if(firstItemDate < date && newIndex === 0) {
+            newIndex = date.getMonth() - firstItemDate.getMonth() + (12 * (date.getFullYear() - firstItemDate.getFullYear())) + 1;
+        }
+
         while(lastItemDate <= date) {
             pathView.model.addDates(true)
             lastItemDate = pathView.model.data(pathView.model.index(pathView.model.rowCount() - 1,0), Kalendar.MonthViewModel.FirstDayOfMonthRole);
