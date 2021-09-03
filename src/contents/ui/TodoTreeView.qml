@@ -80,7 +80,7 @@ KirigamiAddonsTreeView.TreeListView {
             implicitWidth: todoItemContents.implicitWidth
             implicitHeight: todoItemContents.implicitHeight
             incidenceData: model
-            collectionDetails: Kalendar.CalendarManager.getCollectionDetails(model.collectionId)
+            collectionId: model.collectionId
 
             onViewClicked: root.viewTodo(model, collectionDetails)
             onEditClicked: root.editTodo(model.incidencePtr, model.collectionId)
