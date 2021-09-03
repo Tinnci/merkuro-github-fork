@@ -15,6 +15,7 @@ import "labelutils.js" as LabelUtils
 KirigamiAddonsTreeView.TreeListView {
     id: root
 
+    signal addTodo(int collectionId)
     signal viewTodo(var todoData, var collectionData)
     signal editTodo(var todoPtr, var collectionId)
     signal deleteTodo(var todoPtr, date deleteDate)
@@ -50,9 +51,12 @@ KirigamiAddonsTreeView.TreeListView {
     Kirigami.PlaceholderMessage {
         anchors.centerIn: parent
         visible: parent.count === 0 && !root.filterCollectionDetails.isFiltered
-        text: i18n("No todos left to complete")
-        helpfulAction: KActionFromAction {
-            kalendarAction: "create_todo"
+        text: root.showCompleted === Kalendar.TodoSortFilterProxyModel.ShowCompleteOnly ?
+            i18n("No todos completed") : i18n("No todos left to complete")
+        helpfulAction: Kirigami.Action {
+            text: i18n("Create")
+            icon.name: "list-add"
+            onTriggered: root.addTodo(filterCollectionId);
         }
     }
 
