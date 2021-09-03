@@ -188,6 +188,19 @@ QQC2.MenuBar {
     }
     QQC2.Menu {
         title: i18nc("@action:menu", "Settings")
+
+        Kirigami.Action {
+            text: i18nc("@action:menu", "Show Menubar")
+            icon.name: "show-menu"
+            checkable: true
+            checked: Config.showMenubar
+            shortcut: "Ctrl+M"
+            onTriggered: {
+                Config.showMenubar = !Config.showMenubar
+                Config.save();
+            }
+        }
+
         KActionFromAction {
             kalendarAction: "options_configure"
         }
