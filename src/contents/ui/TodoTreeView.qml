@@ -23,6 +23,7 @@ KirigamiAddonsTreeView.TreeListView {
 
     property date currentDate: new Date()
     property int filterCollectionId
+    property var filterCollectionDetails
     property int showCompleted: Kalendar.TodoSortFilterProxyModel.ShowAll
     property int sortBy: Kalendar.TodoSortFilterProxyModel.EndTimeColumn
     onSortByChanged: todoModel.sortTodoModel(sortBy, ascendingOrder)
@@ -36,7 +37,19 @@ KirigamiAddonsTreeView.TreeListView {
 
     Kirigami.PlaceholderMessage {
         anchors.centerIn: parent
-        visible: parent.count === 0
+        visible: root.filterCollectionId && root.filterCollectionId >= 0 && root.filterCollectionDetails.isFiltered && parent.count === 0
+        text: i18n("Calendar is not enabled")
+        helpfulAction: Kirigami.Action {
+            icon.name: "gtk-yes"
+            text: i18n("Enable")
+            onTriggered: Kalendar.CalendarManager.allCalendars.setData(Kalendar.CalendarManager.allCalendars.index(root.filterCollectionDetails.allCalendarsRow, 0), 2, 10)
+            // HACK: Last two numbers are Qt.Checked and Qt.CheckStateRole
+        }
+    }
+
+    Kirigami.PlaceholderMessage {
+        anchors.centerIn: parent
+        visible: parent.count === 0 && !root.filterCollectionDetails.isFiltered
         text: i18n("No todos left to complete")
         helpfulAction: KActionFromAction {
             kalendarAction: "create_todo"
