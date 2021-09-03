@@ -25,7 +25,8 @@ Kirigami.Page {
     signal addSubTodo(var parentWrapper)
 
     property int filterCollectionId
-    property var filterCollectionDetails: filterCollectionId ? Kalendar.CalendarManager.getCollectionDetails(filterCollectionId) : null
+    property var filterCollectionDetails: filterCollectionId && filterCollectionId >= 0 ?
+        Kalendar.CalendarManager.getCollectionDetails(filterCollectionId) : filterCollectionDetails = null
     property int sortBy
     property bool ascendingOrder: false
     readonly property color standardTextColor: Kirigami.Theme.textColor
@@ -33,8 +34,6 @@ Kirigami.Page {
     readonly property alias completedSheet: completedSheet
 
     Component.onCompleted: sortBy = Kalendar.TodoSortFilterProxyModel.EndTimeColumn // Otherwise crashes...
-
-    //padding: Kirigami.Units.largeSpacing
 
     background: Rectangle {
         Kirigami.Theme.inherit: false
@@ -111,6 +110,7 @@ Kirigami.Page {
                     Layout.fillHeight: true
 
                     filterCollectionId: root.filterCollectionId
+                    filterCollectionDetails: root.filterCollectionDetails
                     showCompleted: Kalendar.TodoSortFilterProxyModel.ShowCompleteOnly
                     sortBy: root.sortBy
                     ascendingOrder: root.ascendingOrder
@@ -158,7 +158,7 @@ Kirigami.Page {
                 text: root.filterCollectionDetails && root.filterCollectionId > -1 ?
                     root.filterCollectionDetails.displayName : i18n("All todos")
                 font.weight: Font.Bold
-                color: root.filterCollectionDetails ?
+                color: root.filterCollectionDetails && root.filterCollectionId > -1 ?
                     LabelUtils.getIncidenceLabelColor(root.filterCollectionDetails.color, root.isDark) : Kirigami.Theme.textColor
             }
             Kirigami.SearchField {
@@ -176,6 +176,7 @@ Kirigami.Page {
             Layout.fillHeight: true
 
             filterCollectionId: root.filterCollectionId
+            filterCollectionDetails: root.filterCollectionDetails
             showCompleted: Kalendar.TodoSortFilterProxyModel.ShowIncompleteOnly
             sortBy: root.sortBy
             ascendingOrder: root.ascendingOrder
