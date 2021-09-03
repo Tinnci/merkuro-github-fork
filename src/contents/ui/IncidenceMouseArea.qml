@@ -19,6 +19,7 @@ MouseArea {
     property double clickX
     property double clickY
     property var incidenceData
+    property var collectionId
     property var collectionDetails
 
     anchors.fill: parent
@@ -46,6 +47,7 @@ MouseArea {
             y: mouseArea.clickY
             x: mouseArea.clickX
             z: 1000
+            Component.onCompleted: if(mouseArea.collectionId && !mouseArea.collectionDetails) mouseArea.collectionDetails = Kalendar.CalendarManager.getCollectionDetails(mouseArea.collectionId)
 
             QQC2.MenuItem {
                 icon.name: "dialog-icon-preview"
