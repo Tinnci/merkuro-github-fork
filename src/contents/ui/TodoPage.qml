@@ -114,6 +114,10 @@ Kirigami.Page {
                     showCompleted: Kalendar.TodoSortFilterProxyModel.ShowCompleteOnly
                     sortBy: root.sortBy
                     ascendingOrder: root.ascendingOrder
+                    onAddTodo: {
+                        root.addTodo(collectionId)
+                        completedSheet.close();
+                    }
                     onViewTodo: {
                         completedSheet.retainedTodoData = {
                             incidencePtr: todoData.incidencePtr,
@@ -180,6 +184,7 @@ Kirigami.Page {
             showCompleted: Kalendar.TodoSortFilterProxyModel.ShowIncompleteOnly
             sortBy: root.sortBy
             ascendingOrder: root.ascendingOrder
+            onAddTodo: root.addTodo(collectionId)
             onViewTodo: root.viewTodo(todoData, collectionData)
             onEditTodo: root.editTodo(todoPtr, collectionId)
             onDeleteTodo: root.deleteTodo(todoPtr, deleteDate)
