@@ -217,5 +217,20 @@ Kirigami.Page {
             }
         }
     }
+
+    MouseArea {
+        anchors.fill: parent
+        property int wheelDelta: 0
+        acceptedButtons: Qt.BackButton | Qt.ForwardButton
+        onClicked: {
+            if (mouse.button == Qt.BackButton) {
+                pathView.decrementCurrentIndex();
+                monthPage.initialMonth = false;
+            } else if (mouse.button == Qt.ForwardButton) {
+                pathView.incrementCurrentIndex();
+                monthPage.initialMonth = false;
+            }
+        }
+    }
 }
 
