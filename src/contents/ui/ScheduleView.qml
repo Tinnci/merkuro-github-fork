@@ -483,4 +483,17 @@ Kirigami.Page {
             }
         }
     }
+
+    MouseArea {
+        anchors.fill: parent
+        property int wheelDelta: 0
+        acceptedButtons: Qt.BackButton | Qt.ForwardButton
+        onClicked: {
+            if (mouse.button == Qt.BackButton) {
+                setToDate(DateUtils.addMonthsToDate(pathView.currentItem.firstDayOfMonth, -1))
+            } else if (mouse.button == Qt.ForwardButton) {
+                setToDate(DateUtils.addMonthsToDate(pathView.currentItem.firstDayOfMonth, 1))
+            }
+        }
+    }
 }
