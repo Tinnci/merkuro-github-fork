@@ -169,6 +169,8 @@ Kirigami.ApplicationWindow {
                 !Kirigami.Settings.hasPlatformMenuBar && !Kirigami.Settings.isMobile :
                 !Kirigami.Settings.isMobile
 
+        visible: Config.showMenubar
+
         sourceComponent: WindowMenu {
             parentWindow: root
             todoMode: pageStack.currentItem.objectName == "todoView"
@@ -177,7 +179,7 @@ Kirigami.ApplicationWindow {
     }
 
     globalDrawer: Sidebar {
-        bottomPadding: menuLoader.active ? menuLoader.height : 0
+        topPadding: menuLoader.visible ? 0 : -menuLoader.height
         todoMode: pageStack.currentItem.objectName == "todoView"
         onCalendarClicked: if(todoMode) pageStack.currentItem.filterCollectionId = collectionId
         onViewAllTodosClicked: if(todoMode) pageStack.currentItem.filterCollectionId = -1
@@ -186,7 +188,7 @@ Kirigami.ApplicationWindow {
     contextDrawer: IncidenceInfo {
         id: incidenceInfo
 
-        bottomPadding: menuLoader.active ? menuLoader.height : 0
+        topPadding: menuLoader.visible ? 0 : -menuLoader.height
         contentItem.implicitWidth: Kirigami.Units.gridUnit * 25
         modal: !root.wideScreen || !enabled
         onEnabledChanged: drawerOpen = enabled && !modal

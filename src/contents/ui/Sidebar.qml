@@ -69,8 +69,9 @@ Kirigami.OverlayDrawer {
 
                 Kirigami.ActionToolBar {
                     id: menu
-                    anchors.fill: parent
-                    visible: Kirigami.Settings.isMobile
+                    Layout.fillWidth: true
+                    Layout.fillHeight: true
+                    visible: Kirigami.Settings.isMobile || !Config.showMenubar
                     overflowIconName: "application-menu"
 
                     actions: [
@@ -92,6 +93,12 @@ Kirigami.OverlayDrawer {
                             enabled: CalendarManager.undoRedoData.redoAvailable && !(root.activeFocusItem instanceof TextEdit || root.activeFocusItem instanceof TextInput)
 
                             onTriggered: CalendarManager.redoAction();
+                        },
+                        Kirigami.Action {
+                            text: i18n("Show Menubar")
+                            icon.name: "show-menu"
+                            shortcut: "Ctrl+M"
+                            onTriggered: Config.showMenubar = true
                         },
                         Kirigami.Action {
                             icon.name: KalendarApplication.iconName(quitAction.icon)
