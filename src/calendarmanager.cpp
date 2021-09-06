@@ -39,6 +39,7 @@
 #include <KDescendantsProxyModel>
 #include <QTimer>
 #include <KFormat>
+#include <QMetaEnum>
 
 using namespace Akonadi;
 
@@ -180,6 +181,59 @@ protected:
 
         return Akonadi::CollectionFilterProxyModel::lessThan(source_left, source_right);
     }
+};
+
+class CalendarCategoriesModel : public QAbstractListModel
+{
+    Q_OBJECT
+
+public:
+
+    enum Roles {
+        NameRole = Qt::DisplayRole
+    };
+    Q_ENUM(Roles);
+
+    explicit CalendarCategoriesModel(QObject *parent = nullptr, Akonadi::ETMCalendar *etmCalendar = nullptr)
+        : QAbstractListModel(parent)
+        , m_calendar(etmCalendar)
+    {
+
+    }
+
+    QVariant data(const QModelIndex &index, int role) const override
+    {
+        if (!index.isValid()) {
+            return QVariant();
+        }
+
+        auto category = m_calendar->categories()[index.row()];
+
+        switch(role) {
+            case NameRole:
+                return category;
+            default:
+                qWarning() << "Unknown role for category:" << QMetaEnum::fromType<Roles>().valueToKey(role);
+                return {};
+        }
+    }
+
+    int rowCount(const QModelIndex &parent = QModelIndex()) const override {
+        if (parent.isValid() || !m_calendar) {
+            return 0;
+        }
+
+        return m_calendar->categories().length();
+    }
+
+    QHash<int, QByteArray> roleNames() const override {
+        return {
+            {NameRole, QByteArrayLiteral("name")}
+        };
+    }
+
+private:
+    Akonadi::ETMCalendar *m_calendar;
 };
 
 /// Despite the name, this handles the presentation of collections including display text and icons, not just colors.

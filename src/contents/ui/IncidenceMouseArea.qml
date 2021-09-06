@@ -27,6 +27,7 @@ MouseArea {
     acceptedButtons: Qt.LeftButton | Qt.RightButton
     onClicked: {
         if (mouse.button == Qt.LeftButton) {
+            if(mouseArea.collectionId && !mouseArea.collectionDetails) mouseArea.collectionDetails = Kalendar.CalendarManager.getCollectionDetails(mouseArea.collectionId)
             viewClicked(incidenceData, collectionDetails);
         } else if (mouse.button == Qt.RightButton) {
             clickX = mouseX;
