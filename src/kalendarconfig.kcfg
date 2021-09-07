@@ -6,6 +6,21 @@
     <kcfgfile name="kalendarrc" />
 
     <group name="General">
+        <entry name="defaultView" type="Enum">
+            <label>Set the default view.</label>
+            <choices>
+                <choice name="MonthView">
+                    <label>Month View</label>
+                </choice>
+                <choice name="ScheduleView">
+                    <label>Schedule View</label>
+                </choice>
+                <choice name="TodoView">
+                    <label>Todo View</label>
+                </choice>
+            </choices>
+            <default>MonthView</default>
+        </entry>
         <entry name="enableMaps" type="Bool">
             <label>Enable maps. NOTE: may cause crashing on some systems.</label>
             <default>false</default>

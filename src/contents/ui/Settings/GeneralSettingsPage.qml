@@ -12,6 +12,37 @@ Kirigami.Page {
 
     Kirigami.FormLayout {
         anchors.fill: parent
+
+        Controls.ButtonGroup {
+            buttons: defaultViewButtonColumn.children
+            exclusive: true
+            onClicked: {
+                Config.defaultView = button.value;
+                Config.save();
+            }
+        }
+        Column {
+            id: defaultViewButtonColumn
+            Kirigami.FormData.label: i18n("Default View:")
+            Kirigami.FormData.labelAlignment: Qt.AlignTop
+
+            Controls.RadioButton {
+                property int value: 0 // HACK: Ideally should use config enum
+                text: i18n("Month View")
+                checked: Config.defaultView === value
+            }
+            Controls.RadioButton {
+                property int value: 1 // HACK: Ideally should use config enum
+                text: i18n("Schedule View")
+                checked: Config.defaultView === value
+            }
+            Controls.RadioButton {
+                property int value: 2 // HACK: Ideally should use config enum
+                text: i18n("Todo View")
+                checked: Config.defaultView === value
+            }
+        }
+
         Item {
             Kirigami.FormData.isSection: true
             Kirigami.FormData.label: i18n("Maps")
