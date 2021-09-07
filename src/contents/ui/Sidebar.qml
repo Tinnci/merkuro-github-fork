@@ -25,7 +25,8 @@ Kirigami.OverlayDrawer {
     handleClosedIcon.source: null
     handleOpenIcon.source: null
     drawerOpen: !Settings.isMobile
-    width: Kirigami.Units.gridUnit * 16
+    width: !sidebar.collapsed ? Kirigami.Units.gridUnit * 16 : menu.Layout.minimumWidth + Kirigami.Units.smallSpacing
+    Behavior on width { NumberAnimation { duration: Kirigami.Units.longDuration; easing.type: Easing.InOutQuad } }
 
     Kirigami.Theme.colorSet: Kirigami.Theme.Window
 
@@ -33,6 +34,47 @@ Kirigami.OverlayDrawer {
     rightPadding: 0
     topPadding: 0
     bottomPadding: 0
+
+    Component.onCompleted: {
+        let selection = rectangleComponent.createObject(parent);
+    }
+
+    Component {
+        id: rectangleComponent
+
+        Rectangle {
+            x: sidebar.width - width + Kirigami.Units.largeSpacing
+            y: 0
+            height: parent.height
+            color: "transparent"
+
+            Rectangle {
+                width: Kirigami.Units.gridUnit
+                height: parent.height
+                color: "transparent"
+                anchors.horizontalCenter: parent.right
+                anchors.verticalCenter: parent.verticalCenter
+
+                MouseArea {
+                    anchors.fill: parent
+                    cursorShape: Qt.SizeHorCursor
+                    drag {
+                        target: parent
+                        axis: Drag.XAxis
+                    }
+                    onMouseXChanged: {
+                        if(drag.active){
+                            sidebar.width = sidebar.width + mouseX
+                            if (sidebar.width < Kirigami.Units.gridUnit * 16) {
+                                sidebar.collapsed = true
+                                sidebar.width = menu.Layout.minimumWidth + Kirigami.Units.smallSpacing
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
 
     contentItem: ColumnLayout {
         id: container
@@ -42,13 +84,14 @@ Kirigami.OverlayDrawer {
             Layout.fillWidth: true
             Layout.preferredHeight: pageStack.globalToolBar.preferredHeight
 
-            leftPadding: Kirigami.Units.smallSpacing
-            rightPadding: Kirigami.Units.smallSpacing
+            leftPadding: sidebar.collapsed ? 0 : Kirigami.Units.smallSpacing
+            rightPadding: sidebar.collapsed ? Kirigami.Units.smallSpacing / 2 : Kirigami.Units.smallSpacing
             topPadding: 0
             bottomPadding: 0
 
-            RowLayout {
-                id: searchContainer
+            Kirigami.Heading {
+                Layout.fillWidth: true
+
                 anchors {
                     left: parent.left
                     leftMargin: Kirigami.Units.smallSpacing
@@ -57,56 +100,65 @@ Kirigami.OverlayDrawer {
                     verticalCenter: parent.verticalCenter
                 }
 
-                /*Kirigami.SearchField { // TODO: Make this open a new search results page
-                    id: searchItem
-                    Layout.fillWidth: true
-                }*/
-
-                Kirigami.Heading {
-                    Layout.fillWidth: true
-                    text: i18n("Kalendar")
+                text: i18n("Kalendar")
+                opacity: sidebar.collapsed ? 0 : 1
+                Behavior on opacity {
+                    OpacityAnimator {
+                        duration: Kirigami.Units.longDuration
+                        easing.type: Easing.InOutQuad
+                    }
                 }
+            }
 
-                Kirigami.ActionToolBar {
-                    id: menu
-                    anchors.fill: parent
-                    visible: Kirigami.Settings.isMobile
-                    overflowIconName: "application-menu"
+            Kirigami.ActionToolBar {
+                id: menu
+                anchors.fill: parent
+                visible: Kirigami.Settings.isMobile
+                overflowIconName: "application-menu"
 
-                    actions: [
-                        Kirigami.Action {
-                            icon.name: "edit-undo"
-                            text: CalendarManager.undoRedoData.undoAvailable ?
-                                i18n("Undo: ") + CalendarManager.undoRedoData.nextUndoDescription :
-                                undoAction.text
-                            shortcut: undoAction.shortcut
-                            enabled: CalendarManager.undoRedoData.undoAvailable && !(root.activeFocusItem instanceof TextEdit || root.activeFocusItem instanceof TextInput)
-                            onTriggered: CalendarManager.undoAction();
-                        },
-                        Kirigami.Action {
-                            icon.name: KalendarApplication.iconName(redoAction.icon)
-                            text: CalendarManager.undoRedoData.redoAvailable ?
-                                i18n("Redo: ") + CalendarManager.undoRedoData.nextRedoDescription :
-                                redoAction.text
-                            shortcut: redoAction.shortcut
-                            enabled: CalendarManager.undoRedoData.redoAvailable && !(root.activeFocusItem instanceof TextEdit || root.activeFocusItem instanceof TextInput)
+                actions: [
+                    Kirigami.Action {
+                        icon.name: "edit-undo"
+                        text: CalendarManager.undoRedoData.undoAvailable ?
+                            i18n("Undo: ") + CalendarManager.undoRedoData.nextUndoDescription :
+                            undoAction.text
+                        shortcut: undoAction.shortcut
+                        enabled: CalendarManager.undoRedoData.undoAvailable && !(root.activeFocusItem instanceof TextEdit || root.activeFocusItem instanceof TextInput)
+                        onTriggered: CalendarManager.undoAction();
+                    },
+                    Kirigami.Action {
+                        icon.name: KalendarApplication.iconName(redoAction.icon)
+                        text: CalendarManager.undoRedoData.redoAvailable ?
+                            i18n("Redo: ") + CalendarManager.undoRedoData.nextRedoDescription :
+                            redoAction.text
+                        shortcut: redoAction.shortcut
+                        enabled: CalendarManager.undoRedoData.redoAvailable && !(root.activeFocusItem instanceof TextEdit || root.activeFocusItem instanceof TextInput)
 
-                            onTriggered: CalendarManager.redoAction();
-                        },
-                        Kirigami.Action {
-                            icon.name: KalendarApplication.iconName(quitAction.icon)
-                            text: quitAction.text
-                            shortcut: quitAction.shortcut
-                            onTriggered: quitAction.trigger()
-                            visible: !Kirigami.Settings.isMobile
-                        }
-                    ]
+                        onTriggered: CalendarManager.redoAction();
+                    },
+                    //Kirigami.Action {
+                        //id: collapseAction
+                        //enabled: !Settings.isMobile
+                        //text: sidebar.collapsed ? i18n("Expand Sidebar") : i18n("Collapse Sidebar")
+                        //icon.name: sidebar.collapsed ? "sidebar-expand" : "sidebar-collapse"
+                        //shortcut: "Ctrl+Shift+C"
+                        //onTriggered: {
+                            //sidebar.collapsed = !sidebar.collapsed
+                        //}
+                    //},
+                    Kirigami.Action {
+                        icon.name: KalendarApplication.iconName(quitAction.icon)
+                        text: quitAction.text
+                        shortcut: quitAction.shortcut
+                        onTriggered: quitAction.trigger()
+                        visible: !Kirigami.Settings.isMobile
+                    }
+                ]
 
-                    Component.onCompleted: {
-                        for (let i in actions) {
-                            let action = actions[i]
-                            action.displayHint = Kirigami.DisplayHint.AlwaysHide
-                        }
+                Component.onCompleted: {
+                    for (let i in actions) {
+                        let action = actions[i]
+                        action.displayHint = Kirigami.DisplayHint.AlwaysHide
                     }
                 }
             }
@@ -197,6 +249,13 @@ Kirigami.OverlayDrawer {
 
             ListView {
                 id: calendarList
+                opacity: sidebar.collapsed ? 0 : 1
+                Behavior on opacity {
+                    OpacityAnimator {
+                        duration: Kirigami.Units.longDuration
+                        easing.type: Easing.InOutQuad
+                    }
+                }
 
                 Layout.fillWidth: true
                 Layout.topMargin: Kirigami.Units.largeSpacing
