@@ -39,6 +39,7 @@
 #include <KDescendantsProxyModel>
 #include <QTimer>
 #include <KFormat>
+#include <QMetaEnum>
 
 using namespace Akonadi;
 
@@ -426,6 +427,12 @@ CalendarManager::CalendarManager(QObject *parent)
     };
     connect(m_flatCollectionTreeModel, &QSortFilterProxyModel::rowsInserted, this, refreshColors);
 
+    Akonadi::Monitor *monitor = new Akonadi::Monitor(this);
+    monitor->setObjectName(QStringLiteral("TagModelMonitor"));
+    monitor->setTypeMonitored(Akonadi::Monitor::Tags);
+    m_tagModel = new Akonadi::TagModel(monitor);
+    qDebug() << m_tagModel->rowCount();
+
     Q_EMIT entityTreeModelChanged();
     Q_EMIT loadingChanged();
 }
@@ -468,6 +475,11 @@ QAbstractItemModel * CalendarManager::todoCollections()
 QAbstractItemModel * CalendarManager::viewCollections()
 {
     return m_viewCollectionModel;
+}
+
+Akonadi::TagModel *CalendarManager::tagModel()
+{
+    return m_tagModel;
 }
 
 bool CalendarManager::loading() const
@@ -665,6 +677,16 @@ QVariantMap CalendarManager::getCollectionDetails(qint64 collectionId)
 {
     QVariantMap collectionDetails;
     Akonadi::Collection collection = m_calendar->collection(collectionId);
+    bool isFiltered;
+    int allCalendarsRow;
+
+    for(int i = 0; i < m_allCalendars->rowCount(); i++) {
+        if(m_allCalendars->data(m_allCalendars->index(i, 0), Akonadi::EntityTreeModel::CollectionIdRole).toInt() == collectionId) {
+            isFiltered = !m_allCalendars->data(m_allCalendars->index(i, 0), Qt::CheckStateRole).toBool();
+            allCalendarsRow = i;
+            break;
+        }
+    }
 
     collectionDetails[QLatin1String("id")] = collection.id();
     collectionDetails[QLatin1String("name")] = collection.name();
@@ -672,6 +694,8 @@ QVariantMap CalendarManager::getCollectionDetails(qint64 collectionId)
     collectionDetails[QLatin1String("color")] = m_baseModel->colorCache[QString::number(collection.id())];
     collectionDetails[QLatin1String("isResource")] = Akonadi::CollectionUtils::isResource(collection);
     collectionDetails[QLatin1String("readOnly")] = collection.rights().testFlag(Collection::ReadOnly);
+    collectionDetails[QLatin1String("isFiltered")] = isFiltered;
+    collectionDetails[QLatin1String("allCalendarsRow")] = allCalendarsRow;
 
     return collectionDetails;
 }

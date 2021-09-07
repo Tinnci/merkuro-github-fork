@@ -58,8 +58,8 @@ Kirigami.OverlayDrawer {
                 }
 
                 /*Kirigami.SearchField { // TODO: Make this open a new search results page
-                    id: searchItem
-                    Layout.fillWidth: true
+                 *    id: searchItem
+                 *    Layout.fillWidth: true
                 }*/
 
                 Kirigami.Heading {
@@ -77,8 +77,8 @@ Kirigami.OverlayDrawer {
                         Kirigami.Action {
                             icon.name: "edit-undo"
                             text: CalendarManager.undoRedoData.undoAvailable ?
-                                i18n("Undo: ") + CalendarManager.undoRedoData.nextUndoDescription :
-                                undoAction.text
+                            i18n("Undo: ") + CalendarManager.undoRedoData.nextUndoDescription :
+                            undoAction.text
                             shortcut: undoAction.shortcut
                             enabled: CalendarManager.undoRedoData.undoAvailable && !(root.activeFocusItem instanceof TextEdit || root.activeFocusItem instanceof TextInput)
                             onTriggered: CalendarManager.undoAction();
@@ -86,8 +86,8 @@ Kirigami.OverlayDrawer {
                         Kirigami.Action {
                             icon.name: KalendarApplication.iconName(redoAction.icon)
                             text: CalendarManager.undoRedoData.redoAvailable ?
-                                i18n("Redo: ") + CalendarManager.undoRedoData.nextRedoDescription :
-                                redoAction.text
+                            i18n("Redo: ") + CalendarManager.undoRedoData.nextRedoDescription :
+                            redoAction.text
                             shortcut: redoAction.shortcut
                             enabled: CalendarManager.undoRedoData.redoAvailable && !(root.activeFocusItem instanceof TextEdit || root.activeFocusItem instanceof TextInput)
 
@@ -264,22 +264,79 @@ Kirigami.OverlayDrawer {
                 }
             }
         }
+    }
 
-        Kirigami.Separator {
+    QQC2.ScrollView {
+        id: scrollView
+        implicitWidth: Kirigami.Units.gridUnit * 16
+        Layout.fillWidth: true
+        Layout.fillHeight: true
+        Layout.topMargin: Kirigami.Units.largeSpacing * 2
+        QQC2.ScrollBar.horizontal.policy: QQC2.ScrollBar.AlwaysOff
+        contentWidth: availableWidth
+
+        clip: true
+
+        ListView {
+            id: tagList
+
             Layout.fillWidth: true
-        }
-        Kirigami.BasicListItem {
-            Layout.topMargin: -Kirigami.Units.smallSpacing
-            icon: "show-all-effects"
-            label: i18n("View all todos")
-            labelItem.color: Kirigami.Theme.textColor
-            visible: sidebar.todoMode
-            separatorVisible: false
-            onClicked: {
-                viewAllTodosClicked();
-                calendarList.currentIndex = -1;
-                if(sidebar.modal && sidebar.todoMode) sidebar.close()
+            Layout.topMargin: Kirigami.Units.largeSpacing
+
+            header: Kirigami.Heading {
+                anchors.left: parent.left
+                anchors.right: parent.right
+                leftPadding: Kirigami.Units.largeSpacing
+                text: i18n("Tags")
+                color: Kirigami.Theme.disabledTextColor
+                font.weight: Font.Bold
+                level: 5
+                z: 10
+                background: Rectangle {color: Kirigami.Theme.backgroundColor}
+            }
+            headerPositioning: ListView.OverlayHeader
+
+            currentIndex: -1
+
+            model: CalendarManager.tagModel
+
+
+            onModelChanged: currentIndex = -1
+
+            delegate: Kirigami.BasicListItem {
+                label: display
+                labelItem.color: Kirigami.Theme.textColor
+
+                hoverEnabled: sidebar.todoMode
+
+                separatorVisible: false
+
+                trailing: ColoredCheckbox {
+                    id: calendarCheckbox
+
+                    visible: model.checkState != null
+                    color: model.collectionColor
+                }
             }
         }
     }
+
+    Kirigami.Separator {
+        Layout.fillWidth: true
+    }
+    Kirigami.BasicListItem {
+        Layout.topMargin: -Kirigami.Units.smallSpacing
+        icon: "show-all-effects"
+        label: i18n("View all todos")
+        labelItem.color: Kirigami.Theme.textColor
+        visible: sidebar.todoMode
+        separatorVisible: false
+        onClicked: {
+            viewAllTodosClicked();
+            calendarList.currentIndex = -1;
+            if(sidebar.modal && sidebar.todoMode) sidebar.close()
+        }
+    }
+
+
 }
