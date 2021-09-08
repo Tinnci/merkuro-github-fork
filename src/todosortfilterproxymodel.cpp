@@ -32,6 +32,8 @@ public:
         IncidenceTypeStrRole,
         IncidenceTypeIconRole,
         IncidencePtrRole,
+        TagsRole,
+        ItemRole,
         TreeDepthRole
     };
     Q_ENUM(Roles);
@@ -125,6 +127,10 @@ public:
             return todoPtr->iconName();
         } else if(role == Roles::IncidencePtrRole) {
             return QVariant::fromValue(CalendarSupport::incidence(todoItem));
+        } else if(role == Roles::TagsRole) {
+            return QVariant::fromValue(todoItem.tags());
+        } else if(role == Roles::ItemRole) {
+            return QVariant::fromValue(todoItem);
         } else if(role == Roles::TreeDepthRole) {
             int depth = 0;
             auto idx = index;
@@ -157,6 +163,8 @@ public:
         roleNames[Roles::IncidenceTypeStrRole] = "incidenceTypeStr";
         roleNames[Roles::IncidenceTypeIconRole] = "incidenceTypeIcon";
         roleNames[Roles::IncidencePtrRole] = "incidencePtr";
+        roleNames[Roles::TagsRole] = "tags";
+        roleNames[Roles::ItemRole] = "item";
         roleNames[Roles::TreeDepthRole] = "treeDepth";
 
         return roleNames;
