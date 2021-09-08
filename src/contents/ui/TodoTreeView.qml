@@ -132,6 +132,21 @@ KirigamiAddonsTreeView.TreeListView {
                     spacing: 0
                     visible: model.priority > 0
 
+                    ColumnLayout {
+                        id: tagsColumn
+                        property var akonadiItem: model.item
+
+                        Repeater {
+                            model: Kalendar.ItemTagsModel {
+                                item: tagsColumn.akonadiItem
+                            }
+                            delegate: QQC2.Label {
+                                text: model.name
+                                Component.onCompleted: console.log(model.name)
+                            }
+                        }
+                    }
+
                     Kirigami.Icon {
                         Layout.maximumHeight: priorityLabel.height
                         source: "emblem-important-symbolic"
