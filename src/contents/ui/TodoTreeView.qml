@@ -72,7 +72,7 @@ KirigamiAddonsTreeView.TreeListView {
                 anchors.verticalCenter: parent.verticalCenter
                 width: parent.width
 
-                columns: 3
+                columns: 4
                 rows: 2
                 columnSpacing: Kirigami.Settings.isMobile ? Kirigami.Units.largeSpacing * 2 : Kirigami.Units.largeSpacing
 
@@ -97,29 +97,31 @@ KirigamiAddonsTreeView.TreeListView {
                     wrapMode: Text.Wrap
                 }
 
-                RowLayout {
+                Column {
+                    id: tagsColumn
                     Layout.row: 0
                     Layout.column: 2
+                    Layout.rowSpan: 2
+                    Layout.alignment: Qt.AlignVCenter
+                    Layout.rightMargin: Kirigami.Units.largeSpacing
+                    property var todoTags: model.categories
+
+                    Repeater {
+                        model: tagsColumn.todoTags
+                        delegate: QQC2.Label {
+                            text: modelData
+                        }
+                    }
+                }
+
+                RowLayout {
+                    Layout.row: 0
+                    Layout.column: 3
                     Layout.rowSpan: 2
                     Layout.alignment: Qt.AlignRight
                     Layout.rightMargin: Kirigami.Units.largeSpacing
                     spacing: 0
                     visible: model.priority > 0
-
-                    ColumnLayout {
-                        id: tagsColumn
-                        property var akonadiItem: model.item
-
-                        Repeater {
-                            model: Kalendar.ItemTagsModel {
-                                item: tagsColumn.akonadiItem
-                            }
-                            delegate: QQC2.Label {
-                                text: model.name
-                                Component.onCompleted: console.log(model.name)
-                            }
-                        }
-                    }
 
                     Kirigami.Icon {
                         Layout.maximumHeight: priorityLabel.height
