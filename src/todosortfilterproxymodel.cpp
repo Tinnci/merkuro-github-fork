@@ -34,6 +34,7 @@ public:
         IncidencePtrRole,
         TagsRole,
         ItemRole,
+        CategoriesRole,
         TreeDepthRole
     };
     Q_ENUM(Roles);
@@ -131,6 +132,8 @@ public:
             return QVariant::fromValue(todoItem.tags());
         } else if(role == Roles::ItemRole) {
             return QVariant::fromValue(todoItem);
+        } else if(role == Roles::CategoriesRole) {
+            return todoPtr->categories();
         } else if(role == Roles::TreeDepthRole) {
             int depth = 0;
             auto idx = index;
@@ -165,6 +168,7 @@ public:
         roleNames[Roles::IncidencePtrRole] = "incidencePtr";
         roleNames[Roles::TagsRole] = "tags";
         roleNames[Roles::ItemRole] = "item";
+        roleNames[Roles::CategoriesRole] = "categories";
         roleNames[Roles::TreeDepthRole] = "treeDepth";
 
         return roleNames;
