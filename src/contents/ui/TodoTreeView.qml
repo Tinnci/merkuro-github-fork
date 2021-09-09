@@ -123,21 +123,13 @@ KirigamiAddonsTreeView.TreeListView {
                     wrapMode: Text.Wrap
                 }
 
-                Column {
-                    id: tagsColumn
+                QQC2.Label {
                     Layout.row: 0
                     Layout.column: 2
                     Layout.rowSpan: 2
                     Layout.alignment: Qt.AlignVCenter
                     Layout.rightMargin: Kirigami.Units.largeSpacing
-                    property var todoTags: model.categories
-
-                    Repeater {
-                        model: tagsColumn.todoTags
-                        delegate: QQC2.Label {
-                            text: modelData
-                        }
-                    }
+                    text: model.categoriesDisplay
                 }
 
                 RowLayout {

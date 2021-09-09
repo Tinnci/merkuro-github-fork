@@ -431,7 +431,6 @@ CalendarManager::CalendarManager(QObject *parent)
     monitor->setObjectName(QStringLiteral("TagModelMonitor"));
     monitor->setTypeMonitored(Akonadi::Monitor::Tags);
     m_tagModel = new Akonadi::TagModel(monitor);
-    qDebug() << m_tagModel->rowCount();
 
     Q_EMIT entityTreeModelChanged();
     Q_EMIT loadingChanged();

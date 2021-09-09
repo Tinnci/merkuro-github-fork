@@ -197,7 +197,7 @@ Kirigami.Page {
         id: collectionPickerSheet
         title: i18n("Choose a Todo Calendar")
 
-        property var incidenceWrapper: new IncidenceWrapper()
+        property var incidenceWrapper
 
         ListView {
             implicitWidth: Kirigami.Units.gridUnit * 30
@@ -210,13 +210,13 @@ Kirigami.Page {
 
             model: Kalendar.CalendarManager.todoCollections
             delegate: Kirigami.BasicListItem {
-                leftPadding: if(kDescendantLevel) ((Kirigami.Units.gridUnit * 2) * (kDescendantLevel - 1)) + Kirigami.Units.largeSpacing
+                leftPadding: model.kDescendantLevel ? ((Kirigami.Units.gridUnit * 2) * (kDescendantLevel - 1)) + Kirigami.Units.largeSpacing : 0
                 enabled: model.checkState != null
                 trailing: Rectangle {
                     height: parent.height * 0.8
                     width: height
                     radius: 3
-                    color: if(model.collectionColor) model.collectionColor
+                    color: model.collectionColor ? model.collectionColor : Kirigami.Theme.textColor
                     visible: model.checkState != null
                 }
 
