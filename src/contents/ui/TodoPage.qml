@@ -150,8 +150,8 @@ Kirigami.Page {
 
         GridLayout {
             id: headerLayout
-            columns: root.width > Kirigami.Units.gridUnit * 30 ? 2 : 1
-            rows: root.width > Kirigami.Units.gridUnit * 30 ? 1 : 2
+            columns: root.width > Kirigami.Units.gridUnit * 30 || root.filterCategoryString ? 2 : 1
+            rows: root.width < Kirigami.Units.gridUnit * 30 || root.filterCategoryString ? 2 : 1
 
             Kirigami.Heading {
                 Layout.row: 0
@@ -162,11 +162,33 @@ Kirigami.Page {
                 font.weight: Font.Bold
                 color: root.filterCollectionDetails ?
                     LabelUtils.getIncidenceLabelColor(root.filterCollectionDetails.color, root.isDark) : Kirigami.Theme.textColor
+                elide: Text.ElideRight
             }
+
+            RowLayout {
+                Layout.row: 0
+                Layout.column: 1
+                Layout.alignment: Qt.AlignRight
+                visible: root.filterCategoryString
+
+                Kirigami.Heading {
+                    Layout.alignment: Qt.AlignRight | Qt.AlignVCenter
+                    text: root.filterCategoryString
+                    color: root.filterCollectionDetails ?
+                        LabelUtils.getIncidenceLabelColor(root.filterCollectionDetails.color, root.isDark) : Kirigami.Theme.textColor
+                }
+
+                QQC2.ToolButton {
+                    icon.name: "edit-clear"
+                    onClicked: root.filterCategoryString = ""
+                }
+            }
+
             Kirigami.SearchField {
                 id: searchField
-                Layout.column: root.width > Kirigami.Units.gridUnit * 30 ? 1 : 0
-                Layout.row: root.width > Kirigami.Units.gridUnit * 30 ? 0 : 1
+                Layout.column: root.width < Kirigami.Units.gridUnit * 30 || root.filterCategoryString ? 0 : 1
+                Layout.row: root.width < Kirigami.Units.gridUnit * 30 || root.filterCategoryString ? 1 : 0
+                Layout.columnSpan: root.width < Kirigami.Units.gridUnit * 30 || root.filterCategoryString ? 2 : 1
                 Layout.fillWidth: Layout.row === 1
                 onTextChanged: incompleteView.model.filterTodoName(text);
             }
