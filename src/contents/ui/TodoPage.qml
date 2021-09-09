@@ -26,7 +26,9 @@ Kirigami.Page {
 
     property int filterCollectionId
     property var filterCollectionDetails: filterCollectionId && filterCollectionId >= 0 ?
-        Kalendar.CalendarManager.getCollectionDetails(filterCollectionId) : filterCollectionDetails = null
+        Kalendar.CalendarManager.getCollectionDetails(filterCollectionId) : null
+    property string filterCategoryString
+
     property int sortBy
     property bool ascendingOrder: false
     readonly property color standardTextColor: Kirigami.Theme.textColor
@@ -111,6 +113,8 @@ Kirigami.Page {
 
                     filterCollectionId: root.filterCollectionId
                     filterCollectionDetails: root.filterCollectionDetails
+                    filterCategoryString: root.filterCategoryString
+
                     showCompleted: Kalendar.TodoSortFilterProxyModel.ShowCompleteOnly
                     sortBy: root.sortBy
                     ascendingOrder: root.ascendingOrder
@@ -181,6 +185,8 @@ Kirigami.Page {
 
             filterCollectionId: root.filterCollectionId
             filterCollectionDetails: root.filterCollectionDetails
+            filterCategoryString: root.filterCategoryString
+
             showCompleted: Kalendar.TodoSortFilterProxyModel.ShowIncompleteOnly
             sortBy: root.sortBy
             ascendingOrder: root.ascendingOrder

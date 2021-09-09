@@ -15,6 +15,7 @@ Kirigami.OverlayDrawer {
     signal calendarClicked(int collectionId)
     signal calendarCheckChanged(int collectionId, bool checked)
     signal viewAllTodosClicked
+    signal tagClicked(string tagName)
 
     property bool todoMode: false
     property alias toolbar: toolbar
@@ -321,12 +322,7 @@ Kirigami.OverlayDrawer {
 
                 separatorVisible: false
 
-                trailing: ColoredCheckbox {
-                    id: calendarCheckbox
-
-                    visible: model.checkState != null
-                    color: model.collectionColor
-                }
+                onClicked: tagClicked(display)
             }
         }
     }

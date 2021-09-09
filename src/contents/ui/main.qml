@@ -187,6 +187,7 @@ Kirigami.ApplicationWindow {
             pageStack.currentItem.filterCollectionDetails = CalendarManager.getCollectionDetails(pageStack.currentItem.filterCollectionId);
             // HACK: The Todo View should be able to detect change in collection filtering independently
         }
+        onTagClicked: if(todoMode) pageStack.currentItem.filterCategoryString = tagName
         onViewAllTodosClicked: if(todoMode) pageStack.currentItem.filterCollectionId = -1
     }
 
