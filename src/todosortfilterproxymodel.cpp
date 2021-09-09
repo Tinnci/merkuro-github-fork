@@ -35,6 +35,7 @@ public:
         TagsRole,
         ItemRole,
         CategoriesRole,
+        CategoriesDisplayRole,
         TreeDepthRole
     };
     Q_ENUM(Roles);
@@ -133,8 +134,9 @@ public:
         } else if(role == Roles::ItemRole) {
             return QVariant::fromValue(todoItem);
         } else if(role == Roles::CategoriesRole) {
-            qDebug() << todoPtr->categories();
             return todoPtr->categories();
+        } else if(role == Roles::CategoriesDisplayRole) {
+            return todoPtr->categories().join(QLatin1String(", "));
         } else if(role == Roles::TreeDepthRole) {
             int depth = 0;
             auto idx = index;
@@ -170,6 +172,7 @@ public:
         roleNames[Roles::TagsRole] = "tags";
         roleNames[Roles::ItemRole] = "item";
         roleNames[Roles::CategoriesRole] = "categories";
+        roleNames[Roles::CategoriesDisplayRole] = "categoriesDisplay";
         roleNames[Roles::TreeDepthRole] = "treeDepth";
 
         return roleNames;
