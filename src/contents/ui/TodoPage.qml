@@ -25,6 +25,7 @@ Kirigami.Page {
     signal addSubTodo(var parentWrapper)
 
     property int filterCollectionId
+    property string filterCategoryString
     property var filterCollectionDetails: filterCollectionId ? Kalendar.CalendarManager.getCollectionDetails(filterCollectionId) : null
     property int sortBy
     property bool ascendingOrder: false
@@ -111,6 +112,7 @@ Kirigami.Page {
                     Layout.fillHeight: true
 
                     filterCollectionId: root.filterCollectionId
+                    filterCategoryString: root.filterCategoryString
                     showCompleted: Kalendar.TodoSortFilterProxyModel.ShowCompleteOnly
                     sortBy: root.sortBy
                     ascendingOrder: root.ascendingOrder
@@ -176,6 +178,7 @@ Kirigami.Page {
             Layout.fillHeight: true
 
             filterCollectionId: root.filterCollectionId
+            filterCategoryString: root.filterCategoryString
             showCompleted: Kalendar.TodoSortFilterProxyModel.ShowIncompleteOnly
             sortBy: root.sortBy
             ascendingOrder: root.ascendingOrder

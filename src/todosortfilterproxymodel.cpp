@@ -278,6 +278,10 @@ bool TodoSortFilterProxyModel::filterAcceptsRowCheck(int row, const QModelIndex&
             break;
     }
 
+    if(!m_filterCategoryString.isEmpty()) {
+        acceptRow = acceptRow && sourceIndex.data(ExtraTodoModel::CategoriesRole).toStringList().contains(m_filterCategoryString);
+    }
+
     return acceptRow ? QSortFilterProxyModel::filterAcceptsRow(row, sourceParent) : acceptRow;
 }
 
@@ -332,6 +336,21 @@ void TodoSortFilterProxyModel::setFilterCollectionId(qint64 filterCollectionId)
     m_filterCollectionId = filterCollectionId;
     invalidateFilter();
     Q_EMIT filterCollectionIdChanged();
+    Q_EMIT layoutChanged();
+}
+
+QString TodoSortFilterProxyModel::filterCategoryString()
+{
+    return m_filterCategoryString;
+}
+
+void TodoSortFilterProxyModel::setFilterCategoryString(QString filterCategoryString)
+{
+    qDebug() << filterCategoryString;
+    Q_EMIT layoutAboutToBeChanged();
+    m_filterCategoryString = filterCategoryString;
+    Q_EMIT filterCategoryStringChanged();
+    invalidateFilter();
     Q_EMIT layoutChanged();
 }
 

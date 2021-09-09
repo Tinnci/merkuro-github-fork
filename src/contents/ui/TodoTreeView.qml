@@ -23,6 +23,7 @@ KirigamiAddonsTreeView.TreeListView {
 
     property date currentDate: new Date()
     property int filterCollectionId
+    property string filterCategoryString
     property int showCompleted: Kalendar.TodoSortFilterProxyModel.ShowAll
     property int sortBy: Kalendar.TodoSortFilterProxyModel.EndTimeColumn
     onSortByChanged: todoModel.sortTodoModel(sortBy, ascendingOrder)
@@ -39,6 +40,7 @@ KirigamiAddonsTreeView.TreeListView {
         calendar: Kalendar.CalendarManager.calendar
         incidenceChanger: Kalendar.CalendarManager.incidenceChanger
         filterCollectionId: root.filterCollectionId ? root.filterCollectionId : -1
+        filterCategoryString: root.filterCategoryString ? root.filterCategoryString : ""
         showCompleted: root.showCompleted
     }
     delegate: KirigamiAddonsTreeView.BasicTreeItem {

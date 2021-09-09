@@ -179,6 +179,7 @@ Kirigami.ApplicationWindow {
     globalDrawer: Sidebar {
         bottomPadding: menuLoader.active ? menuLoader.height : 0
         todoMode: pageStack.currentItem ? pageStack.currentItem.objectName == "todoView" : false
+        onTagClicked: if(todoMode) pageStack.currentItem.filterCategoryString = tagName
         onCalendarClicked: if(todoMode) pageStack.currentItem.filterCollectionId = collectionId
         onViewAllTodosClicked: if(todoMode) pageStack.currentItem.filterCollectionId = -1
     }
