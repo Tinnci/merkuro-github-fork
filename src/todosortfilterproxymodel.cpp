@@ -133,6 +133,7 @@ public:
         } else if(role == Roles::ItemRole) {
             return QVariant::fromValue(todoItem);
         } else if(role == Roles::CategoriesRole) {
+            qDebug() << todoPtr->categories();
             return todoPtr->categories();
         } else if(role == Roles::TreeDepthRole) {
             int depth = 0;

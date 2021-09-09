@@ -210,13 +210,13 @@ Kirigami.Page {
 
             model: Kalendar.CalendarManager.todoCollections
             delegate: Kirigami.BasicListItem {
-                leftPadding: ((Kirigami.Units.gridUnit * 2) * (kDescendantLevel - 1)) + Kirigami.Units.largeSpacing
+                leftPadding: if(kDescendantLevel) ((Kirigami.Units.gridUnit * 2) * (kDescendantLevel - 1)) + Kirigami.Units.largeSpacing
                 enabled: model.checkState != null
                 trailing: Rectangle {
                     height: parent.height * 0.8
                     width: height
                     radius: 3
-                    color: model.collectionColor
+                    color: if(model.collectionColor) model.collectionColor
                     visible: model.checkState != null
                 }
 
