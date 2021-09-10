@@ -19,7 +19,7 @@ MouseArea {
     property double clickX
     property double clickY
     property var incidenceData
-    property var collectionId
+    required property var collectionId
     property var collectionDetails
 
     anchors.fill: parent
