@@ -40,9 +40,10 @@ void KalendarApplication::setupActions(const QString &actionName)
     if (actionName == QLatin1String("open_todo_view") && KAuthorized::authorizeAction(actionName)) {
         auto openTodoAction = mCollection.addAction(actionName, this, &KalendarApplication::openTodoView);
         openTodoAction->setText(i18n("Todo View"));
-        openTodoAction->setIcon(QIcon::fromTheme(QStringLiteral("view-calendar-list")));
+        openTodoAction->setIcon(QIcon::fromTheme(QStringLiteral("view-calendar-tasks")));
         openTodoAction->setCheckable(true);
         openTodoAction->setActionGroup(m_viewGroup);
+        mCollection.setDefaultShortcut(openTodoAction, QKeySequence(i18n("Ctrl+3")));
     }
 
     if (actionName == QLatin1String("open_schedule_view") && KAuthorized::authorizeAction(actionName)) {
@@ -51,6 +52,7 @@ void KalendarApplication::setupActions(const QString &actionName)
         openScheduleAction->setIcon(QIcon::fromTheme(QStringLiteral("view-calendar-list")));
         openScheduleAction->setCheckable(true);
         openScheduleAction->setActionGroup(m_viewGroup);
+        mCollection.setDefaultShortcut(openScheduleAction, QKeySequence(i18n("Ctrl+2")));
     }
 
     if (actionName == QLatin1String("open_month_view") && KAuthorized::authorizeAction(actionName)) {
@@ -59,7 +61,7 @@ void KalendarApplication::setupActions(const QString &actionName)
         openMonthAction->setIcon(QIcon::fromTheme(QStringLiteral("view-calendar")));
         openMonthAction->setCheckable(true);
         openMonthAction->setActionGroup(m_viewGroup);
-        mCollection.setDefaultShortcut(openMonthAction, QKeySequence(Qt::Key_F11)); // TODO better default shortcut
+        mCollection.setDefaultShortcut(openMonthAction, QKeySequence(i18n("Ctrl+1")));
     }
 
     if (actionName == QLatin1String("create_event") && KAuthorized::authorizeAction(actionName)) {
