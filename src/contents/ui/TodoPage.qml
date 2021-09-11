@@ -84,6 +84,7 @@ Kirigami.Page {
         }
         right: KActionFromAction {
             kalendarAction: "todoview_show_completed"
+            text: i18n("Show Completed")
         }
 
     }
@@ -156,12 +157,13 @@ Kirigami.Page {
 
         GridLayout {
             id: headerLayout
-            columns: root.width > Kirigami.Units.gridUnit * 30 || root.filterCategoryString ? 2 : 1
-            rows: root.width < Kirigami.Units.gridUnit * 30 || root.filterCategoryString ? 2 : 1
+            columns: 2
+            rows: 2
 
             Kirigami.Heading {
                 Layout.row: 0
                 Layout.column: 0
+                Layout.columnSpan: root.width < Kirigami.Units.gridUnit * 30 || tagLayout.visible ? 1 : 2
                 Layout.fillWidth: true
                 text: root.filterCollectionDetails && root.filterCollectionId > -1 ?
                     root.filterCollectionDetails.displayName : i18n("All Todos")
@@ -172,6 +174,7 @@ Kirigami.Page {
             }
 
             RowLayout {
+                id: tagLayout
                 Layout.row: 0
                 Layout.column: 1
                 Layout.alignment: Qt.AlignRight
@@ -192,9 +195,9 @@ Kirigami.Page {
 
             Kirigami.SearchField {
                 id: searchField
-                Layout.column: root.width < Kirigami.Units.gridUnit * 30 || root.filterCategoryString ? 0 : 1
-                Layout.row: root.width < Kirigami.Units.gridUnit * 30 || root.filterCategoryString ? 1 : 0
-                Layout.columnSpan: root.width < Kirigami.Units.gridUnit * 30 || root.filterCategoryString ? 2 : 1
+                Layout.column: root.width < Kirigami.Units.gridUnit * 30 || tagLayout.visible ? 0 : 1
+                Layout.row: root.width < Kirigami.Units.gridUnit * 30 || tagLayout.visible ? 1 : 0
+                Layout.columnSpan: root.width < Kirigami.Units.gridUnit * 30 || tagLayout.visible ? 2 : 1
                 Layout.fillWidth: Layout.row === 1
                 onTextChanged: incompleteView.model.filterTodoName(text);
             }
