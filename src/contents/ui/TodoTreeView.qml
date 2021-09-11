@@ -91,27 +91,35 @@ KirigamiAddonsTreeView.TreeListView {
                 }
 
                 QQC2.Label {
+                    id: nameLabel
                     Layout.row: 0
                     Layout.column: 1
+                    Layout.columnSpan: root.width < Kirigami.Units.gridUnit * 28 && (recurIcon.visible || dateLabel.visible) ? 2 : 1
                     Layout.fillWidth: true
                     text: model.text
                     font.strikeout: model.todoCompleted
+                    font.weight: Font.Medium
                     wrapMode: Text.Wrap
                 }
 
                 QQC2.Label {
-                    Layout.row: 0
+                    id: tagLabel
+                    Layout.fillWidth: true
+                    Layout.row: root.width < Kirigami.Units.gridUnit * 28 && (recurIcon.visible || dateLabel.visible) ? 1 : 0
                     Layout.column: 2
-                    Layout.rowSpan: 2
-                    Layout.alignment: Qt.AlignVCenter
+                    Layout.rowSpan: root.width < Kirigami.Units.gridUnit * 28 ? 1 : 2
+                    Layout.columnSpan: root.width < Kirigami.Units.gridUnit * 28 ? 2 : 1
+                    Layout.alignment: Qt.AlignVCenter | Qt.AlignRight
                     Layout.rightMargin: Kirigami.Units.largeSpacing
+                    horizontalAlignment: Text.AlignRight
                     text: model.categoriesDisplay
+                    elide: Text.ElideRight
                 }
 
                 RowLayout {
                     Layout.row: 0
                     Layout.column: 3
-                    Layout.rowSpan: 2
+                    Layout.rowSpan: root.width < Kirigami.Units.gridUnit * 28 ? 1 : 2
                     Layout.alignment: Qt.AlignRight
                     Layout.rightMargin: Kirigami.Units.largeSpacing
                     spacing: 0
@@ -128,6 +136,7 @@ KirigamiAddonsTreeView.TreeListView {
                 }
 
                 RowLayout {
+                    id: occurrenceLayout
                     Layout.row: 1
                     Layout.column: 1
                     Layout.fillWidth: true
@@ -140,6 +149,7 @@ KirigamiAddonsTreeView.TreeListView {
                         visible: !isNaN(model.endTime.getTime())
                     }
                     Kirigami.Icon {
+                        id: recurIcon
                         source: "task-recurring"
                         visible: model.recurs
                         Layout.maximumHeight: parent.height
