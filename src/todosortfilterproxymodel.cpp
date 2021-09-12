@@ -136,7 +136,7 @@ public:
         } else if(role == Roles::CategoriesRole) {
             return todoPtr->categories();
         } else if(role == Roles::CategoriesDisplayRole) {
-            return todoPtr->categories().join(QLatin1String(", "));
+            return todoPtr->categories().join(i18nc("List separator", ", "));
         } else if(role == Roles::TreeDepthRole) {
             int depth = 0;
             auto idx = index;
