@@ -346,7 +346,6 @@ QString TodoSortFilterProxyModel::filterCategoryString()
 
 void TodoSortFilterProxyModel::setFilterCategoryString(QString filterCategoryString)
 {
-    qDebug() << filterCategoryString;
     Q_EMIT layoutAboutToBeChanged();
     m_filterCategoryString = filterCategoryString;
     Q_EMIT filterCategoryStringChanged();
