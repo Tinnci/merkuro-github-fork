@@ -214,7 +214,9 @@ Kirigami.OverlayDrawer {
                 Repeater {
                     id: tagList
 
-                    model: CalendarManager.tagModel
+                    model: KDescendantsProxyModel {
+                        model: CalendarManager.tagModel
+                    }
                     onModelChanged: currentIndex = -1
 
                     delegate: Kirigami.BasicListItem {
