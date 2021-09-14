@@ -746,7 +746,8 @@ Kirigami.ScrollablePage {
                     Layout.fillWidth: true
 
                     model: TagManager.tagModel
-                    displayText: root.incidenceWrapper.categories.join(i18nc("List separator", ", "))
+                    displayText: root.incidenceWrapper.categories.length > 0 ?
+                        root.incidenceWrapper.categories.join(i18nc("List separator", ", ")) : i18n("Click to set tags...")
 
                     delegate: Kirigami.CheckableListItem {
                         label: model.display
