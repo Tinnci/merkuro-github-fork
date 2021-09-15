@@ -129,21 +129,30 @@ KirigamiAddonsTreeView.TreeListView {
                     wrapMode: Text.Wrap
                 }
 
-                QQC2.Label {
-                    id: tagLabel
+                Flow {
                     Layout.fillWidth: true
-                    Layout.row: root.width < Kirigami.Units.gridUnit * 28 && (recurIcon.visible || dateLabel.visible) ? 1 : 0
+                    Layout.row: root.width < Kirigami.Units.gridUnit * 28 && (recurIcon.visible || dateLabel.visible || priorityLayout.visible) ? 1 : 0
                     Layout.column: 2
                     Layout.rowSpan: root.width < Kirigami.Units.gridUnit * 28 ? 1 : 2
                     Layout.columnSpan: root.width < Kirigami.Units.gridUnit * 28 ? 2 : 1
-                    Layout.alignment: Qt.AlignVCenter | Qt.AlignRight
                     Layout.rightMargin: Kirigami.Units.largeSpacing
-                    horizontalAlignment: Text.AlignRight
-                    text: model.categoriesDisplay
-                    elide: Text.ElideRight
+
+                    layoutDirection: Qt.RightToLeft
+                    visible: categories.length > 0
+                    spacing: Kirigami.Units.largeSpacing
+                    Repeater {
+                        property var categoriesModel: categories
+                        model: categoriesModel
+                        Tag {
+                            text: modelData
+                            showAction: false
+                        }
+                        Component.onCompleted: if(count === 0 && categories.length > 0) modelChanged(); // HACK: Otherwise half the time tags won't appear
+                    }
                 }
 
                 RowLayout {
+                    id: priorityLayout
                     Layout.row: 0
                     Layout.column: 3
                     Layout.rowSpan: root.width < Kirigami.Units.gridUnit * 28 ? 1 : 2
