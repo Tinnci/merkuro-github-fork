@@ -225,12 +225,7 @@ Kirigami.OverlayDrawer {
                                 text: modelData
                                 icon.name: "edit-delete-remove"
                                 actionText: i18n("Remove %1 tag", modelData)
-                                /*onClicked: {
-                                    const index = flickable.extractor.tags.indexOf(modelData)
-                                    if (index > -1) {
-                                        flickable.extractor.tags.splice(index, 1)
-                                    }
-                                }*/
+                                showAction: false
                             }
                         }
                     }

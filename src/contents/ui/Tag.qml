@@ -14,6 +14,7 @@ Item {
     property string text
     property alias icon: toolButton.icon
     property alias actionText: toolButton.text
+    property bool showAction: true
     signal clicked()
 
     implicitWidth: layout.implicitWidth
@@ -75,6 +76,7 @@ Item {
             horizontalAlignment: Qt.AlignLeft
             verticalAlignment: Qt.AlignVCenter
             Layout.leftMargin: borderCover.anchors.leftMargin
+            Layout.rightMargin: tagRoot.showAction ? 0 : Kirigami.Units.smallSpacing
             text: tagRoot.text
         }
         QQC2.ToolButton {
@@ -84,6 +86,7 @@ Item {
             text: i18n("Remove Tag")
             display: QQC2.AbstractButton.IconOnly
             onClicked: tagRoot.clicked()
+            visible: tagRoot.showAction
         }
     }
 }
