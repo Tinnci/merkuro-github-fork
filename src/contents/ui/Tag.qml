@@ -77,6 +77,8 @@ Item {
             verticalAlignment: Qt.AlignVCenter
             Layout.leftMargin: borderCover.anchors.leftMargin
             Layout.rightMargin: tagRoot.showAction ? 0 : Kirigami.Units.smallSpacing
+            Layout.topMargin: tagRoot.showAction ? 0 : Kirigami.Units.smallSpacing
+            Layout.bottomMargin: tagRoot.showAction ? 0 : Kirigami.Units.smallSpacing
             text: tagRoot.text
         }
         QQC2.ToolButton {
