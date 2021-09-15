@@ -3,19 +3,14 @@
 
 #pragma once
 #include <QSortFilterProxyModel>
-#include <QAbstractProxyModel>
 #include <CalendarSupport/KCalPrefs>
 #include <CalendarSupport/Utils>
-#include <KCheckableProxyModel>
-#include <KDescendantsProxyModel>
-#include <KExtraColumnsProxyModel>
-#include <KFormat>
 #include <Akonadi/Calendar/IncidenceChanger>
 #include <Akonadi/Calendar/ETMCalendar>
 #include <todomodel.h>
+#include <extratodomodel.h>
 #include <incidencetreemodel.h>
 
-class ExtraTodoModel;
 
 class TodoSortFilterProxyModel : public QSortFilterProxyModel
 {
@@ -27,50 +22,6 @@ class TodoSortFilterProxyModel : public QSortFilterProxyModel
     Q_PROPERTY(int showCompleted READ showCompleted WRITE setShowCompleted NOTIFY showCompletedChanged)
 
 public:
-    enum BaseTodoModelColumns {
-        SummaryColumn = TodoModel::SummaryColumn,
-        PriorityColumn = TodoModel::PriorityColumn,
-        PercentColumn = TodoModel::PercentColumn,
-        StartDateColumn = TodoModel::StartDateColumn,
-        DueDateColumn = TodoModel::DueDateColumn,
-        CategoriesColumn = TodoModel::CategoriesColumn,
-        DescriptionColumn = TodoModel::DescriptionColumn,
-        CalendarColumn = TodoModel::CalendarColumn,
-    };
-    Q_ENUM(BaseTodoModelColumns);
-
-    enum ExtraTodoModelColumns {
-        StartTimeColumn = TodoModel::ColumnCount,
-        EndTimeColumn,
-        PriorityIntColumn
-    };
-    Q_ENUM(ExtraTodoModelColumns);
-
-    enum ExtraTodoModelRoles {
-        StartTimeRole = TodoModel::CalendarRole + 1,
-        EndTimeRole,
-        LocationRole,
-        AllDayRole,
-        CompletedRole,
-        PriorityRole,
-        ColorRole,
-        CollectionIdRole,
-        DurationStringRole,
-        RecursRole,
-        IsOverdueRole,
-        IncidenceIdRole,
-        IncidenceTypeRole,
-        IncidenceTypeStrRole,
-        IncidenceTypeIconRole,
-        IncidencePtrRole,
-        TagsRole,
-        ItemRole,
-        CategoriesRole,
-        CategoriesDisplayRole,
-        TreeDepthRole
-    };
-    Q_ENUM(ExtraTodoModelRoles);
-
     enum ShowComplete {
         ShowAll = 0,
         ShowCompleteOnly,
