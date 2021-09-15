@@ -36,12 +36,16 @@ IncidenceWrapper::~IncidenceWrapper()
 
 void IncidenceWrapper::incidenceUpdate(const QString& uid, const QDateTime& recurrenceId)
 {
-    Q_EMIT incidenceAboutToChange();
+    if(uid == m_incidence->uid()) {
+        Q_EMIT incidenceAboutToChange();
+    }
 }
 
 void IncidenceWrapper::incidenceUpdated(const QString& uid, const QDateTime& recurrenceId)
 {
-    notifyDataChanged();
+    if(uid == m_incidence->uid()) {
+        notifyDataChanged();
+    }
 }
 
 void IncidenceWrapper::notifyDataChanged()
