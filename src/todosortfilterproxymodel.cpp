@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: LGPL-2.1-or-later
 
 #include <KConfigWatcher>
+#include <QMetaEnum>
 #include <todosortfilterproxymodel.h>
 
 class ExtraTodoModel : public KExtraColumnsProxyModel
@@ -82,7 +83,7 @@ public:
         }
     };
 
-    QVariant data (const QModelIndex &index, int  role = Qt::DisplayRole) const override {
+    QVariant data (const QModelIndex &index, int role = Qt::DisplayRole) const override {
         if (!index.isValid()) {
             return QVariant();
         }
