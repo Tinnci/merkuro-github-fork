@@ -144,7 +144,7 @@ KirigamiAddonsTreeView.TreeListView {
 
                     Repeater {
                         id: tagsRepeater
-                        model: todoModel.data(todoModel.index(index, 0), Kalendar.TodoSortFilterProxyModel.CategoriesRole) // Getting categories from the model is *very* faulty
+                        model: todoModel.data(todoModel.index(index, 0), Kalendar.ExtraTodoModel.CategoriesRole) // Getting categories from the model is *very* faulty
 
                         Tag {
                             text: modelData
