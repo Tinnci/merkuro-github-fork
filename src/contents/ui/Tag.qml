@@ -15,6 +15,7 @@ Item {
     property alias icon: toolButton.icon
     property alias actionText: toolButton.text
     property bool showAction: true
+    property alias itemLayout: layout
     signal clicked()
 
     implicitWidth: layout.implicitWidth
@@ -75,11 +76,13 @@ Item {
             id: label
             horizontalAlignment: Qt.AlignLeft
             verticalAlignment: Qt.AlignVCenter
+            Layout.fillWidth: true
             Layout.leftMargin: borderCover.anchors.leftMargin
             Layout.rightMargin: tagRoot.showAction ? 0 : Kirigami.Units.smallSpacing
             Layout.topMargin: tagRoot.showAction ? 0 : Kirigami.Units.smallSpacing
             Layout.bottomMargin: tagRoot.showAction ? 0 : Kirigami.Units.smallSpacing
             text: tagRoot.text
+            elide: Text.ElideRight
         }
         QQC2.ToolButton {
             id: toolButton

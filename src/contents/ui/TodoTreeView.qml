@@ -132,6 +132,7 @@ KirigamiAddonsTreeView.TreeListView {
                 }
 
                 Flow {
+                    id: tagFlow
                     Layout.fillWidth: true
                     Layout.row: root.width < Kirigami.Units.gridUnit * 28 && (recurIcon.visible || dateLabel.visible || priorityLayout.visible) ? 1 : 0
                     Layout.column: 2
@@ -147,6 +148,7 @@ KirigamiAddonsTreeView.TreeListView {
                         model: todoModel.data(todoModel.index(index, 0), Kalendar.ExtraTodoModel.CategoriesRole) // Getting categories from the model is *very* faulty
 
                         Tag {
+                            implicitWidth: itemLayout.implicitWidth > tagFlow.width ? tagFlow.width : itemLayout.implicitWidth
                             text: modelData
                             showAction: false
                         }
