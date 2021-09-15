@@ -52,7 +52,7 @@ KirigamiAddonsTreeView.TreeListView {
 
     Kirigami.PlaceholderMessage {
         anchors.centerIn: parent
-        visible: parent.count === 0 && !root.filterCollectionDetails.isFiltered
+        visible: parent.count === 0 && root.filterCollectionDetails && !root.filterCollectionDetails.isFiltered
         text: root.showCompleted === Kalendar.TodoSortFilterProxyModel.ShowCompleteOnly ?
             i18n("No todos completed") : i18n("No todos left to complete")
         helpfulAction: Kirigami.Action {
@@ -110,6 +110,7 @@ KirigamiAddonsTreeView.TreeListView {
 
                     Layout.row: 0
                     Layout.column: 0
+                    Layout.rowSpan: root.width < Kirigami.Units.gridUnit * 28 || recurIcon.visible || dateLabel.visible ? 1 : 2
 
                     color: model.color
                     radius: 100
@@ -122,6 +123,7 @@ KirigamiAddonsTreeView.TreeListView {
                     Layout.row: 0
                     Layout.column: 1
                     Layout.columnSpan: root.width < Kirigami.Units.gridUnit * 28 && (recurIcon.visible || dateLabel.visible) ? 2 : 1
+                    Layout.rowSpan: root.width < Kirigami.Units.gridUnit * 28 || recurIcon.visible || dateLabel.visible ? 1 : 2
                     Layout.fillWidth: true
                     text: model.text
                     font.strikeout: model.todoCompleted
@@ -138,16 +140,16 @@ KirigamiAddonsTreeView.TreeListView {
                     Layout.rightMargin: Kirigami.Units.largeSpacing
 
                     layoutDirection: Qt.RightToLeft
-                    visible: categories.length > 0
                     spacing: Kirigami.Units.largeSpacing
+
                     Repeater {
-                        property var categoriesModel: categories
-                        model: categoriesModel
+                        id: tagsRepeater
+                        model: todoModel.data(todoModel.index(index, 0), Kalendar.TodoSortFilterProxyModel.CategoriesRole) // Getting categories from the model is *very* faulty
+
                         Tag {
                             text: modelData
                             showAction: false
                         }
-                        Component.onCompleted: if(count === 0 && categories.length > 0) modelChanged(); // HACK: Otherwise half the time tags won't appear
                     }
                 }
 
