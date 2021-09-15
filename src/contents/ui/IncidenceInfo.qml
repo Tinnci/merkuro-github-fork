@@ -216,7 +216,6 @@ Kirigami.OverlayDrawer {
                         visible: incidenceInfo.incidenceWrapper.categories.length > 0
                     }
                     Flow {
-                        Layout.preferredWidth: tagInputLayout.implicitWidth
                         Layout.fillWidth: true
                         visible: incidenceInfo.incidenceWrapper.categories.length > 0
                         spacing: Kirigami.Units.largeSpacing
