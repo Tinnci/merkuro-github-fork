@@ -46,6 +46,31 @@ public:
     };
     Q_ENUM(ExtraTodoModelColumns);
 
+    enum ExtraTodoModelRoles {
+        StartTimeRole = TodoModel::CalendarRole + 1,
+        EndTimeRole,
+        LocationRole,
+        AllDayRole,
+        CompletedRole,
+        PriorityRole,
+        ColorRole,
+        CollectionIdRole,
+        DurationStringRole,
+        RecursRole,
+        IsOverdueRole,
+        IncidenceIdRole,
+        IncidenceTypeRole,
+        IncidenceTypeStrRole,
+        IncidenceTypeIconRole,
+        IncidencePtrRole,
+        TagsRole,
+        ItemRole,
+        CategoriesRole,
+        CategoriesDisplayRole,
+        TreeDepthRole
+    };
+    Q_ENUM(ExtraTodoModelRoles);
+
     enum ShowComplete {
         ShowAll = 0,
         ShowCompleteOnly,
