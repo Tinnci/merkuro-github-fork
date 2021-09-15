@@ -22,6 +22,25 @@ class TodoSortFilterProxyModel : public QSortFilterProxyModel
     Q_PROPERTY(int showCompleted READ showCompleted WRITE setShowCompleted NOTIFY showCompletedChanged)
 
 public:
+    enum BaseTodoModelColumns {
+        SummaryColumn = TodoModel::SummaryColumn,
+        PriorityColumn = TodoModel::PriorityColumn,
+        PercentColumn = TodoModel::PercentColumn,
+        StartDateColumn = TodoModel::StartDateColumn,
+        DueDateColumn = TodoModel::DueDateColumn,
+        CategoriesColumn = TodoModel::CategoriesColumn,
+        DescriptionColumn = TodoModel::DescriptionColumn,
+        CalendarColumn = TodoModel::CalendarColumn,
+    };
+    Q_ENUM(BaseTodoModelColumns);
+
+    enum ExtraTodoModelColumns {
+        StartTimeColumn = TodoModel::ColumnCount,
+        EndTimeColumn,
+        PriorityIntColumn
+    };
+    Q_ENUM(ExtraTodoModelColumns);
+
     enum ShowComplete {
         ShowAll = 0,
         ShowCompleteOnly,

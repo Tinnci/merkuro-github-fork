@@ -21,6 +21,7 @@ public:
         PriorityIntColumn
     };
     Q_ENUM(Columns);
+
     enum Roles { // Remember to update roles in todosortfilterproxymodel
         StartTimeRole = TodoModel::CalendarRole + 1,
         EndTimeRole,
