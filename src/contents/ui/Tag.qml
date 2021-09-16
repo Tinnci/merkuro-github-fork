@@ -15,7 +15,10 @@ Item {
     property alias icon: toolButton.icon
     property alias actionText: toolButton.text
     property bool showAction: true
+    property bool isHeading: false
     property alias itemLayout: layout
+    property alias labelItem: label
+    property alias headingItem: heading
     signal clicked()
 
     implicitWidth: layout.implicitWidth
@@ -83,6 +86,19 @@ Item {
             Layout.bottomMargin: tagRoot.showAction ? 0 : Kirigami.Units.smallSpacing
             text: tagRoot.text
             elide: Text.ElideRight
+            visible: !tagRoot.isHeading
+        }
+        Kirigami.Heading {
+            id: heading
+            horizontalAlignment: Qt.AlignLeft
+            verticalAlignment: Qt.AlignVCenter
+            Layout.fillWidth: true
+            Layout.leftMargin: borderCover.anchors.leftMargin
+            Layout.topMargin: Kirigami.Units.smallSpacing
+            Layout.bottomMargin: Kirigami.Units.smallSpacing
+            text: tagRoot.text
+            elide: Text.ElideRight
+            visible: tagRoot.isHeading
         }
         QQC2.ToolButton {
             id: toolButton
