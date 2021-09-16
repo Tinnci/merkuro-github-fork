@@ -241,8 +241,7 @@ Kirigami.OverlayDrawer {
                         text: i18n("Tags")
                         color: Kirigami.Theme.disabledTextColor
 
-                        font.weight: Font.Bold
-                        level: 5
+                        level: 4
                         z: 10
                         background: Rectangle {color: Kirigami.Theme.backgroundColor}
                     }
