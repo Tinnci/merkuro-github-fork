@@ -34,14 +34,14 @@ IncidenceWrapper::~IncidenceWrapper()
     m_incidence->unRegisterObserver(this);
 }
 
-void IncidenceWrapper::incidenceUpdate(const QString& uid, const QDateTime& recurrenceId)
+void IncidenceWrapper::incidenceUpdate(const QString& uid, const QDateTime&)
 {
     if(uid == m_incidence->uid()) {
         Q_EMIT incidenceAboutToChange();
     }
 }
 
-void IncidenceWrapper::incidenceUpdated(const QString& uid, const QDateTime& recurrenceId)
+void IncidenceWrapper::incidenceUpdated(const QString& uid, const QDateTime&)
 {
     if(uid == m_incidence->uid()) {
         notifyDataChanged();
