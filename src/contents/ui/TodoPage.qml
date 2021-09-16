@@ -181,6 +181,8 @@ Kirigami.Page {
                 visible: root.filterCategoryString
                 text: root.filterCategoryString
 
+                implicitWidth: itemLayout.implicitWidth > headerLayout.width - Kirigami.Units.gridUnit * 6 ?
+                    headerLayout.width - Kirigami.Units.gridUnit * 6 : itemLayout.implicitWidth
                 isHeading: true
                 headingItem.color: root.filterCollectionDetails ?
                     LabelUtils.getIncidenceLabelColor(root.filterCollectionDetails.color, root.isDark) : Kirigami.Theme.textColor
