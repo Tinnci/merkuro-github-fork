@@ -259,8 +259,8 @@ Kirigami.OverlayDrawer {
                         Layout.fillWidth: true
                         text: i18n("Calendars")
                         color: Kirigami.Theme.disabledTextColor
-                        font.weight: Font.Bold
-                        level: 5
+
+                        level: 4
                         z: 10
                         background: Rectangle {color: Kirigami.Theme.backgroundColor}
                     }
