@@ -752,6 +752,7 @@ Kirigami.ScrollablePage {
 
                     delegate: Kirigami.CheckableListItem {
                         label: model.display
+                        reserveSpaceForIcon: false
                         checked: root.incidenceWrapper.categories.includes(model.display)
                         action: QQC2.Action {
                             onTriggered: {
