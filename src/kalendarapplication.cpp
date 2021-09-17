@@ -64,6 +64,14 @@ void KalendarApplication::setupActions(const QString &actionName)
         mCollection.setDefaultShortcut(openMonthAction, QKeySequence(i18n("Ctrl+1")));
     }
 
+    if (actionName == QLatin1String("toggle_menubar") && KAuthorized::authorizeAction(actionName)) {
+        auto toggleMenubarAction = mCollection.addAction(actionName, this, &KalendarApplication::toggleMenubar);
+        toggleMenubarAction->setText(i18n("Show Menubar"));
+        toggleMenubarAction->setIcon(QIcon::fromTheme(QStringLiteral("show-menu")));
+        toggleMenubarAction->setCheckable(true);
+        mCollection.setDefaultShortcut(toggleMenubarAction, QKeySequence(tr("Ctrl+M")));
+    }
+
     if (actionName == QLatin1String("create_event") && KAuthorized::authorizeAction(actionName)) {
         auto action = mCollection.addAction(actionName, this, &KalendarApplication::createNewEvent);
         action->setText(i18n("New Event…"));
