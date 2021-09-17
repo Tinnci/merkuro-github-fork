@@ -116,6 +116,11 @@ Labs.MenuBar {
     }
     Labs.Menu {
         title: i18nc("@action:menu", "Settings")
+
+        NativeMenuItemFromAction {
+            kalendarAction: 'toggle_menubar'
+            visible: !globalMenuLoader.active
+        }
         NativeMenuItemFromAction {
             kalendarAction: 'options_configure_keybinding'
         }

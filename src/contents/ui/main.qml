@@ -27,6 +27,7 @@ Kirigami.ApplicationWindow {
     readonly property var monthViewAction: KalendarApplication.action("open_month_view")
     readonly property var scheduleViewAction: KalendarApplication.action("open_schedule_view")
     readonly property var todoViewAction: KalendarApplication.action("open_todo_view")
+    readonly property var toggleMenubarAction: KalendarApplication.action("toggle_menubar")
     readonly property var createEventAction: KalendarApplication.action("create_event")
     readonly property var createTodoAction: KalendarApplication.action("create_todo")
     readonly property var configureAction: KalendarApplication.action("options_configure")
@@ -92,6 +93,11 @@ Kirigami.ApplicationWindow {
         function onOpenTodoView() {
             pageStack.pop(null);
             pageStack.replace(todoPageComponent);
+        }
+
+        function onToggleMenubar() {
+            Config.showMenubar = !Config.showMenubar;
+            Config.save();
         }
 
         function onCreateNewEvent() {
@@ -200,6 +206,9 @@ Kirigami.ApplicationWindow {
                 !Kirigami.Settings.hasPlatformMenuBar && !Kirigami.Settings.isMobile :
                 !Kirigami.Settings.isMobile
 
+        visible: Config.showMenubar
+        height: visible ? implicitHeight : 0
+
         sourceComponent: WindowMenu {
             parentWindow: root
             todoMode: pageStack.currentItem.objectName == "todoView"
@@ -216,7 +225,7 @@ Kirigami.ApplicationWindow {
     }
 
     globalDrawer: Sidebar {
-        bottomPadding: menuLoader.active ? menuLoader.height : 0
+        topPadding: menuLoader.visible ? 0 : -menuLoader.height
         todoMode: pageStack.currentItem ? pageStack.currentItem.objectName === "todoView" : false
         onCalendarClicked: if(todoMode) {
             pageStack.currentItem.filterCollectionId = collectionId;
@@ -233,7 +242,7 @@ Kirigami.ApplicationWindow {
     contextDrawer: IncidenceInfo {
         id: incidenceInfo
 
-        bottomPadding: menuLoader.active ? menuLoader.height : 0
+        topPadding: menuLoader.visible ? 0 : -menuLoader.height
         contentItem.implicitWidth: Kirigami.Units.gridUnit * 25
         modal: !root.wideScreen || !enabled
         onEnabledChanged: drawerOpen = enabled && !modal
@@ -273,6 +282,7 @@ Kirigami.ApplicationWindow {
     }
 
     Loader {
+        id: globalMenuLoader
         active: !Kirigami.Settings.isMobile
         sourceComponent: GlobalMenu {
             todoMode: pageStack.currentItem.filterCollectionId !== undefined
