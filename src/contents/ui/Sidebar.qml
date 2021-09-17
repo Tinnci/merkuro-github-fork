@@ -343,11 +343,11 @@ Kirigami.OverlayDrawer {
                                 leftPadding: Kirigami.Settings.isMobile ? Kirigami.Units.largeSpacing * 2 : Kirigami.Units.largeSpacing
                                 hoverEnabled: sidebar.todoMode
                                 separatorVisible: false
+                                reserveSpaceForIcon: true
 
-                                leading: ColoredCheckbox {
+                                trailing: ColoredCheckbox {
                                     id: calendarCheckbox
 
-                                    width: Kirigami.Units.iconSizes.smallMedium
                                     visible: model.checkState != null
                                     color: model.collectionColor
                                     checked: model.checkState === 2
@@ -357,7 +357,6 @@ Kirigami.OverlayDrawer {
                                         calendarCheckChanged(collectionId, checked)
                                     }
                                 }
-                                leadingPadding: Kirigami.Settings.isMobile ? Kirigami.Units.largeSpacing * 2 : Kirigami.Units.largeSpacing
 
                                 onClicked: {
                                     calendarClicked(collectionId)
