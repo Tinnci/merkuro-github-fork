@@ -89,7 +89,7 @@ Kirigami.ScrollablePage {
             }
         }
         RowLayout {
-            Kirigami.FormData.label: i18n("Month grid border width (pixels):")
+            Kirigami.FormData.label: i18n("Grid border width (pixels):")
             Layout.fillWidth: true
             Controls.SpinBox {
                 Layout.fillWidth: true
