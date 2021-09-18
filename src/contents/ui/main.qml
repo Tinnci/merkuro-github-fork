@@ -33,6 +33,7 @@ Kirigami.ApplicationWindow {
     readonly property var scheduleViewAction: KalendarApplication.action("open_schedule_view")
     readonly property var todoViewAction: KalendarApplication.action("open_todo_view")
     readonly property var aboutPageAction: KalendarApplication.action("open_about_page")
+    readonly property var toggleMenubarAction: KalendarApplication.action("toggle_menubar")
     readonly property var createEventAction: KalendarApplication.action("create_event")
     readonly property var createTodoAction: KalendarApplication.action("create_todo")
     readonly property var configureAction: KalendarApplication.action("options_configure")
@@ -115,8 +116,14 @@ Kirigami.ApplicationWindow {
             pageStack.replace(todoPageComponent);
         }
 
+<<<<<<< HEAD
         function onOpenAboutPage() {
             pageStack.layers.push("AboutPage.qml")
+=======
+        function onToggleMenubar() {
+            Config.showMenubar = !Config.showMenubar;
+            Config.save();
+>>>>>>> 6589b24 (Make Menubar toggleable)
         }
 
         function onCreateNewEvent() {
@@ -247,6 +254,9 @@ Kirigami.ApplicationWindow {
                 !Kirigami.Settings.hasPlatformMenuBar && !Kirigami.Settings.isMobile :
                 !Kirigami.Settings.isMobile
 
+        visible: Config.showMenubar
+        height: visible ? implicitHeight : 0
+
         sourceComponent: WindowMenu {
             parentWindow: root
             todoMode: pageStack.currentItem.objectName == "todoView"
@@ -328,6 +338,7 @@ Kirigami.ApplicationWindow {
     }
 
     Loader {
+        id: globalMenuLoader
         active: !Kirigami.Settings.isMobile
         sourceComponent: GlobalMenu {
             todoMode: pageStack.currentItem.filterCollectionId !== undefined
