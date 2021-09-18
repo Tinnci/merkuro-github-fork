@@ -4,7 +4,6 @@
 #include <AkonadiCore/TagCreateJob>
 #include <AkonadiCore/TagDeleteJob>
 #include <AkonadiCore/TagModifyJob>
-#include <AkonadiCore/TagFetchJob>
 #include <tagmanager.h>
 
 class FlatTagModel : public QSortFilterProxyModel
@@ -73,7 +72,11 @@ void TagManager::createTag(QString name)
 
 void TagManager::deleteTag(Akonadi::Tag tag)
 {
-
+    Akonadi::TagDeleteJob *job = new Akonadi::TagDeleteJob(tag);
+    connect(job, &Akonadi::TagDeleteJob::result, this, [=](KJob *job) {
+          if (job->error())
+            qDebug() << "Error occurred renaming tag";
+    });
 }
 
 void TagManager::renameTag(Akonadi::Tag tag, QString newName)
