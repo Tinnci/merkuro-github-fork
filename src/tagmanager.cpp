@@ -1,6 +1,10 @@
 // SPDX-FileCopyrightText: 2021 Claudio Cambra <claudio.cambra@gmail.com>
 // SPDX-License-Identifier: LGPL-2.1-or-later
 
+#include <AkonadiCore/TagCreateJob>
+#include <AkonadiCore/TagDeleteJob>
+#include <AkonadiCore/TagModifyJob>
+#include <AkonadiCore/TagFetchJob>
 #include <tagmanager.h>
 
 class FlatTagModel : public QSortFilterProxyModel
@@ -20,6 +24,18 @@ public:
         setDynamicSortFilter(true);
         sort(0);
     };
+
+    QHash<int, QByteArray> roleNames() const override {
+        auto rolenames = QSortFilterProxyModel::roleNames();
+        rolenames[Akonadi::TagModel::Roles::NameRole] = "name";
+        rolenames[Akonadi::TagModel::Roles::IdRole] = "id";
+        rolenames[Akonadi::TagModel::Roles::GIDRole] = "gid";
+        rolenames[Akonadi::TagModel::Roles::TypeRole] = "type";
+        rolenames[Akonadi::TagModel::Roles::ParentRole] = "parent";
+        rolenames[Akonadi::TagModel::Roles::TagRole] = "tag";
+
+        return rolenames;
+    }
 
 protected:
     bool filterAcceptsRow(int row, const QModelIndex &sourceParent) const override
@@ -45,4 +61,22 @@ QSortFilterProxyModel * TagManager::tagModel()
     return m_tagModel;
 }
 
+void TagManager::createTag(QString name)
+{
 
+}
+
+void TagManager::deleteTag(Akonadi::Tag tag)
+{
+
+}
+
+void TagManager::renameTag(Akonadi::Tag tag, QString newName)
+{
+    tag.setName(newName);
+    Akonadi::TagModifyJob *job = new Akonadi::TagModifyJob(tag);
+    connect(job, &Akonadi::TagModifyJob::result, this, [=](KJob *job) {
+          if (job->error())
+            qDebug() << "Error occurred renaming tag";
+    });
+}
