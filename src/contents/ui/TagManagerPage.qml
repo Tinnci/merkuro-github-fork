@@ -104,26 +104,26 @@ Kirigami.ScrollablePage {
     }
 
 
-    footer: ColumnLayout {
+    footer: Kirigami.ActionTextField {
+        id: newTagField
+        Layout.fillWidth: true
+        placeholderText: i18n("Create a New Tag...")
 
-        RowLayout {
-            QQC2.TextField {
-                id: newTagField
-                Layout.fillWidth: true
-                placeholderText: i18n("Create a New Tag...")
-            }
-            QQC2.Button {
-                Layout.column: 4
-                Layout.row: 0
-                icon.name: "tag-new"
-                text: i18n("Create Tag")
-                onClicked: {
-                    if(newTagField.text !== "") {
-                        TagManager.createTag(newTagField.text);
-                        newTagField.text = "";
-                    }
-                }
+        Kirigami.Theme.inherit: false
+        Kirigami.Theme.colorSet: Kirigami.Theme.Window
+
+        function addTag() {
+            if(newTagField.text !== "") {
+                TagManager.createTag(newTagField.text);
+                newTagField.text = "";
             }
         }
+
+        rightActions: Kirigami.Action {
+            icon.name: "tag-new"
+            tooltip: i18n("Quickly Add a New Tag.")
+            onTriggered: newTagField.addTag()
+        }
+        onAccepted: newTagField.addTag()
     }
 }
