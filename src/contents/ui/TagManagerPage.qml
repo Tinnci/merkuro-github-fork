@@ -12,6 +12,32 @@ Kirigami.ScrollablePage {
 
     title: i18n("Manage Tags")
 
+    Kirigami.OverlaySheet {
+        id: deleteConfirmSheet
+        title: i18n("Delete Tag")
+
+        property string tagName
+        property var tag
+
+        ColumnLayout {
+            QQC2.Label {
+                Layout.fillWidth: true
+                text: i18n("Are you sure you want to delete tag \"%1\"?", deleteConfirmSheet.tagName)
+                wrapMode: Text.Wrap
+            }
+        }
+
+        footer: QQC2.DialogButtonBox {
+            standardButtons: QQC2.DialogButtonBox.Ok | QQC2.DialogButtonBox.Cancel
+
+            onAccepted: {
+                TagManager.deleteTag(deleteConfirmSheet.tag);
+                deleteConfirmSheet.close();
+            }
+            onRejected: deleteConfirmSheet.close()
+        }
+    }
+
     ListView {
         currentIndex: -1
         model: TagManager.tagModel
@@ -42,6 +68,11 @@ Kirigami.ScrollablePage {
                     }
                     QQC2.ToolButton {
                         icon.name: "delete"
+                        onClicked: {
+                            deleteConfirmSheet.tag = model.tag;
+                            deleteConfirmSheet.tagName = model.name;
+                            deleteConfirmSheet.open();
+                        }
                         visible: !delegateLayout.editMode
                     }
 
@@ -87,8 +118,10 @@ Kirigami.ScrollablePage {
                 icon.name: "tag-new"
                 text: i18n("Create Tag")
                 onClicked: {
-                    TagManager.createTag(newTagField.text);
-                    newTagField.text = "";
+                    if(newTagField.text !== "") {
+                        TagManager.createTag(newTagField.text);
+                        newTagField.text = "";
+                    }
                 }
             }
         }
