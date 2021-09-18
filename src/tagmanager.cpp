@@ -65,7 +65,7 @@ void TagManager::createTag(QString name)
     Akonadi::Tag tag(name);
     Akonadi::TagCreateJob *job = new Akonadi::TagCreateJob(tag, this);
     connect(job, &Akonadi::TagCreateJob::finished, this, [=](KJob *job) {
-          if (job->error())
+        if (job->error())
             qDebug() << "Error occurred creating tag";
     });
 }
