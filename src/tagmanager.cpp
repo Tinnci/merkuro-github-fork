@@ -84,7 +84,7 @@ void TagManager::renameTag(Akonadi::Tag tag, QString newName)
     tag.setName(newName);
     Akonadi::TagModifyJob *job = new Akonadi::TagModifyJob(tag);
     connect(job, &Akonadi::TagModifyJob::result, this, [=](KJob *job) {
-          if (job->error())
+        if (job->error())
             qDebug() << "Error occurred renaming tag";
     });
 }
