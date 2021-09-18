@@ -77,13 +77,19 @@ Kirigami.ScrollablePage {
 
         RowLayout {
             QQC2.TextField {
+                id: newTagField
                 Layout.fillWidth: true
                 placeholderText: i18n("Create a New Tag...")
             }
             QQC2.Button {
                 Layout.column: 4
                 Layout.row: 0
+                icon.name: "tag-new"
                 text: i18n("Create Tag")
+                onClicked: {
+                    TagManager.createTag(newTagField.text);
+                    newTagField.text = "";
+                }
             }
         }
     }
