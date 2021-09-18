@@ -188,6 +188,9 @@ Kirigami.OverlayDrawer {
                         enabled: CalendarManager.undoRedoData.redoAvailable
                         onTriggered: CalendarManager.redoAction();
                     },
+                    KActionFromAction {
+                        kalendarAction: "open_tag_manager"
+                    },
                     Kirigami.Action {
                         text: i18n("Settings")
                         icon.name: KalendarApplication.iconName(configureAction.icon)
