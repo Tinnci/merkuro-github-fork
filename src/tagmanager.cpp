@@ -79,7 +79,7 @@ void TagManager::deleteTag(Akonadi::Tag tag)
     });
 }
 
-void TagManager::renameTag(Akonadi::Tag tag, QString newName)
+void TagManager::renameTag(Akonadi::Tag tag, const QString &newName)
 {
     tag.setName(newName);
     Akonadi::TagModifyJob *job = new Akonadi::TagModifyJob(tag);
