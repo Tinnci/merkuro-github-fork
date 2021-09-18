@@ -60,7 +60,7 @@ QSortFilterProxyModel * TagManager::tagModel()
     return m_tagModel;
 }
 
-void TagManager::createTag(QString name)
+void TagManager::createTag(const QString &name)
 {
     Akonadi::Tag tag(name);
     Akonadi::TagCreateJob *job = new Akonadi::TagCreateJob(tag, this);
