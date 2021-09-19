@@ -27,7 +27,7 @@ public:
     QHash<int, QByteArray> roleNames() const override {
         auto rolenames = QSortFilterProxyModel::roleNames();
         rolenames[Akonadi::TagModel::Roles::NameRole] = "name";
-        rolenames[Akonadi::TagModel::Roles::IdRole] = "id";
+        rolenames[Akonadi::TagModel::Roles::IdRole] = QByteArrayLiteral("id");
         rolenames[Akonadi::TagModel::Roles::GIDRole] = "gid";
         rolenames[Akonadi::TagModel::Roles::TypeRole] = "type";
         rolenames[Akonadi::TagModel::Roles::ParentRole] = "parent";
