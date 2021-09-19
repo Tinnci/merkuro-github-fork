@@ -68,13 +68,12 @@ Item {
         }
     }
 
-    Rectangle {
+    Kirigami.Separator {
+        id: gridBackground
         anchors {
             fill: parent
             topMargin: dayLabels.height
         }
-        // Matches Kirigami Separator color
-        color: Kirigami.ColorUtils.linearInterpolation(Kirigami.Theme.backgroundColor, Kirigami.Theme.textColor, 0.15)
     }
 
     Column {
