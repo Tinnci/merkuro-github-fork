@@ -122,7 +122,7 @@ Kirigami.ScrollablePage {
         }
 
         function addTag() {
-            if(newTagField.text !== "") {
+            if(newTagField.text.length > 0) {
                 TagManager.createTag(newTagField.text);
                 newTagField.text = "";
             }
