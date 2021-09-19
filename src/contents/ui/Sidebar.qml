@@ -377,7 +377,7 @@ Kirigami.OverlayDrawer {
         Layout.fillWidth: true
     }
     Kirigami.BasicListItem {
-        Layout.topMargin: -Kirigami.Units.smallSpacing
+        Layout.topMargin: -Kirigami.Units.smallSpacing - 1
         icon: "show-all-effects"
         label: i18n("View all todos")
         labelItem.color: Kirigami.Theme.textColor
