@@ -16,7 +16,6 @@ QQC2.Popup {
     property date date: new Date()
     property bool showDay: true
 
-
     ColumnLayout {
         RowLayout {
             id: dateChangingLayout
