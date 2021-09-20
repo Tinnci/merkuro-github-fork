@@ -280,8 +280,9 @@ Kirigami.ApplicationWindow {
         id: dateChangeDrawer
         //x: pageStack.currentItem.titleDelegate.x
         y: Kirigami.Units.largeSpacing * 5
+        showDay: pageStack.currentItem.objectName !== "monthView"
         date: new Date (root.year, root.month, 1)
-        onDateSelected: pageStack.currentItem.setToDate(date)
+        onDateSelected: if(visible) pageStack.currentItem.setToDate(date)
     }
 
     IncidenceEditor {
