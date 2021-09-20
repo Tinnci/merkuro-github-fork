@@ -276,6 +276,13 @@ Kirigami.ApplicationWindow {
         }
     }
 
+    DateChangeDrawer {
+        id: dateChangeDrawer
+        //x: pageStack.currentItem.titleDelegate.x
+        y: Kirigami.Units.largeSpacing * 5
+        date: new Date (year, month, 1)
+    }
+
     IncidenceEditor {
         id: incidenceEditor
         onAdded: CalendarManager.addIncidence(incidenceWrapper)
@@ -443,7 +450,10 @@ Kirigami.ApplicationWindow {
             id: monthView
             objectName: "monthView"
 
-            title: firstDayOfMonth.toLocaleDateString(Qt.locale(), "<b>MMMM</b> yyyy")
+            titleDelegate: TitleDateButton {
+                date: monthView.firstDayOfMonth
+                onClicked: dateChangeDrawer.open()
+            }
             currentDate: root.currentDate
             openOccurrence: root.openOccurrence
 
@@ -470,7 +480,10 @@ Kirigami.ApplicationWindow {
             id: scheduleView
             objectName: "scheduleView"
 
-            title: startDate.toLocaleDateString(Qt.locale(), "<b>MMMM</b> yyyy")
+            titleDelegate: TitleDateButton {
+                date: scheduleView.startDate
+                onClicked: dateChangeDrawer.open()
+            }
             selectedDate: root.currentDate
             openOccurrence: root.openOccurrence
 
