@@ -280,7 +280,8 @@ Kirigami.ApplicationWindow {
         id: dateChangeDrawer
         //x: pageStack.currentItem.titleDelegate.x
         y: Kirigami.Units.largeSpacing * 5
-        date: new Date (year, month, 1)
+        date: new Date (root.year, root.month, 1)
+        onDateSelected: pageStack.currentItem.setToDate(date)
     }
 
     IncidenceEditor {

@@ -11,6 +11,8 @@ import "dateutils.js" as DateUtils
 QQC2.Popup {
     id: root
 
+    signal dateSelected(date date)
+
     property date date: new Date()
     property bool showDay: true
 
@@ -24,7 +26,10 @@ QQC2.Popup {
 
             QQC2.ToolButton {
                 icon.name: "go-previous"
-                onClicked: root.date = DateUtils.addDaysToDate(root.date, -1)
+                onClicked: {
+                    root.date = DateUtils.addDaysToDate(root.date, -1);
+                    root.dateSelected(root.date);
+                }
             }
             QQC2.ToolButton {
                 id: dayButton
@@ -36,7 +41,10 @@ QQC2.Popup {
             }
             QQC2.ToolButton {
                 icon.name: "go-next"
-                onClicked: root.date = DateUtils.addDaysToDate(root.date, 1)
+                onClicked: {
+                    root.date = DateUtils.addDaysToDate(root.date, 1);
+                    root.dateSelected(root.date);
+                }
             }
         }
         RowLayout {
@@ -64,7 +72,10 @@ QQC2.Popup {
 
             QQC2.ToolButton {
                 icon.name: "go-previous"
-                onClicked: root.date = DateUtils.previousMonth(root.date)
+                onClicked: {
+                    root.date = DateUtils.previousMonth(root.date);
+                    root.dateSelected(root.date);
+                }
             }
             QQC2.ToolButton {
                 id: monthButton
@@ -76,7 +87,10 @@ QQC2.Popup {
             }
             QQC2.ToolButton {
                 icon.name: "go-next"
-                onClicked: root.date = DateUtils.nextMonth(root.date)
+                onClicked: {
+                    root.date = DateUtils.nextMonth(root.date);
+                    root.dateSelected(root.date);
+                }
             }
         }
         RowLayout {
@@ -103,7 +117,10 @@ QQC2.Popup {
 
             QQC2.ToolButton {
                 icon.name: "go-previous"
-                onClicked: root.date = new Date(root.date.getFullYear() - 1, root.date.getMonth(), root.date.getDate())
+                onClicked: {
+                    root.date = new Date(root.date.getFullYear() - 1, root.date.getMonth(), root.date.getDate());
+                    root.dateSelected(root.date);
+                }
             }
             QQC2.ToolButton {
                 id: yearButton
@@ -115,7 +132,10 @@ QQC2.Popup {
             }
             QQC2.ToolButton {
                 icon.name: "go-next"
-                onClicked: root.date = new Date(root.date.getFullYear() + 1, root.date.getMonth(), root.date.getDate())
+                onClicked: {
+                    root.date = new Date(root.date.getFullYear() + 1, root.date.getMonth(), root.date.getDate());
+                    root.dateSelected(root.date);
+                }
             }
         }
         RowLayout {
