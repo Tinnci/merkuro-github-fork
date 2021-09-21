@@ -19,7 +19,6 @@ Kirigami.ApplicationWindow {
 
     property date currentDate: new Date()
     property date selectedDate: currentDate
-    onSelectedDateChanged: console.log(selectedDate)
 
     property var openOccurrence
 
@@ -276,7 +275,7 @@ Kirigami.ApplicationWindow {
     DateChanger {
         id: dateChangeDrawer
         y: Kirigami.Units.largeSpacing * 5
-        showDay: pageStack.currentItem.objectName !== "monthView"
+        showDays: pageStack.currentItem.objectName !== "monthView"
         date: root.selectedDate
         onDateSelected: if(visible) pageStack.currentItem.setToDate(date)
     }
