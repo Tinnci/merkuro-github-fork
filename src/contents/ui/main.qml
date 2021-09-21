@@ -273,7 +273,7 @@ Kirigami.ApplicationWindow {
         }
     }
 
-    DateChangeDrawer {
+    DateChanger {
         id: dateChangeDrawer
         y: Kirigami.Units.largeSpacing * 5
         showDay: pageStack.currentItem.objectName !== "monthView"
