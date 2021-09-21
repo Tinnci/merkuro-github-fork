@@ -9,6 +9,7 @@
 
 #include <QMetaEnum>
 
+#include <AkonadiCore/EntityTreeModel>
 #include <KCalendarCore/OccurrenceIterator>
 #include <KCalendarCore/MemoryCalendar>
 #include <KFormat>
@@ -96,8 +97,7 @@ void IncidenceOccurrenceModel::refreshView()
 {
     if (!mRefreshTimer.isActive()) {
         // Instant update, but then only refresh every 50ms max.
-        updateFromSource();
-        mRefreshTimer.start(300);
+        mRefreshTimer.start(50);
     }
 }
 
@@ -106,8 +106,6 @@ void IncidenceOccurrenceModel::updateFromSource()
     beginResetModel();
 
     m_incidences.clear();
-
-    load();
 
     if (m_coreCalendar) {
         const auto allEvents = m_coreCalendar->events(mStart, mEnd); // get all events
@@ -129,7 +127,7 @@ void IncidenceOccurrenceModel::updateFromSource()
                 auto end = incidence->endDateForStart(start);
 
                 if(incidence->type() == KCalendarCore::Incidence::IncidenceType::TypeTodo) {
-                    KCalendarCore::Todo::Ptr todo = m_coreCalendar->todo(incidence->uid());
+                    KCalendarCore::Todo::Ptr todo = incidence.staticCast<KCalendarCore::Todo>();
 
                     if(!start.isValid()) { // Todos are very likely not to have a set start date
                         start = todo->dtDue();

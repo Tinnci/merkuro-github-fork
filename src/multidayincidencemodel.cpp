@@ -16,6 +16,7 @@ enum Roles {
 MultiDayIncidenceModel::MultiDayIncidenceModel(QObject *parent)
     : QAbstractItemModel(parent)
 {
+    mRefreshTimer.setSingleShot(true);
 }
 
 QModelIndex MultiDayIncidenceModel::index(int row, int column, const QModelIndex &parent) const
@@ -247,8 +248,11 @@ void MultiDayIncidenceModel::setModel(IncidenceOccurrenceModel *model)
     beginResetModel();
     mSourceModel = model;
     auto resetModel = [this] {
-        beginResetModel();
-        endResetModel();
+        if (!mRefreshTimer.isActive()) {
+            beginResetModel();
+            endResetModel();
+            mRefreshTimer.start(50);
+        }
     };
     QObject::connect(model, &QAbstractItemModel::dataChanged, this, resetModel);
     QObject::connect(model, &QAbstractItemModel::layoutChanged, this, resetModel);
