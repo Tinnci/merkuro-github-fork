@@ -224,7 +224,6 @@ Kirigami.Page {
                             // This will very much screw up use of positionViewAtIndex.
 
                             id: dayColumn
-
                             width: scheduleListView.width
 
                             Kirigami.ListSectionHeader {

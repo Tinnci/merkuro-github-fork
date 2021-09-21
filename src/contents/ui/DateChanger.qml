@@ -16,13 +16,19 @@ QQC2.Popup {
     property date date: new Date()
     property bool showDay: true
 
-    ColumnLayout {
-        RowLayout {
-            id: dateChangingLayout
-            RowLayout {
+    contentItem: GridLayout {
+        id: dateChangingLayout
+        Layout.preferredWidth: Kirigami.Units.gridUnit * 25
+        rows: 2
+        columns: 3
+
+        Flow {
+            Layout.columnSpan: 3
+            Layout.fillWidth: true
+            Row {
                 id: dayNormalLayout
-                Layout.fillWidth: true
                 visible: root.showDay
+                Layout.fillWidth: true
 
                 QQC2.ToolButton {
                     icon.name: "go-previous"
@@ -33,6 +39,7 @@ QQC2.Popup {
                 }
                 QQC2.ToolButton {
                     id: dayButton
+                    Layout.fillWidth: true
                     text: root.date.getDate()
                     onClicked: {
                         dayEditLayout.visible = true;
@@ -47,12 +54,13 @@ QQC2.Popup {
                     }
                 }
             }
-            RowLayout {
+            Row {
                 id: dayEditLayout
-                Layout.fillWidth: true
                 visible: false
+                Layout.fillWidth: true
 
                 QQC2.SpinBox {
+                    Layout.fillWidth: true
                     value: root.date.getDate()
                     onValueChanged: if(visible) {
                         root.date = new Date (root.date.getFullYear(), root.date.getMonth(), value);
@@ -69,7 +77,7 @@ QQC2.Popup {
                 }
             }
 
-            RowLayout {
+            Row {
                 id: monthNormalLayout
                 Layout.fillWidth: true
 
@@ -82,6 +90,7 @@ QQC2.Popup {
                 }
                 QQC2.ToolButton {
                     id: monthButton
+                    Layout.fillWidth: true
                     text: Qt.locale().monthName(root.date.getMonth())
                     onClicked: {
                         monthEditLayout.visible = true;
@@ -96,12 +105,13 @@ QQC2.Popup {
                     }
                 }
             }
-            RowLayout {
+            Row {
                 id: monthEditLayout
-                Layout.fillWidth: true
                 visible: false
+                Layout.fillWidth: true
 
                 QQC2.SpinBox {
+                    Layout.fillWidth: true
                     value: root.date.getMonth() + 1
                     onValueChanged: if(visible) {
                         root.date = new Date (root.date.getFullYear(), value - 1, root.date.getDate());
@@ -117,7 +127,7 @@ QQC2.Popup {
                 }
             }
 
-            RowLayout {
+            Row {
                 id: yearNormalLayout
                 Layout.fillWidth: true
 
@@ -130,6 +140,7 @@ QQC2.Popup {
                 }
                 QQC2.ToolButton {
                     id: yearButton
+                    Layout.fillWidth: true
                     text: root.date.getFullYear()
                     onClicked: {
                         yearEditLayout.visible = true;
@@ -144,12 +155,14 @@ QQC2.Popup {
                     }
                 }
             }
-            RowLayout {
+            Row {
                 id: yearEditLayout
                 visible: false
+                Layout.fillWidth: true
 
                 QQC2.SpinBox {
                     id: yearField
+                    Layout.fillWidth: true
                     value: root.date.getFullYear()
                     onValueChanged: if(visible) {
                         root.date = new Date (value, root.date.getMonth(), root.date.getDate());
@@ -168,13 +181,13 @@ QQC2.Popup {
             }
         }
 
-        RowLayout {
+        QQC2.DialogButtonBox {
             id: bottomButtonsLayout
-            Layout.alignment: Qt.AlignRight
+
+            Layout.fillWidth: true
+            Layout.columnSpan: 3
 
             QQC2.Button {
-                Layout.row: 1
-                Layout.column: 1
                 icon.name: "go-jump-today"
                 text: i18n("Today")
                 onClicked: {
@@ -183,8 +196,6 @@ QQC2.Popup {
                 }
             }
             QQC2.Button {
-                Layout.row: 1
-                Layout.column: 2
                 icon.name: "answer"
                 text: i18n("Done")
                 onClicked: root.close()
