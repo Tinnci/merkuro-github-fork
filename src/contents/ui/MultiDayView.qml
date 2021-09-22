@@ -31,6 +31,10 @@ Item {
         ((width - weekHeaderWidth) / daysPerRow) - spacing : // No spacing on right, spacing in between weekheader and monthgrid
         (width - weekHeaderWidth - (spacing * (daysPerRow - 1))) / daysPerRow // No spacing on left or right of month grid when no week header
     property date currentDate
+    // Getting the components once makes this faster when we need them repeatedly
+    property int currentDay: currentDate ? currentDate.getDate() : null
+    property int currentMonth: currentDate ? currentDate.getMonth() : null
+    property int currentYear: currentDate ? currentDate.getFullYear() : null
     property date startDate
     property var calendarFilter
     property bool paintGrid: true
@@ -134,15 +138,18 @@ Item {
                                     width: root.dayWidth
                                     property date gridSquareDate: date
                                     property date date: DateUtils.addDaysToDate(dayDelegate.startDate, modelData)
-                                    property bool isToday: DateUtils.sameDay(root.currentDate, date)
-                                    property bool isCurrentMonth: date.getMonth() == root.month
+                                    property int day: date.getDate()
+                                    property int month: date.getMonth()
+                                    property int year: date.getFullYear()
+                                    property bool isToday: day === root.currentDay && month === root.currentMonth && year === root.currentYear
+                                    property bool isCurrentMonth: month === root.month
 
                                     Rectangle {
                                         anchors.fill: parent
                                         Kirigami.Theme.inherit: false
                                         Kirigami.Theme.colorSet: Kirigami.Theme.View
                                         color: gridItem.isToday ? Kirigami.Theme.activeBackgroundColor :
-                                        gridItem.isCurrentMonth ? Kirigami.Theme.backgroundColor : Kirigami.Theme.alternateBackgroundColor
+                                            gridItem.isCurrentMonth ? Kirigami.Theme.backgroundColor : Kirigami.Theme.alternateBackgroundColor
 
                                         DayMouseArea {
                                             anchors.fill: parent
@@ -167,11 +174,12 @@ Item {
                                         }
                                         Text {
                                             Layout.alignment: Qt.AlignRight | Qt.AlignTop
-                                            text: gridItem.date.toLocaleDateString(Qt.locale(), gridItem.isToday && gridItem.date.getDate() == 1 ?
-                                            "<b>d MMM</b>" : (gridItem.isToday ? "<b>d</b>" : (gridItem.date.getDate() == 1 ? "d MMM" : "d")))
+                                            text: gridItem.date.toLocaleDateString(Qt.locale(), gridItem.day == 1 ?
+                                            "d MMM" : "d")
                                             padding: Kirigami.Units.smallSpacing
                                             visible: root.showDayIndicator
                                             color: gridItem.isToday ? Kirigami.Theme.highlightColor : (!gridItem.isCurrentMonth ? Kirigami.Theme.disabledTextColor : Kirigami.Theme.textColor)
+                                            font.bold: gridItem.isToday
                                         }
                                     }
                                 }
