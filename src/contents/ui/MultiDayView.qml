@@ -330,7 +330,7 @@ Item {
                                                         incidenceContents.otherMonthTextColor(modelData.color)
                                                 }
 
-                                                QQC2.Label {
+                                                Text {
                                                     Layout.fillWidth: true
                                                     text: modelData.text
                                                     elide: Text.ElideRight
