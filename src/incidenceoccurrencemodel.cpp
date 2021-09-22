@@ -250,6 +250,8 @@ QVariant IncidenceOccurrenceModel::data(const QModelIndex &idx, int role) const
         }
         case Recurs:
             return incidence.incidence->recurs();
+        case HasReminders:
+            return incidence.incidence->alarms().length() > 0;
         case Priority:
             return incidence.incidence->priority();
         case Color:
