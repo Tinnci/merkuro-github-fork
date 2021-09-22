@@ -106,7 +106,7 @@ Kirigami.Page {
         snapMode: PathView.SnapToItem
         focus: true
         interactive: Kirigami.Settings.tabletMode
-        pathItemCount: 2
+        pathItemCount: Kirigami.Settings.tabletMode ? 3 : 2
 
         path: Path {
             startX: - pathView.width * pathView.pathItemCount / 2 + pathView.width / 2
@@ -129,6 +129,7 @@ Kirigami.Page {
             root.startDate = currentItem.firstDayOfMonth;
             root.month = currentItem.month;
             root.year = currentItem.year;
+            root.initialMonth = false;
 
             if(currentIndex >= count - 2) {
                 model.addDates(true);
@@ -148,11 +149,9 @@ Kirigami.Page {
 
             property int index: model.index
             property bool isCurrentItem: PathView.isCurrentItem
-            property bool isNextItem: (index >= pathView.currentIndex -1 && index <= pathView.currentIndex + 1) ||
-                (index == pathView.count - 1 && pathView.currentIndex == 0) ||
-                (index == 0 && pathView.currentIndex == pathView.count - 1)
+            property bool isNextOrCurrentItem: index >= pathView.currentIndex -1 && index <= pathView.currentIndex + 1
 
-            active: isCurrentItem || (isNextItem && pathView.moving)
+            active: isNextOrCurrentItem
             //asynchronous: true
             sourceComponent: QQC2.ScrollView {
                 width: pathView.width
@@ -172,7 +171,7 @@ Kirigami.Page {
                      */
                     Layout.bottomMargin: Kirigami.Units.largeSpacing * 5
                     highlightRangeMode: ListView.ApplyRange
-                    onCountChanged: root.moveToSelected()
+                    onCountChanged: if(root.initialMonth) root.moveToSelected()
 
                     Component {
                         id: monthHeaderComponent
