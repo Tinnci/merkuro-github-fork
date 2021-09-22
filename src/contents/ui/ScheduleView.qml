@@ -345,7 +345,7 @@ Kirigami.Page {
                                                 Kirigami.Theme.inherit: false
                                                 Kirigami.Theme.colorSet: Kirigami.Theme.View
                                                 Kirigami.Theme.backgroundColor: isOpenOccurrence ? modelData.color :
-                                                LabelUtils.getIncidenceBackgroundColor(modelData.color, root.isDark)
+                                                    LabelUtils.getIncidenceBackgroundColor(modelData.color, root.isDark)
                                                 Kirigami.Theme.highlightColor: Qt.darker(Kirigami.Theme.backgroundColor, 3)
 
                                                 property real paddingSize: Kirigami.Settings.isMobile ? Kirigami.Units.largeSpacing : Kirigami.Units.smallSpacing
@@ -356,16 +356,10 @@ Kirigami.Page {
                                                 showClickFeedback: true
 
                                                 property bool isOpenOccurrence: root.openOccurrence ?
-                                                root.openOccurrence.incidenceId === modelData.incidenceId : false
-                                                property var incidenceWrapper: new IncidenceWrapper()
+                                                    root.openOccurrence.incidenceId === modelData.incidenceId : false
                                                 property bool multiday: modelData.startTime.getDate() !== modelData.endTime.getDate()
                                                 property int incidenceDays: DateUtils.fullDaysBetweenDates(modelData.startTime, modelData.endTime)
                                                 property int dayOfMultidayIncidence: DateUtils.fullDaysBetweenDates(modelData.startTime, periodStartDate)
-
-                                                Component.onCompleted: {
-                                                    incidenceWrapper = Qt.createQmlObject('import org.kde.kalendar 1.0; IncidenceWrapper {id: incidence}', incidenceCard, "incidence");
-                                                    incidenceWrapper.incidencePtr = modelData.incidencePtr
-                                                }
 
                                                 contentItem: GridLayout {
                                                     id: cardContents
@@ -378,7 +372,7 @@ Kirigami.Page {
                                                     RowLayout {
                                                         Kirigami.Icon {
                                                             Layout.fillHeight: true
-                                                            source: incidenceCard.incidenceWrapper.incidenceIconName
+                                                            source: modelData.incidenceTypeIcon
                                                             color: cardContents.textColor
                                                         }
 
@@ -409,7 +403,7 @@ Kirigami.Page {
                                                         Layout.column: 1
                                                         Layout.row: 0
 
-                                                        visible: incidenceCard.incidenceWrapper.remindersModel.rowCount() > 0 || incidenceCard.incidenceWrapper.recurrenceData.type
+                                                        visible: modelData.hasReminders || modelData.recurs
 
                                                         Kirigami.Icon {
                                                             id: recurringIcon
@@ -418,7 +412,7 @@ Kirigami.Page {
                                                             isMask: true
                                                             color: incidenceCard.isOpenOccurrence ? (LabelUtils.isDarkColor(modelData.color) ? "white" : "black") :
                                                             cardContents.textColor
-                                                            visible: incidenceCard.incidenceWrapper.recurrenceData.type
+                                                            visible: modelData.recurs
                                                         }
                                                         Kirigami.Icon {
                                                             id: reminderIcon
@@ -427,7 +421,7 @@ Kirigami.Page {
                                                             isMask: true
                                                             color: incidenceCard.isOpenOccurrence ? (LabelUtils.isDarkColor(modelData.color) ? "white" : "black") :
                                                             cardContents.textColor
-                                                            visible: incidenceCard.incidenceWrapper.remindersModel.rowCount() > 0
+                                                            visible: modelData.hasReminders
                                                         }
                                                     }
 
