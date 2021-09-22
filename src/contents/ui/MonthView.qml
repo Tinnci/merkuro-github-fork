@@ -143,17 +143,16 @@ Kirigami.Page {
             property int month: model.selectedMonth - 1 // Convert QDateTime month to JS month
             property int year: model.selectedYear
 
-            property bool isCurrentItem: PathView.isCurrentItem
-            property bool isNextItem: index >= pathView.currentIndex -1 && index <= pathView.currentIndex + 1
+            property bool isNextOrCurrentItem: index >= pathView.currentIndex -1 && index <= pathView.currentIndex + 1
 
-            active: isCurrentItem || (isNextItem && pathView.moving)
+            active: isNextOrCurrentItem
             //asynchronous: true
             sourceComponent: MultiDayView {
                 id: dayView
                 objectName: "monthView"
                 width: pathView.width
                 height: pathView.height
-                loadModel: viewLoader.isNextItem
+                loadModel: viewLoader.isNextOrCurrentItem
 
                 startDate: model.startDate
                 currentDate: monthPage.currentDate
