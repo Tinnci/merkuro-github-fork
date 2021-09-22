@@ -165,14 +165,14 @@ Item {
                                         anchors.right: parent.right
                                         anchors.left: parent.left
 
-                                        Text {
+                                        QQC2.Label {
                                             Layout.alignment: Qt.AlignLeft | Qt.AlignTop
                                             padding: Kirigami.Units.smallSpacing
                                             text: i18n("<b>Today</b>")
                                             color: Kirigami.Theme.highlightColor
                                             visible: gridItem.isToday && gridItem.width > Kirigami.Units.gridUnit * 5
                                         }
-                                        Text {
+                                        QQC2.Label {
                                             Layout.alignment: Qt.AlignRight | Qt.AlignTop
                                             text: gridItem.date.toLocaleDateString(Qt.locale(), gridItem.day == 1 ?
                                             "d MMM" : "d")
@@ -330,7 +330,7 @@ Item {
                                                         incidenceContents.otherMonthTextColor(modelData.color)
                                                 }
 
-                                                Text {
+                                                QQC2.Label {
                                                     Layout.fillWidth: true
                                                     text: modelData.text
                                                     elide: Text.ElideRight
