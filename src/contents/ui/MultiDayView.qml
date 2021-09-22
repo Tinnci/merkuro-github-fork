@@ -134,7 +134,6 @@ Item {
                                     width: root.dayWidth
                                     property date gridSquareDate: date
                                     property date date: DateUtils.addDaysToDate(dayDelegate.startDate, modelData)
-                                    property bool isInPast: DateUtils.roundToDay(date) < DateUtils.roundToDay(root.currentDate)
                                     property bool isToday: DateUtils.sameDay(root.currentDate, date)
                                     property bool isCurrentMonth: date.getMonth() == root.month
 
