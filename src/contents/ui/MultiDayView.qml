@@ -3,7 +3,7 @@
 // SPDX-FileCopyrightText: 2021 Claudio Cambra <claudio.cambra@gmail.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
-import QtQuick 2.4
+import QtQuick 2.15
 import QtQuick.Layouts 1.15
 import QtQuick.Controls 2.15 as QQC2
 import org.kde.kirigami 2.14 as Kirigami
@@ -159,17 +159,15 @@ Item {
                                         anchors.right: parent.right
                                         anchors.left: parent.left
 
-                                        Kirigami.Heading {
+                                        Text {
                                             Layout.alignment: Qt.AlignLeft | Qt.AlignTop
                                             padding: Kirigami.Units.smallSpacing
-                                            level: 4
                                             text: i18n("<b>Today</b>")
                                             color: Kirigami.Theme.highlightColor
                                             visible: gridItem.isToday && gridItem.width > Kirigami.Units.gridUnit * 5
                                         }
-                                        Kirigami.Heading {
+                                        Text {
                                             Layout.alignment: Qt.AlignRight | Qt.AlignTop
-                                            level: 4
                                             text: gridItem.date.toLocaleDateString(Qt.locale(), gridItem.isToday && gridItem.date.getDate() == 1 ?
                                             "<b>d MMM</b>" : (gridItem.isToday ? "<b>d</b>" : (gridItem.date.getDate() == 1 ? "d MMM" : "d")))
                                             padding: Kirigami.Units.smallSpacing
