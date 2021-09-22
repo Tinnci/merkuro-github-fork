@@ -127,9 +127,10 @@ Item {
                             Repeater {
                                 id: gridRepeater
                                 model: root.daysPerRow
-                                QQC2.Control {
+
+                                Item {
                                     id: gridItem
-                                    height: parent.height
+                                    height: root.dayHeight
                                     width: root.dayWidth
                                     property date gridSquareDate: date
                                     property date date: DateUtils.addDaysToDate(dayDelegate.startDate, modelData)
@@ -137,25 +138,26 @@ Item {
                                     property bool isToday: DateUtils.sameDay(root.currentDate, date)
                                     property bool isCurrentMonth: date.getMonth() == root.month
 
-                                    background: Rectangle {
+                                    Rectangle {
+                                        anchors.fill: parent
                                         Kirigami.Theme.inherit: false
                                         Kirigami.Theme.colorSet: Kirigami.Theme.View
                                         color: gridItem.isToday ? Kirigami.Theme.activeBackgroundColor :
-                                            gridItem.isCurrentMonth ? Kirigami.Theme.backgroundColor : Kirigami.Theme.alternateBackgroundColor
+                                        gridItem.isCurrentMonth ? Kirigami.Theme.backgroundColor : Kirigami.Theme.alternateBackgroundColor
 
                                         DayMouseArea {
                                             anchors.fill: parent
-                                            addDate: DateUtils.addDaysToDate(dayDelegate.startDate, modelData)
+                                            addDate: gridItem.date
                                             onAddNewIncidence: addIncidence(type, addDate)
                                         }
                                     }
 
-                                    padding: 0
-                                    topPadding: 0
-
                                     // Day number
-                                    contentItem: RowLayout {
+                                    RowLayout {
                                         visible: root.showDayIndicator
+                                        anchors.top: parent.top
+                                        anchors.right: parent.right
+                                        anchors.left: parent.left
 
                                         Kirigami.Heading {
                                             Layout.alignment: Qt.AlignLeft | Qt.AlignTop
@@ -169,7 +171,7 @@ Item {
                                             Layout.alignment: Qt.AlignRight | Qt.AlignTop
                                             level: 4
                                             text: gridItem.date.toLocaleDateString(Qt.locale(), gridItem.isToday && gridItem.date.getDate() == 1 ?
-                                                "<b>d MMM</b>" : (gridItem.isToday ? "<b>d</b>" : (gridItem.date.getDate() == 1 ? "d MMM" : "d")))
+                                            "<b>d MMM</b>" : (gridItem.isToday ? "<b>d</b>" : (gridItem.date.getDate() == 1 ? "d MMM" : "d")))
                                             padding: Kirigami.Units.smallSpacing
                                             visible: root.showDayIndicator
                                             color: gridItem.isToday ? Kirigami.Theme.highlightColor : (!gridItem.isCurrentMonth ? Kirigami.Theme.disabledTextColor : Kirigami.Theme.textColor)
