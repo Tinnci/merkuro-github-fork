@@ -159,17 +159,15 @@ Item {
                                         anchors.right: parent.right
                                         anchors.left: parent.left
 
-                                        Kirigami.Heading {
+                                        QQC2.Label {
                                             Layout.alignment: Qt.AlignLeft | Qt.AlignTop
                                             padding: Kirigami.Units.smallSpacing
-                                            level: 4
                                             text: i18n("<b>Today</b>")
                                             color: Kirigami.Theme.highlightColor
                                             visible: gridItem.isToday && gridItem.width > Kirigami.Units.gridUnit * 5
                                         }
-                                        Kirigami.Heading {
+                                        QQC2.Label {
                                             Layout.alignment: Qt.AlignRight | Qt.AlignTop
-                                            level: 4
                                             text: gridItem.date.toLocaleDateString(Qt.locale(), gridItem.isToday && gridItem.date.getDate() == 1 ?
                                             "<b>d MMM</b>" : (gridItem.isToday ? "<b>d</b>" : (gridItem.date.getDate() == 1 ? "d MMM" : "d")))
                                             padding: Kirigami.Units.smallSpacing
