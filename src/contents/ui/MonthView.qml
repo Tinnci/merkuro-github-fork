@@ -144,9 +144,7 @@ Kirigami.Page {
             property int year: model.selectedYear
 
             property bool isCurrentItem: PathView.isCurrentItem
-            property bool isNextItem: (index >= pathView.currentIndex -1 && index <= pathView.currentIndex + 1) ||
-                (index == pathView.count - 1 && pathView.currentIndex == 0) ||
-                (index == 0 && pathView.currentIndex == pathView.count - 1)
+            property bool isNextItem: index >= pathView.currentIndex -1 && index <= pathView.currentIndex + 1
 
             active: isCurrentItem || (isNextItem && pathView.moving)
             //asynchronous: true

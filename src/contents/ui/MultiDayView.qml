@@ -289,8 +289,8 @@ Item {
                                                 color: isOpenOccurrence ? modelData.color :
                                                     LabelUtils.getIncidenceBackgroundColor(modelData.color, root.isDark)
                                                 visible: isOpenOccurrence ||
-                                                    modelData.endTime.getMonth() == root.month ||
-                                                    modelData.startTime.getMonth() == root.month
+                                                    modelData.endTime.getMonth() === root.month ||
+                                                    modelData.startTime.getMonth() === root.month
                                                 radius: parent.rectRadius
                                             }
 
