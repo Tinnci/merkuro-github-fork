@@ -465,7 +465,7 @@ Kirigami.Page {
                                                     id: incidenceMouseArea
 
                                                     incidenceData: modelData
-                                                    collectionId: incidences.length && modelData.collectionId
+                                                    collectionId: modelData.collectionId
 
                                                     onViewClicked: root.viewIncidence(modelData, collectionData)
                                                     onEditClicked: root.editIncidence(incidencePtr, collectionId)
