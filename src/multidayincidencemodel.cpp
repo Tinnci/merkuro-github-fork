@@ -154,6 +154,7 @@ QVariantList MultiDayIncidenceModel::layoutLines(const QDate &rowStart) const
                 {QStringLiteral("duration"), duration},
                 {QStringLiteral("durationString"), idx.data(IncidenceOccurrenceModel::DurationString)},
                 {QStringLiteral("recurs"), idx.data(IncidenceOccurrenceModel::Recurs)},
+                {QStringLiteral("hasReminders"), idx.data(IncidenceOccurrenceModel::HasReminders)},
                 {QStringLiteral("isOverdue"), idx.data(IncidenceOccurrenceModel::IsOverdue)},
                 {QStringLiteral("color"), idx.data(IncidenceOccurrenceModel::Color)},
                 {QStringLiteral("collectionId"), idx.data(IncidenceOccurrenceModel::CollectionId)},
