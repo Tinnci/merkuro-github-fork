@@ -40,6 +40,7 @@ Kirigami.ApplicationWindow {
     readonly property var todoViewShowCompletedAction: KalendarApplication.action("todoview_show_completed")
 
     pageStack.globalToolBar.canContainHandles: true
+    pageStack.globalToolBar.style: Kirigami.ApplicationHeaderStyle.ToolBar
 
     onClosing: {
         rememberLastOpenedView();
