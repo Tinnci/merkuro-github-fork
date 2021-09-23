@@ -83,14 +83,85 @@ void IncidenceOccurrenceModel::updateQuery()
     }
     mEnd = mStart.addDays(mLength);
 
+    // Though we don't care about rows moving or layout changing, we still need to handle other source model signals
     QObject::connect(m_coreCalendar->model(), &QAbstractItemModel::dataChanged, this, &IncidenceOccurrenceModel::refreshView);
-    QObject::connect(m_coreCalendar->model(), &QAbstractItemModel::layoutChanged, this, &IncidenceOccurrenceModel::refreshView);
     QObject::connect(m_coreCalendar->model(), &QAbstractItemModel::modelReset, this, &IncidenceOccurrenceModel::refreshView);
-    QObject::connect(m_coreCalendar->model(), &QAbstractItemModel::rowsInserted, this, &IncidenceOccurrenceModel::refreshView);
-    QObject::connect(m_coreCalendar->model(), &QAbstractItemModel::rowsMoved, this, &IncidenceOccurrenceModel::refreshView);
+    QObject::connect(m_coreCalendar->model(), &QAbstractItemModel::rowsInserted, this, [=](const QModelIndex &, int first, int last) {
+        Incidence::List incidences;
+        for(int i = first; i <= last; i++) {
+            auto item = m_coreCalendar->model()->data(m_coreCalendar->model()->index(i, 0), Akonadi::EntityTreeModel::Roles::ItemRole).value<Akonadi::Item>();
+
+            if(item.hasPayload<KCalendarCore::Incidence::Ptr>()) {
+                auto incidence = item.payload<KCalendarCore::Incidence::Ptr>();
+                QDate start = incidence->dtStart().date();
+                QDate end;
+
+                if(incidence->type() == KCalendarCore::Incidence::TypeTodo) {
+                    auto todo = incidence.staticCast<KCalendarCore::Todo>();
+                    end = todo->dtDue().date();
+                } else if (incidence->type() == KCalendarCore::Incidence::TypeEvent) {
+                    auto event = incidence.staticCast<KCalendarCore::Event>();
+                    end = event->dtEnd().date();
+                }
+
+                if(start >= mStart || end < mEnd || (incidence->recurs() && incidence->recurrence()->endDate() >= mStart)) {
+                    incidences.append(incidence);
+                }
+            }
+        }
+
+        addOccurrences(incidences);
+    });
     QObject::connect(m_coreCalendar->model(), &QAbstractItemModel::rowsRemoved, this, &IncidenceOccurrenceModel::refreshView);
 
     refreshView();
+}
+
+void IncidenceOccurrenceModel::addOccurrences(Incidence::List incidences)
+{
+    QVector<Occurrence> occurrencesToAdd;
+    KCalendarCore::MemoryCalendar calendar{ QTimeZone::systemTimeZone() };
+    int lastRow = rowCount() - 1;
+
+    for (auto incidence : incidences) {
+        calendar.addIncidence(incidence);
+    }
+
+    KCalendarCore::OccurrenceIterator occurrenceIterator{calendar, QDateTime{mStart, {0, 0, 0}}, QDateTime{mEnd, {12, 59, 59}}};
+
+    while (occurrenceIterator.hasNext()) {
+        lastRow++;
+        occurrenceIterator.next();
+        const auto incidence = occurrenceIterator.incidence();
+        auto start = occurrenceIterator.occurrenceStartDate();
+        auto end = incidence->endDateForStart(start);
+
+        if(incidence->type() == KCalendarCore::Incidence::IncidenceType::TypeTodo) {
+            KCalendarCore::Todo::Ptr todo = incidence.staticCast<KCalendarCore::Todo>();
+
+            if(!start.isValid()) { // Todos are very likely not to have a set start date
+                start = todo->dtDue();
+            }
+        }
+
+        if (start.date() < mEnd && end.date() >= mStart) {
+            Occurrence occurrence = {
+                start,
+                end,
+                incidence,
+                getColor(incidence),
+                getCollectionId(incidence),
+                incidence->allDay()
+            };
+            occurrencesToAdd.append(occurrence);
+        }
+    }
+
+    beginInsertRows({}, rowCount(), lastRow);
+
+    m_occurrences.append(occurrencesToAdd);
+
+    endInsertRows();
 }
 
 void IncidenceOccurrenceModel::refreshView()
@@ -106,6 +177,7 @@ void IncidenceOccurrenceModel::updateFromSource()
     beginResetModel();
 
     m_incidences.clear();
+    m_occurrences.clear();
 
     if (m_coreCalendar) {
         const auto allEvents = m_coreCalendar->events(mStart, mEnd); // get all events
@@ -114,38 +186,7 @@ void IncidenceOccurrenceModel::updateFromSource()
         Incidence::List allIncidences = Calendar::mergeIncidenceList(allEvents, allTodos, {});
 
         // process all recurring events and their exceptions.
-        for (const auto &incidence : allIncidences) {
-            KCalendarCore::MemoryCalendar calendar{ QTimeZone::systemTimeZone() };
-            calendar.addIncidence(incidence);
-
-            KCalendarCore::OccurrenceIterator occurrenceIterator{calendar, QDateTime{mStart, {0, 0, 0}}, QDateTime{mEnd, {12, 59, 59}}};
-
-            while (occurrenceIterator.hasNext()) {
-                occurrenceIterator.next();
-                const auto incidence = occurrenceIterator.incidence();
-                auto start = occurrenceIterator.occurrenceStartDate();
-                auto end = incidence->endDateForStart(start);
-
-                if(incidence->type() == KCalendarCore::Incidence::IncidenceType::TypeTodo) {
-                    KCalendarCore::Todo::Ptr todo = incidence.staticCast<KCalendarCore::Todo>();
-
-                    if(!start.isValid()) { // Todos are very likely not to have a set start date
-                        start = todo->dtDue();
-                    }
-                }
-
-                if (start.date() < mEnd && end.date() >= mStart) {
-                    m_incidences.append(Occurrence {
-                        start,
-                        end,
-                        incidence,
-                        getColor(incidence),
-                        getCollectionId(incidence),
-                        incidence->allDay()
-                    });
-                }
-            }
-        }
+        addOccurrences(allIncidences);
     }
 
     endResetModel();
@@ -171,7 +212,7 @@ QModelIndex IncidenceOccurrenceModel::parent(const QModelIndex &) const
 int IncidenceOccurrenceModel::rowCount(const QModelIndex &parent) const
 {
     if (!parent.isValid()) {
-        return m_incidences.size();
+        return m_occurrences.size();
     }
     return 0;
 }
@@ -220,7 +261,7 @@ QVariant IncidenceOccurrenceModel::data(const QModelIndex &idx, int role) const
     if (!hasIndex(idx.row(), idx.column())) {
         return {};
     }
-    auto incidence = m_incidences.at(idx.row());
+    auto incidence = m_occurrences.at(idx.row());
     auto icalIncidence = incidence.incidence;
     KCalendarCore::Duration duration(incidence.start, incidence.end);
 

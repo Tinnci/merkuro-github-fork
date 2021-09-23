@@ -109,6 +109,7 @@ private:
 
     void refreshView();
     void updateFromSource();
+    void addOccurrences(Incidence::List incidences);
     QColor getColor(const KCalendarCore::Incidence::Ptr &incidence);
     qint64 getCollectionId(const KCalendarCore::Incidence::Ptr &incidence);
 
@@ -119,8 +120,8 @@ private:
     Akonadi::ETMCalendar *m_coreCalendar;
 
     QTimer mRefreshTimer;
-
-    QList<Occurrence> m_incidences;
+    QHash<QString, QVector<QVector<Occurrence>::iterator>> m_incidences;
+    QVector<Occurrence> m_occurrences;
     QHash<QString, QColor> m_colors;
     KConfigWatcher::Ptr m_colorWatcher;
     QVariantMap mFilter;
