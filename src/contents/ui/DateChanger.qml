@@ -16,7 +16,7 @@ QQC2.Popup {
     property date date: new Date()
     property bool showDays: true
 
-    Layout.preferredWidth: datePicker.implicitWidth
+    width: Kirigami.Units.gridUnit * 20
 
     contentItem: DatePicker {
         id: datePicker
