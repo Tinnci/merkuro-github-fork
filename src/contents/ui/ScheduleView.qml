@@ -105,7 +105,7 @@ Kirigami.Page {
         preferredHighlightEnd: 0.5
         snapMode: PathView.SnapToItem
         focus: true
-        interactive: true //Kirigami.Settings.tabletMode
+        interactive: Kirigami.Settings.tabletMode
 
         path: Path {
             startX: - pathView.width * pathView.count / 2 + pathView.width / 2
