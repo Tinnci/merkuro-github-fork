@@ -79,6 +79,7 @@ Item {
             fill: parent
             topMargin: root.bgLoader.dayLabels.height
         }
+        visible: backgroundLoader.status === Loader.Ready
     }
 
     Loader {
