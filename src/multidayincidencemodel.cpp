@@ -105,6 +105,7 @@ QList<QModelIndex> MultiDayIncidenceModel::sortedIncidencesFromSourceModel(const
         return leftDt < rightDt && leftDuration <= rightDuration;
     });
 
+    m_data[rowStart].sortedIncidenceSets = sorted;
     return sorted;
 }
 
@@ -123,7 +124,7 @@ QVariantList MultiDayIncidenceModel::layoutLines(const QDate &rowStart) const
         return qMax(rowStart.daysTo(start), 0ll);
     };
 
-    QList<QModelIndex> sorted = sortedIncidencesFromSourceModel(rowStart);
+    QList<QModelIndex> sorted = m_data[rowStart].sortedIncidenceSets;
 
     // for (const auto &srcIdx : sorted) {
     //     qWarning() << "sorted " << srcIdx.data(IncidenceOccurrenceModel::StartTime).toDateTime() << srcIdx.data(IncidenceOccurrenceModel::Summary).toString() << srcIdx.data(IncidenceOccurrenceModel::AllDay).toBool();
@@ -221,6 +222,7 @@ QVariantList MultiDayIncidenceModel::layoutLines(const QDate &rowStart) const
         // qWarning() << "Appending line " << currentLine;
         result.append(QVariant::fromValue(currentLine));
     }
+    m_data[rowStart].lines = result;
     return result;
 }
 
@@ -233,11 +235,12 @@ QVariant MultiDayIncidenceModel::data(const QModelIndex &idx, int role) const
         return {};
     }
     const auto rowStart = mSourceModel->start().addDays(idx.row() * mPeriodLength);
+
     switch (role) {
         case PeriodStartDate:
             return rowStart.startOfDay();
         case Incidences:
-            return layoutLines(rowStart);
+            return m_data[rowStart].lines;
         default:
             Q_ASSERT(false);
             return {};
@@ -248,6 +251,7 @@ void MultiDayIncidenceModel::setModel(IncidenceOccurrenceModel *model)
 {
     beginResetModel();
     mSourceModel = model;
+
     auto resetModel = [this] {
         if (!mRefreshTimer.isActive()) {
             beginResetModel();
@@ -255,11 +259,28 @@ void MultiDayIncidenceModel::setModel(IncidenceOccurrenceModel *model)
             mRefreshTimer.start(50);
         }
     };
+
+    for(int i = 0; i < rowCount({}); i++) {
+        auto rowStart = mSourceModel->start().addDays(i * mPeriodLength);
+        m_data[rowStart] = RowData {
+            index(i, 0),
+            {},
+            {}
+        };
+    }
+
     QObject::connect(model, &QAbstractItemModel::dataChanged, this, resetModel);
-    QObject::connect(model, &QAbstractItemModel::layoutChanged, this, resetModel);
+    //QObject::connect(model, &QAbstractItemModel::layoutChanged, this, resetModel);
     QObject::connect(model, &QAbstractItemModel::modelReset, this, resetModel);
-    QObject::connect(model, &QAbstractItemModel::rowsInserted, this, resetModel);
-    QObject::connect(model, &QAbstractItemModel::rowsMoved, this, resetModel);
+    QObject::connect(model, &QAbstractItemModel::rowsInserted, this, [=]() {
+        for(QHash<QDate, RowData>::const_iterator it = m_data.cbegin(), end = m_data.cend(); it != end; ++it) {
+            sortedIncidencesFromSourceModel(it.key());
+            layoutLines(it.key());
+        }
+
+        Q_EMIT dataChanged(m_data.cbegin().value().index, m_data.cend().value().index);
+    });
+    //QObject::connect(model, &QAbstractItemModel::rowsMoved, this, resetModel);
     QObject::connect(model, &QAbstractItemModel::rowsRemoved, this, resetModel);
     endResetModel();
 }

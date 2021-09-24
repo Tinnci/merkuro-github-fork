@@ -49,6 +49,12 @@ public:
     int periodLength();
     void setPeriodLength(int periodLength);
 
+    struct RowData {
+        QModelIndex index;
+        QVariantList lines;
+        QList<QModelIndex> sortedIncidenceSets;
+    };
+
 Q_SIGNALS:
     void periodLengthChanged();
 
@@ -58,5 +64,6 @@ private:
     QVariantList layoutLines(const QDate &rowStart) const;
     IncidenceOccurrenceModel *mSourceModel{nullptr};
     int mPeriodLength{7};
+    QHash<QDate, RowData> mutable m_data;
 };
 
