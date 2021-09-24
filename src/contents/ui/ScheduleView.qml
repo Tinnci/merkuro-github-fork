@@ -105,7 +105,7 @@ Kirigami.Page {
         preferredHighlightEnd: 0.5
         snapMode: PathView.SnapToItem
         focus: true
-        interactive: Kirigami.Settings.tabletMode
+        interactive: true //Kirigami.Settings.tabletMode
 
         path: Path {
             startX: - pathView.width * pathView.count / 2 + pathView.width / 2
@@ -183,18 +183,23 @@ Kirigami.Page {
 
                     header: Kalendar.Config.showMonthHeader ? monthHeaderComponent : null
 
-                    model: Kalendar.MultiDayIncidenceModel {
-                        periodLength: 1
-
-                        model: Kalendar.IncidenceOccurrenceModel {
-                            id: occurrenceModel
-                            objectName: "incidenceOccurrenceModel"
-                            start: viewLoader.firstDayOfMonth
-                            length: new Date(start.getFullYear(), start.getMonth(), 0).getDate()
-                            filter: root.filter ? root.filter : {}
-                            calendar: Kalendar.CalendarManager.calendar
+                    Loader {
+                        id: modelLoader
+                        asynchronous: true
+                        sourceComponent: Kalendar.MultiDayIncidenceModel {
+                            periodLength: 1
+                            model: Kalendar.IncidenceOccurrenceModel {
+                                id: occurrenceModel
+                                objectName: "incidenceOccurrenceModel"
+                                start: viewLoader.firstDayOfMonth
+                                length: new Date(start.getFullYear(), start.getMonth(), 0).getDate()
+                                filter: root.filter ? root.filter : {}
+                                calendar: Kalendar.CalendarManager.calendar
+                            }
                         }
                     }
+
+                    model: modelLoader.item
 
                     delegate: DayMouseArea {
                         id: dayMouseArea
