@@ -40,19 +40,20 @@ Item {
     property bool paintGrid: true
     property bool showDayIndicator: true
     property var filter
-    property alias dayHeaderDelegate: dayLabels.delegate
+    property Component dayHeaderDelegate
     property Component weekHeaderDelegate
     property int month
+    property alias bgLoader: backgroundLoader.item
 
     //Internal
     property int numberOfLinesShown: 0
     property int numberOfRows: (daysToShow / daysPerRow)
-    property var dayHeight: ((height - dayLabels.height) / numberOfRows) - spacing
+    property var dayHeight: ((height - bgLoader.dayLabels.height) / numberOfRows) - spacing
     property real spacing: Kalendar.Config.monthGridBorderWidth
     required property bool loadModel
     readonly property bool isDark: LabelUtils.isDarkColor(Kirigami.Theme.backgroundColor)
 
-    implicitHeight: (numberOfRows > 1 ? Kirigami.Units.gridUnit * 10 * numberOfRows : numberOfLinesShown * Kirigami.Units.gridUnit) + dayLabels.height
+    implicitHeight: (numberOfRows > 1 ? Kirigami.Units.gridUnit * 10 * numberOfRows : numberOfLinesShown * Kirigami.Units.gridUnit) + bgLoader.dayLabels.height
     height: implicitHeight
 
     Loader {
@@ -76,110 +77,118 @@ Item {
         id: gridBackground
         anchors {
             fill: parent
-            topMargin: dayLabels.height
+            topMargin: root.bgLoader.dayLabels.height
         }
     }
 
-    Column {
-        id: rootBackgroundColumn
-        spacing: root.spacing
+    Loader {
+        id: backgroundLoader
         anchors.fill: parent
-
-        DayLabels {
-            id: dayLabels
-            startDate: root.startDate
-            dayWidth: root.dayWidth
-            daysToShow: root.daysPerRow
+        active: true
+        asynchronous: true
+        sourceComponent: Column {
+            id: rootBackgroundColumn
             spacing: root.spacing
-            anchors.leftMargin: Kalendar.Config.showWeekNumbers ? weekHeaderWidth + root.spacing : 0
-            anchors.left: parent.left
-            anchors.right: parent.right
-        }
+            anchors.fill: parent
 
-        Repeater {
-            model: root.numberOfRows
+            property alias dayLabels: dayLabelsComponent
+            DayLabels {
+                id: dayLabelsComponent
+                delegate: root.dayHeaderDelegate
+                startDate: root.startDate
+                dayWidth: root.dayWidth
+                daysToShow: root.daysPerRow
+                spacing: root.spacing
+                anchors.leftMargin: Kalendar.Config.showWeekNumbers ? weekHeaderWidth + root.spacing : 0
+                anchors.left: parent.left
+                anchors.right: parent.right
+            }
 
-            //One row => one week
-            Item {
-                width: parent.width
-                height: root.dayHeight
-                clip: true
-                RowLayout {
+            Repeater {
+                model: root.numberOfRows
+
+                //One row => one week
+                Item {
                     width: parent.width
-                    height: parent.height
-                    spacing: root.spacing
-                    Loader {
-                        id: weekHeader
-                        sourceComponent: root.weekHeaderDelegate
-                        property date startDate: DateUtils.addDaysToDate(root.startDate, index * 7)
-                        Layout.preferredWidth: weekHeaderWidth
-                        Layout.fillHeight: true
-                        active: Kalendar.Config.showWeekNumbers
-                        visible: Kalendar.Config.showWeekNumbers
+                    height: root.dayHeight
+                    clip: true
+                    RowLayout {
+                        width: parent.width
+                        height: parent.height
+                        spacing: root.spacing
+                        Loader {
+                            id: weekHeader
+                            sourceComponent: root.weekHeaderDelegate
+                            property date startDate: DateUtils.addDaysToDate(root.startDate, index * 7)
+                            Layout.preferredWidth: weekHeaderWidth
+                            Layout.fillHeight: true
+                            active: Kalendar.Config.showWeekNumbers
+                            visible: Kalendar.Config.showWeekNumbers
 
-                    }
-                    Item {
-                        id: dayDelegate
-                        Layout.fillWidth: true
-                        Layout.fillHeight: true
-                        property date startDate: DateUtils.addDaysToDate(root.startDate, index * 7)
+                        }
+                        Item {
+                            id: dayDelegate
+                            Layout.fillWidth: true
+                            Layout.fillHeight: true
+                            property date startDate: DateUtils.addDaysToDate(root.startDate, index * 7)
 
-                        //Grid
-                        Row {
-                            spacing: root.spacing
-                            height: parent.height
-                            Repeater {
-                                id: gridRepeater
-                                model: root.daysPerRow
+                            //Grid
+                            Row {
+                                spacing: root.spacing
+                                height: parent.height
+                                Repeater {
+                                    id: gridRepeater
+                                    model: root.daysPerRow
 
-                                Item {
-                                    id: gridItem
-                                    height: root.dayHeight
-                                    width: root.dayWidth
-                                    property date gridSquareDate: date
-                                    property date date: DateUtils.addDaysToDate(dayDelegate.startDate, modelData)
-                                    property int day: date.getDate()
-                                    property int month: date.getMonth()
-                                    property int year: date.getFullYear()
-                                    property bool isToday: day === root.currentDay && month === root.currentMonth && year === root.currentYear
-                                    property bool isCurrentMonth: month === root.month
+                                    Item {
+                                        id: gridItem
+                                        height: root.dayHeight
+                                        width: root.dayWidth
+                                        property date gridSquareDate: date
+                                        property date date: DateUtils.addDaysToDate(dayDelegate.startDate, modelData)
+                                        property int day: date.getDate()
+                                        property int month: date.getMonth()
+                                        property int year: date.getFullYear()
+                                        property bool isToday: day === root.currentDay && month === root.currentMonth && year === root.currentYear
+                                        property bool isCurrentMonth: month === root.month
 
-                                    Rectangle {
-                                        anchors.fill: parent
-                                        Kirigami.Theme.inherit: false
-                                        Kirigami.Theme.colorSet: Kirigami.Theme.View
-                                        color: gridItem.isToday ? Kirigami.Theme.activeBackgroundColor :
-                                            gridItem.isCurrentMonth ? Kirigami.Theme.backgroundColor : Kirigami.Theme.alternateBackgroundColor
-
-                                        DayMouseArea {
+                                        Rectangle {
                                             anchors.fill: parent
-                                            addDate: gridItem.date
-                                            onAddNewIncidence: addIncidence(type, addDate)
-                                        }
-                                    }
+                                            Kirigami.Theme.inherit: false
+                                            Kirigami.Theme.colorSet: Kirigami.Theme.View
+                                            color: gridItem.isToday ? Kirigami.Theme.activeBackgroundColor :
+                                                gridItem.isCurrentMonth ? Kirigami.Theme.backgroundColor : Kirigami.Theme.alternateBackgroundColor
 
-                                    // Day number
-                                    RowLayout {
-                                        visible: root.showDayIndicator
-                                        anchors.top: parent.top
-                                        anchors.right: parent.right
-                                        anchors.left: parent.left
-
-                                        QQC2.Label {
-                                            Layout.alignment: Qt.AlignLeft | Qt.AlignTop
-                                            padding: Kirigami.Units.smallSpacing
-                                            text: i18n("<b>Today</b>")
-                                            color: Kirigami.Theme.highlightColor
-                                            visible: gridItem.isToday && gridItem.width > Kirigami.Units.gridUnit * 5
+                                            DayMouseArea {
+                                                anchors.fill: parent
+                                                addDate: gridItem.date
+                                                onAddNewIncidence: addIncidence(type, addDate)
+                                            }
                                         }
-                                        QQC2.Label {
-                                            Layout.alignment: Qt.AlignRight | Qt.AlignTop
-                                            text: gridItem.date.toLocaleDateString(Qt.locale(), gridItem.day == 1 ?
-                                            "d MMM" : "d")
-                                            padding: Kirigami.Units.smallSpacing
+
+                                        // Day number
+                                        RowLayout {
                                             visible: root.showDayIndicator
-                                            color: gridItem.isToday ? Kirigami.Theme.highlightColor : (!gridItem.isCurrentMonth ? Kirigami.Theme.disabledTextColor : Kirigami.Theme.textColor)
-                                            font.bold: gridItem.isToday
+                                            anchors.top: parent.top
+                                            anchors.right: parent.right
+                                            anchors.left: parent.left
+
+                                            QQC2.Label {
+                                                Layout.alignment: Qt.AlignLeft | Qt.AlignTop
+                                                padding: Kirigami.Units.smallSpacing
+                                                text: i18n("<b>Today</b>")
+                                                color: Kirigami.Theme.highlightColor
+                                                visible: gridItem.isToday && gridItem.width > Kirigami.Units.gridUnit * 5
+                                            }
+                                            QQC2.Label {
+                                                Layout.alignment: Qt.AlignRight | Qt.AlignTop
+                                                text: gridItem.date.toLocaleDateString(Qt.locale(), gridItem.day == 1 ?
+                                                "d MMM" : "d")
+                                                padding: Kirigami.Units.smallSpacing
+                                                visible: root.showDayIndicator
+                                                color: gridItem.isToday ? Kirigami.Theme.highlightColor : (!gridItem.isCurrentMonth ? Kirigami.Theme.disabledTextColor : Kirigami.Theme.textColor)
+                                                font.bold: gridItem.isToday
+                                            }
                                         }
                                     }
                                 }
@@ -196,7 +205,7 @@ Item {
         spacing: root.spacing
         anchors {
             fill: parent
-            topMargin: dayLabels.height + root.spacing
+            topMargin: root.bgLoader.dayLabels.height + root.spacing
             leftMargin: Kalendar.Config.showWeekNumbers ? weekHeaderWidth + root.spacing : 0
         }
 
