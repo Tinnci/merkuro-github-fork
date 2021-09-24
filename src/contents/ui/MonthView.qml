@@ -96,13 +96,12 @@ Kirigami.Page {
         snapMode: PathView.SnapToItem
         focus: true
         interactive: Kirigami.Settings.tabletMode
-        pathItemCount: 3
 
         path: Path {
-            startX: - pathView.width * pathView.pathItemCount / 2 + pathView.width / 2
+            startX: - pathView.width * pathView.count / 2 + pathView.width / 2
             startY: pathView.height / 2
             PathLine {
-                x: pathView.width * pathView.pathItemCount / 2 + pathView.width / 2
+                x: pathView.width * pathView.count / 2 + pathView.width / 2
                 y: pathView.height / 2
             }
         }
