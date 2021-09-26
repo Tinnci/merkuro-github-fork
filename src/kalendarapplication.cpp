@@ -8,7 +8,12 @@
 #include <KXmlGui/KShortcutsDialog>
 #include <KAuthorized>
 #include <KLocalizedString>
+#include <KFuzzyMatcher>
+#include <KSharedConfig>
+#include <KConfigGroup>
 #include <QWindow>
+#include <QMenu>
+#include <QSortFilterProxyModel>
 #include <vector>
 
 KalendarApplication::KalendarApplication(QObject *parent)
@@ -16,6 +21,16 @@ KalendarApplication::KalendarApplication(QObject *parent)
     , mCollection(parent)
     , m_viewGroup(new QActionGroup(this))
 {
+}
+
+KalendarApplication::~KalendarApplication()
+{
+    if (m_actionModel) {
+        auto lastUsedActions = m_actionModel->lastUsedActions();
+        auto cfg = KSharedConfig::openConfig();
+        KConfigGroup cg(cfg, "General");
+        cg.writeEntry("CommandBarLastUsedActions", lastUsedActions);
+    }
 }
 
 QAction *KalendarApplication::action(const QString& name)
@@ -29,6 +44,7 @@ QAction *KalendarApplication::action(const QString& name)
 
     return resultAction;
 }
+
 
 void KalendarApplication::setupActions(const QString &actionName)
 {
@@ -167,6 +183,15 @@ void KalendarApplication::setupActions(const QString &actionName)
         mCollection.addAction(todoViewShowCompletedAction->objectName(), todoViewShowCompletedAction);
     }
 
+    if (actionName == QLatin1String("open_kcommand_bar") && KAuthorized::authorizeAction(actionName)) {
+        auto openKCommandBarAction = mCollection.addAction(actionName, this, &KalendarApplication::openKCommandBarAction);
+        openKCommandBarAction->setText(i18n("Open Command Bar"));
+        openKCommandBarAction->setIcon(QIcon::fromTheme(QStringLiteral("new-command-alarm")));
+
+        mCollection.addAction(openKCommandBarAction->objectName(), openKCommandBarAction);
+        mCollection.setDefaultShortcut(openKCommandBarAction, QKeySequence(Qt::CTRL | Qt::ALT | Qt::Key_I));
+    }
+
     mCollection.readSettings();
 }
 
@@ -197,3 +222,141 @@ QString KalendarApplication::iconName(const QIcon &icon) const
 {
     return icon.name();
 }
+
+//---- KCommandBar QML licensed LGPL
+
+/**
+ * A helper function that takes a list of KActionCollection* and converts it
+ * to KCommandBar::ActionGroup
+ */
+static QVector<KalCommandBarModel::ActionGroup> actionCollectionToActionGroup(const std::vector<KActionCollection *> &actionCollections)
+{
+    using ActionGroup = KalCommandBarModel::ActionGroup;
+
+    QVector<ActionGroup> actionList;
+    actionList.reserve(actionCollections.size());
+
+    for (const auto collection : actionCollections) {
+        const QList<QAction *> collectionActions = collection->actions();
+        const QString componentName = collection->componentDisplayName();
+
+        ActionGroup ag;
+        ag.name = componentName;
+        ag.actions.reserve(collection->count());
+        for (const auto action : collectionActions) {
+            /**
+             * If this action is a menu, fetch all its child actions
+             * and skip the menu action itself
+             */
+            if (QMenu *menu = action->menu()) {
+                const QList<QAction *> menuActions = menu->actions();
+
+                ActionGroup menuActionGroup;
+                menuActionGroup.name = KLocalizedString::removeAcceleratorMarker(action->text());
+                menuActionGroup.actions.reserve(menuActions.size());
+                for (const auto mAct : menuActions) {
+                    if (mAct) {
+                        menuActionGroup.actions.append(mAct);
+                    }
+                }
+
+                /**
+                 * If there were no actions in the menu, we
+                 * add the menu to the list instead because it could
+                 * be that the actions are created on demand i.e., aboutToShow()
+                 */
+                if (!menuActions.isEmpty()) {
+                    actionList.append(menuActionGroup);
+                    continue;
+                }
+            }
+
+            if (action && !action->text().isEmpty()) {
+                ag.actions.append(action);
+            }
+        }
+        actionList.append(ag);
+    }
+    return actionList;
+}
+
+class CommandBarFilterModel final : public QSortFilterProxyModel
+{
+    Q_OBJECT
+    Q_PROPERTY(QString filterString READ filterString WRITE setFilterString CONSTANT)
+public:
+    CommandBarFilterModel(QObject *parent = nullptr)
+        : QSortFilterProxyModel(parent)
+    {
+    }
+
+    QString filterString() const
+    {
+        return m_pattern;
+    }
+
+    Q_INVOKABLE void setFilterString(const QString &string)
+    {
+        // MUST reset the model here, we want to repopulate
+        // invalidateFilter() will not work here
+        beginResetModel();
+        m_pattern = string;
+        endResetModel();
+    }
+
+protected:
+    bool lessThan(const QModelIndex &sourceLeft, const QModelIndex &sourceRight) const override
+    {
+        const int l = sourceLeft.data(KalCommandBarModel::Score).toInt();
+        const int r = sourceRight.data(KalCommandBarModel::Score).toInt();
+        return l < r;
+    }
+
+    bool filterAcceptsRow(int sourceRow, const QModelIndex &sourceParent) const override
+    {
+        if (m_pattern.isEmpty()) {
+            return true;
+        }
+
+        const QModelIndex idx = sourceModel()->index(sourceRow, 0, sourceParent);
+        // Example row= "File: Open File"
+        // actionName: OpenFile
+        const QString row = idx.data(Qt::DisplayRole).toString();
+        int pos = row.indexOf(QLatin1Char(':'));
+        if (pos < 0) {
+            return false;
+        }
+
+        const QString actionName = row.mid(pos + 2);
+        KFuzzyMatcher::Result res = KFuzzyMatcher::match(m_pattern, actionName);
+        sourceModel()->setData(idx, res.score, KalCommandBarModel::Score);
+        return res.matched;
+    }
+
+private:
+    QString m_pattern;
+};
+
+QSortFilterProxyModel *KalendarApplication::actionsModel()
+{
+    if (!m_proxyModel) {
+        m_actionModel = new KalCommandBarModel(this);
+        m_proxyModel = new CommandBarFilterModel(this);
+        m_proxyModel->setSortRole(KalCommandBarModel::Score);
+        m_proxyModel->setFilterRole(Qt::DisplayRole);
+        m_proxyModel->setSourceModel(m_actionModel);
+    }
+
+    // setLastUsedActions
+    auto cfg = KSharedConfig::openConfig();
+    KConfigGroup cg(cfg, "General");
+
+    QStringList actionNames = cg.readEntry(QStringLiteral("CommandBarLastUsedActions"), QStringList());
+
+    m_actionModel->setLastUsedActions(actionNames);
+    std::vector<KActionCollection *> actionCollections = {&mCollection};
+    m_actionModel->refresh(actionCollectionToActionGroup(actionCollections));
+    return m_proxyModel;
+}
+
+#include "kalendarapplication.moc"

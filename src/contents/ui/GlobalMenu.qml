@@ -57,6 +57,10 @@ Labs.MenuBar {
             kalendarAction: 'open_todo_view'
         }
 
+        NativeMenuItemFromAction {
+            kalendarAction: 'open_kcommand_bar'
+        }
+
         Labs.MenuSeparator {
         }
 
