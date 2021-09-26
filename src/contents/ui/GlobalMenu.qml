@@ -131,6 +131,11 @@ Labs.MenuBar {
     Labs.Menu {
         title: i18nc("@action:menu", "Help")
 
+        NativeMenuItemFromAction {
+            kalendarAction: 'open_about_page'
+            enabled: pageStack.layers.depth < 2
+        }
+
         Labs.MenuItem {
             text: i18nc("@action:menu", "Kalendar Handbook") // todo
             visible: false
