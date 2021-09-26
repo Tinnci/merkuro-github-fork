@@ -26,6 +26,7 @@ public Q_SLOTS:
 
 Q_SIGNALS:
     void openMonthView();
+    void openWeekView();
     void openScheduleView();
     void openTodoView();
     void createNewEvent();

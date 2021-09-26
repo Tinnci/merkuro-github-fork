@@ -23,6 +23,7 @@ Kirigami.ApplicationWindow {
     property var openOccurrence
 
     readonly property var monthViewAction: KalendarApplication.action("open_month_view")
+    readonly property var weekViewAction: KalendarApplication.action("open_week_view")
     readonly property var scheduleViewAction: KalendarApplication.action("open_schedule_view")
     readonly property var todoViewAction: KalendarApplication.action("open_todo_view")
     readonly property var createEventAction: KalendarApplication.action("create_event")
@@ -51,11 +52,14 @@ Kirigami.ApplicationWindow {
             case "monthView":
                 Config.lastOpenedView = 0;
                 break;
-            case "scheduleView":
+            case "weekView":
                 Config.lastOpenedView = 1;
                 break;
-            case "todoView":
+            case "scheduleView":
                 Config.lastOpenedView = 2;
+                break;
+            case "todoView":
+                Config.lastOpenedView = 3;
                 break;
         }
         Config.save();
@@ -67,9 +71,12 @@ Kirigami.ApplicationWindow {
                 monthViewAction.trigger();
                 break;
             case 1:
-                scheduleViewAction.trigger();
+                weekViewAction.trigger();
                 break;
             case 2:
+                scheduleViewAction.trigger();
+                break;
+            case 3:
                 todoViewAction.trigger();
                 break;
             default:
@@ -83,6 +90,11 @@ Kirigami.ApplicationWindow {
         function onOpenMonthView() {
             pageStack.pop(null);
             pageStack.replace(monthViewComponent);
+        }
+
+        function onOpenWeekView() {
+            pageStack.pop(null);
+            pageStack.replace(weekViewComponent);
         }
 
         function onOpenScheduleView() {
@@ -499,6 +511,22 @@ Kirigami.ApplicationWindow {
             onDeleteIncidence: root.setUpDelete(incidencePtr, deleteDate)
             onCompleteTodo: root.completeTodo(incidencePtr)
             onAddSubTodo: root.setUpAddSubTodo(parentWrapper)
+
+            actions.contextualActions: createAction
+        }
+    }
+
+    Component {
+        id: weekViewComponent
+
+        WeekView {
+            id: weekView
+            objectName: "weekView"
+
+            titleDelegate: TitleDateButton {
+                date: weekView.startDate
+                onClicked: dateChangeDrawer.open()
+            }
 
             actions.contextualActions: createAction
         }
