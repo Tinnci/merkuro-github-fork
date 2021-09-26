@@ -4,22 +4,28 @@
 #include <QObject>
 #include <QActionGroup>
 #include <KXmlGui/KActionCollection>
+#include "actionsmodel.h"
 
 class QWindow;
+class QSortFilterProxyModel;
 
 class KalendarApplication : public QObject
 {
     Q_OBJECT
 
     Q_PROPERTY(QWindow *window READ window WRITE setWindow NOTIFY windowChanged)
+    Q_PROPERTY(QSortFilterProxyModel *actionsModel READ actionsModel CONSTANT)
 public:
     explicit KalendarApplication(QObject *parent = nullptr);
+    ~KalendarApplication();
     Q_INVOKABLE QAction* action(const QString& name);
 
     Q_INVOKABLE QString iconName(const QIcon& icon) const;
     void setupActions(const QString &actionName);
     QWindow *window() const;
     void setWindow(QWindow *window);
+
+    QSortFilterProxyModel *actionsModel();
 
 public Q_SLOTS:
     void configureShortcuts();
@@ -44,6 +50,7 @@ Q_SIGNALS:
     void todoViewOrderAscending();
     void todoViewOrderDescending();
     void todoViewShowCompleted();
+    void openKCommandBarAction();
 
 private:
     KActionCollection mCollection;
@@ -51,4 +58,6 @@ private:
     QActionGroup *m_viewGroup = nullptr;
     QActionGroup *m_todoViewOrderGroup = nullptr;
     QActionGroup *m_todoViewSortGroup = nullptr;
+    KalCommandBarModel *m_actionModel = nullptr;
+    QSortFilterProxyModel *m_proxyModel = nullptr;
 };
