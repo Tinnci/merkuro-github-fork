@@ -174,7 +174,7 @@ Kirigami.OverlayDrawer {
                         onTriggered: {
                             configureAction.trigger()
                             if(sidebar.modal) sidebar.close()
-                            generalList.currentIndex = getCurrentView()
+                            generalList.currentIndex = getCurrentView();
                         }
                         shortcut: configureAction.shortcut
                     }
@@ -203,7 +203,7 @@ Kirigami.OverlayDrawer {
                         onTriggered: {
                             configureAction.trigger()
                             if(sidebar.modal) sidebar.close()
-                            generalList.currentIndex = -1
+                            generalList.currentIndex = -1;
                         }
                     }
                 ]
