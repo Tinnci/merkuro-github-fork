@@ -57,7 +57,7 @@ static long long getDuration(const QDateTime &start, const QDateTime &end, int p
 QList<QModelIndex> HourlyIncidenceModel::sortedIncidencesFromSourceModel(const QDateTime &rowStart) const
 {
     // Don't add days if we are going for a daily period
-    const auto rowEnd = rowStart.addDays(mPeriodLength > 1 ? mPeriodLength : 0);
+    const auto rowEnd = rowStart.date().endOfDay();
     QList<QModelIndex> sorted;
     sorted.reserve(mSourceModel->rowCount());
     // Get incidences from source model
@@ -130,6 +130,7 @@ QVariantList HourlyIncidenceModel::layoutLines(const QDateTime &rowStart) const
             {QStringLiteral("starts"), start},
             {QStringLiteral("duration"), duration},
             {QStringLiteral("maxConcurrentIncidences"), 1}, // Important
+            {QStringLiteral("widthShare"), 1.0}, // Important
             {QStringLiteral("durationString"), idx.data(IncidenceOccurrenceModel::DurationString)},
             {QStringLiteral("recurs"), idx.data(IncidenceOccurrenceModel::Recurs)},
             {QStringLiteral("hasReminders"), idx.data(IncidenceOccurrenceModel::HasReminders)},
@@ -150,7 +151,7 @@ QVariantList HourlyIncidenceModel::layoutLines(const QDateTime &rowStart) const
         return incidenceMapPtr;
     };
 
-    QVector<QVector<QVariantMap*>> takenSpaces((24 * 60) / mPeriodLength);
+    /*QVector<QVector<QVariantMap*>> takenSpaces((24 * 60) / mPeriodLength);
 
     auto concurrentIncidenceCountHelper = [&] (int start, int end, QVariantMap *mapPtr) {
         for(int i = start; i < end; i++) {
@@ -162,7 +163,7 @@ QVariantList HourlyIncidenceModel::layoutLines(const QDateTime &rowStart) const
                 }
             }
         }
-    };
+    };*/
 
     while (!sorted.isEmpty()) {
         const auto idx = sorted.takeFirst();
@@ -175,19 +176,20 @@ QVariantList HourlyIncidenceModel::layoutLines(const QDateTime &rowStart) const
         /*if (allDayLine && !idx.data(IncidenceOccurrenceModel::AllDay).toBool()) {
          *        continue;
     }*/
+        addToResultsAndGetPtr(idx, start, duration);
 
-        concurrentIncidenceCountHelper(start, end, addToResultsAndGetPtr(idx, start, duration));
+        //concurrentIncidenceCountHelper(start, end, addToResultsAndGetPtr(idx, start, duration));
     }
 
     // Set fraction of width
-    for(int i = 0; i < takenSpaces.length(); i++) {
+    /*for(int i = 0; i < takenSpaces.length(); i++) {
 
         if(takenSpaces[i].length() > 1) {
             double availableWidthShare = 1.0;
             int remainingIncidencesOnLine = takenSpaces[i].length();
 
             for(auto incidence : takenSpaces[i]) {
-                int start = (*incidence)[QStringLiteral("start")].toInt();
+                int start = (*incidence)[QStringLiteral("starts")].toInt();
                 int end = (*incidence)[QStringLiteral("end")].toInt();
                 int maxConcurrentIncidences = (*incidence)[QStringLiteral("maxConcurrentIncidences")].toInt();
                 double widthShare = 1.0;
@@ -199,7 +201,7 @@ QVariantList HourlyIncidenceModel::layoutLines(const QDateTime &rowStart) const
                 }
             }
         }
-    }
+    }*/
 
     return result;
 }
@@ -212,7 +214,7 @@ QVariant HourlyIncidenceModel::data(const QModelIndex &idx, int role) const
     if (!mSourceModel) {
         return {};
     }
-    const auto rowStart = mSourceModel->start().addDays(idx.row() * mPeriodLength).startOfDay();
+    const auto rowStart = mSourceModel->start().addDays(idx.row()).startOfDay();
     switch (role) {
         case PeriodStartDateTime:
             return rowStart;
