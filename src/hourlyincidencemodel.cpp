@@ -258,6 +258,6 @@ QHash<int, QByteArray> HourlyIncidenceModel::roleNames() const
 {
     return {
         {Incidences, "incidences"},
-        {PeriodStartDate, "periodStartDateTime"}
+        {PeriodStartDateTime, "periodStartDateTime"}
     };
 }
