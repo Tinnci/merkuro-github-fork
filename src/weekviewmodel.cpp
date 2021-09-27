@@ -58,7 +58,7 @@ void WeekViewModel::addDates(bool atEnd, QDate startFrom)
     beginInsertRows(QModelIndex(), newRow, newRow + m_weeksToAdd - 1);
 
     for(int i = 0; i < m_weeksToAdd; i++) {
-        QDate startDate = startFrom.isValid() ? startFrom :
+        QDate startDate = startFrom.isValid() && i == 0 ? startFrom :
             atEnd ? m_startDates[rowCount() - 1].addDays(7) : m_startDates[0].addDays(-7);
 
         if(startDate.dayOfWeek() != m_locale.firstDayOfWeek()) {
