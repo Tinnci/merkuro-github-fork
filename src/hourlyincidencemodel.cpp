@@ -3,6 +3,7 @@
 
 #include "hourlyincidencemodel.h"
 #include <QBitArray>
+#include <QTimeZone>
 
 enum Roles {
     Incidences = IncidenceOccurrenceModel::LastRole,
@@ -47,9 +48,9 @@ int HourlyIncidenceModel::columnCount(const QModelIndex &) const
 }
 
 
-static long long getDuration(const QDateTime &start, const QDateTime &end, int periodLength)
+static double getDuration(const QDateTime &start, const QDateTime &end, int periodLength)
 {
-    return (start.secsTo(end) / 60) / periodLength;
+    return ((start.secsTo(end) * 1.0) / 60.0) / periodLength;
 }
 
 // We first sort all occurences so we get all-day first (sorted by duration),
@@ -63,8 +64,8 @@ QList<QModelIndex> HourlyIncidenceModel::sortedIncidencesFromSourceModel(const Q
     // Get incidences from source model
     for (int row = 0; row < mSourceModel->rowCount(); row++) {
         const auto srcIdx = mSourceModel->index(row, 0, {});
-        const auto start = srcIdx.data(IncidenceOccurrenceModel::StartTime).toDateTime();
-        const auto end = srcIdx.data(IncidenceOccurrenceModel::EndTime).toDateTime();
+        const auto start = srcIdx.data(IncidenceOccurrenceModel::StartTime).toDateTime().toTimeZone(QTimeZone::systemTimeZone());
+        const auto end = srcIdx.data(IncidenceOccurrenceModel::EndTime).toDateTime().toTimeZone(QTimeZone::systemTimeZone());
 
         //Skip incidences not part of the week
         if (end < rowStart || start > rowEnd) {
@@ -117,7 +118,7 @@ QVariantList HourlyIncidenceModel::layoutLines(const QDateTime &rowStart) const
     // }
     auto result = QVariantList{};
 
-    auto addToResultsAndGetPtr = [&result] (const QModelIndex &idx, int start, int duration) {
+    auto addToResultsAndGetPtr = [&result] (const QModelIndex &idx, double start, double duration) {
         auto incidenceMap = QVariantMap{
             {QStringLiteral("text"), idx.data(IncidenceOccurrenceModel::Summary)},
             {QStringLiteral("description"), idx.data(IncidenceOccurrenceModel::Description)},
@@ -167,9 +168,10 @@ QVariantList HourlyIncidenceModel::layoutLines(const QDateTime &rowStart) const
 
     while (!sorted.isEmpty()) {
         const auto idx = sorted.takeFirst();
-        const auto startDT = idx.data(IncidenceOccurrenceModel::StartTime).toDateTime();
-        const auto start = (startDT.time().hour() * (60 / mPeriodLength)) + (startDT.time().minute() / mPeriodLength);
-        const auto duration = qMin(getDuration(startDT, idx.data(IncidenceOccurrenceModel::EndTime).toDateTime(), mPeriodLength), 1ll);
+        const auto startDT = idx.data(IncidenceOccurrenceModel::StartTime).toDateTime().toTimeZone(QTimeZone::systemTimeZone());
+        // Need to convert ints into doubles to get more accurate starting positions
+        const auto start = ((startDT.time().hour() * 1.0) * (60.0 / mPeriodLength)) + ((startDT.time().minute() * 1.0) / mPeriodLength);
+        const auto duration = qMax(getDuration(startDT, idx.data(IncidenceOccurrenceModel::EndTime).toDateTime().toTimeZone(QTimeZone::systemTimeZone()), mPeriodLength), 0.5);
         const auto end = start + duration;
 
         // This leaves a space in rows with all day events, making this y area of the row exclusively for all day events
