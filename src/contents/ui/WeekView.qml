@@ -196,9 +196,9 @@ Kirigami.Page {
                                 id: incidencesRepeater
                                 model: incidences
                                 delegate: Rectangle {
-                                    y: modelData.starts * /*daysList.periodsPerHour **/ Kirigami.Units.gridUnit
+                                    y: modelData.starts * Kirigami.Units.gridUnit
                                     width: root.dayWidth //* modelData.widthShare
-                                    height: modelData.duration * daysList.periodsPerHour * Kirigami.Units.gridUnit
+                                    height: modelData.duration * Kirigami.Units.gridUnit
                                     color: Qt.rgba(0,0,0,0)
                                     property int rectRadius: 5
                                     Component.onCompleted: console.log(modelData.starts, modelData.widthShare, modelData.duration)
