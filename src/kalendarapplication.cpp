@@ -5,16 +5,16 @@
 
 #include "kalendarapplication.h"
 
+#include "commandbarfiltermodel.h"
 #include <KXmlGui/KShortcutsDialog>
 #include <KAuthorized>
 #include <KLocalizedString>
-#include <KFuzzyMatcher>
 #include <KSharedConfig>
 #include <KConfigGroup>
 #include <QWindow>
 #include <QMenu>
-#include <QSortFilterProxyModel>
 #include <vector>
+#include <QSortFilterProxyModel>
 
 KalendarApplication::KalendarApplication(QObject *parent)
     : QObject(parent)
@@ -348,59 +348,6 @@ static QVector<KalCommandBarModel::ActionGroup> actionCollectionToActionGroup(co
     return actionList;
 }
 
-class CommandBarFilterModel final : public QSortFilterProxyModel
-{
-    Q_OBJECT
-    Q_PROPERTY(QString filterString READ filterString WRITE setFilterString CONSTANT)
-public:
-    CommandBarFilterModel(QObject *parent = nullptr)
-        : QSortFilterProxyModel(parent)
-    {
-    }
-
-    QString filterString() const
-    {
-        return m_pattern;
-    }
-
-    Q_INVOKABLE void setFilterString(const QString &string)
-    {
-        // MUST reset the model here, we want to repopulate
-        // invalidateFilter() will not work here
-        beginResetModel();
-        m_pattern = string;
-        endResetModel();
-    }
-
-protected:
-    bool lessThan(const QModelIndex &sourceLeft, const QModelIndex &sourceRight) const override
-    {
-        const int l = sourceLeft.data(KalCommandBarModel::Score).toInt();
-        const int r = sourceRight.data(KalCommandBarModel::Score).toInt();
-        return l < r;
-    }
-
-    bool filterAcceptsRow(int sourceRow, const QModelIndex &sourceParent) const override
-    {
-        if (m_pattern.isEmpty()) {
-            return true;
-        }
-
-        const QModelIndex idx = sourceModel()->index(sourceRow, 0, sourceParent);
-        if (!(qvariant_cast<QAction *>(idx.data(Qt::UserRole))->isEnabled())) {
-            return false;
-        }
-
-        const QString actionName = idx.data(Qt::DisplayRole).toString();
-        KFuzzyMatcher::Result res = KFuzzyMatcher::match(m_pattern, actionName);
-        sourceModel()->setData(idx, res.score, KalCommandBarModel::Score);
-        return res.matched;
-    }
-
-private:
-    QString m_pattern;
-};
-
 QSortFilterProxyModel *KalendarApplication::actionsModel()
 {
     if (!m_proxyModel) {
@@ -422,5 +369,3 @@ QSortFilterProxyModel *KalendarApplication::actionsModel()
     m_actionModel->refresh(actionCollectionToActionGroup(actionCollections));
     return m_proxyModel;
 }
-
-#include "kalendarapplication.moc"
