@@ -15,6 +15,7 @@ QQC2.Dialog {
     height: 400
     y: 50
     onClosed: parent.active = false
+    onOpened: searchField.forceActiveFocus()
 
     header: T.Control {
         implicitWidth: Math.max(implicitBackgroundWidth + leftInset + rightInset,
@@ -27,10 +28,8 @@ QQC2.Dialog {
 
         contentItem: Kirigami.SearchField {
             id: searchField
-            onTextChanged: {
-                console.log(KalendarApplication.actionsModel, KalendarApplication.actionsModel.filterString)
-                KalendarApplication.actionsModel.filterString = text
-            }
+            KeyNavigation.down: actionList
+            onTextChanged: KalendarApplication.actionsModel.filterString = text
         }
 
         // header background
@@ -57,7 +56,12 @@ QQC2.Dialog {
     QQC2.ScrollView {
         anchors.fill: parent
         ListView {
+            id: actionList
             model: KalendarApplication.actionsModel
+            Keys.onPressed: if (event.text.length > 0) {
+                searchField.forceActiveFocus();
+                searchField.text += event.text;
+            }
             delegate: Kirigami.BasicListItem {
                 icon: model.decoration
                 text: model.display

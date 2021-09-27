@@ -66,7 +66,6 @@ Labs.MenuBar {
 
         Labs.Menu {
             title: i18nc("@action:menu", "Sort Tasks")
-            enabled: bar.todoMode
 
             NativeMenuItemFromAction {
                 kalendarAction: 'todoview_sort_by_due_date'
@@ -94,7 +93,6 @@ Labs.MenuBar {
 
         NativeMenuItemFromAction {
             kalendarAction: 'todoview_show_completed'
-            enabled: bar.todoMode
         }
     }
     Labs.Menu {

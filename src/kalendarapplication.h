@@ -21,7 +21,7 @@ public:
     Q_INVOKABLE QAction* action(const QString& name);
 
     Q_INVOKABLE QString iconName(const QIcon& icon) const;
-    void setupActions(const QString &actionName);
+    void setupActions();
     QWindow *window() const;
     void setWindow(QWindow *window);
 
@@ -54,6 +54,7 @@ Q_SIGNALS:
 
 private:
     KActionCollection mCollection;
+    KActionCollection mSortCollection;
     QWindow *m_window = nullptr;
     QActionGroup *m_viewGroup = nullptr;
     QActionGroup *m_todoViewOrderGroup = nullptr;
