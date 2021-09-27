@@ -151,9 +151,11 @@ Kirigami.Page {
 
                 Row {
                     anchors.fill: parent
+
                     Repeater {
                         id: daysList
 
+                        property int periodsPerHour: 60 / hourlyModel.periodLength
                         property int daySections: (60 * 24) / hourlyModel.periodLength
                         property real dayHeight: daySections * Kirigami.Units.gridUnit
 
@@ -162,7 +164,7 @@ Kirigami.Page {
                             model: Kalendar.IncidenceOccurrenceModel {
                                 id: occurrenceModel
                                 objectName: "incidenceOccurrenceModel"
-                                start: new Date()
+                                start: viewLoader.startDate
                                 length: 7
                                 filter: root.filter ? root.filter : {}
                                 calendar: Kalendar.CalendarManager.calendar
@@ -170,12 +172,91 @@ Kirigami.Page {
                         }
 
                         delegate: Item {
+                            id: dayColumn
+                            property int index: model.index
                             width: dayWidth
                             height: daysList.dayHeight
-                            Kirigami.Heading {
+
+                            Repeater {
+                                model: daysList.daySections
+                                delegate: Kirigami.Separator {
+                                    width: root.dayWidth
+                                    y: index * Kirigami.Units.gridUnit
+                                    height: 1
+                                    visible: index % daysList.periodsPerHour === 0
+                                }
+                            }
+                            /*Kirigami.Heading {
                                 width: parent.width
                                 text: DateUtils.addDaysToDate(viewLoader.startDate, index).toLocaleDateString(Qt.locale())
                                 wrapMode: Text.Wrap
+                            }*/
+
+                            Repeater {
+                                id: incidencesRepeater
+                                model: incidences
+                                delegate: Rectangle {
+                                    y: modelData.starts * /*daysList.periodsPerHour **/ Kirigami.Units.gridUnit
+                                    width: root.dayWidth //* modelData.widthShare
+                                    height: modelData.duration * daysList.periodsPerHour * Kirigami.Units.gridUnit
+                                    color: Qt.rgba(0,0,0,0)
+                                    property int rectRadius: 5
+                                    Component.onCompleted: console.log(modelData.starts, modelData.widthShare, modelData.duration)
+
+                                    property bool isOpenOccurrence: root.openOccurrence ?
+                                        root.openOccurrence.incidenceId === modelData.incidenceId : false
+
+                                    Rectangle {
+                                        id: incidenceBackground
+                                        anchors.fill: parent
+                                        color: isOpenOccurrence ? modelData.color :
+                                            LabelUtils.getIncidenceBackgroundColor(modelData.color, root.isDark)
+                                        radius: parent.rectRadius
+                                    }
+
+                                    RowLayout {
+                                        id: incidenceContents
+
+                                        property color textColor: LabelUtils.getIncidenceLabelColor(modelData.color, root.isDark)
+
+                                        function otherMonthTextColor(color) {
+                                            if(root.isDark) {
+                                                if(LabelUtils.getDarkness(color) >= 0.5) {
+                                                    return Qt.lighter(color, 2);
+                                                }
+                                                return Qt.lighter(color, 1.5);
+                                            }
+                                            return Qt.darker(color, 3);
+                                        }
+
+                                        anchors {
+                                            fill: parent
+                                            leftMargin: Kirigami.Units.smallSpacing
+                                            rightMargin: Kirigami.Units.smallSpacing
+                                        }
+
+                                        Kirigami.Icon {
+                                            Layout.maximumHeight: parent.height
+                                            Layout.maximumWidth: height
+
+                                            source: modelData.incidenceTypeIcon
+                                            isMask: true
+                                            color: isOpenOccurrence ? (LabelUtils.isDarkColor(modelData.color) ? "white" : "black") :
+                                                incidenceBackground.visible ? incidenceContents.textColor :
+                                                incidenceContents.otherMonthTextColor(modelData.color)
+                                        }
+
+                                        QQC2.Label {
+                                            Layout.fillWidth: true
+                                            text: modelData.text
+                                            elide: Text.ElideRight
+                                            font.weight: Font.Medium
+                                            color: isOpenOccurrence ? (LabelUtils.isDarkColor(modelData.color) ? "white" : "black") :
+                                                incidenceBackground.visible ? incidenceContents.textColor :
+                                                incidenceContents.otherMonthTextColor(modelData.color)
+                                        }
+                                    }
+                                }
                             }
                         }
                     }
