@@ -259,7 +259,7 @@ Kirigami.Page {
                                     delegate: Rectangle {
                                         x: root.incidenceSpacing + (root.gridLineWidth / 2)
                                         y: (modelData.starts * Kirigami.Units.gridUnit) + root.incidenceSpacing + (root.gridLineWidth / 2)
-                                        width: root.dayWidth - (root.incidenceSpacing * 2) - (root.gridLineWidth * 2) //* modelData.widthShare
+                                        width: root.dayWidth - (root.incidenceSpacing * 2) - root.gridLineWidth //* modelData.widthShare
                                         height: (modelData.duration * Kirigami.Units.gridUnit) - (root.incidenceSpacing * 2) - root.gridLineWidth
                                         color: Qt.rgba(0,0,0,0)
                                         property int rectRadius: 5
