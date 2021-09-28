@@ -29,9 +29,20 @@ class MultiDayIncidenceModel : public QAbstractItemModel
 {
     Q_OBJECT
     Q_PROPERTY(int periodLength READ periodLength WRITE setPeriodLength NOTIFY periodLengthChanged)
+    Q_PROPERTY(MultiDayIncidenceModel::Filters filters READ filters WRITE setFilters NOTIFY filtersChanged)
+    Q_PROPERTY(int incidenceCount READ incidenceCount NOTIFY incidenceCountChanged)
     Q_PROPERTY(IncidenceOccurrenceModel* model WRITE setModel)
 
 public:
+    enum Filter {
+        None = 0x0,
+        AllDayOnly = 0x1,
+        NoStartDateOnly = 0x2
+    };
+    Q_DECLARE_FLAGS(Filters, Filter)
+    Q_FLAGS(Filters)
+    Q_ENUMS(Filter)
+
     MultiDayIncidenceModel(QObject *parent = nullptr);
     ~MultiDayIncidenceModel() = default;
 
@@ -48,9 +59,17 @@ public:
     void setModel(IncidenceOccurrenceModel *model);
     int periodLength();
     void setPeriodLength(int periodLength);
+    MultiDayIncidenceModel::Filters filters();
+    void setFilters(MultiDayIncidenceModel::Filters filters);
+    Q_INVOKABLE int incidenceCount();
 
 Q_SIGNALS:
     void periodLengthChanged();
+    void filtersChanged();
+    void incidenceCountChanged();
+
+protected:
+    void setIncidenceCount(int incidenceCount);
 
 private:
     QTimer mRefreshTimer;
@@ -58,5 +77,7 @@ private:
     QVariantList layoutLines(const QDate &rowStart) const;
     IncidenceOccurrenceModel *mSourceModel{nullptr};
     int mPeriodLength{7};
+    MultiDayIncidenceModel::Filters m_filters = None;
 };
 
+Q_DECLARE_OPERATORS_FOR_FLAGS(MultiDayIncidenceModel::Filters)
