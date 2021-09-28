@@ -141,51 +141,73 @@ Kirigami.Page {
             property bool isCurrentItem: PathView.isCurrentItem
             property bool isNextOrCurrentItem: index >= pathView.currentIndex -1 && index <= pathView.currentIndex + 1
 
+            Loader {
+                id: modelLoader
+                active: true
+                asynchronous: true
+                sourceComponent: Kalendar.HourlyIncidenceModel {
+                    id: hourlyModel
+                    model: Kalendar.IncidenceOccurrenceModel {
+                        id: occurrenceModel
+                        objectName: "incidenceOccurrenceModel"
+                        start: viewLoader.startDate
+                        length: 7
+                        filter: root.filter ? root.filter : {}
+                        calendar: Kalendar.CalendarManager.calendar
+                    }
+                }
+            }
+
             active: isNextOrCurrentItem
             //asynchronous: true
             sourceComponent: QQC2.ScrollView {
+                id: hourlyView
                 width: pathView.width
                 height: pathView.height
                 contentWidth: availableWidth
                 QQC2.ScrollBar.horizontal.policy: QQC2.ScrollBar.AlwaysOff
 
+                property int periodsPerHour: 60 / modelLoader.item.periodLength
+                property int daySections: (60 * 24) / modelLoader.item.periodLength
+                property real dayHeight: daySections * Kirigami.Units.gridUnit
+
+                Repeater {
+                    id: hourLineRepeater
+                    anchors.fill: parent
+                    model: hourlyView.daySections
+                    delegate: Kirigami.Separator {
+                        anchors.left: parent.left
+                        anchors.right: parent.right
+                        y: index * Kirigami.Units.gridUnit
+                        height: 1
+                        visible: index % hourlyView.periodsPerHour === 0
+                    }
+                }
+
+                Repeater {
+                    id: dayLineRepeater
+                    anchors.fill: parent
+                    model: modelLoader.item.rowCount() - 1 // Don't want line at beginning
+                    delegate: Kirigami.Separator {
+                        anchors.top: parent.top
+                        anchors.bottom: parent.bottom
+                        x: (index + 1) * root.dayWidth
+                        width: 1
+                    }
+                }
+
                 Row {
                     anchors.fill: parent
 
                     Repeater {
-                        id: daysList
-
-                        property int periodsPerHour: 60 / hourlyModel.periodLength
-                        property int daySections: (60 * 24) / hourlyModel.periodLength
-                        property real dayHeight: daySections * Kirigami.Units.gridUnit
-
-                        model: Kalendar.HourlyIncidenceModel {
-                            id: hourlyModel
-                            model: Kalendar.IncidenceOccurrenceModel {
-                                id: occurrenceModel
-                                objectName: "incidenceOccurrenceModel"
-                                start: viewLoader.startDate
-                                length: 7
-                                filter: root.filter ? root.filter : {}
-                                calendar: Kalendar.CalendarManager.calendar
-                            }
-                        }
+                        model: modelLoader.item
 
                         delegate: Item {
                             id: dayColumn
                             property int index: model.index
                             width: dayWidth
-                            height: daysList.dayHeight
+                            height: hourlyView.dayHeight
 
-                            Repeater {
-                                model: daysList.daySections
-                                delegate: Kirigami.Separator {
-                                    width: root.dayWidth
-                                    y: index * Kirigami.Units.gridUnit
-                                    height: 1
-                                    visible: index % daysList.periodsPerHour === 0
-                                }
-                            }
                             /*Kirigami.Heading {
                                 width: parent.width
                                 text: DateUtils.addDaysToDate(viewLoader.startDate, index).toLocaleDateString(Qt.locale())
