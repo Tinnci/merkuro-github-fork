@@ -225,13 +225,14 @@ selectedDate = date;
                     active: allDayIncidenceModelLoader.item.incidenceCount > 0
                     sourceComponent: Item {
                         implicitHeight: Kirigami.Units.gridUnit * 3
+                        clip: true
                         Repeater {
                             model: allDayIncidenceModelLoader.item
                             Layout.topMargin: Kirigami.Units.largeSpacing
                             //One row => one week
                             Item {
                                 width: parent.width
-                                height: Kirigami.Units.gridUnit * 4
+                                height: Kirigami.Units.gridUnit * 3
                                 clip: true
                                 RowLayout {
                                     width: parent.width
@@ -258,6 +259,7 @@ selectedDate = date;
 
                                                 clip: true
                                                 spacing: Kirigami.Units.smallSpacing
+                                                contentHeight: contentHeight + Kirigami.Units.largeSpacing
 
                                                 DayMouseArea {
                                                     id: listViewMenu
