@@ -171,7 +171,7 @@ QVariantList HourlyIncidenceModel::layoutLines(const QDateTime &rowStart) const
         const auto startDT = idx.data(IncidenceOccurrenceModel::StartTime).toDateTime().toTimeZone(QTimeZone::systemTimeZone());
         // Need to convert ints into doubles to get more accurate starting positions
         const auto start = ((startDT.time().hour() * 1.0) * (60.0 / mPeriodLength)) + ((startDT.time().minute() * 1.0) / mPeriodLength);
-        const auto duration = qMax(getDuration(startDT, idx.data(IncidenceOccurrenceModel::EndTime).toDateTime().toTimeZone(QTimeZone::systemTimeZone()), mPeriodLength), 0.5);
+        const auto duration = qMax(getDuration(startDT, idx.data(IncidenceOccurrenceModel::EndTime).toDateTime().toTimeZone(QTimeZone::systemTimeZone()), mPeriodLength), 1.0);
         const auto end = start + duration;
 
         // This leaves a space in rows with all day events, making this y area of the row exclusively for all day events
