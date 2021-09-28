@@ -55,6 +55,7 @@ QQC2.Dialog {
 
     QQC2.ScrollView {
         anchors.fill: parent
+        QQC2.ScrollBar.horizontal.policy: QQC2.ScrollBar.AlwaysOff
         ListView {
             id: actionList
             model: KalendarApplication.actionsModel
