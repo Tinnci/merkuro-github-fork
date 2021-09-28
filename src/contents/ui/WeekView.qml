@@ -41,6 +41,7 @@ Kirigami.Page {
         for(let i = 0; i < 23; i++) {
             date.setHours(i);
             hourStrings.push(date.toLocaleTimeString(Qt.locale(), Locale.NarrowFormat));
+            hourStringsChanged();
         }
     }
 
@@ -174,6 +175,7 @@ selectedDate = date;
             sourceComponent: ColumnLayout {
                 width: pathView.width
                 height: pathView.height
+                spacing: 0
 
                 Row {
                     Layout.fillWidth: true
@@ -185,10 +187,222 @@ selectedDate = date;
                             width: root.dayWidth
                             horizontalAlignment: Text.AlignRight
                             padding: Kirigami.Units.smallSpacing
-                            text: DateUtils.addDaysToDate(viewLoader.startDate, index).toLocaleDateString(Qt.locale(), "ddd dd")
+                            level: 2
+                            text: DateUtils.addDaysToDate(viewLoader.startDate, index).toLocaleDateString(Qt.locale(), "ddd <b>dd</b>")
                         }
                     }
                 }
+
+                Kirigami.Separator {
+                    Layout.leftMargin: Kirigami.Units.largeSpacing
+                    Layout.fillWidth: true
+                    height: root.gridLineWidth
+                }
+
+                Loader {
+                    id: allDayIncidenceModelLoader
+                    asynchronous: true
+                    sourceComponent: Kalendar.MultiDayIncidenceModel {
+                        periodLength: 7
+                        filters: Kalendar.MultiDayIncidenceModel.AllDayOnly //| Kalendar.MultiDayIncidenceModel.NoStartDateOnly
+                        model: Kalendar.IncidenceOccurrenceModel {
+                            id: occurrenceModel
+                            objectName: "incidenceOccurrenceModel"
+                            start: viewLoader.startDate
+                            length: 7
+                            filter: root.filter ? root.filter : {}
+                            calendar: Kalendar.CalendarManager.calendar
+                        }
+                    }
+                }
+
+                Loader {
+                    id: allDayViewLoader
+                    Layout.fillWidth: true
+                    Layout.leftMargin: root.hourLabelWidth
+                    height: visible ? implicitHeight : 0
+                    visible: active
+                    active: allDayIncidenceModelLoader.item.incidenceCount > 0
+                    sourceComponent: Item {
+                        implicitHeight: Kirigami.Units.gridUnit * 3
+                        Repeater {
+                            model: allDayIncidenceModelLoader.item
+                            Layout.topMargin: Kirigami.Units.largeSpacing
+                            //One row => one week
+                            Item {
+                                width: parent.width
+                                height: Kirigami.Units.gridUnit * 4
+                                clip: true
+                                RowLayout {
+                                    width: parent.width
+                                    height: parent.height
+                                    spacing: root.spacing
+                                    Item {
+                                        id: dayDelegate
+                                        Layout.fillWidth: true
+                                        Layout.fillHeight: true
+                                        property date startDate: periodStartDate
+
+                                        QQC2.ScrollView {
+                                            anchors {
+                                                fill: parent
+                                            }
+
+                                            QQC2.ScrollBar.horizontal.policy: QQC2.ScrollBar.AlwaysOff
+
+                                            ListView {
+                                                id: linesRepeater
+                                                Layout.fillWidth: true
+                                                Layout.rightMargin: parent.contentHeight > parent.availableHeight ?
+                                                    spacing : spacing
+
+                                                clip: true
+                                                spacing: Kirigami.Units.smallSpacing
+
+                                                DayMouseArea {
+                                                    id: listViewMenu
+                                                    anchors.fill: parent
+                                                    z: -1
+
+                                                    function useGridSquareDate(type, root, globalPos) {
+                                                        for(var i in root.children) {
+                                                            var child = root.children[i];
+                                                            var localpos = child.mapFromGlobal(globalPos.x, globalPos.y);
+
+                                                            if(child.contains(localpos) && child.gridSquareDate) {
+                                                                addIncidence(type, child.gridSquareDate);
+                                                            } else {
+                                                                useGridSquareDate(type, child, globalPos);
+                                                            }
+                                                        }
+                                                    }
+
+                                                    onAddNewIncidence: useGridSquareDate(type, applicationWindow().contentItem, this.mapToGlobal(clickX, clickY))
+                                                }
+
+                                                model: incidences
+
+                                                delegate: Item {
+                                                    id: line
+                                                    height: Kirigami.Units.gridUnit + Kirigami.Units.smallSpacing
+
+                                                    //Incidences
+                                                    Repeater {
+                                                        id: incidencesRepeater
+                                                        model: modelData
+                                                        Rectangle {
+                                                            x: ((root.dayWidth + root.spacing) * modelData.starts) + horizontalSpacing
+                                                            y: horizontalSpacing
+                                                            width: ((root.dayWidth + root.spacing) * modelData.duration) - (horizontalSpacing * 2) - root.spacing // Account for spacing added to x and for spacing at end of line
+                                                            height: parent.height
+                                                            opacity: isOpenOccurrence ||
+                                                            modelData.endTime.getMonth() == root.month ||
+                                                            modelData.startTime.getMonth() == root.month ?
+                                                            1.0 : 0.5
+                                                            radius: rectRadius
+                                                            color: Qt.rgba(0,0,0,0)
+
+                                                            property int rectRadius: 5
+                                                            property int horizontalSpacing: linesRepeater.spacing
+
+                                                            property bool isOpenOccurrence: root.openOccurrence ?
+                                                            root.openOccurrence.incidenceId === modelData.incidenceId : false
+
+                                                            Rectangle {
+                                                                id: incidenceBackground
+                                                                anchors.fill: parent
+                                                                color: isOpenOccurrence ? modelData.color :
+                                                                LabelUtils.getIncidenceBackgroundColor(modelData.color, root.isDark)
+                                                                visible: isOpenOccurrence ||
+                                                                modelData.endTime.getMonth() === root.month ||
+                                                                modelData.startTime.getMonth() === root.month
+                                                                radius: parent.rectRadius
+                                                            }
+
+                                                            RowLayout {
+                                                                id: incidenceContents
+
+                                                                property color textColor: LabelUtils.getIncidenceLabelColor(modelData.color, root.isDark)
+
+                                                                function otherMonthTextColor(color) {
+                                                                    if(root.isDark) {
+                                                                        if(LabelUtils.getDarkness(color) >= 0.5) {
+                                                                            return Qt.lighter(color, 2);
+                                                                        }
+                                                                        return Qt.lighter(color, 1.5);
+                                                                    }
+                                                                    return Qt.darker(color, 3);
+                                                                }
+
+                                                                anchors {
+                                                                    fill: parent
+                                                                    leftMargin: Kirigami.Units.smallSpacing
+                                                                    rightMargin: Kirigami.Units.smallSpacing
+                                                                }
+
+                                                                Kirigami.Icon {
+                                                                    Layout.maximumHeight: parent.height
+                                                                    Layout.maximumWidth: height
+
+                                                                    source: modelData.incidenceTypeIcon
+                                                                    isMask: true
+                                                                    color: isOpenOccurrence ? (LabelUtils.isDarkColor(modelData.color) ? "white" : "black") :
+                                                                    incidenceBackground.visible ? incidenceContents.textColor :
+                                                                    incidenceContents.otherMonthTextColor(modelData.color)
+                                                                }
+
+                                                                QQC2.Label {
+                                                                    Layout.fillWidth: true
+                                                                    text: modelData.text
+                                                                    elide: Text.ElideRight
+                                                                    font.weight: Font.Medium
+                                                                    color: isOpenOccurrence ? (LabelUtils.isDarkColor(modelData.color) ? "white" : "black") :
+                                                                    incidenceBackground.visible ? incidenceContents.textColor :
+                                                                    incidenceContents.otherMonthTextColor(modelData.color)
+                                                                }
+                                                            }
+
+                                                            IncidenceMouseArea {
+                                                                incidenceData: modelData
+                                                                collectionId: modelData.collectionId
+
+                                                                onViewClicked: viewIncidence(modelData, collectionData)
+                                                                onEditClicked: editIncidence(incidencePtr, collectionId)
+                                                                onDeleteClicked: deleteIncidence(incidencePtr, deleteDate)
+                                                                onTodoCompletedClicked: completeTodo(incidencePtr)
+                                                                onAddSubTodoClicked: root.addSubTodo(parentWrapper)
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        Repeater {
+                            id: allDayDayLineRepeater
+                            anchors.fill: parent
+                            model: modelLoader.item.rowCount() - 1 // Don't want line at beginning
+                            delegate: Kirigami.Separator {
+                                anchors.top: parent.top
+                                height: hourlyView.dayHeight
+                                x: ((index + 1) * root.dayWidth) - (root.gridLineWidth / 2)
+                                width: root.gridLineWidth
+                            }
+                        }
+                    }
+                }
+
+                Kirigami.Separator {
+                    Layout.leftMargin: Kirigami.Units.largeSpacing
+                    Layout.fillWidth: true
+                    height: root.gridLineWidth
+                    visible: allDayViewLoader.active
+                }
+
+
                 QQC2.ScrollView {
                     id: hourlyView
                     Layout.fillWidth: true
@@ -236,13 +450,12 @@ selectedDate = date;
 
                             Repeater {
                                 id: hourLineRepeater
-                                model: hourlyView.daySections
+                                model: 22 // No top and bottom separator
                                 delegate: Kirigami.Separator {
                                     anchors.left: parent.left
                                     anchors.right: parent.right
-                                    y: (index * Kirigami.Units.gridUnit) - (root.gridLineWidth / 2)
+                                    y: (((index + 1) * hourlyView.periodsPerHour) * Kirigami.Units.gridUnit) - (root.gridLineWidth / 2)
                                     height: root.gridLineWidth
-                                    visible: index % hourlyView.periodsPerHour === 0
                                 }
                             }
 
@@ -281,7 +494,10 @@ selectedDate = date;
                                                 height: (modelData.duration * Kirigami.Units.gridUnit) - (root.incidenceSpacing * 2) - root.gridLineWidth
                                                 color: Qt.rgba(0,0,0,0)
                                                 property int rectRadius: 5
-                                                Component.onCompleted: console.log(modelData.starts, modelData.widthShare, modelData.duration)
+                                                Component.onCompleted: if(modelData.allDay) {
+                                                    visible = false
+                                                    allDayViewLoader.active = true
+                                                } //console.log(modelData.starts, modelData.widthShare, modelData.duration)
 
                                                 property bool isOpenOccurrence: root.openOccurrence ?
                                                 root.openOccurrence.incidenceId === modelData.incidenceId : false
