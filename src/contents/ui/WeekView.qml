@@ -31,6 +31,8 @@ Kirigami.Page {
     readonly property bool isDark: LabelUtils.isDarkColor(Kirigami.Theme.backgroundColor)
 
     property real dayWidth: root.width / 7
+    property real incidenceSpacing: Kirigami.Units.smallSpacing / 2
+    property real gridLineWidth: 1.0
 
     background: Rectangle {
         Kirigami.Theme.inherit: false
@@ -86,7 +88,6 @@ Kirigami.Page {
     }
 
     padding: 0
-    bottomPadding: Kirigami.Settings.isMobile ? Kirigami.Units.largeSpacing * 2 : Kirigami.Units.largeSpacing
 
     PathView {
         id: pathView
@@ -165,6 +166,7 @@ Kirigami.Page {
                 width: pathView.width
                 height: pathView.height
                 contentWidth: availableWidth
+                contentHeight: dayHeight
                 QQC2.ScrollBar.horizontal.policy: QQC2.ScrollBar.AlwaysOff
 
                 property int periodsPerHour: 60 / modelLoader.item.periodLength
@@ -178,8 +180,8 @@ Kirigami.Page {
                     delegate: Kirigami.Separator {
                         anchors.left: parent.left
                         anchors.right: parent.right
-                        y: index * Kirigami.Units.gridUnit
-                        height: 1
+                        y: (index * Kirigami.Units.gridUnit) - (root.gridLineWidth / 2)
+                        height: root.gridLineWidth
                         visible: index % hourlyView.periodsPerHour === 0
                     }
                 }
@@ -190,9 +192,9 @@ Kirigami.Page {
                     model: modelLoader.item.rowCount() - 1 // Don't want line at beginning
                     delegate: Kirigami.Separator {
                         anchors.top: parent.top
-                        anchors.bottom: parent.bottom
-                        x: (index + 1) * root.dayWidth
-                        width: 1
+                        height: hourlyView.dayHeight
+                        x: ((index + 1) * root.dayWidth) - (root.gridLineWidth / 2)
+                        width: root.gridLineWidth
                     }
                 }
 
@@ -205,8 +207,9 @@ Kirigami.Page {
                         delegate: Item {
                             id: dayColumn
                             property int index: model.index
-                            width: dayWidth
+                            width: root.dayWidth
                             height: hourlyView.dayHeight
+                            clip: true
 
                             /*Kirigami.Heading {
                                 width: parent.width
@@ -218,9 +221,10 @@ Kirigami.Page {
                                 id: incidencesRepeater
                                 model: incidences
                                 delegate: Rectangle {
-                                    y: modelData.starts * Kirigami.Units.gridUnit
-                                    width: root.dayWidth //* modelData.widthShare
-                                    height: modelData.duration * Kirigami.Units.gridUnit
+                                    x: root.incidenceSpacing + (root.gridLineWidth / 2)
+                                    y: (modelData.starts * Kirigami.Units.gridUnit) + root.incidenceSpacing + (root.gridLineWidth / 2)
+                                    width: root.dayWidth - (root.incidenceSpacing * 2) - (root.gridLineWidth * 2) //* modelData.widthShare
+                                    height: (modelData.duration * Kirigami.Units.gridUnit) - (root.incidenceSpacing * 2) - root.gridLineWidth
                                     color: Qt.rgba(0,0,0,0)
                                     property int rectRadius: 5
                                     Component.onCompleted: console.log(modelData.starts, modelData.widthShare, modelData.duration)
@@ -236,7 +240,7 @@ Kirigami.Page {
                                         radius: parent.rectRadius
                                     }
 
-                                    RowLayout {
+                                    ColumnLayout {
                                         id: incidenceContents
 
                                         property color textColor: LabelUtils.getIncidenceLabelColor(modelData.color, root.isDark)
@@ -255,9 +259,11 @@ Kirigami.Page {
                                             fill: parent
                                             leftMargin: Kirigami.Units.smallSpacing
                                             rightMargin: Kirigami.Units.smallSpacing
+                                            topMargin: Kirigami.Units.smallSpacing
+                                            bottomMargin: Kirigami.Units.smallSpacing
                                         }
 
-                                        Kirigami.Icon {
+                                        /*Kirigami.Icon {
                                             Layout.maximumHeight: parent.height
                                             Layout.maximumWidth: height
 
@@ -266,17 +272,30 @@ Kirigami.Page {
                                             color: isOpenOccurrence ? (LabelUtils.isDarkColor(modelData.color) ? "white" : "black") :
                                                 incidenceBackground.visible ? incidenceContents.textColor :
                                                 incidenceContents.otherMonthTextColor(modelData.color)
-                                        }
+                                        }*/
 
                                         QQC2.Label {
                                             Layout.fillWidth: true
+                                            Layout.fillHeight: true
                                             text: modelData.text
+                                            wrapMode: Text.Wrap
                                             elide: Text.ElideRight
                                             font.weight: Font.Medium
                                             color: isOpenOccurrence ? (LabelUtils.isDarkColor(modelData.color) ? "white" : "black") :
                                                 incidenceBackground.visible ? incidenceContents.textColor :
                                                 incidenceContents.otherMonthTextColor(modelData.color)
                                         }
+                                    }
+
+                                    IncidenceMouseArea {
+                                        incidenceData: modelData
+                                        collectionId: modelData.collectionId
+
+                                        onViewClicked: viewIncidence(modelData, collectionData)
+                                        onEditClicked: editIncidence(incidencePtr, collectionId)
+                                        onDeleteClicked: deleteIncidence(incidencePtr, deleteDate)
+                                        onTodoCompletedClicked: completeTodo(incidencePtr)
+                                        onAddSubTodoClicked: root.addSubTodo(parentWrapper)
                                     }
                                 }
                             }

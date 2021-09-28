@@ -523,10 +523,19 @@ Kirigami.ApplicationWindow {
             id: weekView
             objectName: "weekView"
 
+            openOccurrence: root.openOccurrence
+
             titleDelegate: TitleDateButton {
                 date: weekView.startDate
                 onClicked: dateChangeDrawer.open()
             }
+
+            onAddIncidence: root.setUpAdd(type, addDate)
+            onViewIncidence: root.setUpView(modelData, collectionData)
+            onEditIncidence: root.setUpEdit(incidencePtr, collectionId)
+            onDeleteIncidence: root.setUpDelete(incidencePtr, deleteDate)
+            onCompleteTodo: root.completeTodo(incidencePtr)
+            onAddSubTodo: root.setUpAddSubTodo(parentWrapper)
 
             actions.contextualActions: createAction
         }
