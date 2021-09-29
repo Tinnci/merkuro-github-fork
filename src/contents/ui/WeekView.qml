@@ -13,7 +13,7 @@ import "labelutils.js" as LabelUtils
 Kirigami.Page {
     id: root
 
-    signal addIncidence(int type, date addDate)
+    signal addIncidence(int type, date addDate, bool includeTime)
     signal viewIncidence(var modelData, var collectionData)
     signal editIncidence(var incidencePtr, var collectionId)
     signal deleteIncidence(var incidencePtr, date deleteDate)
@@ -30,7 +30,7 @@ Kirigami.Page {
     readonly property bool isLarge: width > Kirigami.Units.gridUnit * 30
     readonly property bool isDark: LabelUtils.isDarkColor(Kirigami.Theme.backgroundColor)
 
-    property real dayWidth: (root.width - hourLabelWidth - leftPadding) / 7
+    property real dayWidth: ((root.width - hourLabelWidth - leftPadding) / 7) - gridLineWidth
     property real incidenceSpacing: Kirigami.Units.smallSpacing / 2
     property real gridLineWidth: 1.0
     property real hourLabelWidth: Kirigami.Units.gridUnit * 3
@@ -255,7 +255,7 @@ selectedDate = date;
                                     RowLayout {
                                         width: parent.width
                                         height: parent.height
-                                        spacing: root.spacing
+                                        spacing: root.gridLineWidth
                                         Item {
                                             id: dayDelegate
                                             Layout.fillWidth: true
@@ -310,9 +310,9 @@ selectedDate = date;
                                                             id: incidencesRepeater
                                                             model: modelData
                                                             Rectangle {
-                                                                x: ((root.dayWidth + root.spacing) * modelData.starts) + horizontalSpacing
+                                                                x: ((root.dayWidth + root.gridLineWidth) * modelData.starts) + horizontalSpacing
                                                                 y: horizontalSpacing
-                                                                width: ((root.dayWidth + root.spacing) * modelData.duration) - (horizontalSpacing * 2) - root.spacing // Account for spacing added to x and for spacing at end of line
+                                                                width: ((root.dayWidth + root.gridLineWidth) * modelData.duration) - (horizontalSpacing * 2) - root.gridLineWidth // Account for spacing added to x and for spacing at end of line
                                                                 height: parent.height
                                                                 opacity: isOpenOccurrence ||
                                                                 modelData.endTime.getMonth() == root.month ||
@@ -407,7 +407,7 @@ selectedDate = date;
                                 delegate: Kirigami.Separator {
                                     anchors.top: parent.top
                                     height: hourlyView.dayHeight
-                                    x: ((index + 1) * root.dayWidth) - (root.gridLineWidth / 2)
+                                    x: ((index + 1) * root.dayWidth) + (index * root.gridLineWidth)
                                     width: root.gridLineWidth
                                 }
                             }
@@ -432,9 +432,10 @@ selectedDate = date;
                     contentHeight: dayHeight
                     QQC2.ScrollBar.horizontal.policy: QQC2.ScrollBar.AlwaysOff
 
-                    property int periodsPerHour: 60 / modelLoader.item.periodLength
-                    property int daySections: (60 * 24) / modelLoader.item.periodLength
-                    property real dayHeight: daySections * Kirigami.Units.gridUnit
+                    property real periodsPerHour: 60 / modelLoader.item.periodLength
+                    property real daySections: (60 * 24) / modelLoader.item.periodLength
+                    property real dayHeight: (daySections * Kirigami.Units.gridUnit) + (root.gridLineWidth * 23)
+                    property real hourHeight: periodsPerHour * Kirigami.Units.gridUnit
 
                     Item {
                         id: hourlyViewContents
@@ -446,7 +447,8 @@ selectedDate = date;
                             anchors.left: parent.left
                             anchors.top: parent.top
                             anchors.bottom: parent.bottom
-                            anchors.topMargin: fontMetrics.height / 2
+                            anchors.topMargin: (fontMetrics.height / 2) + (root.gridLineWidth / 2)
+                            spacing: root.gridLineWidth
 
                             FontMetrics {
                                 id: fontMetrics
@@ -472,32 +474,14 @@ selectedDate = date;
                             anchors.leftMargin: root.hourLabelWidth
                             clip: true
 
-                            Repeater {
-                                id: hourLineRepeater
-                                model: 22 // No top and bottom separator
-                                delegate: Kirigami.Separator {
-                                    anchors.left: parent.left
-                                    anchors.right: parent.right
-                                    y: (((index + 1) * hourlyView.periodsPerHour) * Kirigami.Units.gridUnit) - (root.gridLineWidth / 2)
-                                    height: root.gridLineWidth
-                                }
-                            }
-
-                            Repeater {
-                                id: dayLineRepeater
+                            Kirigami.Separator {
                                 anchors.fill: parent
-                                model: modelLoader.item.rowCount() - 1 // Don't want line at beginning
-                                delegate: Kirigami.Separator {
-                                    anchors.top: parent.top
-                                    height: hourlyView.dayHeight
-                                    x: ((index + 1) * root.dayWidth) - (root.gridLineWidth / 2)
-                                    width: root.gridLineWidth
-                                }
                             }
 
                             Row {
                                 id: weekRow
                                 anchors.fill: parent
+                                spacing: root.gridLineWidth
 
                                 Repeater {
                                     model: modelLoader.item
@@ -509,23 +493,48 @@ selectedDate = date;
                                         height: hourlyView.dayHeight
                                         clip: true
 
+                                        Column {
+                                            anchors.fill: parent
+                                            spacing: root.gridLineWidth
+                                            Repeater {
+                                                model: 24
+                                                delegate: Rectangle {
+                                                    Kirigami.Theme.inherit: false
+                                                    Kirigami.Theme.colorSet: Kirigami.Theme.View
+                                                    width: parent.width
+                                                    height: hourlyView.hourHeight
+                                                    color: Kirigami.Theme.backgroundColor
+
+                                                    DayMouseArea {
+                                                        anchors.fill: parent
+                                                        addDate: new Date(DateUtils.addDaysToDate(viewLoader.startDate, dayColumn.index).setHours(index - 1))
+                                                        onAddNewIncidence: addIncidence(type, addDate, true)
+                                                    }
+                                                }
+                                                Component.onCompleted: console.log(count)
+                                            }
+                                        }
+
                                         Repeater {
                                             id: incidencesRepeater
                                             model: incidences
                                             delegate: Rectangle {
-                                                x: root.incidenceSpacing + (root.gridLineWidth / 2)
-                                                y: (modelData.starts * Kirigami.Units.gridUnit) + root.incidenceSpacing + (root.gridLineWidth / 2)
-                                                width: root.dayWidth - (root.incidenceSpacing * 2) - root.gridLineWidth //* modelData.widthShare
-                                                height: (modelData.duration * Kirigami.Units.gridUnit) - (root.incidenceSpacing * 2) - root.gridLineWidth
-                                                color: Qt.rgba(0,0,0,0)
                                                 property int rectRadius: 5
+                                                property real gridLineYCompensation: (modelData.starts / hourlyView.periodsPerHour) * root.gridLineWidth
+                                                property real gridLineHeightCompensation: (modelData.duration / hourlyView.periodsPerHour) * root.gridLineWidth
+                                                property bool isOpenOccurrence: root.openOccurrence ?
+                                                    root.openOccurrence.incidenceId === modelData.incidenceId : false
+
+                                                x: root.incidenceSpacing
+                                                y: (modelData.starts * Kirigami.Units.gridUnit) + root.incidenceSpacing + gridLineYCompensation
+                                                width: root.dayWidth - (root.incidenceSpacing * 2) //* modelData.widthShare
+                                                height: (modelData.duration * Kirigami.Units.gridUnit) - (root.incidenceSpacing * 2) + gridLineHeightCompensation - root.gridLineWidth
+                                                color: Qt.rgba(0,0,0,0)
+
                                                 Component.onCompleted: if(modelData.allDay) {
                                                     visible = false
                                                     allDayViewLoader.active = true
                                                 } //console.log(modelData.starts, modelData.widthShare, modelData.duration)
-
-                                                property bool isOpenOccurrence: root.openOccurrence ?
-                                                root.openOccurrence.incidenceId === modelData.incidenceId : false
 
                                                 Rectangle {
                                                     id: incidenceBackground
