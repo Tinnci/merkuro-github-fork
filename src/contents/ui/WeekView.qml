@@ -511,7 +511,6 @@ selectedDate = date;
                                                         onAddNewIncidence: addIncidence(type, addDate, true)
                                                     }
                                                 }
-                                                Component.onCompleted: console.log(count)
                                             }
                                         }
 
@@ -525,16 +524,12 @@ selectedDate = date;
                                                 property bool isOpenOccurrence: root.openOccurrence ?
                                                     root.openOccurrence.incidenceId === modelData.incidenceId : false
 
-                                                x: root.incidenceSpacing
+                                                x: root.incidenceSpacing + (modelData.priorTakenWidthShare * root.dayWidth)
                                                 y: (modelData.starts * Kirigami.Units.gridUnit) + root.incidenceSpacing + gridLineYCompensation
-                                                width: root.dayWidth - (root.incidenceSpacing * 2) //* modelData.widthShare
+                                                width: (root.dayWidth * modelData.widthShare) - (root.incidenceSpacing * 2)// - ((root.maxConcurrentIncidences - 1) * root.incidenceSpacing)
                                                 height: (modelData.duration * Kirigami.Units.gridUnit) - (root.incidenceSpacing * 2) + gridLineHeightCompensation - root.gridLineWidth
                                                 color: Qt.rgba(0,0,0,0)
-
-                                                Component.onCompleted: if(modelData.allDay) {
-                                                    visible = false
-                                                    allDayViewLoader.active = true
-                                                } //console.log(modelData.starts, modelData.widthShare, modelData.duration)
+                                                visible: !modelData.allDay
 
                                                 Rectangle {
                                                     id: incidenceBackground
