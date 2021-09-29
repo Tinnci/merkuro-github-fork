@@ -354,7 +354,7 @@ Kirigami.ApplicationWindow {
         }
     }
 
-    function setUpAdd(type, addDate, collectionId) {
+    function setUpAdd(type, addDate, collectionId, includeTime) {
         let editorToUse = root.editorToUse();
         if (editorToUse.editMode || !editorToUse.incidenceWrapper) {
             editorToUse.incidenceWrapper = Qt.createQmlObject('import org.kde.kalendar 1.0; IncidenceWrapper {id: incidence}',
@@ -372,11 +372,21 @@ Kirigami.ApplicationWindow {
             let existingStart = editorToUse.incidenceWrapper.incidenceStart;
             let existingEnd = editorToUse.incidenceWrapper.incidenceEnd;
 
+            let newStart = addDate;
+            let newEnd = new Date(newStart.getFullYear(), newStart.getMonth(), newStart.getDate(), newStart.getHours() + 1, newStart.getMinutes());
+
+            if(!includeTime) {
+                newStart = new Date(addDate.setHours(existingStart.getHours(), existingStart.getMinutes()));
+                newEnd = new Date(addDate.setHours(existingStart.getHours() + 1, existingStart.getMinutes()));
+            }
+
+            console.log(includeTime, newStart, newEnd)
+
             if(type === IncidenceWrapper.TypeEvent) {
-                editorToUse.incidenceWrapper.incidenceStart = new Date(addDate.setHours(existingStart.getHours(), existingStart.getMinutes()));
-                editorToUse.incidenceWrapper.incidenceEnd = new Date(addDate.setHours(existingStart.getHours() + 1, existingStart.getMinutes()));
+                editorToUse.incidenceWrapper.incidenceStart = newStart;
+                editorToUse.incidenceWrapper.incidenceEnd = newEnd;
             } else if (type === IncidenceWrapper.TypeTodo) {
-                editorToUse.incidenceWrapper.incidenceEnd = new Date(addDate.setHours(existingEnd.getHours() + 1, existingEnd.getMinutes()));
+                editorToUse.incidenceWrapper.incidenceEnd = newStart;
             }
         }
 
@@ -530,7 +540,7 @@ Kirigami.ApplicationWindow {
                 onClicked: dateChangeDrawer.open()
             }
 
-            onAddIncidence: root.setUpAdd(type, addDate)
+            onAddIncidence: root.setUpAdd(type, addDate, null, includeTime)
             onViewIncidence: root.setUpView(modelData, collectionData)
             onEditIncidence: root.setUpEdit(incidencePtr, collectionId)
             onDeleteIncidence: root.setUpDelete(incidencePtr, deleteDate)
