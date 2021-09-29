@@ -112,6 +112,7 @@ QVariantList HourlyIncidenceModel::layoutLines(const QDateTime &rowStart) const
 {
 
     QList<QModelIndex> sorted = sortedIncidencesFromSourceModel(rowStart);
+    const auto rowEnd = rowStart.date().endOfDay();
 
     // for (const auto &srcIdx : sorted) {
     //     qWarning() << "sorted " << srcIdx.data(IncidenceOccurrenceModel::StartTime).toDateTime() << srcIdx.data(IncidenceOccurrenceModel::Summary).toString() << srcIdx.data(IncidenceOccurrenceModel::AllDay).toBool();
@@ -163,8 +164,10 @@ QVariantList HourlyIncidenceModel::layoutLines(const QDateTime &rowStart) const
 
     while (!sorted.isEmpty()) {
         const auto idx = sorted.takeFirst();
-        const auto startDT = idx.data(IncidenceOccurrenceModel::StartTime).toDateTime().toTimeZone(QTimeZone::systemTimeZone());
-        const auto endDT = idx.data(IncidenceOccurrenceModel::EndTime).toDateTime().toTimeZone(QTimeZone::systemTimeZone());
+        const auto startDT = idx.data(IncidenceOccurrenceModel::StartTime).toDateTime().toTimeZone(QTimeZone::systemTimeZone()) > rowStart ?
+            idx.data(IncidenceOccurrenceModel::StartTime).toDateTime().toTimeZone(QTimeZone::systemTimeZone()) : rowStart;
+        const auto endDT = idx.data(IncidenceOccurrenceModel::EndTime).toDateTime().toTimeZone(QTimeZone::systemTimeZone()) < rowEnd ?
+            idx.data(IncidenceOccurrenceModel::EndTime).toDateTime().toTimeZone(QTimeZone::systemTimeZone()) : rowEnd;
         // Need to convert ints into doubles to get more accurate starting positions
         const auto start = ((startDT.time().hour() * 1.0) * (60.0 / mPeriodLength)) + ((startDT.time().minute() * 1.0) / mPeriodLength);
         const auto duration = qMax(getDuration(startDT, idx.data(IncidenceOccurrenceModel::EndTime).toDateTime().toTimeZone(QTimeZone::systemTimeZone()), mPeriodLength), 1.0);
@@ -195,8 +198,10 @@ QVariantList HourlyIncidenceModel::layoutLines(const QDateTime &rowStart) const
         auto incidence = result[i].value<QVariantMap>();
         int concurrentIncidences = 1;
 
-        const auto startDT = incidence[QLatin1String("startTime")].toDateTime().toTimeZone(QTimeZone::systemTimeZone());
-        const auto endDT = incidence[QLatin1String("endTime")].toDateTime().toTimeZone(QTimeZone::systemTimeZone());
+        const auto startDT = incidence[QLatin1String("startTime")].toDateTime().toTimeZone(QTimeZone::systemTimeZone()) > rowStart ?
+            incidence[QLatin1String("startTime")].toDateTime().toTimeZone(QTimeZone::systemTimeZone()) : rowStart;
+        const auto endDT = incidence[QLatin1String("endTime")].toDateTime().toTimeZone(QTimeZone::systemTimeZone()) < rowEnd ?
+           incidence[QLatin1String("endTime")].toDateTime().toTimeZone(QTimeZone::systemTimeZone()) : rowEnd;
 
         const auto endMinutesFromDayStart = qMin((endDT.time().hour() * 60) + endDT.time().minute(), 24 * 60 * 60);
         const auto startMinutesFromDayStart = startDT.isValid() ?
