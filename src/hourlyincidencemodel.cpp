@@ -147,7 +147,9 @@ QVariantList HourlyIncidenceModel::layoutLines(const QDateTime &rowStart) const
         result.append(incidenceMap);
     };
 
-    // Since our hourly view displays by the minute, we need to know how many incidences there are in each minute
+    // Since our hourly view displays by the minute, we need to know how many incidences there are in each minute.
+    // This hash's keys are the minute of the given day, as the view has accuracy down to the minute. Each value
+    // for each key is the number of incidences that occupy that minute's spot.
     QHash<int, int> takenSpaces;
     auto setTakenSpaces = [&](int start, int end) {
         for(int i = start; i < end; i++) {
@@ -175,10 +177,20 @@ QVariantList HourlyIncidenceModel::layoutLines(const QDateTime &rowStart) const
         setTakenSpaces(startMinutesFromDayStart, endMinutesFromDayStart);
     }
 
-    // Set fraction of width
-    QHash<int, double> takenWidth;
+    QHash<int, double> takenWidth; // We need this for potential movers
     QHash<int, double> startX;
+    // Potential movers are incidences that are placed at first but might need to be moved later as more incidences get placed to
+    // the left of them. Rather than loop more than once over our incidences, we create a record of these and then deal with them
+    // later, storing the needed data in a struct.
+    struct PotentialMover {
+        QVariantMap incidenceMap;
+        int resultIterator;
+        int startMinutesFromDayStart;
+        int endMinutesFromDayStart;
+    };
+    QVector<PotentialMover> potentialMovers;
 
+    // Calculate the width and x position of each incidence rectangle
     for(int i = 0; i < result.length(); i++) {
         auto incidence = result[i].value<QVariantMap>();
         int concurrentIncidences = 1;
@@ -190,39 +202,75 @@ QVariantList HourlyIncidenceModel::layoutLines(const QDateTime &rowStart) const
         const auto startMinutesFromDayStart = startDT.isValid() ?
             (startDT.time().hour() * 60) + startDT.time().minute() : qMax(endMinutesFromDayStart - mPeriodLength, 0);
 
+        // Get max number of incidences that happen at the same time as this
         for(int i = startMinutesFromDayStart; i < endMinutesFromDayStart; i++) {
             concurrentIncidences = qMax(concurrentIncidences, takenSpaces[i]);
         }
 
         incidence[QLatin1String("maxConcurrentIncidences")] = concurrentIncidences;
-        double widthShare = 1.0 / (concurrentIncidences * 1.0);
+        double widthShare = 1.0 / (concurrentIncidences * 1.0); // Width as a fraction of the whole day column width
         incidence[QLatin1String("widthShare")] = widthShare;
 
-        double priorTakenWidthShare = 0;
+        // This is the value that the QML view will use to position the incidence rectangle on the day column's X axis.
+        double priorTakenWidthShare = 0.0;
+        // If we have empty space at the very left of the column we want to take advantage and place an incidence there
+        // even if there have been other incidences that take up space further to the right. For this we use minStartX,
+        // which gathers the lowest x starting position in a given minute; if this is higher than 0, it means that there
+        // is empty space at the left of the day column.
+        double minStartX = 1.0;
 
         for(int i = startMinutesFromDayStart; i < endMinutesFromDayStart; i++) {
-            if(!takenWidth.contains(i)) {
+            // If this is the first incidence that is taken up this minute position, set details
+            if(!startX.contains(i)) {
                 takenWidth[i] = widthShare;
                 startX[i] = priorTakenWidthShare;
             } else {
-                priorTakenWidthShare = qMax(priorTakenWidthShare, takenWidth[i]);
-                takenWidth[i] += widthShare;
+                priorTakenWidthShare = qMax(priorTakenWidthShare, takenWidth[i]); // Get maximum prior space taken so we do not overlap with anything
+                minStartX = qMin(minStartX, startX[i]);
 
                 if(startX[i] > 0) {
-                    priorTakenWidthShare = 0;
-                    takenWidth[i] = widthShare;
-                    startX[i] = 0;
+                    takenWidth[i] = widthShare; // Reset as there is space available at the beginning of the column
+                } else {
+                    takenWidth[i] += widthShare; // Increase the taken width at this minute position
                 }
             }
         }
 
-        if(takenSpaces[startMinutesFromDayStart] < takenSpaces[endMinutesFromDayStart - 1] && priorTakenWidthShare > 0)  {
-            priorTakenWidthShare = widthShare * (takenSpaces[endMinutesFromDayStart - 1] - 1);
+        qDebug() << incidence[QLatin1String("text")] << minStartX;
+
+        if(minStartX > 0) {
+            priorTakenWidthShare = 0;
+            for(int i = startMinutesFromDayStart; i < endMinutesFromDayStart; i++) {
+                startX[i] = 0;
+            }
         }
 
         incidence[QLatin1String("priorTakenWidthShare")] = priorTakenWidthShare;
 
+        if(takenSpaces[startMinutesFromDayStart] < takenSpaces[endMinutesFromDayStart - 1] && priorTakenWidthShare > 0)  {
+            potentialMovers.append(PotentialMover {
+                incidence,
+                i,
+                startMinutesFromDayStart,
+                endMinutesFromDayStart
+            });
+        }
+
         result[i] = incidence;
+    }
+
+    for(auto potentialMover : potentialMovers) {
+
+        double maxTakenWidth = 0;
+        for(int i = potentialMover.startMinutesFromDayStart; i < potentialMover.endMinutesFromDayStart; i++) {
+            maxTakenWidth = qMax(maxTakenWidth, takenWidth[i]);
+        }
+
+        if(maxTakenWidth < 0.98) {
+            potentialMover.incidenceMap[QLatin1String("priorTakenWidthShare")] = potentialMover.incidenceMap[QLatin1String("widthShare")].toDouble() * (takenSpaces[potentialMover.endMinutesFromDayStart - 1] - 1);
+
+            result[potentialMover.resultIterator] = potentialMover.incidenceMap;
+        }
     }
 
     return result;
