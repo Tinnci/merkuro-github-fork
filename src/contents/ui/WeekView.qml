@@ -194,6 +194,7 @@ selectedDate = date;
                 }
 
                 Kirigami.Separator {
+                    id: headerTopSeparator
                     Layout.leftMargin: Kirigami.Units.largeSpacing
                     Layout.fillWidth: true
                     height: root.gridLineWidth
@@ -217,6 +218,7 @@ selectedDate = date;
                 }
 
                 Item {
+                    id: allDayHeader
                     Layout.fillWidth: true
                     height: allDayViewLoader.implicitHeight
                     visible: allDayViewLoader.active
@@ -414,6 +416,7 @@ selectedDate = date;
                 }
 
                 Kirigami.Separator {
+                    id: headerBottomSeparator
                     Layout.leftMargin: Kirigami.Units.largeSpacing
                     Layout.fillWidth: true
                     height: root.gridLineWidth
@@ -434,10 +437,12 @@ selectedDate = date;
                     property real dayHeight: daySections * Kirigami.Units.gridUnit
 
                     Item {
+                        id: hourlyViewContents
                         anchors.fill: parent
                         clip: true
 
                         Column {
+                            id: hourLabelsColumn
                             anchors.left: parent.left
                             anchors.top: parent.top
                             anchors.bottom: parent.bottom
@@ -462,6 +467,7 @@ selectedDate = date;
                         }
 
                         Item {
+                            id: innerWeekView
                             anchors.fill: parent
                             anchors.leftMargin: root.hourLabelWidth
                             clip: true
@@ -490,6 +496,7 @@ selectedDate = date;
                             }
 
                             Row {
+                                id: weekRow
                                 anchors.fill: parent
 
                                 Repeater {
