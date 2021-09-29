@@ -130,8 +130,6 @@ QVariantList HourlyIncidenceModel::layoutLines(const QDateTime &rowStart) const
             {QStringLiteral("priority"), idx.data(IncidenceOccurrenceModel::Priority)},
             {QStringLiteral("starts"), start},
             {QStringLiteral("duration"), duration},
-            {QStringLiteral("maxConcurrentIncidences"), 1}, // Important
-            {QStringLiteral("widthShare"), 1.0}, // Important
             {QStringLiteral("durationString"), idx.data(IncidenceOccurrenceModel::DurationString)},
             {QStringLiteral("recurs"), idx.data(IncidenceOccurrenceModel::Recurs)},
             {QStringLiteral("hasReminders"), idx.data(IncidenceOccurrenceModel::HasReminders)},
@@ -147,63 +145,85 @@ QVariantList HourlyIncidenceModel::layoutLines(const QDateTime &rowStart) const
         };
 
         result.append(incidenceMap);
-
-        QVariantMap *incidenceMapPtr = &incidenceMap;
-        return incidenceMapPtr;
     };
 
-    /*QVector<QVector<QVariantMap*>> takenSpaces((24 * 60) / mPeriodLength);
-
-    auto concurrentIncidenceCountHelper = [&] (int start, int end, QVariantMap *mapPtr) {
+    // Since our hourly view displays by the minute, we need to know how many incidences there are in each minute
+    QHash<int, int> takenSpaces;
+    auto setTakenSpaces = [&](int start, int end) {
         for(int i = start; i < end; i++) {
-            takenSpaces[i].append(mapPtr);
-
-            if(takenSpaces[i].length() > 1) {
-                for(auto incidence : takenSpaces[i]) {
-                    (*incidence)[QStringLiteral("maxConcurrentIncidences")] = qMax((*incidence)[QStringLiteral("maxConcurrentIncidences")].toInt(), takenSpaces[i].length());
-                }
+            if(!takenSpaces.contains(i)) {
+                takenSpaces[i] = 1;
+            } else {
+                takenSpaces[i]++;
             }
         }
-    };*/
+    };
 
     while (!sorted.isEmpty()) {
         const auto idx = sorted.takeFirst();
         const auto startDT = idx.data(IncidenceOccurrenceModel::StartTime).toDateTime().toTimeZone(QTimeZone::systemTimeZone());
+        const auto endDT = idx.data(IncidenceOccurrenceModel::EndTime).toDateTime().toTimeZone(QTimeZone::systemTimeZone());
         // Need to convert ints into doubles to get more accurate starting positions
         const auto start = ((startDT.time().hour() * 1.0) * (60.0 / mPeriodLength)) + ((startDT.time().minute() * 1.0) / mPeriodLength);
         const auto duration = qMax(getDuration(startDT, idx.data(IncidenceOccurrenceModel::EndTime).toDateTime().toTimeZone(QTimeZone::systemTimeZone()), mPeriodLength), 1.0);
-        const auto end = start + duration;
+        const auto end = qMin(start + duration, (24.0 * 60.0) / mPeriodLength);
 
-        // This leaves a space in rows with all day events, making this y area of the row exclusively for all day events
-        /*if (allDayLine && !idx.data(IncidenceOccurrenceModel::AllDay).toBool()) {
-         *        continue;
-    }*/
+        const auto startMinutesFromDayStart = (startDT.time().hour() * 60) + startDT.time().minute();
+        const auto endMinutesFromDayStart = qMin((endDT.time().hour() * 60) + endDT.time().minute(), 24 * 60 * 60);
+
         addToResultsAndGetPtr(idx, start, duration);
-
-        //concurrentIncidenceCountHelper(start, end, addToResultsAndGetPtr(idx, start, duration));
+        setTakenSpaces(startMinutesFromDayStart, endMinutesFromDayStart);
     }
 
     // Set fraction of width
-    /*for(int i = 0; i < takenSpaces.length(); i++) {
+    QHash<int, double> takenWidth;
+    QHash<int, double> startX;
 
-        if(takenSpaces[i].length() > 1) {
-            double availableWidthShare = 1.0;
-            int remainingIncidencesOnLine = takenSpaces[i].length();
+    for(int i = 0; i < result.length(); i++) {
+        auto incidence = result[i].value<QVariantMap>();
+        int concurrentIncidences = 1;
 
-            for(auto incidence : takenSpaces[i]) {
-                int start = (*incidence)[QStringLiteral("starts")].toInt();
-                int end = (*incidence)[QStringLiteral("end")].toInt();
-                int maxConcurrentIncidences = (*incidence)[QStringLiteral("maxConcurrentIncidences")].toInt();
-                double widthShare = 1.0;
+        const auto startDT = incidence[QLatin1String("startTime")].toDateTime().toTimeZone(QTimeZone::systemTimeZone());
+        const auto endDT = incidence[QLatin1String("endTime")].toDateTime().toTimeZone(QTimeZone::systemTimeZone());
 
-                for(int j = start; j < end; j++) {
-                   widthShare = qMin(availableWidthShare / remainingIncidencesOnLine, 1.0 / maxConcurrentIncidences);
-                   (*incidence)[QStringLiteral("widthShare")] = widthShare;
-                   availableWidthShare -= widthShare;
+        const auto endMinutesFromDayStart = qMin((endDT.time().hour() * 60) + endDT.time().minute(), 24 * 60 * 60);
+        const auto startMinutesFromDayStart = startDT.isValid() ?
+            (startDT.time().hour() * 60) + startDT.time().minute() : qMax(endMinutesFromDayStart - mPeriodLength, 0);
+
+        for(int i = startMinutesFromDayStart; i < endMinutesFromDayStart; i++) {
+            concurrentIncidences = qMax(concurrentIncidences, takenSpaces[i]);
+        }
+
+        incidence[QLatin1String("maxConcurrentIncidences")] = concurrentIncidences;
+        double widthShare = 1.0 / (concurrentIncidences * 1.0);
+        incidence[QLatin1String("widthShare")] = widthShare;
+
+        double priorTakenWidthShare = 0;
+
+        for(int i = startMinutesFromDayStart; i < endMinutesFromDayStart; i++) {
+            if(!takenWidth.contains(i)) {
+                takenWidth[i] = widthShare;
+                startX[i] = priorTakenWidthShare;
+            } else {
+                priorTakenWidthShare = qMax(priorTakenWidthShare, takenWidth[i]);
+                takenWidth[i] += widthShare;
+
+                if(startX[i] > 0) {
+                    priorTakenWidthShare = 0;
+                    takenWidth[i] = widthShare;
+                    startX[i] = 0;
                 }
             }
         }
-    }*/
+
+        if(takenSpaces[startMinutesFromDayStart] < takenSpaces[endMinutesFromDayStart - 1] && priorTakenWidthShare > 0)  {
+            priorTakenWidthShare = widthShare * (takenSpaces[endMinutesFromDayStart - 1] - 1);
+        }
+
+        incidence[QLatin1String("priorTakenWidthShare")] = priorTakenWidthShare;
+
+        result[i] = incidence;
+    }
 
     return result;
 }
