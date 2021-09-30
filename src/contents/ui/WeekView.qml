@@ -669,6 +669,7 @@ Kirigami.Page {
                                 }
                             }
                             Rectangle {
+                                id: currentTimeMarker
                                 property date currentDateTime: new Date()
                                 property int minutesFromStart: (currentDateTime.getHours() * 60) + currentDateTime.getMinutes()
                                 property int daysFromWeekStart: DateUtils.fullDaysBetweenDates(viewLoader.startDate, currentDateTime) - 1
@@ -689,6 +690,13 @@ Kirigami.Page {
                                     height: parent.height * 5
                                     radius: 100
                                     color: Kirigami.Theme.highlightColor
+                                }
+
+                                Timer {
+                                    interval: 5000;
+                                    running: currentTimeMarker.currentDateTime >= viewLoader.startDate
+                                    repeat: true
+                                    onTriggered: currentTimeMarker.currentDateTime = new Date()
                                 }
                             }
                         }
