@@ -5,6 +5,7 @@ import QtQuick 2.15
 import QtQuick.Layouts 1.1
 import QtQuick.Controls 2.15 as QQC2
 import org.kde.kirigami 2.14 as Kirigami
+import QtGraphicalEffects 1.12
 
 import org.kde.kalendar 1.0 as Kalendar
 import "dateutils.js" as DateUtils
@@ -50,9 +51,10 @@ Kirigami.Page {
         }
     }
 
+    Kirigami.Theme.inherit: false
+    Kirigami.Theme.colorSet: Kirigami.Theme.View
+
     background: Rectangle {
-        Kirigami.Theme.inherit: false
-        Kirigami.Theme.colorSet: Kirigami.Theme.View
         color: Kirigami.Theme.backgroundColor
     }
 
@@ -186,8 +188,22 @@ Kirigami.Page {
 
                 Row {
                     Layout.fillWidth: true
-                    Layout.leftMargin: root.hourLabelWidth
                     spacing: root.gridLineWidth
+
+                    Kirigami.Heading {
+                        id: weekNumberHeading
+
+                        width: root.hourLabelWidth - root.gridLineWidth
+                        horizontalAlignment: Text.AlignRight
+                        padding: Kirigami.Units.smallSpacing
+                        level: 2
+                        text: DateUtils.getWeek(viewLoader.startDate, Qt.locale().firstDayOfWeek)
+                        color: Kirigami.Theme.disabledTextColor
+                        background: Rectangle {
+                            color: Kirigami.Theme.backgroundColor
+                        }
+                    }
+
                     Repeater {
                         id: dayHeadings
                         model: modelLoader.item.rowCount()
@@ -204,8 +220,6 @@ Kirigami.Page {
                             color: isToday ? Kirigami.Theme.highlightColor : Kirigami.Theme.textColor
                             text: headingDate.toLocaleDateString(Qt.locale(), "ddd <b>dd</b>")
                             background: Rectangle {
-                                Kirigami.Theme.inherit: false
-                                Kirigami.Theme.colorSet: Kirigami.Theme.View
                                 color: dayHeading.isToday ? Kirigami.Theme.activeBackgroundColor : Kirigami.Theme.backgroundColor
                             }
                         }
@@ -214,9 +228,9 @@ Kirigami.Page {
 
                 Kirigami.Separator {
                     id: headerTopSeparator
-                    Layout.leftMargin: Kirigami.Units.largeSpacing
                     Layout.fillWidth: true
                     height: root.gridLineWidth
+                    visible: !allDayViewLoader.active
                 }
 
                 Loader {
@@ -242,6 +256,12 @@ Kirigami.Page {
                     height: allDayViewLoader.implicitHeight
                     visible: allDayViewLoader.active
                     clip: true
+
+                    Rectangle {
+                        id: headerBackground
+                        anchors.fill: parent
+                        color: Kirigami.Theme.backgroundColor
+                    }
 
                     QQC2.Label {
                         width: root.hourLabelWidth
@@ -323,8 +343,6 @@ Kirigami.Page {
                                                                 date.getMonth() === root.currentMonth &&
                                                                 date.getFullYear() === root.currentYear
 
-                                                                Kirigami.Theme.inherit: false
-                                                                Kirigami.Theme.colorSet: Kirigami.Theme.View
                                                                 width: root.dayWidth
                                                                 height: linesListViewScrollView.height
                                                                 color: isToday ? Kirigami.Theme.activeBackgroundColor : Kirigami.Theme.backgroundColor
@@ -428,10 +446,17 @@ Kirigami.Page {
 
                 Kirigami.Separator {
                     id: headerBottomSeparator
-                    Layout.leftMargin: Kirigami.Units.largeSpacing
                     Layout.fillWidth: true
                     height: root.gridLineWidth
-                    visible: allDayViewLoader.active
+                    z: -1
+
+                    RectangularGlow {
+                        anchors.fill: parent
+                        z: -1
+                        glowRadius: 5
+                        spread: 0.3
+                        color: Qt.rgba(0.0, 0.0, 0.0, 0.15)
+                    }
                 }
 
 
@@ -441,6 +466,7 @@ Kirigami.Page {
                     Layout.fillHeight: true
                     contentWidth: availableWidth
                     contentHeight: dayHeight
+                    z: -2
                     QQC2.ScrollBar.horizontal.policy: QQC2.ScrollBar.AlwaysOff
 
                     property real periodsPerHour: 60 / modelLoader.item.periodLength
@@ -517,8 +543,6 @@ Kirigami.Page {
                                             Repeater {
                                                 model: 24
                                                 delegate: Rectangle {
-                                                    Kirigami.Theme.inherit: false
-                                                    Kirigami.Theme.colorSet: Kirigami.Theme.View
                                                     width: parent.width
                                                     height: hourlyView.hourHeight
                                                     color: dayColumn.isToday ? Kirigami.Theme.activeBackgroundColor : Kirigami.Theme.backgroundColor
