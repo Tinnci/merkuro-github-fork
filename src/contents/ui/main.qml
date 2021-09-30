@@ -560,6 +560,7 @@ Kirigami.ApplicationWindow {
             }
 
             selectedDate: root.selectedDate
+            currentDate: root.currentDate
             openOccurrence: root.openOccurrence
 
             onDayChanged: if(day !== root.selectedDate.getDate() && !initialWeek) root.selectedDate = new Date (year, month, day)
