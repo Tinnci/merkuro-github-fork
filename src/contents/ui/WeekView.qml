@@ -159,6 +159,7 @@ selectedDate = date;
                 asynchronous: true
                 sourceComponent: Kalendar.HourlyIncidenceModel {
                     id: hourlyModel
+                    filters: Kalendar.HourlyIncidenceModel.NoAllDay | Kalendar.HourlyIncidenceModel.NoMultiDay
                     model: Kalendar.IncidenceOccurrenceModel {
                         id: occurrenceModel
                         objectName: "incidenceOccurrenceModel"
@@ -205,7 +206,7 @@ selectedDate = date;
                     asynchronous: true
                     sourceComponent: Kalendar.MultiDayIncidenceModel {
                         periodLength: 7
-                        filters: Kalendar.MultiDayIncidenceModel.AllDayOnly //| Kalendar.MultiDayIncidenceModel.NoStartDateOnly
+                        filters: Kalendar.MultiDayIncidenceModel.AllDayOnly | Kalendar.MultiDayIncidenceModel.MultiDayOnly
                         model: Kalendar.IncidenceOccurrenceModel {
                             id: occurrenceModel
                             objectName: "incidenceOccurrenceModel"

@@ -75,12 +75,11 @@ QList<QModelIndex> MultiDayIncidenceModel::sortedIncidencesFromSourceModel(const
             // qWarning() << "Skipping because not part of this week";
             continue;
         }
-        if(m_filters.testFlag(AllDayOnly) && !srcIdx.data(IncidenceOccurrenceModel::AllDay).toBool()) {
+
+        if(!incidencePassesFilter(srcIdx)) {
             continue;
         }
-        if(m_filters.testFlag(NoStartDateOnly) && start.isValid()) {
-            continue;
-        }
+
         // qWarning() << "found " << srcIdx.data(IncidenceOccurrenceModel::StartTime).toDateTime() << srcIdx.data(IncidenceOccurrenceModel::Summary).toString();
         sorted.append(srcIdx);
     }
@@ -295,6 +294,28 @@ void MultiDayIncidenceModel::setFilters(MultiDayIncidenceModel::Filters filters)
     endResetModel();
 }
 
+bool MultiDayIncidenceModel::incidencePassesFilter(QModelIndex idx) const
+{
+    if(m_filters) {
+        bool include = false;
+        const auto start = idx.data(IncidenceOccurrenceModel::StartTime).toDateTime().date();
+
+        if(m_filters.testFlag(AllDayOnly) && idx.data(IncidenceOccurrenceModel::AllDay).toBool()) {
+            include = true;
+        }
+
+        if(m_filters.testFlag(NoStartDateOnly) && !start.isValid()) {
+            include = true;
+        }
+        if(m_filters.testFlag(MultiDayOnly) && idx.data(IncidenceOccurrenceModel::Duration).value<KCalendarCore::Duration>().asDays() >= 1) {
+            include = true;
+        }
+
+        return include;
+    }
+    return true;
+}
+
 int MultiDayIncidenceModel::incidenceCount()
 {
     int count = 0;
@@ -313,12 +334,11 @@ int MultiDayIncidenceModel::incidenceCount()
                 // qWarning() << "Skipping because not part of this week";
                 continue;
             }
-            if(m_filters.testFlag(AllDayOnly) && !srcIdx.data(IncidenceOccurrenceModel::AllDay).toBool()) {
+
+            if(!incidencePassesFilter(srcIdx)) {
                 continue;
             }
-            if(m_filters.testFlag(NoStartDateOnly) && start.isValid()) {
-                continue;
-            }
+
             count++;
         }
     }

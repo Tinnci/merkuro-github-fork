@@ -72,6 +72,14 @@ QList<QModelIndex> HourlyIncidenceModel::sortedIncidencesFromSourceModel(const Q
             // qWarning() << "Skipping because not part of this week";
             continue;
         }
+
+        if(m_filters.testFlag(NoAllDay) && srcIdx.data(IncidenceOccurrenceModel::AllDay).toBool()) {
+            continue;
+        }
+
+        if(m_filters.testFlag(NoMultiDay) && srcIdx.data(IncidenceOccurrenceModel::Duration).value<KCalendarCore::Duration>().asDays() >= 1) {
+            continue;
+        }
         // qWarning() << "found " << srcIdx.data(IncidenceOccurrenceModel::StartTime).toDateTime() << srcIdx.data(IncidenceOccurrenceModel::Summary).toString();
         sorted.append(srcIdx);
     }
@@ -241,8 +249,6 @@ QVariantList HourlyIncidenceModel::layoutLines(const QDateTime &rowStart) const
             }
         }
 
-        qDebug() << incidence[QLatin1String("text")] << minStartX;
-
         if(minStartX > 0) {
             priorTakenWidthShare = 0;
             for(int i = startMinutesFromDayStart; i < endMinutesFromDayStart; i++) {
@@ -329,6 +335,19 @@ int HourlyIncidenceModel::periodLength()
 void HourlyIncidenceModel::setPeriodLength(int periodLength)
 {
     mPeriodLength = periodLength;
+}
+
+HourlyIncidenceModel::Filters HourlyIncidenceModel::filters()
+{
+    return m_filters;
+}
+
+void HourlyIncidenceModel::setFilters(HourlyIncidenceModel::Filters filters)
+{
+    beginResetModel();
+    m_filters = filters;
+    Q_EMIT filtersChanged();
+    endResetModel();
 }
 
 QHash<int, QByteArray> HourlyIncidenceModel::roleNames() const
