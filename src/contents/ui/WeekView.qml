@@ -608,6 +608,8 @@ Kirigami.Page {
                                                         Layout.fillWidth: true
                                                         Layout.fillHeight: true
                                                         text: modelData.text
+                                                        horizontalAlignment: Text.AlignLeft
+                                                        verticalAlignment: Text.AlignTop
                                                         wrapMode: Text.Wrap
                                                         elide: Text.ElideRight
                                                         font.weight: Font.Medium
