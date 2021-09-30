@@ -31,10 +31,11 @@ Kirigami.Page {
     property int month: selectedDate.getMonth()
     property int year: selectedDate.getFullYear()
     property bool initialWeek: true
+    property int daysToShow: 7
     readonly property bool isLarge: width > Kirigami.Units.gridUnit * 30
     readonly property bool isDark: LabelUtils.isDarkColor(Kirigami.Theme.backgroundColor)
 
-    property real dayWidth: ((root.width - hourLabelWidth - leftPadding) / 7) - gridLineWidth
+    property real dayWidth: ((root.width - hourLabelWidth - leftPadding) / daysToShow) - gridLineWidth
     property real incidenceSpacing: Kirigami.Units.smallSpacing / 2
     property real gridLineWidth: 1.0
     property real hourLabelWidth: Kirigami.Units.gridUnit * 3.5
@@ -58,7 +59,7 @@ Kirigami.Page {
     function setToDate(date, isInitialWeek = false) {
         root.initialWeek = isInitialWeek;
         date = DateUtils.getFirstDayOfWeek(date);
-        let weekDiff = Math.round((date - pathView.currentItem.startDate) / (7 * 24 * 60 * 60 * 1000));
+        let weekDiff = Math.round((date - pathView.currentItem.startDate) / (root.daysToShow * 24 * 60 * 60 * 1000));
 
         let newIndex = pathView.currentIndex + weekDiff;
         let firstItemDate = pathView.model.data(pathView.model.index(1,0), Kalendar.WeekViewModel.StartDateRole);
@@ -70,7 +71,7 @@ Kirigami.Page {
             newIndex = 0;
         }
         if(firstItemDate < date && newIndex === 0) {
-            newIndex = Math.round((date - firstItemDate) / (7 * 24 * 60 * 60 * 1000)) + 1
+            newIndex = Math.round((date - firstItemDate) / (root.daysToShow * 24 * 60 * 60 * 1000)) + 1
         }
 
         while(lastItemDate <= date) {
@@ -86,14 +87,14 @@ Kirigami.Page {
             icon.name: "go-previous"
             text: i18n("Previous Week")
             shortcut: "Left"
-            onTriggered: setToDate(DateUtils.addDaysToDate(pathView.currentItem.startDate, -7))
+            onTriggered: setToDate(DateUtils.addDaysToDate(pathView.currentItem.startDate, -root.daysToShow))
             displayHint: Kirigami.DisplayHint.IconOnly
         }
         right: Kirigami.Action {
             icon.name: "go-next"
             text: i18n("Next Week")
             shortcut: "Right"
-            onTriggered: setToDate(DateUtils.addDaysToDate(pathView.currentItem.startDate, 7))
+            onTriggered: setToDate(DateUtils.addDaysToDate(pathView.currentItem.startDate, root.daysToShow))
             displayHint: Kirigami.DisplayHint.IconOnly
         }
         main: Kirigami.Action {
@@ -169,7 +170,7 @@ Kirigami.Page {
                         id: occurrenceModel
                         objectName: "incidenceOccurrenceModel"
                         start: viewLoader.startDate
-                        length: 7
+                        length: root.daysToShow
                         filter: root.filter ? root.filter : {}
                         calendar: Kalendar.CalendarManager.calendar
                     }
@@ -222,13 +223,13 @@ Kirigami.Page {
                     id: allDayIncidenceModelLoader
                     asynchronous: true
                     sourceComponent: Kalendar.MultiDayIncidenceModel {
-                        periodLength: 7
+                        periodLength: root.daysToShow
                         filters: Kalendar.MultiDayIncidenceModel.AllDayOnly | Kalendar.MultiDayIncidenceModel.MultiDayOnly
                         model: Kalendar.IncidenceOccurrenceModel {
                             id: occurrenceModel
                             objectName: "incidenceOccurrenceModel"
                             start: viewLoader.startDate
-                            length: 7
+                            length: root.daysToShow
                             filter: root.filter ? root.filter : {}
                             calendar: Kalendar.CalendarManager.calendar
                         }
@@ -313,7 +314,7 @@ Kirigami.Page {
                                                         z: -1
                                                         spacing: root.gridLineWidth
                                                         Repeater {
-                                                            model: 7
+                                                            model: root.daysToShow
                                                             delegate: Rectangle {
                                                                 id: multiDayViewBackground
 
@@ -642,7 +643,7 @@ Kirigami.Page {
                                 x: (daysFromWeekStart * root.dayWidth) + (daysFromWeekStart * root.gridLineWidth)
                                 y: (currentDateTime.getHours() * root.gridLineWidth) + (hourlyView.minuteHeight * minutesFromStart) - (height / 2)
                                 z: 100
-                                visible: currentDateTime >= viewLoader.startDate && daysFromWeekStart < 7
+                                visible: currentDateTime >= viewLoader.startDate && daysFromWeekStart < root.daysToShow
 
                                 Rectangle {
                                     anchors.left: parent.left
