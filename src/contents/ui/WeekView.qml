@@ -23,6 +23,10 @@ Kirigami.Page {
     property var openOccurrence
     property date selectedDate: new Date()
     property date startDate: DateUtils.getFirstDayOfMonth(selectedDate)
+    property date currentDate: new Date()
+    property int currentDay: currentDate ? currentDate.getDate() : null
+    property int currentMonth: currentDate ? currentDate.getMonth() : null
+    property int currentYear: currentDate ? currentDate.getFullYear() : null
     property int day: selectedDate.getDate()
     property int month: selectedDate.getMonth()
     property int year: selectedDate.getFullYear()
@@ -33,7 +37,7 @@ Kirigami.Page {
     property real dayWidth: ((root.width - hourLabelWidth - leftPadding) / 7) - gridLineWidth
     property real incidenceSpacing: Kirigami.Units.smallSpacing / 2
     property real gridLineWidth: 1.0
-    property real hourLabelWidth: Kirigami.Units.gridUnit * 3
+    property real hourLabelWidth: Kirigami.Units.gridUnit * 3.5
 
     property var hourStrings: []
     Component.onCompleted: {
@@ -184,15 +188,27 @@ Kirigami.Page {
                 Row {
                     Layout.fillWidth: true
                     Layout.leftMargin: root.hourLabelWidth
+                    spacing: root.gridLineWidth
                     Repeater {
                         id: dayHeadings
                         model: modelLoader.item.rowCount()
                         delegate: Kirigami.Heading {
+                            id: dayHeading
+                            property date headingDate: DateUtils.addDaysToDate(viewLoader.startDate, index)
+                            property bool isToday: headingDate.getDate() === root.currentDay &&
+                                                   headingDate.getMonth() === root.currentMonth &&
+                                                   headingDate.getFullYear() === root.currentYear
                             width: root.dayWidth
                             horizontalAlignment: Text.AlignRight
                             padding: Kirigami.Units.smallSpacing
                             level: 2
-                            text: DateUtils.addDaysToDate(viewLoader.startDate, index).toLocaleDateString(Qt.locale(), "ddd <b>dd</b>")
+                            color: isToday ? Kirigami.Theme.highlightColor : Kirigami.Theme.textColor
+                            text: headingDate.toLocaleDateString(Qt.locale(), "ddd <b>dd</b>")
+                            background: Rectangle {
+                                Kirigami.Theme.inherit: false
+                                Kirigami.Theme.colorSet: Kirigami.Theme.View
+                                color: dayHeading.isToday ? Kirigami.Theme.activeBackgroundColor : Kirigami.Theme.backgroundColor
+                            }
                         }
                     }
                 }
@@ -234,7 +250,7 @@ Kirigami.Page {
                         leftPadding: Kirigami.Units.largeSpacing
                         verticalAlignment: Text.AlignTop
                         horizontalAlignment: Text.AlignRight
-                        text: i18n("All day")
+                        text: i18n("Multi / All day")
                         wrapMode: Text.Wrap
                         color: Kirigami.Theme.disabledTextColor
                     }
@@ -266,7 +282,20 @@ Kirigami.Page {
                                             Layout.fillHeight: true
                                             property date startDate: periodStartDate
 
+                                            Repeater {
+                                                id: allDayDayLineRepeater
+                                                anchors.fill: parent
+                                                model: modelLoader.item.rowCount() - 1 // Don't want line at beginning
+                                                delegate: Kirigami.Separator {
+                                                    anchors.top: parent.top
+                                                    height: hourlyView.dayHeight
+                                                    x: ((index + 1) * root.dayWidth) + (index * root.gridLineWidth)
+                                                    width: root.gridLineWidth
+                                                }
+                                            }
+
                                             QQC2.ScrollView {
+                                                id: linesListViewScrollView
                                                 anchors {
                                                     fill: parent
                                                 }
@@ -280,14 +309,36 @@ Kirigami.Page {
                                                         spacing : spacing
 
                                                     clip: true
-                                                    spacing: Kirigami.Units.smallSpacing
+                                                    spacing: root.incidenceSpacing
 
-                                                    DayMouseArea {
-                                                        id: listViewMenu
-                                                        anchors.fill: parent
+                                                    Row {
                                                         z: -1
+                                                        spacing: root.gridLineWidth
+                                                        Repeater {
+                                                            model: 7
+                                                            delegate: Rectangle {
+                                                                id: multiDayViewBackground
 
-                                                        onAddNewIncidence: useGridSquareDate(type, applicationWindow().contentItem, this.mapToGlobal(clickX, clickY))
+                                                                property date date: DateUtils.addDaysToDate(viewLoader.startDate, index)
+                                                                property bool isToday: date.getDate() === root.currentDay &&
+                                                                date.getMonth() === root.currentMonth &&
+                                                                date.getFullYear() === root.currentYear
+
+                                                                Kirigami.Theme.inherit: false
+                                                                Kirigami.Theme.colorSet: Kirigami.Theme.View
+                                                                width: root.dayWidth
+                                                                height: linesListViewScrollView.height
+                                                                color: isToday ? Kirigami.Theme.activeBackgroundColor : Kirigami.Theme.backgroundColor
+
+                                                                DayMouseArea {
+                                                                    id: listViewMenu
+                                                                    anchors.fill: parent
+
+                                                                    addDate: parent.date
+                                                                    onAddNewIncidence: root.addIncidence(type, addDate, false)
+                                                                }
+                                                            }
+                                                        }
                                                     }
 
                                                     model: incidences
@@ -305,10 +356,6 @@ Kirigami.Page {
                                                                 y: horizontalSpacing
                                                                 width: ((root.dayWidth + root.gridLineWidth) * modelData.duration) - (horizontalSpacing * 2) - root.gridLineWidth // Account for spacing added to x and for spacing at end of line
                                                                 height: parent.height
-                                                                opacity: isOpenOccurrence ||
-                                                                modelData.endTime.getMonth() == root.month ||
-                                                                modelData.startTime.getMonth() == root.month ?
-                                                                1.0 : 0.5
                                                                 radius: rectRadius
                                                                 color: Qt.rgba(0,0,0,0)
 
@@ -316,16 +363,13 @@ Kirigami.Page {
                                                                 property int horizontalSpacing: linesRepeater.spacing
 
                                                                 property bool isOpenOccurrence: root.openOccurrence ?
-                                                                root.openOccurrence.incidenceId === modelData.incidenceId : false
+                                                                    root.openOccurrence.incidenceId === modelData.incidenceId : false
 
                                                                 Rectangle {
                                                                     id: incidenceBackground
                                                                     anchors.fill: parent
                                                                     color: isOpenOccurrence ? modelData.color :
-                                                                    LabelUtils.getIncidenceBackgroundColor(modelData.color, root.isDark)
-                                                                    visible: isOpenOccurrence ||
-                                                                    modelData.endTime.getMonth() === root.month ||
-                                                                    modelData.startTime.getMonth() === root.month
+                                                                        LabelUtils.getIncidenceBackgroundColor(modelData.color, root.isDark)
                                                                     radius: parent.rectRadius
                                                                 }
 
@@ -333,16 +377,6 @@ Kirigami.Page {
                                                                     id: incidenceContents
 
                                                                     property color textColor: LabelUtils.getIncidenceLabelColor(modelData.color, root.isDark)
-
-                                                                    function otherMonthTextColor(color) {
-                                                                        if(root.isDark) {
-                                                                            if(LabelUtils.getDarkness(color) >= 0.5) {
-                                                                                return Qt.lighter(color, 2);
-                                                                            }
-                                                                            return Qt.lighter(color, 1.5);
-                                                                        }
-                                                                        return Qt.darker(color, 3);
-                                                                    }
 
                                                                     anchors {
                                                                         fill: parent
@@ -357,8 +391,7 @@ Kirigami.Page {
                                                                         source: modelData.incidenceTypeIcon
                                                                         isMask: true
                                                                         color: isOpenOccurrence ? (LabelUtils.isDarkColor(modelData.color) ? "white" : "black") :
-                                                                        incidenceBackground.visible ? incidenceContents.textColor :
-                                                                        incidenceContents.otherMonthTextColor(modelData.color)
+                                                                            incidenceContents.textColor
                                                                     }
 
                                                                     QQC2.Label {
@@ -367,8 +400,7 @@ Kirigami.Page {
                                                                         elide: Text.ElideRight
                                                                         font.weight: Font.Medium
                                                                         color: isOpenOccurrence ? (LabelUtils.isDarkColor(modelData.color) ? "white" : "black") :
-                                                                        incidenceBackground.visible ? incidenceContents.textColor :
-                                                                        incidenceContents.otherMonthTextColor(modelData.color)
+                                                                            incidenceContents.textColor
                                                                     }
                                                                 }
 
@@ -389,17 +421,6 @@ Kirigami.Page {
                                             }
                                         }
                                     }
-                                }
-                            }
-                            Repeater {
-                                id: allDayDayLineRepeater
-                                anchors.fill: parent
-                                model: modelLoader.item.rowCount() - 1 // Don't want line at beginning
-                                delegate: Kirigami.Separator {
-                                    anchors.top: parent.top
-                                    height: hourlyView.dayHeight
-                                    x: ((index + 1) * root.dayWidth) + (index * root.gridLineWidth)
-                                    width: root.gridLineWidth
                                 }
                             }
                         }
@@ -479,7 +500,13 @@ Kirigami.Page {
 
                                     delegate: Item {
                                         id: dayColumn
+
                                         property int index: model.index
+                                        property date columnDate: DateUtils.addDaysToDate(viewLoader.startDate, index)
+                                        property bool isToday: columnDate.getDate() === root.currentDay &&
+                                                               columnDate.getMonth() === root.currentMonth &&
+                                                               columnDate.getFullYear() === root.currentYear
+
                                         width: root.dayWidth
                                         height: hourlyView.dayHeight
                                         clip: true
@@ -494,11 +521,11 @@ Kirigami.Page {
                                                     Kirigami.Theme.colorSet: Kirigami.Theme.View
                                                     width: parent.width
                                                     height: hourlyView.hourHeight
-                                                    color: Kirigami.Theme.backgroundColor
+                                                    color: dayColumn.isToday ? Kirigami.Theme.activeBackgroundColor : Kirigami.Theme.backgroundColor
 
                                                     DayMouseArea {
                                                         anchors.fill: parent
-                                                        addDate: new Date(DateUtils.addDaysToDate(viewLoader.startDate, dayColumn.index).setHours(index - 1))
+                                                        addDate: new Date(DateUtils.addDaysToDate(viewLoader.startDate, dayColumn.index).setHours(index))
                                                         onAddNewIncidence: addIncidence(type, addDate, true)
                                                     }
                                                 }
@@ -526,7 +553,7 @@ Kirigami.Page {
                                                     id: incidenceBackground
                                                     anchors.fill: parent
                                                     color: isOpenOccurrence ? modelData.color :
-                                                    LabelUtils.getIncidenceBackgroundColor(modelData.color, root.isDark)
+                                                        LabelUtils.getIncidenceBackgroundColor(modelData.color, root.isDark)
                                                     radius: parent.rectRadius
                                                 }
 
