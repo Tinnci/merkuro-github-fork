@@ -534,7 +534,9 @@ Kirigami.ApplicationWindow {
             objectName: "weekView"
 
             titleDelegate: TitleDateButton {
+                range: true
                 date: weekView.startDate
+                lastDate: DateUtils.addDaysToDate(weekView.startDate, 6)
                 onClicked: dateChangeDrawer.open()
             }
 
