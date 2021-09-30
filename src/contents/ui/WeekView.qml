@@ -446,6 +446,7 @@ Kirigami.Page {
                     property real daySections: (60 * 24) / modelLoader.item.periodLength
                     property real dayHeight: (daySections * Kirigami.Units.gridUnit) + (root.gridLineWidth * 23)
                     property real hourHeight: periodsPerHour * Kirigami.Units.gridUnit
+                    property real minuteHeight: hourHeight / 60
 
                     Item {
                         id: hourlyViewContents
@@ -606,9 +607,7 @@ Kirigami.Page {
                                                             id: timeLabel
                                                             Layout.fillWidth: true
                                                             horizontalAlignment: Text.AlignRight
-                                                            text: contentWidth > width ?
-                                                                modelData.startTime.toLocaleTimeString(Qt.locale(), Locale.NarrowFormat) +  modelData.endTime.toLocaleTimeString(Qt.locale(), Locale.NarrowFormat) :
-                                                                modelData.startTime.toLocaleTimeString(Qt.locale(), Locale.NarrowFormat) + " - " + modelData.endTime.toLocaleTimeString(Qt.locale(), Locale.NarrowFormat)
+                                                            text: modelData.startTime.toLocaleTimeString(Qt.locale(), Locale.NarrowFormat) + " - " + modelData.endTime.toLocaleTimeString(Qt.locale(), Locale.NarrowFormat)
                                                             wrapMode: Text.Wrap
                                                             color: isOpenOccurrence ? (LabelUtils.isDarkColor(modelData.color) ? "white" : "black") :
                                                                 incidenceContents.textColor
@@ -630,6 +629,29 @@ Kirigami.Page {
                                             }
                                         }
                                     }
+                                }
+                            }
+                            Rectangle {
+                                property date currentDateTime: new Date()
+                                property int minutesFromStart: (currentDateTime.getHours() * 60) + currentDateTime.getMinutes()
+                                property int daysFromWeekStart: DateUtils.fullDaysBetweenDates(viewLoader.startDate, currentDateTime) - 1
+
+                                width: root.dayWidth
+                                height: root.gridLineWidth * 2
+                                color: Kirigami.Theme.highlightColor
+                                x: (daysFromWeekStart * root.dayWidth) + (daysFromWeekStart * root.gridLineWidth)
+                                y: (currentDateTime.getHours() * root.gridLineWidth) + (hourlyView.minuteHeight * minutesFromStart) - (height / 2)
+                                z: 100
+                                visible: currentDateTime >= viewLoader.startDate && daysFromWeekStart < 7
+
+                                Rectangle {
+                                    anchors.left: parent.left
+                                    anchors.top: parent.top
+                                    anchors.topMargin: -(height / 2) + (parent.height / 2)
+                                    width: height
+                                    height: parent.height * 5
+                                    radius: 100
+                                    color: Kirigami.Theme.highlightColor
                                 }
                             }
                         }
