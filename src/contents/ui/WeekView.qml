@@ -61,8 +61,6 @@ Kirigami.Page {
         let weekDiff = Math.round((date - pathView.currentItem.startDate) / (7 * 24 * 60 * 60 * 1000));
 
         let newIndex = pathView.currentIndex + weekDiff;
-        console.log(weekDiff, DateUtils.getWeek(date), DateUtils.getWeek(pathView.currentItem.startDate));
-
         let firstItemDate = pathView.model.data(pathView.model.index(1,0), Kalendar.WeekViewModel.StartDateRole);
         let lastItemDate = pathView.model.data(pathView.model.index(pathView.model.rowCount() - 1,0), Kalendar.WeekViewModel.StartDateRole);
 
@@ -544,7 +542,7 @@ Kirigami.Page {
 
                                                 x: root.incidenceSpacing + (modelData.priorTakenWidthShare * root.dayWidth)
                                                 y: (modelData.starts * Kirigami.Units.gridUnit) + root.incidenceSpacing + gridLineYCompensation
-                                                width: (root.dayWidth * modelData.widthShare) - (root.incidenceSpacing * 2)// - ((root.maxConcurrentIncidences - 1) * root.incidenceSpacing)
+                                                width: (root.dayWidth * modelData.widthShare) - (root.incidenceSpacing * 2)
                                                 height: (modelData.duration * Kirigami.Units.gridUnit) - (root.incidenceSpacing * 2) + gridLineHeightCompensation - root.gridLineWidth
                                                 color: Qt.rgba(0,0,0,0)
                                                 visible: !modelData.allDay
@@ -588,8 +586,34 @@ Kirigami.Page {
                                                         elide: Text.ElideRight
                                                         font.weight: Font.Medium
                                                         color: isOpenOccurrence ? (LabelUtils.isDarkColor(modelData.color) ? "white" : "black") :
-                                                        incidenceBackground.visible ? incidenceContents.textColor :
-                                                        incidenceContents.otherMonthTextColor(modelData.color)
+                                                            incidenceContents.textColor
+                                                    }
+
+                                                    RowLayout {
+                                                        width: parent.width
+                                                        visible: parent.height > Kirigami.Units.gridUnit * 3
+                                                        Kirigami.Icon {
+                                                            id: incidenceIcon
+                                                            implicitWidth: Kirigami.Units.iconSizes.smallMedium
+                                                            implicitHeight: Kirigami.Units.iconSizes.smallMedium
+                                                            source: modelData.incidenceTypeIcon
+                                                            isMask: true
+                                                            color: isOpenOccurrence ? (LabelUtils.isDarkColor(modelData.color) ? "white" : "black") :
+                                                                incidenceContents.textColor
+                                                            visible: parent.width > Kirigami.Units.gridUnit * 4
+                                                        }
+                                                        QQC2.Label {
+                                                            id: timeLabel
+                                                            Layout.fillWidth: true
+                                                            horizontalAlignment: Text.AlignRight
+                                                            text: contentWidth > width ?
+                                                                modelData.startTime.toLocaleTimeString(Qt.locale(), Locale.NarrowFormat) +  modelData.endTime.toLocaleTimeString(Qt.locale(), Locale.NarrowFormat) :
+                                                                modelData.startTime.toLocaleTimeString(Qt.locale(), Locale.NarrowFormat) + " - " + modelData.endTime.toLocaleTimeString(Qt.locale(), Locale.NarrowFormat)
+                                                            wrapMode: Text.Wrap
+                                                            color: isOpenOccurrence ? (LabelUtils.isDarkColor(modelData.color) ? "white" : "black") :
+                                                                incidenceContents.textColor
+                                                            visible: parent.width > Kirigami.Units.gridUnit * 3
+                                                        }
                                                     }
                                                 }
 
