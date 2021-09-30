@@ -18,6 +18,12 @@ Kirigami.ApplicationWindow {
     width: Kirigami.Units.gridUnit * 65
 
     property date currentDate: new Date()
+    Timer {
+        interval: 5000;
+        running: true
+        repeat: true
+        onTriggered: currentDate = new Date()
+    }
     property date selectedDate: currentDate
 
     property var openOccurrence
