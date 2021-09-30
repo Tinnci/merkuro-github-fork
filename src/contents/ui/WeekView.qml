@@ -26,7 +26,7 @@ Kirigami.Page {
     property int day: selectedDate.getDate()
     property int month: selectedDate.getMonth()
     property int year: selectedDate.getFullYear()
-    property bool initialMonth: true
+    property bool initialWeek: true
     readonly property bool isLarge: width > Kirigami.Units.gridUnit * 30
     readonly property bool isDark: LabelUtils.isDarkColor(Kirigami.Theme.backgroundColor)
 
@@ -51,44 +51,47 @@ Kirigami.Page {
         color: Kirigami.Theme.backgroundColor
     }
 
-    /*function setToDate(date, isInitialMonth = false) {
-     *        root.initialMonth = isInitialMonth;
-     *        let monthDiff = date.getMonth() - pathView.currentItem.firstDayOfMonth.getMonth() + (12 * (date.getFullYear() - pathView.currentItem.firstDayOfMonth.getFullYear()))
-     *        let newIndex = pathView.currentIndex + monthDiff;
-     *
-     *        let firstItemDate = pathView.model.data(pathView.model.index(1,0), Kalendar.MonthViewModel.FirstDayOfMonthRole);
-     *        let lastItemDate = pathView.model.data(pathView.model.index(pathView.model.rowCount() - 1,0), Kalendar.MonthViewModel.FirstDayOfMonthRole);
-     *
-     *        while(firstItemDate >= date) {
-     *            pathView.model.addDates(false)
-     *            firstItemDate = pathView.model.data(pathView.model.index(1,0), Kalendar.MonthViewModel.FirstDayOfMonthRole);
-     *            newIndex = 0;
-}
-if(firstItemDate < date && newIndex === 0) {
-    newIndex = date.getMonth() - firstItemDate.getMonth() + (12 * (date.getFullYear() - firstItemDate.getFullYear())) + 1;
-}
+    function setToDate(date, isInitialWeek = false) {
+        root.initialWeek = isInitialWeek;
+        date = DateUtils.getFirstDayOfWeek(date);
+        let weekDiff = Math.round((date - pathView.currentItem.startDate) / (7 * 24 * 60 * 60 * 1000));
 
-while(lastItemDate <= date) {
-    pathView.model.addDates(true)
-    lastItemDate = pathView.model.data(pathView.model.index(pathView.model.rowCount() - 1,0), Kalendar.MonthViewModel.FirstDayOfMonthRole);
-}
-pathView.currentIndex = newIndex;
-selectedDate = date;
-}*/
+        let newIndex = pathView.currentIndex + weekDiff;
+        console.log(weekDiff, DateUtils.getWeek(date), DateUtils.getWeek(pathView.currentItem.startDate));
+
+        let firstItemDate = pathView.model.data(pathView.model.index(1,0), Kalendar.WeekViewModel.StartDateRole);
+        let lastItemDate = pathView.model.data(pathView.model.index(pathView.model.rowCount() - 1,0), Kalendar.WeekViewModel.StartDateRole);
+
+        while(firstItemDate >= date) {
+            pathView.model.addDates(false)
+            firstItemDate = pathView.model.data(pathView.model.index(1,0), Kalendar.WeekViewModel.StartDateRole);
+            newIndex = 0;
+        }
+        if(firstItemDate < date && newIndex === 0) {
+            newIndex = Math.round((date - firstItemDate) / (7 * 24 * 60 * 60 * 1000)) + 1
+        }
+
+        while(lastItemDate <= date) {
+            pathView.model.addDates(true)
+            lastItemDate = pathView.model.data(pathView.model.index(pathView.model.rowCount() - 1,0), Kalendar.MonthViewModel.StartDateRole);
+        }
+        pathView.currentIndex = newIndex;
+        selectedDate = date;
+    }
 
     actions {
         left: Kirigami.Action {
             icon.name: "go-previous"
             text: i18n("Previous Week")
             shortcut: "Left"
-            //onTriggered: setToDate(DateUtils.addMonthsToDate(pathView.currentItem.firstDayOfMonth, -1))
+            onTriggered: setToDate(DateUtils.addDaysToDate(pathView.currentItem.startDate, -7))
             displayHint: Kirigami.DisplayHint.IconOnly
         }
         right: Kirigami.Action {
             icon.name: "go-next"
             text: i18n("Next Week")
             shortcut: "Right"
-            //onTriggered: setToDate(DateUtils.addMonthsToDate(pathView.currentItem.firstDayOfMonth, 1))
+            onTriggered: setToDate(DateUtils.addDaysToDate(pathView.currentItem.startDate, 7))
             displayHint: Kirigami.DisplayHint.IconOnly
         }
         main: Kirigami.Action {
@@ -132,7 +135,7 @@ selectedDate = date;
             root.startDate = currentItem.startDate;
             root.month = currentItem.month;
             root.year = currentItem.year;
-            //root.initialMonth = false;
+            root.initialWeek = false;
 
             if(currentIndex >= count - 2) {
                 model.addDates(true);
@@ -283,19 +286,6 @@ selectedDate = date;
                                                         id: listViewMenu
                                                         anchors.fill: parent
                                                         z: -1
-
-                                                        function useGridSquareDate(type, root, globalPos) {
-                                                            for(var i in root.children) {
-                                                                var child = root.children[i];
-                                                                var localpos = child.mapFromGlobal(globalPos.x, globalPos.y);
-
-                                                                if(child.contains(localpos) && child.gridSquareDate) {
-                                                                    addIncidence(type, child.gridSquareDate);
-                                                                } else {
-                                                                    useGridSquareDate(type, child, globalPos);
-                                                                }
-                                                            }
-                                                        }
 
                                                         onAddNewIncidence: useGridSquareDate(type, applicationWindow().contentItem, this.mapToGlobal(clickX, clickY))
                                                     }

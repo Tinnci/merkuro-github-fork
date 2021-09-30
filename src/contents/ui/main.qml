@@ -533,12 +533,19 @@ Kirigami.ApplicationWindow {
             id: weekView
             objectName: "weekView"
 
-            openOccurrence: root.openOccurrence
-
             titleDelegate: TitleDateButton {
                 date: weekView.startDate
                 onClicked: dateChangeDrawer.open()
             }
+
+            selectedDate: root.selectedDate
+            openOccurrence: root.openOccurrence
+
+            onDayChanged: if(day !== root.selectedDate.getDate() && !initialWeek) root.selectedDate = new Date (year, month, day)
+            onMonthChanged: if(month !== root.selectedDate.getMonth() && !initialWeek) root.selectedDate = new Date (year, month, day)
+            onYearChanged: if(year !== root.selectedDate.getFullYear() && !initialWeek) root.selectedDate = new Date (year, month, day)
+
+            Component.onCompleted: setToDate(root.selectedDate)
 
             onAddIncidence: root.setUpAdd(type, addDate, null, includeTime)
             onViewIncidence: root.setUpView(modelData, collectionData)
