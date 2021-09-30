@@ -25,9 +25,18 @@ class HourlyIncidenceModel : public QAbstractItemModel
 {
     Q_OBJECT
     Q_PROPERTY(int periodLength READ periodLength WRITE setPeriodLength NOTIFY periodLengthChanged)
+    Q_PROPERTY(HourlyIncidenceModel::Filters filters READ filters WRITE setFilters NOTIFY filtersChanged)
     Q_PROPERTY(IncidenceOccurrenceModel* model WRITE setModel)
 
 public:
+    enum Filter {
+        NoAllDay = 0x1,
+        NoMultiDay = 0x2
+    };
+    Q_DECLARE_FLAGS(Filters, Filter)
+    Q_FLAGS(Filters)
+    Q_ENUMS(Filter)
+
     HourlyIncidenceModel(QObject *parent = nullptr);
     ~HourlyIncidenceModel() = default;
 
@@ -44,9 +53,12 @@ public:
     void setModel(IncidenceOccurrenceModel *model);
     int periodLength();
     void setPeriodLength(int periodLength);
+    HourlyIncidenceModel::Filters filters();
+    void setFilters(HourlyIncidenceModel::Filters filters);
 
 Q_SIGNALS:
     void periodLengthChanged();
+    void filtersChanged();
 
 private:
     QTimer mRefreshTimer;
@@ -54,4 +66,7 @@ private:
     QVariantList layoutLines(const QDateTime &rowStart) const;
     IncidenceOccurrenceModel *mSourceModel{nullptr};
     int mPeriodLength{15};
+    HourlyIncidenceModel::Filters m_filters;
 };
+
+Q_DECLARE_OPERATORS_FOR_FLAGS(HourlyIncidenceModel::Filters)
