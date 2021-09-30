@@ -230,7 +230,16 @@ Kirigami.Page {
                     id: headerTopSeparator
                     Layout.fillWidth: true
                     height: root.gridLineWidth
-                    visible: !allDayViewLoader.active
+                    z: -1
+
+                    RectangularGlow {
+                        anchors.fill: parent
+                        z: -1
+                        glowRadius: 5
+                        spread: 0.3
+                        color: Qt.rgba(0.0, 0.0, 0.0, 0.15)
+                        visible: !allDayViewLoader.active
+                    }
                 }
 
                 Loader {
@@ -449,6 +458,7 @@ Kirigami.Page {
                     Layout.fillWidth: true
                     height: root.gridLineWidth
                     z: -1
+                    visible: allDayViewLoader.active
 
                     RectangularGlow {
                         anchors.fill: parent
