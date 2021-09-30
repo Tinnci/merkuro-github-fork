@@ -24,7 +24,7 @@ Kirigami.Page {
     property var openOccurrence
     property date selectedDate: new Date()
     property date startDate: DateUtils.getFirstDayOfMonth(selectedDate)
-    property date currentDate: new Date()
+    property date currentDate: new Date() // Needs to get updated for marker to move, done from main.qml
     property int currentDay: currentDate ? currentDate.getDate() : null
     property int currentMonth: currentDate ? currentDate.getMonth() : null
     property int currentYear: currentDate ? currentDate.getFullYear() : null
@@ -670,7 +670,7 @@ Kirigami.Page {
                             }
                             Rectangle {
                                 id: currentTimeMarker
-                                property date currentDateTime: new Date()
+                                property date currentDateTime: root.currentDate
                                 property int minutesFromStart: (currentDateTime.getHours() * 60) + currentDateTime.getMinutes()
                                 property int daysFromWeekStart: DateUtils.fullDaysBetweenDates(viewLoader.startDate, currentDateTime) - 1
 
@@ -690,13 +690,6 @@ Kirigami.Page {
                                     height: parent.height * 5
                                     radius: 100
                                     color: Kirigami.Theme.highlightColor
-                                }
-
-                                Timer {
-                                    interval: 5000;
-                                    running: currentTimeMarker.currentDateTime >= viewLoader.startDate
-                                    repeat: true
-                                    onTriggered: currentTimeMarker.currentDateTime = new Date()
                                 }
                             }
                         }
