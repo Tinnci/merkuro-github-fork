@@ -35,9 +35,9 @@ class MultiDayIncidenceModel : public QAbstractItemModel
 
 public:
     enum Filter {
-        None = 0x0,
         AllDayOnly = 0x1,
-        NoStartDateOnly = 0x2
+        NoStartDateOnly = 0x2,
+        MultiDayOnly = 0x3
     };
     Q_DECLARE_FLAGS(Filters, Filter)
     Q_FLAGS(Filters)
@@ -61,6 +61,7 @@ public:
     void setPeriodLength(int periodLength);
     MultiDayIncidenceModel::Filters filters();
     void setFilters(MultiDayIncidenceModel::Filters filters);
+    bool incidencePassesFilter(QModelIndex idx) const;
     Q_INVOKABLE int incidenceCount();
 
 Q_SIGNALS:
@@ -77,7 +78,7 @@ private:
     QVariantList layoutLines(const QDate &rowStart) const;
     IncidenceOccurrenceModel *mSourceModel{nullptr};
     int mPeriodLength{7};
-    MultiDayIncidenceModel::Filters m_filters = None;
+    MultiDayIncidenceModel::Filters m_filters;
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS(MultiDayIncidenceModel::Filters)
