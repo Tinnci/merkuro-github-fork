@@ -51,7 +51,7 @@ QHash<int, QByteArray> WeekViewModel::roleNames() const
     };
 }
 
-void WeekViewModel::addDates(bool atEnd, QDate startFrom)
+void WeekViewModel::addDates(bool atEnd, const QDate &startFrom)
 {
     const int newRow = atEnd ? rowCount() : 0;
 
