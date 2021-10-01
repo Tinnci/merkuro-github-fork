@@ -29,7 +29,7 @@ public:
     QVariant data(const QModelIndex &idx, int role) const override;
     QHash<int, QByteArray> roleNames() const override;
     int rowCount(const QModelIndex &parent = {}) const override;
-    Q_INVOKABLE void addDates(bool atEnd, QDate startFrom = QDate());
+    Q_INVOKABLE void addDates(bool atEnd, const QDate &startFrom = QDate());
 
     int weeksToAdd() const;
     void setWeeksToAdd(int weeksToAdd);
