@@ -570,7 +570,7 @@ Kirigami.Page {
                                             id: incidencesRepeater
                                             model: incidences
                                             delegate: Rectangle {
-                                                property int rectRadius: 5
+                                                property int rectRadius: Kirigami.Units.smallSpacing
                                                 property real gridLineYCompensation: (modelData.starts / hourlyView.periodsPerHour) * root.gridLineWidth
                                                 property real gridLineHeightCompensation: (modelData.duration / hourlyView.periodsPerHour) * root.gridLineWidth
                                                 property bool isOpenOccurrence: root.openOccurrence ?
@@ -583,12 +583,19 @@ Kirigami.Page {
                                                 color: Qt.rgba(0,0,0,0)
                                                 visible: !modelData.allDay
 
-                                                Rectangle {
+                                                Kirigami.ShadowedRectangle {
                                                     id: incidenceBackground
                                                     anchors.fill: parent
                                                     color: isOpenOccurrence ? modelData.color :
                                                         LabelUtils.getIncidenceBackgroundColor(modelData.color, root.isDark)
                                                     radius: parent.rectRadius
+
+                                                    shadow.size: Kirigami.Units.largeSpacing
+                                                    shadow.color: Qt.rgba(0.0, 0.0, 0.0, 0.2)
+                                                    shadow.yOffset: 2
+
+                                                    border.width: 1
+                                                    border.color: Kirigami.ColorUtils.tintWithAlpha(color, Kirigami.Theme.textColor, 0.2)
                                                 }
 
                                                 ColumnLayout {
