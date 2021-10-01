@@ -206,9 +206,15 @@ Kirigami.Page {
 
                     Repeater {
                         id: dayHeadings
+
                         model: modelLoader.item.rowCount()
                         delegate: Kirigami.Heading {
                             id: dayHeading
+
+                            FontMetrics {
+                                id: dayTitleMetrics
+                            }
+
                             property date headingDate: DateUtils.addDaysToDate(viewLoader.startDate, index)
                             property bool isToday: headingDate.getDate() === root.currentDay &&
                                                    headingDate.getMonth() === root.currentMonth &&
@@ -218,7 +224,19 @@ Kirigami.Page {
                             padding: Kirigami.Units.smallSpacing
                             level: 2
                             color: isToday ? Kirigami.Theme.highlightColor : Kirigami.Theme.textColor
-                            text: headingDate.toLocaleDateString(Qt.locale(), "ddd <b>dd</b>")
+                            text: {
+                                let longText = headingDate.toLocaleDateString(Qt.locale(), "dddd <b>dd</b>");
+                                let mediumText = headingDate.toLocaleDateString(Qt.locale(), "ddd <b>dd</b>");
+                                let shortText = mediumText.slice(0,1) + " " + headingDate.toLocaleDateString(Qt.locale(), "<b>dd</b>");
+
+                                if(dayTitleMetrics.boundingRect(longText).width < width) {
+                                    return longText;
+                                } else if(dayTitleMetrics.boundingRect(mediumText).width < width) {
+                                    return mediumText;
+                                } else {
+                                    return shortText;
+                                }
+                            }
                             background: Rectangle {
                                 color: dayHeading.isToday ? Kirigami.Theme.activeBackgroundColor : Kirigami.Theme.backgroundColor
                             }
