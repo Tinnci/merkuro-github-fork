@@ -294,7 +294,7 @@ void MultiDayIncidenceModel::setFilters(MultiDayIncidenceModel::Filters filters)
     endResetModel();
 }
 
-bool MultiDayIncidenceModel::incidencePassesFilter(QModelIndex idx) const
+bool MultiDayIncidenceModel::incidencePassesFilter(const QModelIndex &idx) const
 {
     if(m_filters) {
         bool include = false;
