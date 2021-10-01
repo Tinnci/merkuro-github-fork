@@ -339,6 +339,7 @@ Item {
                                                     color: isOpenOccurrence ? (LabelUtils.isDarkColor(modelData.color) ? "white" : "black") :
                                                         incidenceBackground.visible ? incidenceContents.textColor :
                                                         incidenceContents.otherMonthTextColor(modelData.color)
+                                                    visible: parent.width > Kirigami.Units.gridUnit * 5
                                                 }
 
                                                 QQC2.Label {
