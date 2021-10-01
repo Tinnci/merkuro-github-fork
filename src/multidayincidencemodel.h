@@ -61,7 +61,7 @@ public:
     void setPeriodLength(int periodLength);
     MultiDayIncidenceModel::Filters filters();
     void setFilters(MultiDayIncidenceModel::Filters filters);
-    bool incidencePassesFilter(QModelIndex idx) const;
+    bool incidencePassesFilter(const QModelIndex &idx) const;
     Q_INVOKABLE int incidenceCount();
 
 Q_SIGNALS:
