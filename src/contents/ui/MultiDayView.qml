@@ -347,6 +347,7 @@ Item {
                                                     text: modelData.text
                                                     elide: Text.ElideRight
                                                     font.weight: Font.Medium
+                                                    font.pointSize: parent.width > Kirigami.Units.gridUnit * 5 ? Kirigami.Theme.defaultFont.pointSize : Kirigami.Theme.smallFont.pointSize
                                                     color: isOpenOccurrence ? (LabelUtils.isDarkColor(modelData.color) ? "white" : "black") :
                                                         incidenceBackground.visible ? incidenceContents.textColor :
                                                         incidenceContents.otherMonthTextColor(modelData.color)
