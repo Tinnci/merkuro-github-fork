@@ -72,9 +72,8 @@ void KalendarApplication::setupActions()
     }
 
     actionName = QLatin1String("open_week_view");
-    QAction *openWeekAction = nullptr;
     if (KAuthorized::authorizeAction(actionName)) {
-        openWeekAction = mCollection.addAction(actionName, this, &KalendarApplication::openWeekView);
+        auto openWeekAction = mCollection.addAction(actionName, this, &KalendarApplication::openWeekView);
         openWeekAction->setText(i18n("Week View"));
         openWeekAction->setIcon(QIcon::fromTheme(QStringLiteral("view-calendar-week")));
         openWeekAction->setCheckable(true);
