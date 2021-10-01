@@ -296,24 +296,25 @@ void MultiDayIncidenceModel::setFilters(MultiDayIncidenceModel::Filters filters)
 
 bool MultiDayIncidenceModel::incidencePassesFilter(const QModelIndex &idx) const
 {
-    if(m_filters) {
-        bool include = false;
-        const auto start = idx.data(IncidenceOccurrenceModel::StartTime).toDateTime().date();
-
-        if(m_filters.testFlag(AllDayOnly) && idx.data(IncidenceOccurrenceModel::AllDay).toBool()) {
-            include = true;
-        }
-
-        if(m_filters.testFlag(NoStartDateOnly) && !start.isValid()) {
-            include = true;
-        }
-        if(m_filters.testFlag(MultiDayOnly) && idx.data(IncidenceOccurrenceModel::Duration).value<KCalendarCore::Duration>().asDays() >= 1) {
-            include = true;
-        }
-
-        return include;
+    if(!m_filters) {
+        return true;
     }
-    return true;
+    bool include = false;
+    const auto start = idx.data(IncidenceOccurrenceModel::StartTime).toDateTime().date();
+
+    if(m_filters.testFlag(AllDayOnly) && idx.data(IncidenceOccurrenceModel::AllDay).toBool()) {
+        include = true;
+    }
+
+    if(m_filters.testFlag(NoStartDateOnly) && !start.isValid()) {
+        include = true;
+    }
+    if(m_filters.testFlag(MultiDayOnly) && idx.data(IncidenceOccurrenceModel::Duration).value<KCalendarCore::Duration>().asDays() >= 1) {
+        include = true;
+    }
+
+    return include;
+
 }
 
 int MultiDayIncidenceModel::incidenceCount()
