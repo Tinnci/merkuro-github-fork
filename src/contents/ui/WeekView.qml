@@ -43,7 +43,7 @@ Kirigami.Page {
 
     property var hourStrings: []
     Component.onCompleted: {
-        let date = new Date(0, 0, 0, 0, 0, 0, 0);
+        const date = new Date(0, 0, 0, 0, 0, 0, 0);
         for(let i = 0; i < 23; i++) {
             date.setHours(i);
             hourStrings.push(date.toLocaleTimeString(Qt.locale(), Locale.NarrowFormat));
