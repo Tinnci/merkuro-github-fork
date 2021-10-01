@@ -61,7 +61,7 @@ Kirigami.Page {
     function setToDate(date, isInitialWeek = false) {
         root.initialWeek = isInitialWeek;
         date = DateUtils.getFirstDayOfWeek(date);
-        let weekDiff = Math.round((date - pathView.currentItem.startDate) / (root.daysToShow * 24 * 60 * 60 * 1000));
+        const weekDiff = Math.round((date - pathView.currentItem.startDate) / (root.daysToShow * 24 * 60 * 60 * 1000));
 
         let newIndex = pathView.currentIndex + weekDiff;
         let firstItemDate = pathView.model.data(pathView.model.index(1,0), Kalendar.WeekViewModel.StartDateRole);
