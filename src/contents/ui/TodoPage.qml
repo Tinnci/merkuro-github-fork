@@ -311,8 +311,6 @@ Kirigami.Page {
     footer: Kirigami.ActionTextField {
         id: addField
         placeholderText: i18n("Create a New Task…")
-        implicitHeight: Kirigami.Units.gridUnit * 1.70
-
 
         background: Rectangle {
             Kirigami.Theme.inherit: false
