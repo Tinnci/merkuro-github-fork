@@ -35,7 +35,8 @@ Kirigami.Page {
     property int daysToShow: 7
     readonly property bool isDark: LabelUtils.isDarkColor(Kirigami.Theme.backgroundColor)
 
-    readonly property real dayWidth: ((root.width - hourLabelWidth - leftPadding) / daysToShow) - gridLineWidth
+    property real scrollbarWidth: 0
+    readonly property real dayWidth: ((root.width - hourLabelWidth - leftPadding - scrollbarWidth) / daysToShow) - gridLineWidth
     readonly property real incidenceSpacing: Kirigami.Units.smallSpacing / 2
     readonly property real gridLineWidth: 1.0
     readonly property real hourLabelWidth: Kirigami.Units.gridUnit * 3.5
@@ -496,9 +497,18 @@ Kirigami.Page {
                     readonly property real hourHeight: periodsPerHour * Kirigami.Units.gridUnit
                     readonly property real minuteHeight: hourHeight / 60
 
+                    Connections {
+                        target: hourlyView.QQC2.ScrollBar.vertical
+                        function onWidthChanged() {
+                            root.scrollbarWidth = hourlyView.QQC2.ScrollBar.vertical.width;
+                        }
+                    }
+                    Component.onCompleted: root.scrollbarWidth = hourlyView.QQC2.ScrollBar.vertical.width;
+
                     Item {
                         id: hourlyViewContents
                         anchors.fill: parent
+
                         clip: true
 
                         ListView {
@@ -508,6 +518,7 @@ Kirigami.Page {
                             anchors.bottom: parent.bottom
                             anchors.topMargin: (fontMetrics.height / 2) + (root.gridLineWidth / 2)
                             spacing: root.gridLineWidth
+                            width: root.hourLabelWidth
 
                             FontMetrics {
                                 id: fontMetrics
@@ -525,11 +536,14 @@ Kirigami.Page {
                             }
                         }
 
-
                         Item {
                             id: innerWeekView
-                            anchors.fill: parent
-                            anchors.leftMargin: root.hourLabelWidth
+                            anchors {
+                                left: hourLabelsColumn.right
+                                top: parent.top
+                                bottom: parent.bottom
+                                right: parent.right
+                            }
                             clip: true
 
                             Kirigami.Separator {
@@ -541,6 +555,8 @@ Kirigami.Page {
                                 spacing: root.gridLineWidth
                                 orientation: Qt.Horizontal
                                 model: modelLoader.item
+
+                                boundsBehavior: Flickable.StopAtBounds
 
                                 delegate: Item {
                                     id: dayColumn
