@@ -225,9 +225,10 @@ Kirigami.Page {
                             level: 2
                             color: isToday ? Kirigami.Theme.highlightColor : Kirigami.Theme.textColor
                             text: {
-                                let longText = headingDate.toLocaleDateString(Qt.locale(), "dddd <b>dd</b>");
-                                let mediumText = headingDate.toLocaleDateString(Qt.locale(), "ddd <b>dd</b>");
-                                let shortText = mediumText.slice(0,1) + " " + headingDate.toLocaleDateString(Qt.locale(), "<b>dd</b>");
+                                const longText = headingDate.toLocaleDateString(Qt.locale(), "dddd <b>dd</b>");
+                                const mediumText = headingDate.toLocaleDateString(Qt.locale(), "ddd <b>dd</b>");
+                                const shortText = mediumText.slice(0,1) + " " + headingDate.toLocaleDateString(Qt.locale(), "<b>dd</b>");
+
 
                                 if(dayTitleMetrics.boundingRect(longText).width < width) {
                                     return longText;
