@@ -559,7 +559,7 @@ Kirigami.Page {
                                                 id: incidenceBackground
                                                 anchors.fill: parent
                                                 color: isOpenOccurrence ? modelData.color :
-                                                LabelUtils.getIncidenceBackgroundColor(modelData.color, root.isDark)
+                                                    LabelUtils.getIncidenceBackgroundColor(modelData.color, root.isDark)
                                                 radius: parent.radius
 
                                                 shadow.size: Kirigami.Units.largeSpacing
