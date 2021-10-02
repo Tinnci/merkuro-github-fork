@@ -32,12 +32,20 @@ Rectangle {
         true
     property bool isDark: false
 
-    IncidenceBackground {
+    Kirigami.ShadowedRectangle {
         id: incidenceBackground
-        isOpenOccurrence: parent.isOpenOccurrence
-        reactToCurrentMonth: parent.reactToCurrentMonth
-        isInCurrentMonth: parent.isInCurrentMonth
-        isDark: parent.isDark
+        anchors.fill: parent
+        color: isOpenOccurrence ? modelData.color :
+            LabelUtils.getIncidenceBackgroundColor(modelData.color, root.isDark)
+        visible: isOpenOccurrence || isInCurrentMonth
+        radius: parent.radius
+
+        shadow.size: Kirigami.Units.largeSpacing
+        shadow.color: Qt.rgba(0.0, 0.0, 0.0, 0.2)
+        shadow.yOffset: 2
+
+        border.width: 1
+        border.color: Kirigami.ColorUtils.tintWithAlpha(color, Kirigami.Theme.textColor, 0.2)
     }
 
     RowLayout {

@@ -555,10 +555,19 @@ Kirigami.Page {
                                             color: Qt.rgba(0,0,0,0)
                                             visible: !modelData.allDay
 
-                                            IncidenceBackground {
+                                            Kirigami.ShadowedRectangle {
                                                 id: incidenceBackground
-                                                isOpenOccurrence: parent.isOpenOccurrence
-                                                isDark: root.isDark
+                                                anchors.fill: parent
+                                                color: isOpenOccurrence ? modelData.color :
+                                                    LabelUtils.getIncidenceBackgroundColor(modelData.color, root.isDark)
+                                                radius: parent.radius
+
+                                                shadow.size: Kirigami.Units.largeSpacing
+                                                shadow.color: Qt.rgba(0.0, 0.0, 0.0, 0.2)
+                                                shadow.yOffset: 2
+
+                                                border.width: 1
+                                                border.color: Kirigami.ColorUtils.tintWithAlpha(color, Kirigami.Theme.textColor, 0.2)
                                             }
 
                                             ColumnLayout {
