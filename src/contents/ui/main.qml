@@ -213,8 +213,7 @@ Kirigami.ApplicationWindow {
     menuBar: Loader {
         id: menuLoader
         active: Kirigami.Settings.hasPlatformMenuBar != undefined ?
-                !Kirigami.Settings.hasPlatformMenuBar && !Kirigami.Settings.isMobile :
-                !Kirigami.Settings.isMobile
+                !Kirigami.Settings.hasPlatformMenuBar && !Kirigami.Settings.isMobile : !Kirigami.Settings.isMobile && Config.showMenubar
 
         visible: Config.showMenubar
         height: visible ? implicitHeight : 0

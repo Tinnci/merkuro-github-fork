@@ -16,6 +16,7 @@ KalendarApplication::KalendarApplication(QObject *parent)
     , mCollection(parent)
     , m_viewGroup(new QActionGroup(this))
 {
+    m_config = KalendarConfig::self();
 }
 
 QAction *KalendarApplication::action(const QString& name)
@@ -69,6 +70,7 @@ void KalendarApplication::setupActions(const QString &actionName)
         toggleMenubarAction->setText(i18n("Show Menubar"));
         toggleMenubarAction->setIcon(QIcon::fromTheme(QStringLiteral("show-menu")));
         toggleMenubarAction->setCheckable(true);
+        toggleMenubarAction->setChecked(m_config->showMenubar());
         mCollection.setDefaultShortcut(toggleMenubarAction, QKeySequence(i18n("Ctrl+M")));
     }
 

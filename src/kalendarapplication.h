@@ -4,6 +4,7 @@
 #include <QObject>
 #include <QActionGroup>
 #include <KXmlGui/KActionCollection>
+#include "kalendarconfig.h"
 
 class QWindow;
 
@@ -51,4 +52,5 @@ private:
     QActionGroup *m_viewGroup = nullptr;
     QActionGroup *m_todoViewOrderGroup = nullptr;
     QActionGroup *m_todoViewSortGroup = nullptr;
+    KalendarConfig *m_config = nullptr;
 };
