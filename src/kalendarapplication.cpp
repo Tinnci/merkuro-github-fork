@@ -114,6 +114,7 @@ void KalendarApplication::setupActions()
         toggleMenubarAction->setText(i18n("Show Menubar"));
         toggleMenubarAction->setIcon(QIcon::fromTheme(QStringLiteral("show-menu")));
         toggleMenubarAction->setCheckable(true);
+        toggleMenubarAction->setChecked(m_config->showMenubar());
         mCollection.setDefaultShortcut(toggleMenubarAction, QKeySequence(i18n("Ctrl+M")));
     }
 
