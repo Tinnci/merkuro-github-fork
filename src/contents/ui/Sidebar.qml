@@ -81,7 +81,12 @@ Kirigami.OverlayDrawer {
 
                 Kirigami.ActionToolBar {
                     id: menu
-                    visible: !Config.showMenubar
+
+                    Connections {
+                        target: Config
+                        onShowMenubarChanged: menu.visible = !Config.showMenubar
+                    }
+
                     Layout.fillWidth: true
                     Layout.fillHeight: true
                     overflowIconName: "application-menu"
@@ -120,6 +125,8 @@ Kirigami.OverlayDrawer {
                             let action = actions[i]
                             action.displayHint = Kirigami.DisplayHint.AlwaysHide
                         }
+                        visible = !Config.showMenubar
+                        //HACK: Otherwise if menubar is open and then hidden hamburger refuses to appear (?)
                     }
                 }
             }
