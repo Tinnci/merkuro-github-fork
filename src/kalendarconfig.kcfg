@@ -35,6 +35,10 @@
             </choices>
             <default>scheduleView</default>
         </entry>
+        <entry name="incidenceInfoDrawerWidth" type="Int">
+            <label>Width of the incidence drawer</label>
+            <default>-1</default>
+        </entry>
     </group>
 
     <group name="MonthView">
