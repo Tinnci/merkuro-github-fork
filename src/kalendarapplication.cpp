@@ -53,7 +53,6 @@ QAction *KalendarApplication::action(const QString& name)
     return nullptr;
 }
 
-
 void KalendarApplication::setupActions()
 {
     auto actionName = QLatin1String("options_configure_keybinding");
@@ -307,7 +306,6 @@ void KalendarApplication::setupActions()
     }
     mSortCollection.readSettings();
     mCollection.readSettings();
-
 }
 
 void KalendarApplication::configureShortcuts()
