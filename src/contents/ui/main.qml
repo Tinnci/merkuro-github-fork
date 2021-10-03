@@ -116,14 +116,13 @@ Kirigami.ApplicationWindow {
             pageStack.replace(todoPageComponent);
         }
 
-<<<<<<< HEAD
         function onOpenAboutPage() {
             pageStack.layers.push("AboutPage.qml")
-=======
+        }
+
         function onToggleMenubar() {
             Config.showMenubar = !Config.showMenubar;
             Config.save();
->>>>>>> 6589b24 (Make Menubar toggleable)
         }
 
         function onCreateNewEvent() {

@@ -61,10 +61,7 @@ private:
     QActionGroup *m_viewGroup = nullptr;
     QActionGroup *m_todoViewOrderGroup = nullptr;
     QActionGroup *m_todoViewSortGroup = nullptr;
-<<<<<<< HEAD
     KalCommandBarModel *m_actionModel = nullptr;
     QSortFilterProxyModel *m_proxyModel = nullptr;
-=======
     KalendarConfig *m_config = nullptr;
->>>>>>> ca256d5 (Fixed toggling of the menu bar and the checked status of its action)
 };
