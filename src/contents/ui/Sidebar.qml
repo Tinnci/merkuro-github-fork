@@ -145,6 +145,7 @@ Kirigami.OverlayDrawer {
             ListView {
                 id: generalList
 
+                interactive: false
                 currentIndex: {
                     if (!Kirigami.Settings.isMobile) {
                         getCurrentView();
