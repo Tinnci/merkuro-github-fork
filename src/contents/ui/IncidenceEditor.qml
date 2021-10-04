@@ -1033,4 +1033,14 @@ Kirigami.ScrollablePage {
             }
         }
     }
+
+    Keys.onPressed: {
+        switch (event.key) {
+            case Qt.Key_Escape:
+                cancel();
+                return;
+            default:
+                return;
+        }
+    }
 }
