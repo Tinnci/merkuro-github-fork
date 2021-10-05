@@ -263,7 +263,13 @@ Kirigami.ApplicationWindow {
                 // HACK: The Todo View should be able to detect change in collection filtering independently
             }
         }
-        onTagClicked: if(todoMode) pageStack.currentItem.filterCategoryString = tagName
+        onTagClicked: if(todoMode) {
+            pageStack.currentItem.filterCategoryString = tagName
+        } else {
+            pageStack.currentItem.filter ? pageStack.currentItem.filter.tags ?
+                pageStack.currentItem.filter.tags.push(tagName) : pageStack.currentItem.filter.tags = [tagName] :
+                pageStack.currentItem.filter = {"tags" : [tagName]};
+        }
         onViewAllTodosClicked: if(todoMode) pageStack.currentItem.filterCollectionId = -1
     }
 
