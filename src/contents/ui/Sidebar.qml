@@ -301,7 +301,6 @@ Kirigami.OverlayDrawer {
                         labelItem.color: Kirigami.Theme.textColor
                         reserveSpaceForIcon: true
 
-                        hoverEnabled: sidebar.todoMode
                         separatorVisible: false
 
                         onClicked: tagClicked(display)
@@ -381,7 +380,6 @@ Kirigami.OverlayDrawer {
                                 label: display
                                 labelItem.color: Kirigami.Theme.textColor
                                 leftPadding: Kirigami.Settings.isMobile ? Kirigami.Units.largeSpacing * 2 : Kirigami.Units.largeSpacing
-                                hoverEnabled: sidebar.todoMode
                                 separatorVisible: false
                                 reserveSpaceForIcon: true
 
@@ -400,7 +398,7 @@ Kirigami.OverlayDrawer {
 
                                 onClicked: {
                                     calendarClicked(collectionId)
-                                    if(sidebar.modal && sidebar.todoMode) sidebar.close()
+                                    if(sidebar.modal) sidebar.close()
                                 }
                             }
                         }

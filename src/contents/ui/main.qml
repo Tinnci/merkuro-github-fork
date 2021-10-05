@@ -269,6 +269,9 @@ Kirigami.ApplicationWindow {
             pageStack.currentItem.filter ? pageStack.currentItem.filter.tags ?
                 pageStack.currentItem.filter.tags.push(tagName) : pageStack.currentItem.filter.tags = [tagName] :
                 pageStack.currentItem.filter = {"tags" : [tagName]};
+            pageStack.currentItem.filterChanged();
+            filterHeader.active = true;
+            pageStack.currentItem.header = filterHeader.item;
         }
         onViewAllTodosClicked: if(todoMode) pageStack.currentItem.filterCollectionId = -1
     }
@@ -363,6 +366,22 @@ Kirigami.ApplicationWindow {
 
             visible: true
             onClosing: editorWindowedLoader.active = false
+        }
+    }
+
+    Loader {
+        id: filterHeader
+        active: false
+        sourceComponent: FilterHeader {
+            todoMode: pageStack.currentItem ? pageStack.currentItem.objectName === "todoView" : false
+            filterCollectionId: pageStack.currentItem && pageStack.currentItem.filterCollectionId ?
+                pageStack.currentItem.filterCollectionId : -1
+            tags: pageStack.currentItem.filter.tags ? pageStack.currentItem.filter.tags : []
+
+            onRemoveFilterTag: {
+                pageStack.currentItem.filter.tags.splice(pageStack.currentItem.filter.tags.indexOf(tagName), 1);
+                pageStack.currentItem.filterChanged();
+            }
         }
     }
 
