@@ -139,7 +139,6 @@ Kirigami.OverlayDrawer {
             id: generalView
             implicitWidth: Kirigami.Units.gridUnit * 16
             Layout.fillWidth: true
-            //Layout.topMargin: toolbar.visible ? -Kirigami.Units.smallSpacing - 1 : 0
             QQC2.ScrollBar.horizontal.policy: QQC2.ScrollBar.AlwaysOff
             contentWidth: availableWidth
 
