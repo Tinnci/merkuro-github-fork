@@ -420,6 +420,12 @@ Kirigami.OverlayDrawer {
         Layout.fillWidth: true
     }
     Kirigami.BasicListItem {
+
+        FontMetrics {
+            id: textMetrics
+        }
+
+        implicitHeight: textMetrics.height + Kirigami.Units.largeSpacing
         icon: "show-all-effects"
         label: i18n("View all tasks")
         labelItem.color: Kirigami.Theme.textColor
