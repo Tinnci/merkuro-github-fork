@@ -5,7 +5,6 @@
 
 import QtQuick 2.15
 import QtQuick.Layouts 1.1
-import QtQuick.Controls 1.4 as QQC1
 import QtQuick.Controls 2.15 as QQC2
 import org.kde.kirigami 2.14 as Kirigami
 import Qt.labs.qmlmodels 1.0

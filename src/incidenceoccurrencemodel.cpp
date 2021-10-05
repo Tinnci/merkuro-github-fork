@@ -128,7 +128,7 @@ void IncidenceOccurrenceModel::updateFromSource()
                 occurrenceIterator.next();
                 const auto incidence = occurrenceIterator.incidence();
 
-                if(mFilter.contains(QLatin1String("tags"))) {
+                if(mFilter.contains(QLatin1String("tags")) && mFilter[QLatin1String("tags")].toStringList().length() > 0) {
                     bool match = false;
                     QStringList tags = mFilter[QLatin1String("tags")].toStringList();
                     for(auto tag : tags) {
