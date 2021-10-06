@@ -27,7 +27,7 @@ KirigamiAddonsTreeView.TreeListView {
     property var filterCollectionDetails
 
     property int showCompleted: Kalendar.TodoSortFilterProxyModel.ShowAll
-    property int sortBy: Kalendar.TodoSortFilterProxyModel.EndTimeColumn
+    property int sortBy: Kalendar.TodoSortFilterProxyModel.SummaryColumn
     onSortByChanged: todoModel.sortTodoModel(sortBy, ascendingOrder)
     property bool ascendingOrder: false
     onAscendingOrderChanged: todoModel.sortTodoModel(sortBy, ascendingOrder)

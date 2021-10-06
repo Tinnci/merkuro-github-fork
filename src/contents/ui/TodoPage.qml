@@ -115,14 +115,21 @@ Kirigami.Page {
                 QQC2.ScrollBar.horizontal.policy: QQC2.ScrollBar.AlwaysOff
 
                 TodoTreeView {
+                    id: completeView
                     Layout.fillWidth: true
                     Layout.fillHeight: true
 
                     filter: root.filter
                     filterCollectionDetails: root.filterCollectionDetails
 
+                    /*Binding {
+                        target: completeView
+                        property: "sortBy"
+                        value: root.sortBy
+                        when: completeView.status = Component.Ready
+                    }*/
+
                     showCompleted: Kalendar.TodoSortFilterProxyModel.ShowCompleteOnly
-                    sortBy: root.sortBy
                     ascendingOrder: root.ascendingOrder
                     onAddTodo: {
                         root.addTodo(collectionId)
