@@ -160,7 +160,6 @@ Kirigami.Page {
                     onAddSubTodo: root.addSubTodo(parentWrapper)
                 }
             }
-
         }
     }
 

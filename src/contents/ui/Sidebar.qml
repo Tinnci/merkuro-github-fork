@@ -249,7 +249,6 @@ Kirigami.OverlayDrawer {
                 glowRadius: 5
                 spread: 0.3
                 color: Qt.rgba(0.0, 0.0, 0.0, 0.15)
-                visible: !allDayViewLoader.active
             }
         }
 
@@ -297,7 +296,6 @@ Kirigami.OverlayDrawer {
                     id: tagList
 
                     model: TagManager.tagModel
-                    onModelChanged: currentIndex = -1
 
                     delegate: Kirigami.BasicListItem {
                         Layout.fillWidth: true
@@ -342,7 +340,6 @@ Kirigami.OverlayDrawer {
                     model: KDescendantsProxyModel {
                         model: sidebar.todoMode ? CalendarManager.todoCollections : CalendarManager.viewCollections
                     }
-                    onModelChanged: currentIndex = -1
 
                     delegate: DelegateChooser {
                         role: 'kDescendantExpandable'
