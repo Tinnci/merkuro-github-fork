@@ -11,8 +11,6 @@ import "labelutils.js" as LabelUtils
 
 GridLayout {
     id: headerLayout
-    columns: 2
-    rows: 2
 
     signal removeFilterTag(string tagName)
     signal searchTextChanged(string text)
@@ -31,30 +29,36 @@ GridLayout {
 
     rowSpacing: Kirigami.Units.smallSpacing
 
+    columns: width > Kirigami.Units.gridUnit * 30 ? 3 : 2
+    rows: width > Kirigami.Units.gridUnit * 30 ? 1 : 2
+
     Kirigami.Heading {
+        id: heading
+
         width: implicitWidth
-        Layout.row: 0
-        Layout.column: 0
-        Layout.columnSpan: headerLayout.width < Kirigami.Units.gridUnit * 30 || (headerLayout.tags && headerLayout.tags.length > 0) ? 1 : 2
+        Layout.fillWidth: headerLayout.todoMode
         Layout.margins: Kirigami.Units.largeSpacing
-        Layout.bottomMargin: 0
+        Layout.bottomMargin: Kirigami.Units.smallSpacing
+
         text: !headerLayout.todoMode ? i18n("Filtering by tags") : headerLayout.filterCollectionDetails && headerLayout.filter.collectionId > -1 ?
             headerLayout.filterCollectionDetails.displayName : i18n("All Tasks")
-        font.weight: Font.Bold
+        font.weight: !headerLayout.todoMode ? Font.Normal : Font.Bold
         color: headerLayout.filterCollectionDetails && headerLayout.filter.collectionId > -1 ?
             LabelUtils.getIncidenceLabelColor(headerLayout.filterCollectionDetails.color, headerLayout.isDark) : Kirigami.Theme.textColor
         elide: Text.ElideRight
+        level: headerLayout.todoMode ? 1 : 2
     }
 
     Flow {
         id: tagFlow
+
         Layout.fillWidth: true
-        Layout.row: 0
-        Layout.column: 1
         Layout.margins: Kirigami.Units.largeSpacing
-        Layout.bottomMargin: 0
+        Layout.bottomMargin: Kirigami.Units.smallSpacing
+
         spacing: Kirigami.Units.smallSpacing
         layoutDirection: Qt.RightToLeft
+        clip: true
         visible: headerLayout.filter.tags.length > 0
 
         Repeater {
@@ -68,7 +72,7 @@ GridLayout {
 
                 implicitWidth: itemLayout.implicitWidth > tagFlow.width ?
                     tagFlow.width : itemLayout.implicitWidth
-                isHeading: headerLayout.filter.tags.length < 4
+                isHeading: true
                 headingItem.color: headerLayout.filterCollectionDetails ?
                     LabelUtils.getIncidenceLabelColor(headerLayout.filterCollectionDetails.color, headerLayout.isDark) : Kirigami.Theme.textColor
                 headingItem.font.weight: Font.Bold
@@ -82,11 +86,10 @@ GridLayout {
 
     Kirigami.SearchField {
         id: searchField
-        Layout.column: (root.width < Kirigami.Units.gridUnit * 30 || (headerLayout.filter && headerLayout.filter.tags.length > 0)) && headerLayout.todoMode ? 0 : 1
-        Layout.row: (root.width < Kirigami.Units.gridUnit * 30 || (headerLayout.filter && headerLayout.filter.tags.length > 0)) && headerLayout.todoMode ? 1 : 0
-        Layout.columnSpan: (root.width < Kirigami.Units.gridUnit * 30 || (headerLayout.filter && headerLayout.filter.tags.length > 0)) && headerLayout.todoMode ? 2 : 1
-        Layout.fillWidth: Layout.row === 1
+        Layout.fillWidth: headerLayout.rows > 1
         Layout.margins: Kirigami.Units.largeSpacing
+        Layout.bottomMargin: Kirigami.Units.smallSpacing - 1
+        Layout.columnSpan: headerLayout.rows > 1 ? 2 : 1
         text: headerLayout.filter.name
         onTextChanged: headerLayout.searchTextChanged(text);
         visible: headerLayout.todoMode
