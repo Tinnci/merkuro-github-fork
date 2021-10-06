@@ -32,10 +32,10 @@ GridLayout {
     rowSpacing: Kirigami.Units.smallSpacing
 
     Kirigami.Heading {
+        width: implicitWidth
         Layout.row: 0
         Layout.column: 0
         Layout.columnSpan: headerLayout.width < Kirigami.Units.gridUnit * 30 || (headerLayout.tags && headerLayout.tags.length > 0) ? 1 : 2
-        Layout.fillWidth: headerLayout.todoMode
         Layout.margins: Kirigami.Units.largeSpacing
         Layout.bottomMargin: 0
         text: !headerLayout.todoMode ? i18n("Filtering by tags") : headerLayout.filterCollectionDetails && headerLayout.filter.collectionId > -1 ?
@@ -47,6 +47,7 @@ GridLayout {
     }
 
     Flow {
+        id: tagFlow
         Layout.fillWidth: true
         Layout.row: 0
         Layout.column: 1
@@ -65,8 +66,8 @@ GridLayout {
 
                 text: modelData
 
-                implicitWidth: itemLayout.implicitWidth > headerLayout.width - Kirigami.Units.gridUnit * 6 ?
-                    headerLayout.width - Kirigami.Units.gridUnit * 6 : itemLayout.implicitWidth
+                implicitWidth: itemLayout.implicitWidth > tagFlow.width ?
+                    tagFlow.width : itemLayout.implicitWidth
                 isHeading: headerLayout.filter.tags.length < 4
                 headingItem.color: headerLayout.filterCollectionDetails ?
                     LabelUtils.getIncidenceLabelColor(headerLayout.filterCollectionDetails.color, headerLayout.isDark) : Kirigami.Theme.textColor

@@ -269,9 +269,8 @@ Kirigami.ApplicationWindow {
                 // HACK: The Todo View should be able to detect change in collection filtering independently
             }
         }
-        onTagClicked: {
-            pageStack.currentItem.filter ? pageStack.currentItem.filter.tags ? pageStack.currentItem.filter.tags.includes(tagName) ?
-                pageStack.currentItem.filter.tags.splice(pageStack.currentItem.filter.tags.indexOf(tagName), 1) :
+        onTagClicked: if(!pageStack.currentItem.filter || !pageStack.currentItem.filter.tags || !pageStack.currentItem.filter.tags.includes(tagName)) {
+            pageStack.currentItem.filter ? pageStack.currentItem.filter.tags ?
                 pageStack.currentItem.filter.tags.push(tagName) :
                 pageStack.currentItem.filter.tags = [tagName] :
                 pageStack.currentItem.filter = {"tags" : [tagName]};
