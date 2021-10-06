@@ -27,9 +27,11 @@ GridLayout {
     visible: todoMode || filter.tags.length > 0 || filter.collectionId > -1
     height: visible ? implicitHeight : 0
 
+    columnSpacing: 0
     rowSpacing: Kirigami.Units.smallSpacing
 
-    columns: width > Kirigami.Units.gridUnit * 30 ? 3 : 2
+    columns: width > Kirigami.Units.gridUnit * 30 && filter.tags.length > 0 ? 3 :
+        width > Kirigami.Units.gridUnit * 30 ? 2 : 1
     rows: width > Kirigami.Units.gridUnit * 30 ? 1 : 2
 
     Kirigami.Heading {
@@ -38,7 +40,7 @@ GridLayout {
         width: implicitWidth
         Layout.fillWidth: headerLayout.todoMode
         Layout.margins: Kirigami.Units.largeSpacing
-        Layout.bottomMargin: Kirigami.Units.smallSpacing
+        Layout.bottomMargin: headerLayout.rows > 1 ? Kirigami.Units.smallSpacing : Kirigami.Units.largeSpacing
 
         text: !headerLayout.todoMode ? i18n("Filtering by tags") : headerLayout.filterCollectionDetails && headerLayout.filter.collectionId > -1 ?
             headerLayout.filterCollectionDetails.displayName : i18n("All Tasks")
@@ -54,7 +56,7 @@ GridLayout {
 
         Layout.fillWidth: true
         Layout.margins: Kirigami.Units.largeSpacing
-        Layout.bottomMargin: Kirigami.Units.smallSpacing
+        Layout.bottomMargin: headerLayout.rows > 1 ? Kirigami.Units.smallSpacing : Kirigami.Units.largeSpacing
 
         spacing: Kirigami.Units.smallSpacing
         layoutDirection: Qt.RightToLeft
@@ -88,7 +90,7 @@ GridLayout {
         id: searchField
         Layout.fillWidth: headerLayout.rows > 1
         Layout.margins: Kirigami.Units.largeSpacing
-        Layout.bottomMargin: Kirigami.Units.smallSpacing - 1
+        Layout.bottomMargin: Kirigami.Units.largeSpacing - 1
         Layout.columnSpan: headerLayout.rows > 1 ? 2 : 1
         text: headerLayout.filter.name
         onTextChanged: headerLayout.searchTextChanged(text);

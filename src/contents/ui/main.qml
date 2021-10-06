@@ -8,6 +8,7 @@ import org.kde.kirigami 2.14 as Kirigami
 import QtQuick.Controls 2.15 as QQC2
 import QtQuick.Layouts 1.15
 import QtQml.Models 2.15
+import QtGraphicalEffects 1.12
 
 import "dateutils.js" as DateUtils
 import "labelutils.js" as LabelUtils
@@ -381,19 +382,54 @@ Kirigami.ApplicationWindow {
     Loader {
         id: filterHeader
         active: false
-        sourceComponent: FilterHeader {
-            todoMode: pageStack.currentItem ? pageStack.currentItem.objectName === "todoView" : false
-            filter: pageStack.currentItem && pageStack.currentItem.filter ?
-                pageStack.currentItem.filter : {"tags": [], "collectionId": -1}
-            isDark: root.isDark
-
-            onRemoveFilterTag: {
-                pageStack.currentItem.filter.tags.splice(pageStack.currentItem.filter.tags.indexOf(tagName), 1);
-                pageStack.currentItem.filterChanged();
+        sourceComponent: Item {
+            anchors {
+                top: parent.top
+                left: parent.left
+                right: parent.right
             }
-            onSearchTextChanged: if(todoMode) {
-                pageStack.currentItem.filter.name = text;
-                pageStack.currentItem.filterChanged();
+            height: visible ? header.implicitHeight + headerSeparator.height : 0
+            visible: header.todoMode || header.filter.tags.length > 0 || header.visible
+
+            Rectangle {
+                width: header.width
+                height: header.height
+                Kirigami.Theme.inherit: false
+                Kirigami.Theme.colorSet: Kirigami.Theme.View
+                color: Kirigami.Theme.backgroundColor
+            }
+
+            FilterHeader {
+                id: header
+                anchors.fill: parent
+                todoMode: pageStack.currentItem ? pageStack.currentItem.objectName === "todoView" : false
+                filter: pageStack.currentItem && pageStack.currentItem.filter ?
+                    pageStack.currentItem.filter : {"tags": [], "collectionId": -1}
+                isDark: root.isDark
+
+                onRemoveFilterTag: {
+                    pageStack.currentItem.filter.tags.splice(pageStack.currentItem.filter.tags.indexOf(tagName), 1);
+                    pageStack.currentItem.filterChanged();
+                }
+                onSearchTextChanged: if(todoMode) {
+                    pageStack.currentItem.filter.name = text;
+                    pageStack.currentItem.filterChanged();
+                }
+            }
+            Kirigami.Separator {
+                id: headerSeparator
+                anchors.top: header.bottom
+                width: parent.width
+                height: 1
+                z: -2
+
+                RectangularGlow {
+                    anchors.fill: parent
+                    z: -1
+                    glowRadius: 5
+                    spread: 0.3
+                    color: Qt.rgba(0.0, 0.0, 0.0, 0.15)
+                }
             }
         }
     }

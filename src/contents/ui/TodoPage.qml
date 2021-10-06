@@ -42,6 +42,7 @@ Kirigami.Page {
     Component.onCompleted: sortBy = Kalendar.TodoSortFilterProxyModel.EndTimeColumn // Otherwise crashes...
 
     padding: 0
+    leftPadding: Kirigami.Units.largeSpacing
 
     background: Rectangle {
         Kirigami.Theme.inherit: false
