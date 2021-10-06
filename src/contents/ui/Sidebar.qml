@@ -430,7 +430,6 @@ Kirigami.OverlayDrawer {
         separatorVisible: false
         onClicked: {
             viewAllTodosClicked();
-            calendarList.currentIndex = -1;
             if(sidebar.modal && sidebar.todoMode) sidebar.close()
         }
     }

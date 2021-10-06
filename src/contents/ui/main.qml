@@ -10,6 +10,7 @@ import QtQuick.Layouts 1.15
 import QtQml.Models 2.15
 
 import "dateutils.js" as DateUtils
+import "labelutils.js" as LabelUtils
 import org.kde.kalendar 1.0
 
 Kirigami.ApplicationWindow {
@@ -25,8 +26,8 @@ Kirigami.ApplicationWindow {
         onTriggered: currentDate = new Date()
     }
     property date selectedDate: currentDate
-
-    property var openOccurrence
+    property var openOccurrence: {}
+    readonly property bool isDark: LabelUtils.isDarkColor(Kirigami.Theme.backgroundColor)
 
     readonly property var monthViewAction: KalendarApplication.action("open_month_view")
     readonly property var weekViewAction: KalendarApplication.action("open_week_view")
@@ -92,6 +93,8 @@ Kirigami.ApplicationWindow {
         function onOpenTodoView() {
             pageStack.pop(null);
             pageStack.replace(todoPageComponent);
+            filterHeader.active = true;
+            pageStack.currentItem.header = filterHeader.item;
         }
 
         function onOpenAboutPage() {
@@ -252,8 +255,11 @@ Kirigami.ApplicationWindow {
         bottomPadding: menuLoader.active ? menuLoader.height : 0
         todoMode: pageStack.currentItem ? pageStack.currentItem.objectName === "todoView" : false
         onCalendarClicked: if(todoMode) {
-            pageStack.currentItem.filterCollectionId = collectionId;
-            pageStack.currentItem.filterCollectionDetails = CalendarManager.getCollectionDetails(pageStack.currentItem.filterCollectionId);
+            pageStack.currentItem.filter ?
+                pageStack.currentItem.filter.collectionId = collectionId :
+                pageStack.currentItem.filter = {"collectionId" : collectionId};
+            pageStack.currentItem.filterChanged();
+            pageStack.currentItem.filterCollectionDetails = CalendarManager.getCollectionDetails(collectionId);
         }
         onCalendarCheckChanged: {
             CalendarManager.save();
@@ -262,17 +268,21 @@ Kirigami.ApplicationWindow {
                 // HACK: The Todo View should be able to detect change in collection filtering independently
             }
         }
-        onTagClicked: if(todoMode) {
-            pageStack.currentItem.filterCategoryString = tagName
-        } else {
-            pageStack.currentItem.filter ? pageStack.currentItem.filter.tags ?
-                pageStack.currentItem.filter.tags.push(tagName) : pageStack.currentItem.filter.tags = [tagName] :
+        onTagClicked: {
+            pageStack.currentItem.filter ? pageStack.currentItem.filter.tags ? pageStack.currentItem.filter.tags.includes(tagName) ?
+                pageStack.currentItem.filter.tags.splice(pageStack.currentItem.filter.tags.indexOf(tagName), 1) :
+                pageStack.currentItem.filter.tags.push(tagName) :
+                pageStack.currentItem.filter.tags = [tagName] :
                 pageStack.currentItem.filter = {"tags" : [tagName]};
             pageStack.currentItem.filterChanged();
             filterHeader.active = true;
             pageStack.currentItem.header = filterHeader.item;
         }
-        onViewAllTodosClicked: if(todoMode) pageStack.currentItem.filterCollectionId = -1
+        onViewAllTodosClicked: if(todoMode) {
+            pageStack.currentItem.filter.collectionId = -1;
+            pageStack.currentItem.filter.name = "";
+            pageStack.currentItem.filterChanged();
+        }
     }
 
     contextDrawer: IncidenceInfo {
@@ -373,12 +383,16 @@ Kirigami.ApplicationWindow {
         active: false
         sourceComponent: FilterHeader {
             todoMode: pageStack.currentItem ? pageStack.currentItem.objectName === "todoView" : false
-            filterCollectionId: pageStack.currentItem && pageStack.currentItem.filterCollectionId ?
-                pageStack.currentItem.filterCollectionId : -1
-            tags: pageStack.currentItem.filter.tags ? pageStack.currentItem.filter.tags : []
+            filter: pageStack.currentItem && pageStack.currentItem.filter ?
+                pageStack.currentItem.filter : {"tags": [], "collectionId": -1}
+            isDark: root.isDark
 
             onRemoveFilterTag: {
                 pageStack.currentItem.filter.tags.splice(pageStack.currentItem.filter.tags.indexOf(tagName), 1);
+                pageStack.currentItem.filterChanged();
+            }
+            onSearchTextChanged: if(todoMode) {
+                pageStack.currentItem.filter.name = text;
                 pageStack.currentItem.filterChanged();
             }
         }
