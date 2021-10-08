@@ -294,6 +294,22 @@ Kirigami.ScrollablePage {
                 }
 
                 QQC2.ComboBox {
+                    id: timeZoneComboBox
+                    Kirigami.FormData.label: i18n("Timezone:")
+                    Layout.fillWidth: true
+
+                    TimeZoneListModel {
+                        id: timeZonesModel
+                    }
+
+                    textRole: "display"
+                    valueRole: "id"
+                    onCurrentValueChanged: root.incidenceWrapper.timeZone = currentValue
+                    currentIndex: model ? timeZonesModel.getTimeZoneRow(root.incidenceWrapper.timeZone) : -1
+                    model: timeZonesModel
+                }
+
+                QQC2.ComboBox {
                     id: repeatComboBox
                     Kirigami.FormData.label: i18n("Repeat:")
                     Layout.fillWidth: true

@@ -24,6 +24,8 @@ public:
     QHash<int, QByteArray> roleNames() const override;
     int rowCount(const QModelIndex &parent = {}) const override;
 
+    Q_INVOKABLE int getTimeZoneRow(const QByteArray timeZone);
+
 private:
     QVector<QByteArray> m_timeZones;
 };

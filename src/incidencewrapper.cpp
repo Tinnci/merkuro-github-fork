@@ -60,6 +60,7 @@ void IncidenceWrapper::notifyDataChanged()
     Q_EMIT locationChanged();
     Q_EMIT incidenceStartChanged();
     Q_EMIT incidenceEndChanged();
+    Q_EMIT timeZoneChanged();
     Q_EMIT allDayChanged();
     Q_EMIT priorityChanged();
     Q_EMIT remindersModelChanged();
@@ -238,6 +239,29 @@ void IncidenceWrapper::setIncidenceEnd(const QDateTime &incidenceEnd)
     }
     Q_EMIT incidenceEndChanged();
 }
+
+QByteArray IncidenceWrapper::timeZone() const
+{
+    return incidenceEnd().timeZone().id();
+}
+
+void IncidenceWrapper::setTimeZone(const QByteArray timeZone)
+{
+    QDateTime start(incidenceStart());
+    if(start.isValid()) {
+        start.setTimeZone(QTimeZone(timeZone));
+        setIncidenceStart(start);
+    }
+
+    QDateTime end(incidenceEnd());
+    if(end.isValid()) {
+        end.setTimeZone(QTimeZone(timeZone));
+        setIncidenceEnd(end);
+    }
+
+    Q_EMIT timeZoneChanged();
+}
+
 
 bool IncidenceWrapper::allDay() const
 {
