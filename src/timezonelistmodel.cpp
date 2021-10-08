@@ -33,6 +33,8 @@ QVariant TimeZoneListModel::data(const QModelIndex &idx, int role) const
     switch (role) {
         case Qt::DisplayRole:
             return i18n(timeZone.replace('_', ' '));
+        case IdRole:
+            return timeZone;
         default:
             qWarning() << "Unknown role for timezone:" << QMetaEnum::fromType<Roles>().valueToKey(role);
             return {};
@@ -51,3 +53,18 @@ int TimeZoneListModel::rowCount(const QModelIndex &) const
 {
     return m_timeZones.length();
 }
+
+int TimeZoneListModel::getTimeZoneRow(const QByteArray timeZone)
+{
+    for(int i = 0; i < rowCount(); i++)
+    {
+        QModelIndex idx = index(i, 0);
+        QVariant data = idx.data(IdRole).toByteArray();
+
+        if(data == timeZone)
+            return i;
+    }
+
+    return 0;
+}
+
