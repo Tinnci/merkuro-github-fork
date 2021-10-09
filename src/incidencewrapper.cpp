@@ -219,8 +219,8 @@ void IncidenceWrapper::setIncidenceStart(const QDateTime &incidenceStart, bool r
     if(respectTimeZone) {
         m_incidence->setDtStart(incidenceStart);
     } else {
-        auto date = incidenceStart.date();
-        auto time = incidenceStart.time();
+        const auto date = incidenceStart.date();
+        const auto time = incidenceStart.time();
         QDateTime start;
         start.setTimeZone(QTimeZone(timeZone()));
         start.setDate(date);
