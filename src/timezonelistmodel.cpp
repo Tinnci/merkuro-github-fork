@@ -54,7 +54,7 @@ int TimeZoneListModel::rowCount(const QModelIndex &) const
     return m_timeZones.length();
 }
 
-int TimeZoneListModel::getTimeZoneRow(const QByteArray timeZone)
+int TimeZoneListModel::getTimeZoneRow(const QByteArray &timeZone)
 {
     for(int i = 0; i < rowCount(); i++)
     {
