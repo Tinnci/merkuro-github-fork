@@ -48,6 +48,7 @@ class IncidenceWrapper : public QObject, public KCalendarCore::IncidenceBase::In
     Q_PROPERTY(QDateTime incidenceStart READ incidenceStart WRITE setIncidenceStart NOTIFY incidenceStartChanged)
     Q_PROPERTY(QDateTime incidenceEnd READ incidenceEnd WRITE setIncidenceEnd NOTIFY incidenceEndChanged)
     Q_PROPERTY(QByteArray timeZone READ timeZone WRITE setTimeZone NOTIFY timeZoneChanged)
+    Q_PROPERTY(int timeZoneUTCOffsetMins READ timeZoneUTCOffsetMins NOTIFY timeZoneUTCOffsetMinsChanged)
     Q_PROPERTY(bool allDay READ allDay WRITE setAllDay NOTIFY allDayChanged)
     Q_PROPERTY(int priority READ priority WRITE setPriority NOTIFY priorityChanged)
 
@@ -117,6 +118,7 @@ public:
     void setIncidenceEnd(const QDateTime &incidenceEnd);
     QByteArray timeZone() const;
     void setTimeZone(const QByteArray timeZone);
+    int timeZoneUTCOffsetMins();
     bool allDay() const;
     void setAllDay(bool allDay);
     int priority() const;
@@ -165,6 +167,7 @@ Q_SIGNALS:
     void incidenceStartChanged();
     void incidenceEndChanged();
     void timeZoneChanged();
+    void timeZoneUTCOffsetMinsChanged();
     void allDayChanged();
     void priorityChanged();
     void remindersModelChanged();

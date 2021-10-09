@@ -238,11 +238,13 @@ Kirigami.ScrollablePage {
                         id: incidenceStartDateCombo
                         Layout.fillWidth: true
                         timePicker: incidenceStartTimeCombo.timePicker
+                        timeZoneOffset: root.incidenceWrapper.timeZoneUTCOffsetMins
                         dateTime: root.incidenceWrapper.incidenceStart
                         onNewDateChosen: root.incidenceWrapper.incidenceStart = newDate
                     }
                     TimeCombo {
                         id: incidenceStartTimeCombo
+                        timeZoneOffset: root.incidenceWrapper.timeZoneUTCOffsetMins
                         dateTime: root.incidenceWrapper.incidenceStart
                         onNewTimeChosen: root.incidenceWrapper.incidenceStart = newTime
                         enabled: !allDayCheckBox.checked && (!incidenceForm.isTodo || incidenceStartCheckBox.checked)
@@ -278,6 +280,7 @@ Kirigami.ScrollablePage {
                         Layout.fillWidth: true
 
                         timePicker: incidenceEndTimeCombo.timePicker
+                        timeZoneOffset: root.incidenceWrapper.timeZoneUTCOffsetMins
                         dateTime: root.incidenceWrapper.incidenceEnd
                         onNewDateChosen: root.incidenceWrapper.incidenceEnd = newDate
                         enabled: !incidenceForm.isTodo || (incidenceForm.isTodo && incidenceEndCheckBox.checked)
@@ -286,6 +289,7 @@ Kirigami.ScrollablePage {
                         id: incidenceEndTimeCombo
 
                         Layout.fillWidth: true
+                        timeZoneOffset: root.incidenceWrapper.timeZoneUTCOffsetMins
                         dateTime: root.incidenceWrapper.incidenceEnd
                         onNewTimeChosen: root.incidenceWrapper.incidenceEnd = newTime
                         enabled: (!incidenceForm.isTodo && !allDayCheckBox.checked) || (incidenceForm.isTodo && incidenceEndCheckBox.checked)

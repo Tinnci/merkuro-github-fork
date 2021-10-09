@@ -61,6 +61,7 @@ void IncidenceWrapper::notifyDataChanged()
     Q_EMIT incidenceStartChanged();
     Q_EMIT incidenceEndChanged();
     Q_EMIT timeZoneChanged();
+    Q_EMIT timeZoneUTCOffsetMinsChanged();
     Q_EMIT allDayChanged();
     Q_EMIT priorityChanged();
     Q_EMIT remindersModelChanged();
@@ -209,8 +210,13 @@ QDateTime IncidenceWrapper::incidenceStart() const
 
 void IncidenceWrapper::setIncidenceStart(const QDateTime &incidenceStart)
 {
-    qDebug() << incidenceStart;
-    m_incidence->setDtStart(incidenceStart);
+    auto date = incidenceStart.date();
+    auto time = incidenceStart.time();
+    QDateTime start;
+    start.setTimeZone(QTimeZone(timeZone()));
+    start.setDate(date);
+    start.setTime(time);
+    m_incidence->setDtStart(start);
     Q_EMIT incidenceStartChanged();
 }
 
@@ -228,12 +234,19 @@ QDateTime IncidenceWrapper::incidenceEnd() const
 
 void IncidenceWrapper::setIncidenceEnd(const QDateTime &incidenceEnd)
 {
+    auto date = incidenceEnd.date();
+    auto time = incidenceEnd.time();
+    QDateTime end;
+    end.setTimeZone(QTimeZone(timeZone()));
+    end.setDate(date);
+    end.setTime(time);
+
     if(m_incidence->type() == KCalendarCore::Incidence::IncidenceType::TypeEvent) {
         KCalendarCore::Event::Ptr event = m_incidence.staticCast<KCalendarCore::Event>();
-        event->setDtEnd(incidenceEnd);
+        event->setDtEnd(end);
     } else if(m_incidence->type() == KCalendarCore::Incidence::IncidenceType::TypeTodo) {
         KCalendarCore::Todo::Ptr todo = m_incidence.staticCast<KCalendarCore::Todo>();
-        todo->setDtDue(incidenceEnd);
+        todo->setDtDue(end);
     } else {
         qWarning() << "Unknown incidence type";
     }
@@ -260,8 +273,12 @@ void IncidenceWrapper::setTimeZone(const QByteArray timeZone)
     }
 
     Q_EMIT timeZoneChanged();
+    Q_EMIT timeZoneUTCOffsetMinsChanged();
 }
 
+int IncidenceWrapper::timeZoneUTCOffsetMins() {
+    return QTimeZone(timeZone()).offsetFromUtc(incidenceEnd());
+}
 
 bool IncidenceWrapper::allDay() const
 {
