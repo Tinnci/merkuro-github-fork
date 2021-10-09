@@ -29,7 +29,7 @@ QVariant TimeZoneListModel::data(const QModelIndex &idx, int role) const
     if (!hasIndex(idx.row(), idx.column())) {
         return {};
     }
-    auto timeZone = m_timeZones[idx.row()];
+    const auto timeZone = m_timeZones[idx.row()];
     switch (role) {
         case Qt::DisplayRole:
             return i18n(timeZone.replace('_', ' '));
