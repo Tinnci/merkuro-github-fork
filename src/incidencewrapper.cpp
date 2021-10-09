@@ -248,8 +248,8 @@ void IncidenceWrapper::setIncidenceEnd(const QDateTime &incidenceEnd, bool respe
     if(respectTimeZone) {
         end = incidenceEnd;
     } else {
-        auto date = incidenceEnd.date();
-        auto time = incidenceEnd.time();
+        const auto date = incidenceEnd.date();
+        const auto time = incidenceEnd.time();
         end.setTimeZone(QTimeZone(timeZone()));
         end.setDate(date);
         end.setTime(time);
