@@ -208,15 +208,19 @@ QDateTime IncidenceWrapper::incidenceStart() const
     return m_incidence->dtStart();
 }
 
-void IncidenceWrapper::setIncidenceStart(const QDateTime &incidenceStart)
+void IncidenceWrapper::setIncidenceStart(const QDateTime &incidenceStart, bool respectTimeZone)
 {
-    auto date = incidenceStart.date();
-    auto time = incidenceStart.time();
-    QDateTime start;
-    start.setTimeZone(QTimeZone(timeZone()));
-    start.setDate(date);
-    start.setTime(time);
-    m_incidence->setDtStart(start);
+    if(respectTimeZone) {
+        m_incidence->setDtStart(incidenceStart);
+    } else {
+        auto date = incidenceStart.date();
+        auto time = incidenceStart.time();
+        QDateTime start;
+        start.setTimeZone(QTimeZone(timeZone()));
+        start.setDate(date);
+        start.setTime(time);
+        m_incidence->setDtStart(start);
+    }
     Q_EMIT incidenceStartChanged();
 }
 
@@ -232,14 +236,18 @@ QDateTime IncidenceWrapper::incidenceEnd() const
     return {};
 }
 
-void IncidenceWrapper::setIncidenceEnd(const QDateTime &incidenceEnd)
+void IncidenceWrapper::setIncidenceEnd(const QDateTime &incidenceEnd, bool respectTimeZone)
 {
-    auto date = incidenceEnd.date();
-    auto time = incidenceEnd.time();
     QDateTime end;
-    end.setTimeZone(QTimeZone(timeZone()));
-    end.setDate(date);
-    end.setTime(time);
+    if(respectTimeZone) {
+        end = incidenceEnd;
+    } else {
+        auto date = incidenceEnd.date();
+        auto time = incidenceEnd.time();
+        end.setTimeZone(QTimeZone(timeZone()));
+        end.setDate(date);
+        end.setTime(time);
+    }
 
     if(m_incidence->type() == KCalendarCore::Incidence::IncidenceType::TypeEvent) {
         KCalendarCore::Event::Ptr event = m_incidence.staticCast<KCalendarCore::Event>();
@@ -263,13 +271,13 @@ void IncidenceWrapper::setTimeZone(const QByteArray timeZone)
     QDateTime start(incidenceStart());
     if(start.isValid()) {
         start.setTimeZone(QTimeZone(timeZone));
-        setIncidenceStart(start);
+        setIncidenceStart(start, true);
     }
 
     QDateTime end(incidenceEnd());
     if(end.isValid()) {
         end.setTimeZone(QTimeZone(timeZone));
-        setIncidenceEnd(end);
+        setIncidenceEnd(end, true);
     }
 
     Q_EMIT timeZoneChanged();
