@@ -272,7 +272,7 @@ QByteArray IncidenceWrapper::timeZone() const
     return incidenceEnd().timeZone().id();
 }
 
-void IncidenceWrapper::setTimeZone(const QByteArray timeZone)
+void IncidenceWrapper::setTimeZone(const QByteArray &timeZone)
 {
     QDateTime start(incidenceStart());
     if(start.isValid()) {
