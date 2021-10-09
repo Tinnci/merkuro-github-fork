@@ -210,6 +210,12 @@ QDateTime IncidenceWrapper::incidenceStart() const
 
 void IncidenceWrapper::setIncidenceStart(const QDateTime &incidenceStart, bool respectTimeZone)
 {
+    // When we receive dates from QML, these are all set to the local system timezone but
+    // have the dates and times we want. We need to preserve date and time but set the new
+    // QDateTime to have the correct timezone.
+
+    // When we set the timeZone property, however, we invariably also set the incidence start and end.
+    // This object needs no change. We therefore need to make sure to preserve the entire QDateTime object here.
     if(respectTimeZone) {
         m_incidence->setDtStart(incidenceStart);
     } else {

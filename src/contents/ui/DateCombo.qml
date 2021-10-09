@@ -7,6 +7,10 @@ import QtQuick.Layouts 1.15
 import org.kde.kirigami 2.15 as Kirigami
 import "dateutils.js" as DateUtils
 
+/* Like the time combo, we need to play around with the date objects we present to the user to show the time in the date's set TZ.
+ * The time picker is not aware of these differences and only has the hours and minutes in the date's set TZ.
+ */
+
 QQC2.ComboBox {
     id: root
 
