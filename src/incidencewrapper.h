@@ -117,7 +117,7 @@ public:
     QDateTime incidenceEnd() const;
     void setIncidenceEnd(const QDateTime &incidenceEnd, bool respectTimeZone = false);
     QByteArray timeZone() const;
-    void setTimeZone(const QByteArray timeZone);
+    void setTimeZone(const QByteArray &timeZone);
     int timeZoneUTCOffsetMins();
     bool allDay() const;
     void setAllDay(bool allDay);
