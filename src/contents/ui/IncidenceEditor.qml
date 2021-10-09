@@ -309,7 +309,6 @@ Kirigami.ScrollablePage {
                     textRole: "display"
                     valueRole: "id"
                     currentIndex: model ? timeZonesModel.getTimeZoneRow(root.incidenceWrapper.timeZone) : -1
-                    model: timeZonesModel
                     delegate: Kirigami.BasicListItem {
                         label: model.display
                         onClicked: root.incidenceWrapper.timeZone = model.id
