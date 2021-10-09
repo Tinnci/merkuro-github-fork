@@ -302,7 +302,7 @@ Kirigami.ScrollablePage {
                     Kirigami.FormData.label: i18n("Timezone:")
                     Layout.fillWidth: true
 
-                    TimeZoneListModel {
+                    model: TimeZoneListModel {
                         id: timeZonesModel
                     }
 
