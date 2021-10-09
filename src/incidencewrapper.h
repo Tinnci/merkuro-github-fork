@@ -113,9 +113,9 @@ public:
     float geoLatitude() const;
     float geoLongitude() const;
     QDateTime incidenceStart() const;
-    void setIncidenceStart(const QDateTime &incidenceStart);
+    void setIncidenceStart(const QDateTime &incidenceStart, bool respectTimeZone = false);
     QDateTime incidenceEnd() const;
-    void setIncidenceEnd(const QDateTime &incidenceEnd);
+    void setIncidenceEnd(const QDateTime &incidenceEnd, bool respectTimeZone = false);
     QByteArray timeZone() const;
     void setTimeZone(const QByteArray timeZone);
     int timeZoneUTCOffsetMins();

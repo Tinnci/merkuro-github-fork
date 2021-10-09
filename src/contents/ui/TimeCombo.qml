@@ -29,8 +29,10 @@ QQC2.ComboBox {
     validator: activeFocus ? inputValidator : timeValidator
 
     onEditTextChanged: {
+        if(!isNaN(dateTime.getTime())) {
+            popupTimePicker.setToTimeFromString(editText)
+        }
         if (acceptableInput && activeFocus) { // Need to check for activeFocus or on load the text gets reset to 00:00
-            popupTimePicker.setToTimeFromString(editText);
             newTimeChosen(new Date(DateUtils.adjustDateTimeToLocalTimeZone(dateTime, timeZoneOffset).setHours(popupTimePicker.hours, popupTimePicker.minutes)));
         }
     }
@@ -49,13 +51,14 @@ QQC2.ComboBox {
             Connections {
                 target: root
                 function onDateTimeChanged() {
-                    popupTimePicker.dateTime = root.dateTime//DateUtils.adjustDateTimeToLocalTimeZone(root.dateTime, root.timeZoneOffset);
+                    popupTimePicker.setToTimeFromString(root.editText);
                 }
             }
 
-            dateTime: root.dateTime//DateUtils.adjustDateTimeToLocalTimeZone(root.dateTime, root.timeZoneOffset)
-            onDateTimeChanged: if(visible) root.newTimeChosen(DateUtils.adjustDateTimeToLocalTimeZone(dateTime, root.timeZoneOffset))
-
+            onDateTimeChanged: if(visible) {
+                let newDt = new Date(DateUtils.adjustDateTimeToLocalTimeZone(root.dateTime, root.timeZoneOffset).setHours(dateTime.getHours(), dateTime.getMinutes()));
+                root.newTimeChosen(newDt);
+            }
             onDone: timePopup.close();
         }
     }

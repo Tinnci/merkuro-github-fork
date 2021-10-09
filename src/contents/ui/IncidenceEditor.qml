@@ -291,7 +291,7 @@ Kirigami.ScrollablePage {
                         Layout.fillWidth: true
                         timeZoneOffset: root.incidenceWrapper.timeZoneUTCOffsetMins
                         dateTime: root.incidenceWrapper.incidenceEnd
-                        onNewTimeChosen: root.incidenceWrapper.incidenceEnd = newTime
+                        onNewTimeChosen: root.incidenceWrapper.incidenceEnd = newTime;
                         enabled: (!incidenceForm.isTodo && !allDayCheckBox.checked) || (incidenceForm.isTodo && incidenceEndCheckBox.checked)
                         visible: !allDayCheckBox.checked
                     }
@@ -308,9 +308,12 @@ Kirigami.ScrollablePage {
 
                     textRole: "display"
                     valueRole: "id"
-                    onCurrentValueChanged: root.incidenceWrapper.timeZone = currentValue
                     currentIndex: model ? timeZonesModel.getTimeZoneRow(root.incidenceWrapper.timeZone) : -1
                     model: timeZonesModel
+                    delegate: Kirigami.BasicListItem {
+                        label: model.display
+                        onClicked: root.incidenceWrapper.timeZone = model.id
+                    }
                 }
 
                 QQC2.ComboBox {

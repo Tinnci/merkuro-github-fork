@@ -141,7 +141,6 @@ function fullDaysBetweenDates(date1, date2) {
 }
 
 function adjustDateTimeToLocalTimeZone(dateTime, timeZoneOffset) {
-    console.log(dateTime, timeZoneOffset)
     // Creates a new date object set to the time and date of the prior object, only in your local timezone
     return new Date(dateTime.getTime() + (timeZoneOffset * 1000) + (new Date().getTimezoneOffset() * 60 * 1000));
 }
