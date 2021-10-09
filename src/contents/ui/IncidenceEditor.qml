@@ -314,6 +314,7 @@ Kirigami.ScrollablePage {
                         label: model.display
                         onClicked: root.incidenceWrapper.timeZone = model.id
                     }
+                    enabled: !incidenceForm.isTodo || (incidenceForm.isTodo && incidenceEndCheckBox.checked)
                 }
 
                 QQC2.ComboBox {
