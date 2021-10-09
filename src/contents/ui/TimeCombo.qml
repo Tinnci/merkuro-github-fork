@@ -66,7 +66,7 @@ QQC2.ComboBox {
             }
 
             onDateTimeChanged: if(visible) {
-                let newDt = new Date(DateUtils.adjustDateTimeToLocalTimeZone(root.dateTime, root.timeZoneOffset).setHours(dateTime.getHours(), dateTime.getMinutes()));
+                const newDt = new Date(DateUtils.adjustDateTimeToLocalTimeZone(root.dateTime, root.timeZoneOffset).setHours(dateTime.getHours(), dateTime.getMinutes()));
                 root.newTimeChosen(newDt);
             }
             onDone: timePopup.close();
