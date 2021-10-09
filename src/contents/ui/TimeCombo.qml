@@ -5,12 +5,14 @@ import QtQuick 2.15
 import QtQuick.Controls 2.15 as QQC2
 import QtQuick.Layouts 1.15
 import org.kde.kirigami 2.15 as Kirigami
+import "dateutils.js" as DateUtils
 
 QQC2.ComboBox {
     id: root
 
     signal newTimeChosen(date newTime)
 
+    property int timeZoneOffset: 0
     property date dateTime
     property RegularExpressionValidator timeValidator: RegularExpressionValidator {
         regularExpression: /^([0-1]?[0-9]|2[0-3]):([0-5][0-9])(:[0-5][0-9])?$/
@@ -21,7 +23,7 @@ QQC2.ComboBox {
     property alias timePicker: popupTimePicker
 
     editable: true
-    editText: activeFocus ? editText : dateTime.toLocaleTimeString(Qt.locale(), "HH:mm")
+    editText: activeFocus ? editText : DateUtils.adjustDateTimeToLocalTimeZone(dateTime, timeZoneOffset).toLocaleTimeString(Qt.locale(), "HH:mm")
 
     inputMethodHints: Qt.ImhTime
     validator: activeFocus ? inputValidator : timeValidator
@@ -29,7 +31,7 @@ QQC2.ComboBox {
     onEditTextChanged: {
         if (acceptableInput && activeFocus) { // Need to check for activeFocus or on load the text gets reset to 00:00
             popupTimePicker.setToTimeFromString(editText);
-            newTimeChosen(new Date(dateTime.setHours(popupTimePicker.hours, popupTimePicker.minutes)));
+            newTimeChosen(new Date(DateUtils.adjustDateTimeToLocalTimeZone(dateTime, timeZoneOffset).setHours(popupTimePicker.hours, popupTimePicker.minutes)));
         }
     }
 
@@ -47,12 +49,12 @@ QQC2.ComboBox {
             Connections {
                 target: root
                 function onDateTimeChanged() {
-                    popupTimePicker.dateTime = root.dateTime;
+                    popupTimePicker.dateTime = root.dateTime//DateUtils.adjustDateTimeToLocalTimeZone(root.dateTime, root.timeZoneOffset);
                 }
             }
 
-            dateTime: root.dateTime
-            onDateTimeChanged: root.newTimeChosen(dateTime)
+            dateTime: root.dateTime//DateUtils.adjustDateTimeToLocalTimeZone(root.dateTime, root.timeZoneOffset)
+            onDateTimeChanged: if(visible) root.newTimeChosen(DateUtils.adjustDateTimeToLocalTimeZone(dateTime, root.timeZoneOffset))
 
             onDone: timePopup.close();
         }
