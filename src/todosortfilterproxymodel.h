@@ -6,10 +6,10 @@
 #include <Akonadi/Calendar/IncidenceChanger>
 #include <CalendarSupport/KCalPrefs>
 #include <CalendarSupport/Utils>
+#include <EventViews/IncidenceTreeModel>
+#include <EventViews/TodoModel>
 #include <QSortFilterProxyModel>
 #include <extratodomodel.h>
-#include <incidencetreemodel.h>
-#include <todomodel.h>
 
 class TodoSortFilterProxyModel : public QSortFilterProxyModel
 {
