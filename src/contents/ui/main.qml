@@ -52,7 +52,6 @@ Kirigami.ApplicationWindow {
     readonly property var openKCommandBarAction: KalendarApplication.action("open_kcommand_bar")
     readonly property var tagManagerAction: KalendarApplication.action("open_tag_manager")
 
-    pageStack.globalToolBar.canContainHandles: true
     pageStack.globalToolBar.style: Kirigami.ApplicationHeaderStyle.ToolBar
 
     Component.onCompleted: {
