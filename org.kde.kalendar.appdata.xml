@@ -27,7 +27,7 @@
   <name xml:lang="x-test">xxKalendarxx</name>
   <name xml:lang="zh-CN">Kalendar</name>
   <summary>Manage your time</summary>
-  <metadata_license>CC-0</metadata_license>
+  <metadata_license>CC0-1.0</metadata_license>
   <project_license>GPL-3.0-or-later</project_license>
   <developer_name>KDE Community, Clau Cambra and Carl Schwan</developer_name>
   <developer_name xml:lang="ca">Comunitat KDE, Clau Cambra i Carl Schwan</developer_name>
