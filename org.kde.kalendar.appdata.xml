@@ -85,4 +85,10 @@
       <caption>Mobile</caption>
     </screenshot>
   </screenshots>
+  <value key="KDE::matrix">#kalendar:kde.org</value>
+  <provides>
+    <binary>kalendar</binary>
+  </provides>
+  <url type="homepage">https://apps.kde.org/kalendar/</url>
+  <url type="bugtracker">https://invent.kde.org/pim/kalendar/-/issues</url>
 </component>
