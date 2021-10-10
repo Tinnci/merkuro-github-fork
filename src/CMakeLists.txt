@@ -2,7 +2,6 @@
 #
 # SPDX-License-Identifier: BSD-2-Clause
 
-
 add_executable(kalendar
     about.cpp
     about.h
@@ -26,9 +25,6 @@ add_executable(kalendar
     hourlyincidencemodel.h
     incidenceoccurrencemodel.cpp
     incidenceoccurrencemodel.h
-    incidencetreemodel.cpp
-    incidencetreemodel.h
-    incidencetreemodel_p.h
     incidencewrapper.cpp
     incidencewrapper.h
     infinitecalendarviewmodel.cpp
@@ -50,15 +46,11 @@ add_executable(kalendar
     tagmanager.h
     timezonelistmodel.cpp
     timezonelistmodel.h
-    todomodel.cpp
-    todomodel.h
-    todomodel_p.h
     todosortfilterproxymodel.cpp
     todosortfilterproxymodel.h
     resources.qrc)
 
 ecm_qt_declare_logging_category(kalendar HEADER kalendar_debug.h IDENTIFIER KALENDAR_LOG CATEGORY_NAME org.kde.kalendar DESCRIPTION "kalendar" EXPORT KALENDAR)
-
 
 target_link_libraries(kalendar
     Qt5::Core
