@@ -50,9 +50,9 @@
   <developer_name xml:lang="x-test">xxKDE Community, Clau Cambra and Carl Schwanxx</developer_name>
   <developer_name xml:lang="zh-CN">KDE 社区、Clau Cambra 和 Carl Schwan</developer_name>
   <description>
-    <p>Kalendar is a calendar application allowing you to manage your events and tasks. Kalendar supports both local calendars as well as a multitude of online calendars: Nextcloud, Google® Calendar, Outlook®, Caldav, ...</p>
+    <p>Kalendar is a calendar application allowing you to manage your events and tasks. Kalendar supports both local calendars as well as a multitude of online calendars: Nextcloud, Google® Calendar, Outlook®, Caldav, and many more.</p>
     <p>Kalendar gives you many ways to interact with your events. The month view gives you an overview of the entire month. The week view will gives you a detailed hour-by-hour overview of your week and finally the schedule view gives you a list of your upcoming events.</p>
-    <p>Additionally a task view is also available, making it possible to manage your tasks and subtasks thanks to Kalendar powerful tree view and filtering capabilities.</p>
+    <p>Additionally a tasks view is also available, making it possible to manage your tasks and subtasks thanks to Kalendar's powerful tree view and its customisable filtering capabilities.</p>
     <p>Kalendar was built with the idea to be usable on desktop, on mobile and everything in between.</p>
   </description>
   <requires>
