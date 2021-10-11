@@ -5,6 +5,8 @@ import QtQuick 2.15
 import QtQuick.Controls 2.15 as QQC2
 import QtQuick.Layouts 1.15
 import org.kde.kirigami 2.15 as Kirigami
+import org.kde.kalendar 1.0 as Kalendar
+import "dateutils.js" as DateUtils
 
 Item {
     id: datepicker
@@ -122,61 +124,98 @@ Item {
             Layout.fillWidth: true
             Layout.fillHeight: true
             clip: true
+            interactive: false
 
             QQC2.ButtonGroup {
                 buttons: dayGrid.children
             }
-            GridLayout {
-                id: dayGrid
-                columns: 7
-                rows: 6
-                Layout.fillWidth: true
-                Layout.fillHeight: true
-                Layout.topMargin: Kirigami.Units.smallSpacing
-                visible: datepicker.showDays
+            PathView {
+                id: pathView
 
-                Repeater {
-                    model: 7
-                    delegate: QQC2.Label {
-                        Layout.fillWidth: true
-                        height: dayGrid / dayGrid.rows
-                        horizontalAlignment: Text.AlignHCenter
-                        opacity: 0.7
-                        text: Qt.locale().dayName(index + Qt.locale().firstDayOfWeek, Locale.ShortFormat) // dayName() loops back over beyond index 6
+                width: 300
+                        height: 300
+                flickDeceleration: Kirigami.Units.longDuration
+                preferredHighlightBegin: 0.5
+                preferredHighlightEnd: 0.5
+                snapMode: PathView.SnapToItem
+                focus: true
+                interactive: true//Kirigami.Settings.tabletMode
+                clip: true
+
+                path: Path {
+                    startX: - pathView.width * pathView.count / 2 + pathView.width / 2
+                    startY: pathView.height / 2
+                    PathLine {
+                        x: pathView.width * pathView.count / 2 + pathView.width / 2
+                        y: pathView.height / 2
                     }
                 }
 
-                Repeater {
-                    model: dayGrid.columns * dayGrid.rows // 42 cells per month
+                model: Kalendar.MonthViewModel {}
 
-                    delegate: QQC2.Button {
-                        // Stop days overflowing from the grid by creating an adjusted offset
-                        property int firstDayOfWeekOffset: Qt.locale().firstDayOfWeek >= 4 ?
-                                                           Qt.locale().firstDayOfWeek - 7 + 1 :
-                                                           Qt.locale().firstDayOfWeek + 1
-                        // add locale offset for correct firstDayOfWeek
-                        property int dateToUse: index + firstDayOfWeekOffset - (datepicker.firstDay <= 1 ?
-                                                                                datepicker.firstDay + 7:
-                                                                                datepicker.firstDay)
-                        property date date: new Date(datepicker.year, datepicker.month, dateToUse)
-                        property bool sameMonth: date.getMonth() === month
-                        property bool isToday: date.getDate() === datepicker.today.getDate() &&
-                            date.getMonth() === datepicker.today.getMonth() &&
-                            date.getFullYear() === datepicker.today.getFullYear()
+                property int startIndex
+                Component.onCompleted: {
+                    startIndex = count / 2;
+                    currentIndex = startIndex;
+                }
+                onCurrentIndexChanged: {
+                    monthPage.startDate = currentItem.startDate;
+                    monthPage.firstDayOfMonth = currentItem.firstDayOfMonth;
+                    monthPage.month = currentItem.month;
+                    monthPage.year = currentItem.year;
 
-                        Layout.fillWidth: true
-                        Layout.fillHeight: true
-                        flat: true
-                        highlighted: this.isToday
-                        checkable: true
-                        checked: date.getDate() === clickedDate.getDate() &&
-                            date.getMonth() === clickedDate.getMonth() &&
-                            date.getFullYear() === clickedDate.getFullYear()
-                        opacity: sameMonth ? 1 : 0.7
-                        text: date.getDate()
-                        onClicked: datePicked(date), clickedDate = date
+                    if(currentIndex >= count - 2) {
+                        model.addDates(true);
+                    } else if (currentIndex <= 1) {
+                        model.addDates(false);
+                        startIndex += model.datesToAdd;
                     }
                 }
+
+                delegate: GridLayout {
+                        id: dayGrid
+                        columns: 7
+                        rows: 6
+                        width: pathView.width
+                        height: pathView.height
+                        Layout.topMargin: Kirigami.Units.smallSpacing
+                        //visible: datepicker.showDays
+
+                        Repeater {
+                            model: 7
+                            delegate: QQC2.Label {
+                                Layout.fillWidth: true
+                                height: dayGrid / dayGrid.rows
+                                horizontalAlignment: Text.AlignHCenter
+                                opacity: 0.7
+                                text: Qt.locale().dayName(index + Qt.locale().firstDayOfWeek, Locale.ShortFormat) // dayName() loops back over beyond index 6
+                            }
+                        }
+
+                        Repeater {
+                            model: dayGrid.columns * dayGrid.rows // 42 cells per month
+
+                            delegate: QQC2.Button {
+                                property date date: DateUtils.addDaysToDate(startDate, index)
+                                property bool sameMonth: date.getMonth() === month
+                                property bool isToday: date.getDate() === datepicker.today.getDate() &&
+                                    date.getMonth() === datepicker.today.getMonth() &&
+                                    date.getFullYear() === datepicker.today.getFullYear()
+
+                                Layout.fillWidth: true
+                                Layout.fillHeight: true
+                                flat: true
+                                highlighted: this.isToday
+                                checkable: true
+                                checked: date.getDate() === clickedDate.getDate() &&
+                                    date.getMonth() === clickedDate.getMonth() &&
+                                    date.getFullYear() === clickedDate.getFullYear()
+                                opacity: sameMonth ? 1 : 0.7
+                                text: date.getDate()
+                                onClicked: datePicked(date), clickedDate = date
+                            }
+                        }
+                    }
             }
 
             GridLayout {
