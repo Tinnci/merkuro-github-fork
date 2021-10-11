@@ -132,8 +132,8 @@ Item {
             PathView {
                 id: pathView
 
-                width: 300
-                        height: 300
+                Layout.fillWidth: true
+                Layout.fillHeight: true
                 flickDeceleration: Kirigami.Units.longDuration
                 preferredHighlightBegin: 0.5
                 preferredHighlightEnd: 0.5
@@ -213,6 +213,10 @@ Item {
                                 opacity: sameMonth ? 1 : 0.7
                                 text: date.getDate()
                                 onClicked: datePicked(date), clickedDate = date
+
+                                DragHandler {
+                                    target: pathView
+                                }
                             }
                         }
                     }
