@@ -329,7 +329,7 @@ Kirigami.ApplicationWindow {
         readonly property int minWidth: Kirigami.Units.gridUnit * 15
         readonly property int maxWidth: Kirigami.Units.gridUnit * 25
         readonly property int defaultWidth: Kirigami.Units.gridUnit * 20
-        readonly property int actualWidth: {
+        property int actualWidth: {
             if (Config.incidenceInfoDrawerWidth === -1) {
                 return Kirigami.Units.gridUnit * 20;
             } else {
@@ -346,16 +346,18 @@ Kirigami.ApplicationWindow {
             cursorShape: !Kirigami.Settings.isMobile ? Qt.SplitHCursor : undefined
             enabled: true
             visible: true
-            onPressed: _lastX = mouseX
-            onReleased: Config.save();
-            property int _lastX: -1
+            onPressed: _lastX = mapToGlobal(mouseX, mouseY).x
+            onReleased: {
+                Config.incidenceInfoDrawerWidth = incidenceInfo.actualWidth;
+                Config.save();
+            }
+            property real _lastX: -1
 
             onPositionChanged: {
-                if (_lastX == -1) {
+                if (_lastX === -1) {
                     return;
                 }
-                Config.incidenceInfoDrawerWidth = Math.min(incidenceInfo.maxWidth, Math.max(incidenceInfo.minWidth, incidenceInfo.actualWidth + (_lastX - mouseX)));
-                _lastX = mouse.x;
+                incidenceInfo.actualWidth = Math.min(incidenceInfo.maxWidth, Math.max(incidenceInfo.minWidth, Config.incidenceInfoDrawerWidth + _lastX - mapToGlobal(mouseX, mouseY).x))
             }
         }
     }
