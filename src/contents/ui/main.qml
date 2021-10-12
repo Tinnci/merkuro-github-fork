@@ -341,6 +341,7 @@ Kirigami.ApplicationWindow {
             anchors.left: parent.left
             anchors.top: parent.top
             anchors.bottom: parent.bottom
+            anchors.right: undefined
             width: 2
             z: 500
             cursorShape: !Kirigami.Settings.isMobile ? Qt.SplitHCursor : undefined
@@ -357,7 +358,11 @@ Kirigami.ApplicationWindow {
                 if (_lastX === -1) {
                     return;
                 }
-                incidenceInfo.actualWidth = Math.min(incidenceInfo.maxWidth, Math.max(incidenceInfo.minWidth, Config.incidenceInfoDrawerWidth + _lastX - mapToGlobal(mouseX, mouseY).x))
+                if (Qt.application.layoutDirection === Qt.RightToLeft) {
+                    incidenceInfo.actualWidth = Math.min(incidenceInfo.maxWidth, Math.max(incidenceInfo.minWidth, Config.incidenceInfoDrawerWidth - _lastX + mapToGlobal(mouseX, mouseY).x))
+                } else {
+                    incidenceInfo.actualWidth = Math.min(incidenceInfo.maxWidth, Math.max(incidenceInfo.minWidth, Config.incidenceInfoDrawerWidth + _lastX - mapToGlobal(mouseX, mouseY).x))
+                }
             }
         }
     }
