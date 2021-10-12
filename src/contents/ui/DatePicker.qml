@@ -14,11 +14,12 @@ Item {
     signal datePicked(date pickedDate)
 
     property date selectedDate: new Date() // Decides calendar span
+    property date highlightDate: new Date() // Highlights a date, e.g. event date
     property date clickedDate: new Date() // User's chosen date
     property date today: new Date()
     property int year: selectedDate.getFullYear()
     property int month: selectedDate.getMonth()
-    property int firstDay: new Date(year, month, 1).getDay() // 0 Sunday to 6 Saturday
+    property int day: selectedDate.getDate()
     property bool showDays: true
     onShowDaysChanged: if (!showDays) pickerView.currentIndex = 1;
 
@@ -173,53 +174,52 @@ Item {
                 }
 
                 delegate: GridLayout {
-                        id: dayGrid
-                        columns: 7
-                        rows: 6
-                        width: pathView.width
-                        height: pathView.height
-                        Layout.topMargin: Kirigami.Units.smallSpacing
-                        //visible: datepicker.showDays
+                    id: dayGrid
+                    columns: 7
+                    rows: 6
+                    width: pathView.width
+                    height: pathView.height
+                    Layout.topMargin: Kirigami.Units.smallSpacing
+                    //visible: datepicker.showDays
 
-                        Repeater {
-                            model: 7
-                            delegate: QQC2.Label {
-                                Layout.fillWidth: true
-                                height: dayGrid / dayGrid.rows
-                                horizontalAlignment: Text.AlignHCenter
-                                opacity: 0.7
-                                text: Qt.locale().dayName(index + Qt.locale().firstDayOfWeek, Locale.ShortFormat) // dayName() loops back over beyond index 6
-                            }
+                    property var model: Kalendar.MonthModel {
+                            year: firstDay.getFullYear()
+                            month: firstDay.getMonth() + 1 // From pathview model
                         }
 
-                        Repeater {
-                            model: dayGrid.columns * dayGrid.rows // 42 cells per month
+                    Repeater {
+                        model: dayGrid.model.weekDays
+                        delegate: QQC2.Label {
+                            Layout.fillWidth: true
+                            height: dayGrid / dayGrid.rows
+                            horizontalAlignment: Text.AlignHCenter
+                            opacity: 0.7
+                            text: modelData
+                        }
+                    }
 
-                            delegate: QQC2.Button {
-                                property date date: DateUtils.addDaysToDate(startDate, index)
-                                property bool sameMonth: date.getMonth() === month
-                                property bool isToday: date.getDate() === datepicker.today.getDate() &&
-                                    date.getMonth() === datepicker.today.getMonth() &&
-                                    date.getFullYear() === datepicker.today.getFullYear()
+                    Repeater {
+                        model: dayGrid.model
 
-                                Layout.fillWidth: true
-                                Layout.fillHeight: true
-                                flat: true
-                                highlighted: this.isToday
-                                checkable: true
-                                checked: date.getDate() === clickedDate.getDate() &&
-                                    date.getMonth() === clickedDate.getMonth() &&
-                                    date.getFullYear() === clickedDate.getFullYear()
-                                opacity: sameMonth ? 1 : 0.7
-                                text: date.getDate()
-                                onClicked: datePicked(date), clickedDate = date
+                        delegate: QQC2.Button {
+                            Layout.fillWidth: true
+                            Layout.fillHeight: true
+                            flat: true
+                            highlighted: model.isToday
+                            checkable: true
+                            checked: date.getDate() === clickedDate.getDate() &&
+                                date.getMonth() === clickedDate.getMonth() &&
+                                date.getFullYear() === clickedDate.getFullYear()
+                            opacity: sameMonth ? 1 : 0.7
+                            text: model.dayNumber
+                            onClicked: datePicked(model.date), clickedDate = model.date
 
-                                DragHandler {
-                                    target: pathView
-                                }
+                            DragHandler {
+                                target: pathView
                             }
                         }
                     }
+                }
             }
 
             GridLayout {
