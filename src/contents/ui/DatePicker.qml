@@ -152,7 +152,9 @@ Item {
                     }
                 }
 
-                model: Kalendar.MonthViewModel {}
+                model: Kalendar.InfiniteCalendarViewModel {
+                    scale: Kalendar.InfiniteCalendarViewModel.MonthScale
+                }
 
                 property int startIndex
                 Component.onCompleted: {
@@ -160,10 +162,8 @@ Item {
                     currentIndex = startIndex;
                 }
                 onCurrentIndexChanged: {
-                    monthPage.startDate = currentItem.startDate;
-                    monthPage.firstDayOfMonth = currentItem.firstDayOfMonth;
-                    monthPage.month = currentItem.month;
-                    monthPage.year = currentItem.year;
+                    datepicker.month = currentItem.model.month;
+                    datepicker.year = currentItem.model.year;
 
                     if(currentIndex >= count - 2) {
                         model.addDates(true);
@@ -183,9 +183,9 @@ Item {
                     //visible: datepicker.showDays
 
                     property var model: Kalendar.MonthModel {
-                            year: firstDay.getFullYear()
-                            month: firstDay.getMonth() + 1 // From pathview model
-                        }
+                        year: firstDay.getFullYear()
+                        month: firstDay.getMonth() + 1 // From pathview model
+                    }
 
                     Repeater {
                         model: dayGrid.model.weekDays
