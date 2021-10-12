@@ -15,33 +15,31 @@ void InfiniteCalendarViewModel::setup()
 {
     const QDate today = QDate::currentDate();
 
-    switch(m_scale) {
-        case WeekScale:
-        {
-            QDate firstDay = today.addDays(-today.dayOfWeek() + m_locale.firstDayOfWeek());
-            // We create dates before and after where our view will start from (which is today)
-            firstDay = firstDay.addDays((-m_datesToAdd * 7) / 2);
+    switch (m_scale) {
+    case WeekScale: {
+        QDate firstDay = today.addDays(-today.dayOfWeek() + m_locale.firstDayOfWeek());
+        // We create dates before and after where our view will start from (which is today)
+        firstDay = firstDay.addDays((-m_datesToAdd * 7) / 2);
 
-            addWeekDates(true, firstDay);
-            break;
-        }
-        case MonthScale:
-        {
-            QDate firstDay(today.year(), today.month(), 1);
-            // We create dates before and after where our view will start from (which is today)
-            firstDay = firstDay.addMonths(-m_datesToAdd / 2);
+        addWeekDates(true, firstDay);
+        break;
+    }
+    case MonthScale: {
+        QDate firstDay(today.year(), today.month(), 1);
+        firstDay = firstDay.addMonths(-m_datesToAdd / 2);
 
-            addMonthDates(true, firstDay);
-            break;
-        }
-        case YearScale:
-        {
-            break;
-        }
-        case DecadeScale:
-        {
-            break;
-        }
+        addMonthDates(true, firstDay);
+        break;
+    }
+    case YearScale:
+    case DecadeScale: {
+        QDate firstDay(today.year(), today.month(), 1);
+        firstDay = firstDay.addYears(-m_datesToAdd / 2);
+
+        int numYears = m_scale == DecadeScale ? 10 : 1;
+        addYearDates(true, numYears, firstDay);
+        break;
+    }
     }
 }
 
@@ -100,13 +98,13 @@ QHash<int, QByteArray> InfiniteCalendarViewModel::roleNames() const
 
 void InfiniteCalendarViewModel::addDates(bool atEnd, QDate startFrom)
 {
-    switch(m_scale) {
-        case WeekScale:
-            addWeekDates(atEnd, startFrom);
-            break;
-        case MonthScale:
-            addMonthDates(atEnd, startFrom);
-            break;
+    switch (m_scale) {
+    case WeekScale:
+        addWeekDates(atEnd, startFrom);
+        break;
+    case MonthScale:
+        addMonthDates(atEnd, startFrom);
+        break;
     }
 }
 
@@ -162,6 +160,27 @@ void InfiniteCalendarViewModel::addMonthDates(bool atEnd, QDate startFrom)
     endInsertRows();
 }
 
+void InfiniteCalendarViewModel::addYearDates(bool atEnd, int numYears, const QDate startFrom)
+{
+    const int newRow = atEnd ? rowCount() : 0;
+
+    beginInsertRows(QModelIndex(), newRow, newRow + m_datesToAdd - 1);
+
+    for (int i = 0; i < m_datesToAdd; i++) {
+        QDate startDate = startFrom.isValid() && i == 0 ? startFrom
+            : atEnd                                     ? m_startDates[rowCount() - 1].addYears(numYears)
+                                                        : m_startDates[0].addYears(-numYears);
+
+        if (atEnd) {
+            m_startDates.append(startDate);
+        } else {
+            m_startDates.insert(0, startDate);
+        }
+    }
+
+    endInsertRows();
+}
+
 int InfiniteCalendarViewModel::datesToAdd() const
 {
     return m_datesToAdd;
@@ -190,4 +209,3 @@ void InfiniteCalendarViewModel::setScale(int scale)
 
     endResetModel();
 }
-

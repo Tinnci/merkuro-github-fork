@@ -16,12 +16,7 @@ class InfiniteCalendarViewModel : public QAbstractListModel
     Q_PROPERTY(int scale READ scale WRITE setScale NOTIFY scaleChanged)
 
 public:
-    enum Scale {
-        WeekScale,
-        MonthScale,
-        YearScale,
-        DecadeScale
-    };
+    enum Scale { WeekScale, MonthScale, YearScale, DecadeScale };
     Q_ENUM(Scale);
 
     enum Roles {
@@ -39,9 +34,11 @@ public:
     QVariant data(const QModelIndex &idx, int role) const override;
     QHash<int, QByteArray> roleNames() const override;
     int rowCount(const QModelIndex &parent = {}) const override;
+
     Q_INVOKABLE void addDates(bool atEnd, QDate startFrom = QDate());
     void addWeekDates(bool atEnd, QDate startFrom = QDate());
     void addMonthDates(bool atEnd, QDate startFrom = QDate());
+    void addYearDates(bool atEnd, int numYears, QDate startFrom = QDate());
 
     int datesToAdd() const;
     void setDatesToAdd(int datesToAdd);
