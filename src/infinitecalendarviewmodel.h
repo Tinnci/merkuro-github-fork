@@ -8,13 +8,22 @@
 #include <QDateTime>
 #include <QLocale>
 
-class MonthViewModel : public QAbstractListModel
+class InfiniteCalendarViewModel : public QAbstractListModel
 {
     Q_OBJECT
     // Amount of dates to add each time the model adds more dates
     Q_PROPERTY(int datesToAdd READ datesToAdd WRITE setDatesToAdd NOTIFY datesToAddChanged)
+    Q_PROPERTY(int scale READ scale WRITE setScale NOTIFY scaleChanged)
 
 public:
+    enum Scale {
+        WeekScale,
+        MonthScale,
+        YearScale,
+        DecadeScale
+    };
+    Q_ENUM(Scale);
+
     enum Roles {
         StartDateRole = Qt::UserRole + 1,
         FirstDayOfMonthRole,
@@ -23,23 +32,31 @@ public:
     };
     Q_ENUM(Roles);
 
-    explicit MonthViewModel(QObject *parent = nullptr);
-    ~MonthViewModel() = default;
+    explicit InfiniteCalendarViewModel(QObject *parent = nullptr);
+    ~InfiniteCalendarViewModel() = default;
 
+    void setup();
     QVariant data(const QModelIndex &idx, int role) const override;
     QHash<int, QByteArray> roleNames() const override;
     int rowCount(const QModelIndex &parent = {}) const override;
     Q_INVOKABLE void addDates(bool atEnd, QDate startFrom = QDate());
+    void addWeekDates(bool atEnd, QDate startFrom = QDate());
+    void addMonthDates(bool atEnd, QDate startFrom = QDate());
 
     int datesToAdd() const;
     void setDatesToAdd(int datesToAdd);
 
+    int scale();
+    void setScale(int scale);
+
 Q_SIGNALS:
     void datesToAddChanged();
+    void scaleChanged();
 
 private:
     QVector<QDate> m_startDates;
     QVector<QDate> m_firstDayOfMonthDates;
     QLocale m_locale;
     int m_datesToAdd = 10;
+    int m_scale = MonthScale;
 };

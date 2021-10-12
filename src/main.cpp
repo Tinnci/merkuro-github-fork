@@ -28,12 +28,11 @@
 #include "itemtagsmodel.h"
 #include "kalendarapplication.h"
 #include "kalendarconfig.h"
-#include "monthviewmodel.h"
+#include "monthmodel.h"
 #include "multidayincidencemodel.h"
 #include "tagmanager.h"
 #include "timezonelistmodel.h"
-#include "weekviewmodel.h"
-#include "monthmodel.h"
+#include "infinitecalendarviewmodel.h"
 
 using namespace KCalendarCore;
 
@@ -95,12 +94,11 @@ int main(int argc, char *argv[])
     qmlRegisterType<IncidenceOccurrenceModel>("org.kde.kalendar", 1, 0, "IncidenceOccurrenceModel");
     qmlRegisterType<ExtraTodoModel>("org.kde.kalendar", 1, 0, "ExtraTodoModel");
     qmlRegisterType<TodoSortFilterProxyModel>("org.kde.kalendar", 1, 0, "TodoSortFilterProxyModel");
-    qmlRegisterType<MonthViewModel>("org.kde.kalendar", 1, 0, "MonthViewModel");
     qmlRegisterType<ItemTagsModel>("org.kde.kalendar", 1, 0, "ItemTagsModel");
     qmlRegisterType<HourlyIncidenceModel>("org.kde.kalendar", 1, 0, "HourlyIncidenceModel");
-    qmlRegisterType<WeekViewModel>("org.kde.kalendar", 1, 0, "WeekViewModel");
     qmlRegisterType<TimeZoneListModel>("org.kde.kalendar", 1, 0, "TimeZoneListModel");
     qmlRegisterType<MonthModel>("org.kde.kalendar", 1, 0, "MonthModel");
+    qmlRegisterType<InfiniteCalendarViewModel>("org.kde.kalendar", 1, 0, "InfiniteCalendarViewModel");
 
     qRegisterMetaType<Akonadi::AgentFilterProxyModel *>();
     qRegisterMetaType<QAction *>();

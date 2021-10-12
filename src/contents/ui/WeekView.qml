@@ -67,12 +67,12 @@ Kirigami.Page {
         const weekDiff = Math.round((date - pathView.currentItem.startDate) / (root.daysToShow * 24 * 60 * 60 * 1000));
 
         let newIndex = pathView.currentIndex + weekDiff;
-        let firstItemDate = pathView.model.data(pathView.model.index(1,0), Kalendar.WeekViewModel.StartDateRole);
-        let lastItemDate = pathView.model.data(pathView.model.index(pathView.model.rowCount() - 1,0), Kalendar.WeekViewModel.StartDateRole);
+        let firstItemDate = pathView.model.data(pathView.model.index(1,0), Kalendar.InfiniteCalendarViewModel.StartDateRole);
+        let lastItemDate = pathView.model.data(pathView.model.index(pathView.model.rowCount() - 1,0), Kalendar.InfiniteCalendarViewModel.StartDateRole);
 
         while(firstItemDate >= date) {
             pathView.model.addDates(false)
-            firstItemDate = pathView.model.data(pathView.model.index(1,0), Kalendar.WeekViewModel.StartDateRole);
+            firstItemDate = pathView.model.data(pathView.model.index(1,0), Kalendar.InfiniteCalendarViewModel.StartDateRole);
             newIndex = 0;
         }
         if(firstItemDate < date && newIndex === 0) {
@@ -133,7 +133,9 @@ Kirigami.Page {
             }
         }
 
-        model: Kalendar.WeekViewModel {}
+        model: Kalendar.InfiniteCalendarViewModel {
+            scale: Kalendar.InfiniteCalendarViewModel.WeekScale
+        }
 
         property date dateToUse
         property int startIndex

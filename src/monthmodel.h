@@ -53,7 +53,7 @@ public:
     // QAbstractItemModel overrides
     QHash<int, QByteArray> roleNames() const override;
     QVariant data(const QModelIndex &index, int role) const override;
-    int rowCount(const QModelIndex& parent) const override;
+    int rowCount(const QModelIndex &parent) const override;
 
 Q_SIGNALS:
     void yearChanged();
