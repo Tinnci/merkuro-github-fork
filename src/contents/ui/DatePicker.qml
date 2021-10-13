@@ -21,7 +21,72 @@ Item {
     property int month: selectedDate.getMonth()
     property int day: selectedDate.getDate()
     property bool showDays: true
+
+    onSelectedDateChanged: setToDate(selectedDate)
     onShowDaysChanged: if (!showDays) pickerView.currentIndex = 1;
+
+    function setToDate(date) {
+        let monthDiff = date.getMonth() - monthPathView.currentItem.firstDayOfMonth.getMonth() + (12 * (date.getFullYear() - monthPathView.currentItem.firstDayOfMonth.getFullYear()))
+        let yearDiff = date.getFullYear() - yearPathView.currentItem.startDate.getFullYear();
+        let decadeDiff = Math.floor((date.getFullYear() - decadePathView.currentItem.startDate.getFullYear()) / 12); // 12 years in one decade grid
+
+        let newMonthIndex = monthPathView.currentIndex + monthDiff;
+        let newYearIndex = yearPathView.currentIndex + yearDiff;
+        let newDecadeIndex = decadePathView.currentIndex + decadeDiff;
+
+        let firstMonthItemDate = monthPathView.model.data(monthPathView.model.index(1,0), Kalendar.InfiniteCalendarViewModel.FirstDayOfMonthRole);
+        let lastMonthItemDate = monthPathView.model.data(monthPathView.model.index(monthPathView.model.rowCount() - 1,0), Kalendar.InfiniteCalendarViewModel.FirstDayOfMonthRole);
+        let firstYearItemDate = yearPathView.model.data(yearPathView.model.index(1,0), Kalendar.InfiniteCalendarViewModel.StartDateRole);
+        let lastYearItemDate = yearPathView.model.data(yearPathView.model.index(yearPathView.model.rowCount() - 1,0), Kalendar.InfiniteCalendarViewModel.StartDateRole);
+        let firstDecadeItemDate = decadePathView.model.data(decadePathView.model.index(1,0), Kalendar.InfiniteCalendarViewModel.StartDateRole);
+        let lastDecadeItemDate = decadePathView.model.data(decadePathView.model.index(decadePathView.model.rowCount() - 1,0), Kalendar.InfiniteCalendarViewModel.StartDateRole);
+
+        while(firstMonthItemDate >= date) {
+            monthPathView.model.addDates(false)
+            firstMonthItemDate = monthPathView.model.data(monthPathView.model.index(1,0), Kalendar.InfiniteCalendarViewModel.FirstDayOfMonthRole);
+            newMonthIndex = 0;
+        }
+        if(firstMonthItemDate < date && newMonthIndex === 0) {
+            newMonthIndex = date.getMonth() - firstMonthItemDate.getMonth() + (12 * (date.getFullYear() - firstMonthItemDate.getFullYear())) + 1;
+        }
+
+        while(lastMonthItemDate <= date) {
+            monthPathView.model.addDates(true)
+            lastMonthItemDate = monthPathView.model.data(monthPathView.model.index(monthPathView.model.rowCount() - 1,0), Kalendar.InfiniteCalendarViewModel.FirstDayOfMonthRole);
+        }
+
+        while(firstYearItemDate >= date) {
+            yearPathView.model.addDates(false)
+            firstYearItemDate = yearPathView.model.data(yearPathView.model.index(1,0), Kalendar.InfiniteCalendarViewModel.StartDateRole);
+            newYearIndex = 0;
+        }
+        if(firstYearItemDate < date && newYearIndex === 0) {
+            newYearIndex = date.getFullYear() - firstYearItemDate.getFullYear() + 1;
+        }
+
+        while(lastYearItemDate <= date) {
+            yearPathView.model.addDates(true)
+            lastYearItemDate = yearPathView.model.data(yearPathView.model.index(yearPathView.model.rowCount() - 1,0), Kalendar.InfiniteCalendarViewModel.StartDateRole);
+        }
+
+        while(firstDecadeItemDate >= date) {
+            decadePathView.model.addDates(false)
+            firstDecadeItemDate = decadePathView.model.data(decadePathView.model.index(1,0), Kalendar.InfiniteCalendarViewModel.StartDateRole);
+            newDecadeIndex = 0;
+        }
+        if(firstDecadeItemDate < date && newDecadeIndex === 0) {
+            newDecadeIndex = date.getFullYear() - firstDecadeItemDate.getFullYear() + 1;
+        }
+
+        while(lastDecadeItemDate <= date) {
+            decadePathView.model.addDates(true)
+            lastDecadeItemDate = decadePathView.model.data(decadePathView.model.index(decadePathView.model.rowCount() - 1,0), Kalendar.InfiniteCalendarViewModel.StartDateRole);
+        }
+
+        monthPathView.currentIndex = newMonthIndex;
+        yearPathView.currentIndex = newYearIndex;
+        decadePathView.currentIndex = newDecadeIndex;
+    }
 
     function prevMonth() {
         selectedDate = new Date(selectedDate.getFullYear(), selectedDate.getMonth() - 1, selectedDate.getDate())
@@ -127,11 +192,8 @@ Item {
             clip: true
             interactive: false
 
-            QQC2.ButtonGroup {
-                buttons: dayGrid.children
-            }
             PathView {
-                id: pathView
+                id: monthPathView
 
                 Layout.fillWidth: true
                 Layout.fillHeight: true
@@ -145,16 +207,17 @@ Item {
                 clip: true
 
                 path: Path {
-                    startX: - pathView.width * pathView.count / 2 + pathView.width / 2
-                    startY: pathView.height / 2
+                    startX: - monthPathView.width * monthPathView.count / 2 + monthPathView.width / 2
+                    startY: monthPathView.height / 2
                     PathLine {
-                        x: pathView.width * pathView.count / 2 + pathView.width / 2
-                        y: pathView.height / 2
+                        x: monthPathView.width * monthPathView.count / 2 + monthPathView.width / 2
+                        y: monthPathView.height / 2
                     }
                 }
 
                 model: Kalendar.InfiniteCalendarViewModel {
                     scale: Kalendar.InfiniteCalendarViewModel.MonthScale
+                    datesToAdd: 300
                 }
 
                 property int startIndex
@@ -163,8 +226,9 @@ Item {
                     currentIndex = startIndex;
                 }
                 onCurrentIndexChanged: {
-                    datepicker.month = currentItem.model.month;
-                    datepicker.year = currentItem.model.year;
+                    if(pickerView.currentIndex == 0) {
+                        datepicker.selectedDate = new Date(currentItem.firstDayOfMonth.getFullYear(), currentItem.firstDayOfMonth.getMonth(), datepicker.selectedDate.getDate());
+                    }
 
                     if(currentIndex >= count - 2) {
                         model.addDates(true);
@@ -174,49 +238,64 @@ Item {
                     }
                 }
 
-                delegate: GridLayout {
-                    id: dayGrid
-                    columns: 7
-                    rows: 6
-                    width: pathView.width
-                    height: pathView.height
-                    Layout.topMargin: Kirigami.Units.smallSpacing
-                    //visible: datepicker.showDays
+                delegate: Loader {
+                    id: monthViewLoader
+                    property date firstDayOfMonth: model.firstDay
+                    property bool isNextOrCurrentItem: index >= monthPathView.currentIndex -1 && index <= monthPathView.currentIndex + 1
 
-                    property var model: Kalendar.MonthModel {
-                        year: firstDay.getFullYear()
-                        month: firstDay.getMonth() + 1 // From pathview model
-                    }
+                    active: isNextOrCurrentItem && datePicker.showDays
 
-                    Repeater {
-                        model: dayGrid.model.weekDays
-                        delegate: QQC2.Label {
-                            Layout.fillWidth: true
-                            height: dayGrid / dayGrid.rows
-                            horizontalAlignment: Text.AlignHCenter
-                            opacity: 0.7
-                            text: modelData
+                    sourceComponent: GridLayout {
+                        id: dayGrid
+                        columns: 7
+                        rows: 6
+                        width: monthPathView.width
+                        height: monthPathView.height
+                        Layout.topMargin: Kirigami.Units.smallSpacing
+                        //visible: datepicker.showDays
+
+                        property var model: Loader {
+                            asynchronous: true
+                            sourceComponent: Kalendar.MonthModel {
+                                year: firstDay.getFullYear()
+                                month: firstDay.getMonth() + 1 // From pathview model
+                            }
                         }
-                    }
 
-                    Repeater {
-                        model: dayGrid.model
+                        QQC2.ButtonGroup {
+                            buttons: dayGrid.children
+                        }
 
-                        delegate: QQC2.Button {
-                            Layout.fillWidth: true
-                            Layout.fillHeight: true
-                            flat: true
-                            highlighted: model.isToday
-                            checkable: true
-                            checked: date.getDate() === clickedDate.getDate() &&
-                                date.getMonth() === clickedDate.getMonth() &&
-                                date.getFullYear() === clickedDate.getFullYear()
-                            opacity: sameMonth ? 1 : 0.7
-                            text: model.dayNumber
-                            onClicked: datePicked(model.date), clickedDate = model.date
+                        Repeater {
+                            model: dayGrid.model.weekDays
+                            delegate: QQC2.Label {
+                                Layout.fillWidth: true
+                                height: dayGrid / dayGrid.rows
+                                horizontalAlignment: Text.AlignHCenter
+                                opacity: 0.7
+                                text: modelData
+                            }
+                        }
 
-                            DragHandler {
-                                target: pathView
+                        Repeater {
+                            model: dayGrid.model.item
+
+                            delegate: QQC2.Button {
+                                Layout.fillWidth: true
+                                Layout.fillHeight: true
+                                flat: true
+                                highlighted: model.isToday
+                                checkable: true
+                                checked: date.getDate() === clickedDate.getDate() &&
+                                    date.getMonth() === clickedDate.getMonth() &&
+                                    date.getFullYear() === clickedDate.getFullYear()
+                                opacity: sameMonth ? 1 : 0.7
+                                text: model.dayNumber
+                                onClicked: datePicked(model.date), clickedDate = model.date
+
+                                DragHandler {
+                                    target: monthPathView
+                                }
                             }
                         }
                     }
@@ -238,11 +317,11 @@ Item {
                 clip: true
 
                 path: Path {
-                    startX: - pathView.width * pathView.count / 2 + pathView.width / 2
-                    startY: pathView.height / 2
+                    startX: - yearPathView.width * yearPathView.count / 2 + yearPathView.width / 2
+                    startY: yearPathView.height / 2
                     PathLine {
-                        x: pathView.width * pathView.count / 2 + pathView.width / 2
-                        y: pathView.height / 2
+                        x: yearPathView.width * yearPathView.count / 2 + yearPathView.width / 2
+                        y: yearPathView.height / 2
                     }
                 }
 
@@ -256,8 +335,9 @@ Item {
                     currentIndex = startIndex;
                 }
                 onCurrentIndexChanged: {
-                    datepicker.month = currentItem.model.month;
-                    datepicker.year = currentItem.model.year;
+                    if(pickerView.currentIndex == 1) {
+                        datepicker.selectedDate = new Date(currentItem.startDate.getFullYear(), datepicker.selectedDate.getMonth(), datepicker.selectedDate.getDate())
+                    }
 
                     if(currentIndex >= count - 2) {
                         model.addDates(true);
@@ -267,26 +347,37 @@ Item {
                     }
                 }
 
-                delegate: GridLayout {
-                    id: monthGrid
-                    columns: 3
-                    rows: 4
-                    Layout.fillWidth: true
-                    Layout.fillHeight: true
-                    Layout.topMargin: Kirigami.Units.smallSpacing
+                delegate: Loader {
+                    property date startDate: model.startDate
+                    property bool isNextOrCurrentItem: index >= yearPathView.currentIndex -1 && index <= yearPathView.currentIndex + 1
 
-                    Repeater {
-                        model: monthGrid.columns * monthGrid.rows
-                        delegate: QQC2.Button {
-                            property date date: new Date(startDate.getFullYear(), index)
-                            Layout.fillWidth: true
-                            Layout.fillHeight: true
-                            flat: true
-                            text: Qt.locale().monthName(date.getMonth())
-                            onClicked: {
-                                selectedDate = new Date(date);
-                                datepicker.datePicked(date);
-                                if(datepicker.showDays) pickerView.currentIndex = 0;
+                    active: isNextOrCurrentItem
+
+                    sourceComponent: GridLayout {
+                        id: monthGrid
+                        columns: 3
+                        rows: 4
+                        Layout.fillWidth: true
+                        Layout.fillHeight: true
+                        Layout.topMargin: Kirigami.Units.smallSpacing
+
+                        Repeater {
+                            model: monthGrid.columns * monthGrid.rows
+                            delegate: QQC2.Button {
+                                property date date: new Date(startDate.getFullYear(), index)
+                                Layout.fillWidth: true
+                                Layout.fillHeight: true
+                                flat: true
+                                text: Qt.locale().monthName(date.getMonth())
+                                onClicked: {
+                                    selectedDate = new Date(date);
+                                    datepicker.datePicked(date);
+                                    if(datepicker.showDays) pickerView.currentIndex = 0;
+                                }
+
+                                DragHandler {
+                                    target: yearPathView
+                                }
                             }
                         }
                     }
@@ -308,11 +399,11 @@ Item {
                 clip: true
 
                 path: Path {
-                    startX: - pathView.width * pathView.count / 2 + pathView.width / 2
-                    startY: pathView.height / 2
+                    startX: - decadePathView.width * decadePathView.count / 2 + decadePathView.width / 2
+                    startY: decadePathView.height / 2
                     PathLine {
-                        x: pathView.width * pathView.count / 2 + pathView.width / 2
-                        y: pathView.height / 2
+                        x: decadePathView.width * decadePathView.count / 2 + decadePathView.width / 2
+                        y: decadePathView.height / 2
                     }
                 }
 
@@ -326,8 +417,9 @@ Item {
                     currentIndex = startIndex;
                 }
                 onCurrentIndexChanged: {
-                    datepicker.month = currentItem.model.month;
-                    datepicker.year = currentItem.model.year;
+                    if(pickerView.currentIndex == 2) {
+                        datepicker.selectedDate = new Date(currentItem.startDate.getFullYear() + 1, datepicker.selectedDate.getMonth(), datepicker.selectedDate.getDate())
+                    }
 
                     if(currentIndex >= count - 2) {
                         model.addDates(true);
@@ -337,28 +429,39 @@ Item {
                     }
                 }
 
-                delegate: GridLayout {
-                    id: yearGrid
-                    columns: 3
-                    rows: 4
-                    Layout.fillWidth: true
-                    Layout.fillHeight: true
-                    Layout.topMargin: Kirigami.Units.smallSpacing
+                delegate: Loader {
+                    property date startDate: model.startDate
+                    property bool isNextOrCurrentItem: index >= decadePathView.currentIndex -1 && index <= decadePathView.currentIndex + 1
 
-                    Repeater {
-                        model: yearGrid.columns * yearGrid.rows
-                        delegate: QQC2.Button {
-                            property date date: new Date(startDate.getFullYear() + index, 1)
-                            property bool sameDecade: Math.floor(date.getFullYear() / 10) == Math.floor(year / 10)
-                            Layout.fillWidth: true
-                            Layout.fillHeight: true
-                            flat: true
-                            opacity: sameDecade ? 1 : 0.7
-                            text: date.getFullYear()
-                            onClicked: {
-                                selectedDate = new Date(date);
-                                datepicker.datePicked(date);
-                                pickerView.currentIndex = 1;
+                    active: isNextOrCurrentItem
+
+                    sourceComponent: GridLayout {
+                        id: yearGrid
+                        columns: 3
+                        rows: 4
+                        Layout.fillWidth: true
+                        Layout.fillHeight: true
+                        Layout.topMargin: Kirigami.Units.smallSpacing
+
+                        Repeater {
+                            model: yearGrid.columns * yearGrid.rows
+                            delegate: QQC2.Button {
+                                property date date: new Date(startDate.getFullYear() + index, 1)
+                                property bool sameDecade: Math.floor(date.getFullYear() / 10) == Math.floor(year / 10)
+                                Layout.fillWidth: true
+                                Layout.fillHeight: true
+                                flat: true
+                                opacity: sameDecade ? 1 : 0.7
+                                text: date.getFullYear()
+                                onClicked: {
+                                    selectedDate = new Date(date);
+                                    datepicker.datePicked(date);
+                                    pickerView.currentIndex = 1;
+                                }
+
+                                DragHandler {
+                                    target: decadePathView
+                                }
                             }
                         }
                     }
