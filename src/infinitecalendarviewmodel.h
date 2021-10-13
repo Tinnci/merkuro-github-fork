@@ -36,11 +36,11 @@ public:
     QHash<int, QByteArray> roleNames() const override;
     int rowCount(const QModelIndex &parent = {}) const override;
 
-    Q_INVOKABLE void addDates(bool atEnd, QDate startFrom = QDate());
-    void addWeekDates(bool atEnd, QDate startFrom = QDate());
-    void addMonthDates(bool atEnd, QDate startFrom = QDate());
-    void addYearDates(bool atEnd, QDate startFrom = QDate());
-    void addDecadeDates(bool atEnd, QDate startFrom = QDate());
+    Q_INVOKABLE void addDates(bool atEnd, const QDate startFrom = QDate());
+    void addWeekDates(bool atEnd, const QDate &startFrom);
+    void addMonthDates(bool atEnd, const QDate &startFrom);
+    void addYearDates(bool atEnd, const QDate &startFrom);
+    void addDecadeDates(bool atEnd, const QDate &startFrom);
 
     int datesToAdd() const;
     void setDatesToAdd(int datesToAdd);
