@@ -3,6 +3,7 @@
 
 #include <QDebug>
 #include <QMetaEnum>
+#include <cmath>
 #include <infinitecalendarviewmodel.h>
 
 InfiniteCalendarViewModel::InfiniteCalendarViewModel(QObject *parent)
@@ -31,13 +32,19 @@ void InfiniteCalendarViewModel::setup()
         addMonthDates(true, firstDay);
         break;
     }
-    case YearScale:
-    case DecadeScale: {
+    case YearScale: {
         QDate firstDay(today.year(), today.month(), 1);
         firstDay = firstDay.addYears(-m_datesToAdd / 2);
 
-        int numYears = m_scale == DecadeScale ? 10 : 1;
-        addYearDates(true, numYears, firstDay);
+        addYearDates(true, firstDay);
+        break;
+    }
+    case DecadeScale: {
+        int firstYear = ((floor(today.year() / 10)) * 10) - 1; // E.g. For 2020 have view start at 2019...
+        QDate firstDay(firstYear, today.month(), 1);
+        firstDay = firstDay.addYears(((-m_datesToAdd * 12) / 2) + 10); // 3 * 4 grid so 12 years, end at 2030, and align for mid index to be current decade
+
+        addDecadeDates(true, firstDay);
         break;
     }
     }
@@ -160,16 +167,33 @@ void InfiniteCalendarViewModel::addMonthDates(bool atEnd, QDate startFrom)
     endInsertRows();
 }
 
-void InfiniteCalendarViewModel::addYearDates(bool atEnd, int numYears, const QDate startFrom)
+void InfiniteCalendarViewModel::addYearDates(bool atEnd, const QDate startFrom)
 {
     const int newRow = atEnd ? rowCount() : 0;
 
     beginInsertRows(QModelIndex(), newRow, newRow + m_datesToAdd - 1);
 
     for (int i = 0; i < m_datesToAdd; i++) {
-        QDate startDate = startFrom.isValid() && i == 0 ? startFrom
-            : atEnd                                     ? m_startDates[rowCount() - 1].addYears(numYears)
-                                                        : m_startDates[0].addYears(-numYears);
+        QDate startDate = startFrom.isValid() && i == 0 ? startFrom : atEnd ? m_startDates[rowCount() - 1].addYears(1) : m_startDates[0].addYears(-1);
+
+        if (atEnd) {
+            m_startDates.append(startDate);
+        } else {
+            m_startDates.insert(0, startDate);
+        }
+    }
+
+    endInsertRows();
+}
+
+void InfiniteCalendarViewModel::addDecadeDates(bool atEnd, const QDate startFrom)
+{
+    const int newRow = atEnd ? rowCount() : 0;
+
+    beginInsertRows(QModelIndex(), newRow, newRow + m_datesToAdd - 1);
+
+    for (int i = 0; i < m_datesToAdd; i++) {
+        QDate startDate = startFrom.isValid() && i == 0 ? startFrom : atEnd ? m_startDates[rowCount() - 1].addYears(10) : m_startDates[0].addYears(-10);
 
         if (atEnd) {
             m_startDates.append(startDate);
