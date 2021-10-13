@@ -26,7 +26,7 @@ Kirigami.ApplicationWindow {
         repeat: true
         onTriggered: currentDate = new Date()
     }
-    property date selectedDate: currentDate
+    property date selectedDate: new Date()
     property var openOccurrence: {}
     readonly property bool isDark: LabelUtils.isDarkColor(Kirigami.Theme.backgroundColor)
 
