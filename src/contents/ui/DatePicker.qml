@@ -360,23 +360,33 @@ Item {
                     active: isNextOrCurrentItem
 
                     sourceComponent: GridLayout {
-                        id: monthGrid
+                        id: yearGrid
                         columns: 3
                         rows: 4
                         Layout.fillWidth: true
                         Layout.fillHeight: true
                         Layout.topMargin: Kirigami.Units.smallSpacing
 
+                        QQC2.ButtonGroup {
+                            buttons: yearGrid.children
+                        }
+
                         Repeater {
-                            model: monthGrid.columns * monthGrid.rows
+                            model: yearGrid.columns * yearGrid.rows
                             delegate: QQC2.Button {
                                 property date date: new Date(startDate.getFullYear(), index)
                                 Layout.fillWidth: true
                                 Layout.fillHeight: true
                                 flat: true
-                                text: Qt.locale().monthName(date.getMonth())
+                                highlighted: date.getMonth() === new Date().getMonth() &&
+                                    date.getFullYear() === new Date().getFullYear()
+                                checkable: true
+                                checked: date.getMonth() === clickedDate.getMonth() &&
+                                    date.getFullYear() === clickedDate.getFullYear()
+                                text: Qt.locale().standaloneMonthName(date.getMonth())
                                 onClicked: {
                                     selectedDate = new Date(date);
+                                    clickedDate = new Date(date);
                                     datepicker.datePicked(date);
                                     if(datepicker.showDays) pickerView.currentIndex = 0;
                                 }
@@ -444,25 +454,33 @@ Item {
                     active: isNextOrCurrentItem
 
                     sourceComponent: GridLayout {
-                        id: yearGrid
+                        id: decadeGrid
                         columns: 3
                         rows: 4
                         Layout.fillWidth: true
                         Layout.fillHeight: true
                         Layout.topMargin: Kirigami.Units.smallSpacing
 
+                        QQC2.ButtonGroup {
+                            buttons: decadeGrid.children
+                        }
+
                         Repeater {
-                            model: yearGrid.columns * yearGrid.rows
+                            model: decadeGrid.columns * decadeGrid.rows
                             delegate: QQC2.Button {
-                                property date date: new Date(startDate.getFullYear() + index, 1)
+                                property date date: new Date(startDate.getFullYear() + index, 0)
                                 property bool sameDecade: Math.floor(date.getFullYear() / 10) == Math.floor(year / 10)
                                 Layout.fillWidth: true
                                 Layout.fillHeight: true
                                 flat: true
+                                highlighted: date.getFullYear() === new Date().getFullYear()
+                                checkable: true
+                                checked: date.getFullYear() === clickedDate.getFullYear()
                                 opacity: sameDecade ? 1 : 0.7
                                 text: date.getFullYear()
                                 onClicked: {
                                     selectedDate = new Date(date);
+                                    clickedDate = new Date(date);
                                     datepicker.datePicked(date);
                                     pickerView.currentIndex = 1;
                                 }
