@@ -299,6 +299,7 @@ Item {
                                 onClicked: datePicked(model.date), clickedDate = model.date
 
                                 DragHandler {
+                                    enabled: Kirigami.Settings.tabletMode
                                     target: monthPathView
                                 }
                             }
@@ -312,7 +313,7 @@ Item {
 
                 Layout.fillWidth: true
                 Layout.fillHeight: true
-                implicitHeight: Kirigami.Units.gridUnit * 8
+                implicitHeight: Kirigami.Units.gridUnit * 9
                 flickDeceleration: Kirigami.Units.longDuration
                 preferredHighlightBegin: 0.5
                 preferredHighlightEnd: 0.5
@@ -381,6 +382,7 @@ Item {
                                 }
 
                                 DragHandler {
+                                    enabled: Kirigami.Settings.tabletMode
                                     target: yearPathView
                                 }
                             }
@@ -394,7 +396,7 @@ Item {
 
                 Layout.fillWidth: true
                 Layout.fillHeight: true
-                implicitHeight: Kirigami.Units.gridUnit * 8
+                implicitHeight: Kirigami.Units.gridUnit * 9
                 flickDeceleration: Kirigami.Units.longDuration
                 preferredHighlightBegin: 0.5
                 preferredHighlightEnd: 0.5
@@ -466,6 +468,7 @@ Item {
                                 }
 
                                 DragHandler {
+                                    enabled: Kirigami.Settings.tabletMode
                                     target: decadePathView
                                 }
                             }
