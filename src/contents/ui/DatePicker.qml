@@ -25,7 +25,7 @@ Item {
     onShowDaysChanged: if (!showDays) pickerView.currentIndex = 1;
 
     function setToDate(date) {
-        let yearDiff = date.getFullYear() - yearPathView.currentItem.startDate.getFullYear();
+        const yearDiff = date.getFullYear() - yearPathView.currentItem.startDate.getFullYear();
         // For the decadeDiff we add one to the input date year so that we use e.g. 2021, making the pathview move to the grid that contains the 2020 decade
         // instead of staying within the 2010 decade, which contains a 2020 cell at the very end
         let decadeDiff = Math.floor((date.getFullYear() + 1 - decadePathView.currentItem.startDate.getFullYear()) / 12); // 12 years in one decade grid
