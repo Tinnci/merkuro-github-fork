@@ -14,7 +14,6 @@ Item {
     signal datePicked(date pickedDate)
 
     property date selectedDate: new Date() // Decides calendar span
-    property date highlightDate: new Date() // Highlights a date, e.g. event date
     property date clickedDate: new Date() // User's chosen date
     property date today: new Date()
     property int year: selectedDate.getFullYear()
@@ -243,7 +242,7 @@ Item {
                     property date firstDayOfMonth: model.firstDay
                     property bool isNextOrCurrentItem: index >= monthPathView.currentIndex -1 && index <= monthPathView.currentIndex + 1
 
-                    active: isNextOrCurrentItem && datePicker.showDays
+                    active: isNextOrCurrentItem && datepicker.showDays
 
                     sourceComponent: GridLayout {
                         id: dayGrid
@@ -252,7 +251,6 @@ Item {
                         width: monthPathView.width
                         height: monthPathView.height
                         Layout.topMargin: Kirigami.Units.smallSpacing
-                        //visible: datepicker.showDays
 
                         property var model: Loader {
                             asynchronous: true
