@@ -28,7 +28,7 @@ Item {
         const yearDiff = date.getFullYear() - yearPathView.currentItem.startDate.getFullYear();
         // For the decadeDiff we add one to the input date year so that we use e.g. 2021, making the pathview move to the grid that contains the 2020 decade
         // instead of staying within the 2010 decade, which contains a 2020 cell at the very end
-        let decadeDiff = Math.floor((date.getFullYear() + 1 - decadePathView.currentItem.startDate.getFullYear()) / 12); // 12 years in one decade grid
+        const decadeDiff = Math.floor((date.getFullYear() + 1 - decadePathView.currentItem.startDate.getFullYear()) / 12); // 12 years in one decade grid
 
         let newYearIndex = yearPathView.currentIndex + yearDiff;
         let newDecadeIndex = decadePathView.currentIndex + decadeDiff;
@@ -39,7 +39,7 @@ Item {
         let lastDecadeItemDate = decadePathView.model.data(decadePathView.model.index(decadePathView.model.rowCount() - 1,0), Kalendar.InfiniteCalendarViewModel.StartDateRole);
 
         if(showDays) { // Set to correct index, including creating new dates in model if needed, for the month view
-            let monthDiff = date.getMonth() - monthPathView.currentItem.firstDayOfMonth.getMonth() + (12 * (date.getFullYear() - monthPathView.currentItem.firstDayOfMonth.getFullYear()));
+            const monthDiff = date.getMonth() - monthPathView.currentItem.firstDayOfMonth.getMonth() + (12 * (date.getFullYear() - monthPathView.currentItem.firstDayOfMonth.getFullYear()));
             let newMonthIndex = monthPathView.currentIndex + monthDiff;
             let firstMonthItemDate = monthPathView.model.data(monthPathView.model.index(1,0), Kalendar.InfiniteCalendarViewModel.FirstDayOfMonthRole);
             let lastMonthItemDate = monthPathView.model.data(monthPathView.model.index(monthPathView.model.rowCount() - 1,0), Kalendar.InfiniteCalendarViewModel.FirstDayOfMonthRole);
