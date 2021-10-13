@@ -151,6 +151,17 @@ Kirigami.ScrollablePage {
                     onTextChanged: root.incidenceWrapper.summary = text
                 }
 
+                QQC2.TextArea {
+                    id: descriptionTextArea
+                    Layout.fillWidth: true
+                    Kirigami.FormData.label: i18n("Description:")
+
+                    placeholderText: i18n("Optional")
+                    text: root.incidenceWrapper.description
+                    wrapMode: Text.Wrap
+                    onTextChanged: root.incidenceWrapper.description = text
+                }
+
                 Kirigami.Separator {
                     Kirigami.FormData.isSection: true
                 }
@@ -745,22 +756,6 @@ Kirigami.ScrollablePage {
                             query: root.incidenceWrapper.location
                             onSelectedLocationAddress: root.incidenceWrapper.location = address
                         }
-                    }
-                }
-
-                // Restrain the descriptionTextArea from getting too chonky
-                ColumnLayout {
-                    Layout.fillWidth: true
-                    Layout.maximumWidth: incidenceForm.wideMode ? Kirigami.Units.gridUnit * 25 : -1
-                    Kirigami.FormData.label: i18n("Description:")
-
-                    QQC2.TextArea {
-                        id: descriptionTextArea
-
-                        Layout.fillWidth: true
-                        placeholderText: i18n("Optional")
-                        text: root.incidenceWrapper.description
-                        onTextChanged: root.incidenceWrapper.description = text
                     }
                 }
 
