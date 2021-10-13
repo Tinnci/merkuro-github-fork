@@ -40,7 +40,7 @@ void InfiniteCalendarViewModel::setup()
         break;
     }
     case DecadeScale: {
-        int firstYear = ((floor(today.year() / 10)) * 10) - 1; // E.g. For 2020 have view start at 2019...
+        const int firstYear = ((floor(today.year() / 10)) * 10) - 1; // E.g. For 2020 have view start at 2019...
         QDate firstDay(firstYear, today.month(), 1);
         firstDay = firstDay.addYears(((-m_datesToAdd * 12) / 2) + 10); // 3 * 4 grid so 12 years, end at 2030, and align for mid index to be current decade
 
