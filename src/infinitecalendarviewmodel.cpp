@@ -103,7 +103,7 @@ QHash<int, QByteArray> InfiniteCalendarViewModel::roleNames() const
     };
 }
 
-void InfiniteCalendarViewModel::addDates(bool atEnd, QDate startFrom)
+void InfiniteCalendarViewModel::addDates(bool atEnd, const QDate startFrom)
 {
     switch (m_scale) {
     case WeekScale:
@@ -121,7 +121,7 @@ void InfiniteCalendarViewModel::addDates(bool atEnd, QDate startFrom)
     }
 }
 
-void InfiniteCalendarViewModel::addWeekDates(bool atEnd, const QDate startFrom)
+void InfiniteCalendarViewModel::addWeekDates(bool atEnd, const QDate &startFrom)
 {
     const int newRow = atEnd ? rowCount() : 0;
 
@@ -144,7 +144,7 @@ void InfiniteCalendarViewModel::addWeekDates(bool atEnd, const QDate startFrom)
     endInsertRows();
 }
 
-void InfiniteCalendarViewModel::addMonthDates(bool atEnd, QDate startFrom)
+void InfiniteCalendarViewModel::addMonthDates(bool atEnd, const QDate &startFrom)
 {
     const int newRow = atEnd ? rowCount() : 0;
 
@@ -173,7 +173,7 @@ void InfiniteCalendarViewModel::addMonthDates(bool atEnd, QDate startFrom)
     endInsertRows();
 }
 
-void InfiniteCalendarViewModel::addYearDates(bool atEnd, const QDate startFrom)
+void InfiniteCalendarViewModel::addYearDates(bool atEnd, const QDate &startFrom)
 {
     const int newRow = atEnd ? rowCount() : 0;
 
@@ -192,7 +192,7 @@ void InfiniteCalendarViewModel::addYearDates(bool atEnd, const QDate startFrom)
     endInsertRows();
 }
 
-void InfiniteCalendarViewModel::addDecadeDates(bool atEnd, const QDate startFrom)
+void InfiniteCalendarViewModel::addDecadeDates(bool atEnd, const QDate &startFrom)
 {
     const int newRow = atEnd ? rowCount() : 0;
 
