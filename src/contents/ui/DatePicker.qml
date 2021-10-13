@@ -210,7 +210,7 @@ Item {
                 preferredHighlightEnd: 0.5
                 snapMode: PathView.SnapToItem
                 focus: true
-                interactive: true//Kirigami.Settings.tabletMode
+                interactive: Kirigami.Settings.tabletMode
                 clip: true
 
                 path: Path {
@@ -319,7 +319,7 @@ Item {
                 preferredHighlightEnd: 0.5
                 snapMode: PathView.SnapToItem
                 focus: true
-                interactive: true//Kirigami.Settings.tabletMode
+                interactive: Kirigami.Settings.tabletMode
                 clip: true
 
                 path: Path {
@@ -401,7 +401,7 @@ Item {
                 preferredHighlightEnd: 0.5
                 snapMode: PathView.SnapToItem
                 focus: true
-                interactive: true//Kirigami.Settings.tabletMode
+                interactive: Kirigami.Settings.tabletMode
                 clip: true
 
                 path: Path {
