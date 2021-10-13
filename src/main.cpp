@@ -33,7 +33,6 @@
 #include "multidayincidencemodel.h"
 #include "tagmanager.h"
 #include "timezonelistmodel.h"
-#include "yearmodel.h"
 
 using namespace KCalendarCore;
 
@@ -99,7 +98,6 @@ int main(int argc, char *argv[])
     qmlRegisterType<HourlyIncidenceModel>("org.kde.kalendar", 1, 0, "HourlyIncidenceModel");
     qmlRegisterType<TimeZoneListModel>("org.kde.kalendar", 1, 0, "TimeZoneListModel");
     qmlRegisterType<MonthModel>("org.kde.kalendar", 1, 0, "MonthModel");
-    qmlRegisterType<YearModel>("org.kde.kalendar", 1, 0, "YearModel");
     qmlRegisterType<InfiniteCalendarViewModel>("org.kde.kalendar", 1, 0, "InfiniteCalendarViewModel");
 
     qRegisterMetaType<Akonadi::AgentFilterProxyModel *>();
