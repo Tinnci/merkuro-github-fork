@@ -16,6 +16,7 @@ class InfiniteCalendarViewModel : public QAbstractListModel
     Q_PROPERTY(int scale READ scale WRITE setScale NOTIFY scaleChanged)
 
 public:
+    // The decade scale is designed to be used in a 4x3 grid, so shows 12 years at a time
     enum Scale { WeekScale, MonthScale, YearScale, DecadeScale };
     Q_ENUM(Scale);
 
@@ -38,7 +39,8 @@ public:
     Q_INVOKABLE void addDates(bool atEnd, QDate startFrom = QDate());
     void addWeekDates(bool atEnd, QDate startFrom = QDate());
     void addMonthDates(bool atEnd, QDate startFrom = QDate());
-    void addYearDates(bool atEnd, int numYears, QDate startFrom = QDate());
+    void addYearDates(bool atEnd, QDate startFrom = QDate());
+    void addDecadeDates(bool atEnd, QDate startFrom = QDate());
 
     int datesToAdd() const;
     void setDatesToAdd(int datesToAdd);
