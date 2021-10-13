@@ -172,7 +172,7 @@ Kirigami.Page {
 
             Loader {
                 id: modelLoader
-                active: true
+                active: viewLoader.isNextOrCurrentItem
                 asynchronous: true
                 sourceComponent: Kalendar.HourlyIncidenceModel {
                     id: hourlyModel
