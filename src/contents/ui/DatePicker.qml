@@ -299,7 +299,8 @@ Item {
                                 onClicked: datePicked(model.date), clickedDate = model.date
 
                                 DragHandler {
-                                    enabled: Kirigami.Settings.tabletMode
+                                    yAxis.enabled: false
+                                    enabled: monthPathView.interactive
                                     target: monthPathView
                                 }
                             }
@@ -392,7 +393,8 @@ Item {
                                 }
 
                                 DragHandler {
-                                    enabled: Kirigami.Settings.tabletMode
+                                    yAxis.enabled: false
+                                    enabled: yearPathView.interactive
                                     target: yearPathView
                                 }
                             }
@@ -486,7 +488,8 @@ Item {
                                 }
 
                                 DragHandler {
-                                    enabled: Kirigami.Settings.tabletMode
+                                    yAxis.enabled: false
+                                    enabled: decadePathView.interactive
                                     target: decadePathView
                                 }
                             }
