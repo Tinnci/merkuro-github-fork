@@ -81,7 +81,7 @@ Kirigami.Page {
 
         while(lastItemDate <= date) {
             pathView.model.addDates(true)
-            lastItemDate = pathView.model.data(pathView.model.index(pathView.model.rowCount() - 1,0), Kalendar.MonthViewModel.StartDateRole);
+            lastItemDate = pathView.model.data(pathView.model.index(pathView.model.rowCount() - 1,0), Kalendar.InfiniteCalendarViewModel.StartDateRole);
         }
         pathView.currentIndex = newIndex;
         selectedDate = date;
