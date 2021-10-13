@@ -25,35 +25,43 @@ Item {
     onShowDaysChanged: if (!showDays) pickerView.currentIndex = 1;
 
     function setToDate(date) {
-        let monthDiff = date.getMonth() - monthPathView.currentItem.firstDayOfMonth.getMonth() + (12 * (date.getFullYear() - monthPathView.currentItem.firstDayOfMonth.getFullYear()))
         let yearDiff = date.getFullYear() - yearPathView.currentItem.startDate.getFullYear();
-        let decadeDiff = Math.floor((date.getFullYear() - decadePathView.currentItem.startDate.getFullYear()) / 12); // 12 years in one decade grid
+        // For the decadeDiff we add one to the input date year so that we use e.g. 2021, making the pathview move to the grid that contains the 2020 decade
+        // instead of staying within the 2010 decade, which contains a 2020 cell at the very end
+        let decadeDiff = Math.floor((date.getFullYear() + 1 - decadePathView.currentItem.startDate.getFullYear()) / 12); // 12 years in one decade grid
 
-        let newMonthIndex = monthPathView.currentIndex + monthDiff;
         let newYearIndex = yearPathView.currentIndex + yearDiff;
         let newDecadeIndex = decadePathView.currentIndex + decadeDiff;
 
-        let firstMonthItemDate = monthPathView.model.data(monthPathView.model.index(1,0), Kalendar.InfiniteCalendarViewModel.FirstDayOfMonthRole);
-        let lastMonthItemDate = monthPathView.model.data(monthPathView.model.index(monthPathView.model.rowCount() - 1,0), Kalendar.InfiniteCalendarViewModel.FirstDayOfMonthRole);
         let firstYearItemDate = yearPathView.model.data(yearPathView.model.index(1,0), Kalendar.InfiniteCalendarViewModel.StartDateRole);
-        let lastYearItemDate = yearPathView.model.data(yearPathView.model.index(yearPathView.model.rowCount() - 1,0), Kalendar.InfiniteCalendarViewModel.StartDateRole);
+        let lastYearItemDate = yearPathView.model.data(yearPathView.model.index(yearPathView.model.rowCount() - 2,0), Kalendar.InfiniteCalendarViewModel.StartDateRole);
         let firstDecadeItemDate = decadePathView.model.data(decadePathView.model.index(1,0), Kalendar.InfiniteCalendarViewModel.StartDateRole);
         let lastDecadeItemDate = decadePathView.model.data(decadePathView.model.index(decadePathView.model.rowCount() - 1,0), Kalendar.InfiniteCalendarViewModel.StartDateRole);
 
-        while(firstMonthItemDate >= date) {
-            monthPathView.model.addDates(false)
-            firstMonthItemDate = monthPathView.model.data(monthPathView.model.index(1,0), Kalendar.InfiniteCalendarViewModel.FirstDayOfMonthRole);
-            newMonthIndex = 0;
-        }
-        if(firstMonthItemDate < date && newMonthIndex === 0) {
-            newMonthIndex = date.getMonth() - firstMonthItemDate.getMonth() + (12 * (date.getFullYear() - firstMonthItemDate.getFullYear())) + 1;
+        if(showDays) { // Set to correct index, including creating new dates in model if needed, for the month view
+            let monthDiff = date.getMonth() - monthPathView.currentItem.firstDayOfMonth.getMonth() + (12 * (date.getFullYear() - monthPathView.currentItem.firstDayOfMonth.getFullYear()));
+            let newMonthIndex = monthPathView.currentIndex + monthDiff;
+            let firstMonthItemDate = monthPathView.model.data(monthPathView.model.index(1,0), Kalendar.InfiniteCalendarViewModel.FirstDayOfMonthRole);
+            let lastMonthItemDate = monthPathView.model.data(monthPathView.model.index(monthPathView.model.rowCount() - 1,0), Kalendar.InfiniteCalendarViewModel.FirstDayOfMonthRole);
+
+            while(firstMonthItemDate >= date) {
+                monthPathView.model.addDates(false)
+                firstMonthItemDate = monthPathView.model.data(monthPathView.model.index(1,0), Kalendar.InfiniteCalendarViewModel.FirstDayOfMonthRole);
+                newMonthIndex = 0;
+            }
+            if(firstMonthItemDate < date && newMonthIndex === 0) {
+                newMonthIndex = date.getMonth() - firstMonthItemDate.getMonth() + (12 * (date.getFullYear() - firstMonthItemDate.getFullYear())) + 1;
+            }
+
+            while(lastMonthItemDate <= date) {
+                monthPathView.model.addDates(true)
+                lastMonthItemDate = monthPathView.model.data(monthPathView.model.index(monthPathView.model.rowCount() - 1,0), Kalendar.InfiniteCalendarViewModel.FirstDayOfMonthRole);
+            }
+
+            monthPathView.currentIndex = newMonthIndex;
         }
 
-        while(lastMonthItemDate <= date) {
-            monthPathView.model.addDates(true)
-            lastMonthItemDate = monthPathView.model.data(monthPathView.model.index(monthPathView.model.rowCount() - 1,0), Kalendar.InfiniteCalendarViewModel.FirstDayOfMonthRole);
-        }
-
+        // Set to index and create dates if needed for year view
         while(firstYearItemDate >= date) {
             yearPathView.model.addDates(false)
             firstYearItemDate = yearPathView.model.data(yearPathView.model.index(1,0), Kalendar.InfiniteCalendarViewModel.StartDateRole);
@@ -68,6 +76,7 @@ Item {
             lastYearItemDate = yearPathView.model.data(yearPathView.model.index(yearPathView.model.rowCount() - 1,0), Kalendar.InfiniteCalendarViewModel.StartDateRole);
         }
 
+        // Set to index and create dates if needed for decade view
         while(firstDecadeItemDate >= date) {
             decadePathView.model.addDates(false)
             firstDecadeItemDate = decadePathView.model.data(decadePathView.model.index(1,0), Kalendar.InfiniteCalendarViewModel.StartDateRole);
@@ -77,12 +86,11 @@ Item {
             newDecadeIndex = date.getFullYear() - firstDecadeItemDate.getFullYear() + 1;
         }
 
-        while(lastDecadeItemDate <= date) {
+        while(lastDecadeItemDate.getFullYear() <= date.getFullYear()) {
             decadePathView.model.addDates(true)
             lastDecadeItemDate = decadePathView.model.data(decadePathView.model.index(decadePathView.model.rowCount() - 1,0), Kalendar.InfiniteCalendarViewModel.StartDateRole);
         }
 
-        monthPathView.currentIndex = newMonthIndex;
         yearPathView.currentIndex = newYearIndex;
         decadePathView.currentIndex = newDecadeIndex;
     }
@@ -416,6 +424,7 @@ Item {
                 }
                 onCurrentIndexChanged: {
                     if(pickerView.currentIndex == 2) {
+                        // getFullYear + 1 because the startDate is e.g. 2019, but we want the 2020 decade to be selected
                         datepicker.selectedDate = new Date(currentItem.startDate.getFullYear() + 1, datepicker.selectedDate.getMonth(), datepicker.selectedDate.getDate())
                     }
 
