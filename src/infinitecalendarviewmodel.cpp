@@ -112,6 +112,12 @@ void InfiniteCalendarViewModel::addDates(bool atEnd, QDate startFrom)
     case MonthScale:
         addMonthDates(atEnd, startFrom);
         break;
+    case YearScale:
+        addYearDates(atEnd, startFrom);
+        break;
+    case DecadeScale:
+        addDecadeDates(atEnd, startFrom);
+        break;
     }
 }
 
