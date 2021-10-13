@@ -71,6 +71,7 @@ Kirigami.Page {
         let lastItemDate = pathView.model.data(pathView.model.index(pathView.model.rowCount() - 1,0), Kalendar.InfiniteCalendarViewModel.StartDateRole);
 
         while(firstItemDate >= date) {
+            pathView.model.datesToAdd = 600;
             pathView.model.addDates(false)
             firstItemDate = pathView.model.data(pathView.model.index(1,0), Kalendar.InfiniteCalendarViewModel.StartDateRole);
             newIndex = 0;
@@ -80,6 +81,7 @@ Kirigami.Page {
         }
 
         while(lastItemDate <= date) {
+            pathView.model.datesToAdd = 600;
             pathView.model.addDates(true)
             lastItemDate = pathView.model.data(pathView.model.index(pathView.model.rowCount() - 1,0), Kalendar.InfiniteCalendarViewModel.StartDateRole);
         }

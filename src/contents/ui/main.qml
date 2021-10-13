@@ -372,7 +372,10 @@ Kirigami.ApplicationWindow {
         y: pageStack.globalToolBar.height - 1
         showDays: pageStack.currentItem.objectName !== "monthView"
         date: root.selectedDate
-        onDateSelected: if(visible) pageStack.currentItem.setToDate(date)
+        onDateSelected: if(visible) {
+            pageStack.currentItem.setToDate(date);
+            root.selectedDate = date;
+        }
     }
 
     IncidenceEditor {
