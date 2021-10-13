@@ -23,6 +23,6 @@ QQC2.Popup {
         id: datePicker
         showDays: root.showDays
         selectedDate: root.date
-        onDatePicked: root.dateSelected(pickedDate), root.close()
+        onDatePicked: root.dateSelected(pickedDate)
     }
 }
