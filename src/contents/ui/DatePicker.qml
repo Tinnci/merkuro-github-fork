@@ -293,29 +293,73 @@ Item {
                 }
             }
 
-            GridLayout {
-                id: yearGrid
-                columns: 3
-                rows: 4
+            PathView {
+                id: decadePathView
+
                 Layout.fillWidth: true
                 Layout.fillHeight: true
-                Layout.topMargin: Kirigami.Units.smallSpacing
+                implicitHeight: Kirigami.Units.gridUnit * 8
+                flickDeceleration: Kirigami.Units.longDuration
+                preferredHighlightBegin: 0.5
+                preferredHighlightEnd: 0.5
+                snapMode: PathView.SnapToItem
+                focus: true
+                interactive: true//Kirigami.Settings.tabletMode
+                clip: true
 
-                Repeater {
-                    model: yearGrid.columns * yearGrid.rows
-                    delegate: QQC2.Button {
-                        property int yearToUse: index - 1 + (Math.floor(year/10)*10) // Display a decade, e.g. 2019 - 2030
-                        property date date: new Date(yearToUse, 0)
-                        property bool sameDecade: Math.floor(yearToUse / 10) == Math.floor(year / 10)
-                        Layout.fillWidth: true
-                        Layout.fillHeight: true
-                        flat: true
-                        opacity: sameDecade ? 1 : 0.7
-                        text: date.getFullYear()
-                        onClicked: {
-                            selectedDate = new Date(date);
-                            datepicker.datePicked(date);
-                            pickerView.currentIndex = 1;
+                path: Path {
+                    startX: - pathView.width * pathView.count / 2 + pathView.width / 2
+                    startY: pathView.height / 2
+                    PathLine {
+                        x: pathView.width * pathView.count / 2 + pathView.width / 2
+                        y: pathView.height / 2
+                    }
+                }
+
+                model: Kalendar.InfiniteCalendarViewModel {
+                    scale: Kalendar.InfiniteCalendarViewModel.DecadeScale
+                }
+
+                property int startIndex
+                Component.onCompleted: {
+                    startIndex = count / 2;
+                    currentIndex = startIndex;
+                }
+                onCurrentIndexChanged: {
+                    datepicker.month = currentItem.model.month;
+                    datepicker.year = currentItem.model.year;
+
+                    if(currentIndex >= count - 2) {
+                        model.addDates(true);
+                    } else if (currentIndex <= 1) {
+                        model.addDates(false);
+                        startIndex += model.datesToAdd;
+                    }
+                }
+
+                delegate: GridLayout {
+                    id: yearGrid
+                    columns: 3
+                    rows: 4
+                    Layout.fillWidth: true
+                    Layout.fillHeight: true
+                    Layout.topMargin: Kirigami.Units.smallSpacing
+
+                    Repeater {
+                        model: yearGrid.columns * yearGrid.rows
+                        delegate: QQC2.Button {
+                            property date date: new Date(startDate.getFullYear() + index, 1)
+                            property bool sameDecade: Math.floor(date.getFullYear() / 10) == Math.floor(year / 10)
+                            Layout.fillWidth: true
+                            Layout.fillHeight: true
+                            flat: true
+                            opacity: sameDecade ? 1 : 0.7
+                            text: date.getFullYear()
+                            onClicked: {
+                                selectedDate = new Date(date);
+                                datepicker.datePicked(date);
+                                pickerView.currentIndex = 1;
+                            }
                         }
                     }
                 }
