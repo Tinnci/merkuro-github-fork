@@ -386,8 +386,6 @@ Item {
                                     datepicker.datePicked(date);
                                     if(datepicker.showDays) pickerView.currentIndex = 0;
                                 }
-
-
                             }
                         }
                     }
