@@ -191,12 +191,12 @@ Item {
             }
         }
 
-        QQC2.SwipeView {
+        /*QQC2.SwipeView {
             id: pickerView
             Layout.fillWidth: true
             Layout.fillHeight: true
             clip: true
-            interactive: false
+            interactive: false*/
 
             PathView {
                 id: monthPathView
@@ -211,6 +211,7 @@ Item {
                 focus: true
                 interactive: Kirigami.Settings.tabletMode
                 clip: true
+                visible: daysViewCheck.checked
 
                 path: Path {
                     startX: - monthPathView.width * monthPathView.count / 2 + monthPathView.width / 2
@@ -322,6 +323,7 @@ Item {
                 focus: true
                 interactive: Kirigami.Settings.tabletMode
                 clip: true
+                visible: monthsViewCheck.checked
 
                 path: Path {
                     startX: - yearPathView.width * yearPathView.count / 2 + yearPathView.width / 2
@@ -416,6 +418,7 @@ Item {
                 focus: true
                 interactive: Kirigami.Settings.tabletMode
                 clip: true
+                visible: yearsViewCheck.checked
 
                 path: Path {
                     startX: - decadePathView.width * decadePathView.count / 2 + decadePathView.width / 2
@@ -496,7 +499,7 @@ Item {
                         }
                     }
                 }
-            }
+            //}
         }
     }
 }
