@@ -201,6 +201,11 @@ Item {
             PathView {
                 id: monthPathView
 
+                DragHandler {
+                    enabled: false
+                    target: pickerView
+                }
+
                 Layout.fillWidth: true
                 Layout.fillHeight: true
                 implicitHeight: Kirigami.Units.gridUnit * 16
@@ -312,6 +317,11 @@ Item {
             PathView {
                 id: yearPathView
 
+                DragHandler {
+                    enabled: false
+                    target: pickerView
+                }
+
                 Layout.fillWidth: true
                 Layout.fillHeight: true
                 implicitHeight: Kirigami.Units.gridUnit * 9
@@ -405,6 +415,11 @@ Item {
 
             PathView {
                 id: decadePathView
+
+                DragHandler {
+                    enabled: false
+                    target: pickerView
+                }
 
                 Layout.fillWidth: true
                 Layout.fillHeight: true
