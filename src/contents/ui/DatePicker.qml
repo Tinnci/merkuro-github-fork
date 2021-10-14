@@ -297,12 +297,6 @@ Item {
                                 opacity: sameMonth ? 1 : 0.7
                                 text: model.dayNumber
                                 onClicked: datePicked(model.date), clickedDate = model.date
-
-                                DragHandler {
-                                    yAxis.enabled: false
-                                    enabled: monthPathView.interactive
-                                    target: monthPathView
-                                }
                             }
                         }
                     }
@@ -355,6 +349,7 @@ Item {
                 }
 
                 delegate: Loader {
+                    id: yearViewLoader
                     property date startDate: model.startDate
                     property bool isNextOrCurrentItem: index >= yearPathView.currentIndex -1 && index <= yearPathView.currentIndex + 1
 
@@ -392,11 +387,7 @@ Item {
                                     if(datepicker.showDays) pickerView.currentIndex = 0;
                                 }
 
-                                DragHandler {
-                                    yAxis.enabled: false
-                                    enabled: yearPathView.interactive
-                                    target: yearPathView
-                                }
+
                             }
                         }
                     }
@@ -450,6 +441,7 @@ Item {
                 }
 
                 delegate: Loader {
+                    id: decadeViewLoader
                     property date startDate: model.startDate
                     property bool isNextOrCurrentItem: index >= decadePathView.currentIndex -1 && index <= decadePathView.currentIndex + 1
 
@@ -487,11 +479,7 @@ Item {
                                     pickerView.currentIndex = 1;
                                 }
 
-                                DragHandler {
-                                    yAxis.enabled: false
-                                    enabled: decadePathView.interactive
-                                    target: decadePathView
-                                }
+
                             }
                         }
                     }
