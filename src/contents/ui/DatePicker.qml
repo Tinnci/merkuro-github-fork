@@ -301,7 +301,7 @@ Item {
                                 DragHandler {
                                     yAxis.enabled: false
                                     enabled: monthPathView.interactive
-                                    target: monthPathView
+                                    target: monthViewLoader
                                 }
                             }
                         }
@@ -355,6 +355,7 @@ Item {
                 }
 
                 delegate: Loader {
+                    id: yearViewLoader
                     property date startDate: model.startDate
                     property bool isNextOrCurrentItem: index >= yearPathView.currentIndex -1 && index <= yearPathView.currentIndex + 1
 
@@ -395,7 +396,7 @@ Item {
                                 DragHandler {
                                     yAxis.enabled: false
                                     enabled: yearPathView.interactive
-                                    target: yearPathView
+                                    target: yearViewLoader
                                 }
                             }
                         }
@@ -450,6 +451,7 @@ Item {
                 }
 
                 delegate: Loader {
+                    id: decadeViewLoader
                     property date startDate: model.startDate
                     property bool isNextOrCurrentItem: index >= decadePathView.currentIndex -1 && index <= decadePathView.currentIndex + 1
 
@@ -490,7 +492,7 @@ Item {
                                 DragHandler {
                                     yAxis.enabled: false
                                     enabled: decadePathView.interactive
-                                    target: decadePathView
+                                    target: decadeViewLoader
                                 }
                             }
                         }
