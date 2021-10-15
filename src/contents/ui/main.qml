@@ -607,6 +607,17 @@ Kirigami.ApplicationWindow {
         }
     }
 
+    MouseArea {
+        id: incidenceDeselectorMouseArea
+        anchors.fill: parent
+        parent: pageStack.currentItem
+        onClicked: {
+            incidenceInfo.close()
+            mouse.accepted = false
+        }
+        propagateComposedEvents: true
+    }
+
     Component {
         id: monthViewComponent
 
