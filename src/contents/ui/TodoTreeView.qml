@@ -237,7 +237,47 @@ TreeListView {
                     Layout.row: 0
                     Layout.column: 0
                     Layout.rowSpan: root.width < Kirigami.Units.gridUnit * 28 || recurIcon.visible || dateLabel.visible ? 1 : 2
+                    indicator: Item {
+                        height: parent.height
+                        width: height
+                        x: todoCheckbox.leftPadding
+                        y: parent.height / 2 - height / 2
+                        anchors.horizontalCenter: parent.horizontalCenter
+                        anchors.verticalCenter: parent.verticalCenter
+                        Kirigami.Icon {
+                            isMask: true
+                            color: model.color
+                            anchors.fill: parent
+                            visible: !todoCheckbox.checked
+                            source: {
+                                if (model.percent >= 75) {
+                                    return 'task-process-3';
+                                }
+                                if (model.percent >= 50) {
+                                    return 'task-process-2';
+                                }
+                                if (model.percent >= 25) {
+                                    return 'task-process-1';
+                                }
+                                return 'task-process-0';
+                            }
+                        }
+                        Rectangle {
+                            anchors.fill: parent
+                            visible: todoCheckbox.checked
+                            radius: todoCheckbox.radius
+                            border.color: todoCheckbox.color
+                            color: Qt.rgba(0,0,0,0)
 
+                            Rectangle {
+                                anchors.margins: parent.height * 0.2
+                                anchors.fill: parent
+                                radius: todoCheckbox.radius / 3
+                                color: todoCheckbox.color
+                                visible: todoCheckbox.checked
+                            }
+                        }
+                    }
                     color: model.color
                     radius: 100
                     checked: model.todoCompleted
