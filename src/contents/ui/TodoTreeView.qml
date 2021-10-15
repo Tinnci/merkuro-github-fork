@@ -112,7 +112,28 @@ TreeListView {
                     Layout.row: 0
                     Layout.column: 0
                     Layout.rowSpan: root.width < Kirigami.Units.gridUnit * 28 || recurIcon.visible || dateLabel.visible ? 1 : 2
+                    indicator: Kirigami.Icon {
+                        isMask: true
+                        color: model.color
+                        height: parent.height * 0.8
+                        width: height
+                        source: {
+                            if (model.todoCompleted || model.percent === 100) {
+                                return 'task-process-4';
+                            }
+                            if (model.percent >= 75) {
+                                return 'task-process-3';
+                            }
+                            if (model.percent >= 50) {
+                                return 'task-process-2';
+                            }
+                            if (model.percent >= 25) {
+                                return 'task-process-1';
+                            }
+                            return 'task-process-0';
+                        }
 
+                    }
                     color: model.color
                     radius: 100
                     checked: model.todoCompleted
