@@ -54,6 +54,26 @@ Kirigami.ApplicationWindow {
 
     pageStack.globalToolBar.canContainHandles: true
     pageStack.globalToolBar.style: Kirigami.ApplicationHeaderStyle.ToolBar
+    pageStack.initialPage: Kirigami.Settings.isMobile ? scheduleViewComponent : monthViewComponent
+
+    QQC2.Action {
+        id: closeOverlayAction
+        shortcut: "Escape"
+        onTriggered: {
+            if(applicationWindow().overlay.children[0].visible) {
+                applicationWindow().overlay.children[0].visible = false;
+                return;
+            }
+            if(pageStack.layers.depth > 1) {
+                pageStack.layers.pop();
+                return;
+            }
+            if(contextDrawer.visible) {
+                contextDrawer.close();
+                return;
+            }
+        }
+    }
 
     Component.onCompleted: {
         switch (Config.lastOpenedView) {
@@ -163,22 +183,26 @@ Kirigami.ApplicationWindow {
         }
 
         function onOpenSettings() {
-            pageStack.pushDialogLayer("qrc:/SettingsPage.qml", {
+            const openDialogWindow = pageStack.pushDialogLayer("qrc:/SettingsPage.qml", {
                 width: root.width
             }, {
                 title: i18n("Configure"),
                 width: Kirigami.Units.gridUnit * 45,
                 height: Kirigami.Units.gridUnit * 35
-            })
+            });
+
+            openDialogWindow.Keys.escapePressed.connect(function() { openDialogWindow.closeDialog() })
         }
 
         function onOpenTagManager() {
-            pageStack.pushDialogLayer("qrc:/TagManagerPage.qml", {
+            const openDialogWindow = pageStack.pushDialogLayer("qrc:/TagManagerPage.qml", {
                 width: root.width
             }, {
                 width: Kirigami.Units.gridUnit * 30,
                 height: Kirigami.Units.gridUnit * 30
-            })
+            });
+
+            openDialogWindow.Keys.escapePressed.connect(function() { openDialogWindow.closeDialog() })
         }
 
         function onOpenKCommandBarAction() {
@@ -239,8 +263,6 @@ Kirigami.ApplicationWindow {
     } else {
         return i18n("Calendar");
     }
-
-    pageStack.initialPage: Kirigami.Settings.isMobile ? scheduleViewComponent : monthViewComponent
 
     menuBar: Loader {
         id: menuLoader
@@ -388,7 +410,7 @@ Kirigami.ApplicationWindow {
         id: incidenceEditor
         onAdded: CalendarManager.addIncidence(incidenceWrapper)
         onEdited: CalendarManager.editIncidence(incidenceWrapper)
-        onCancel: pageStack.pop(monthViewComponent)
+        onCancel: pageStack.layers.pop()
     }
 
     Loader {
@@ -427,6 +449,7 @@ Kirigami.ApplicationWindow {
                 onAdded: CalendarManager.addIncidence(incidenceWrapper)
                 onEdited: CalendarManager.editIncidence(incidenceWrapper)
                 onCancel: root.close()
+                Keys.onEscapePressed: root.close()
             }
 
             visible: true
@@ -494,7 +517,7 @@ Kirigami.ApplicationWindow {
             editorWindowedLoader.active = true
             return editorWindowedLoader.item.incidenceEditor
         } else {
-            pageStack.push(incidenceEditor);
+            pageStack.layers.push(incidenceEditor);
             return incidenceEditor;
         }
     }
