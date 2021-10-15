@@ -211,7 +211,9 @@ Kirigami.ApplicationWindow {
                 height: Kirigami.Units.gridUnit * 35
             });
 
-            openDialogWindow.Keys.escapePressed.connect(function() { openDialogWindow.closeDialog() })
+            if(!Kirigami.Settings.isMobile) {
+                openDialogWindow.Keys.escapePressed.connect(function() { openDialogWindow.closeDialog() });
+            }
         }
 
         function onOpenTagManager() {
@@ -222,7 +224,9 @@ Kirigami.ApplicationWindow {
                 height: Kirigami.Units.gridUnit * 30
             });
 
-            openDialogWindow.Keys.escapePressed.connect(function() { openDialogWindow.closeDialog() })
+            if(!Kirigami.Settings.isMobile) {
+                openDialogWindow.Keys.escapePressed.connect(function() { openDialogWindow.closeDialog() });
+            }
         }
 
         function onOpenKCommandBarAction() {
