@@ -573,6 +573,7 @@ a{
                         Layout.fillWidth: true
 
                         property var organizer: incidenceInfo.incidenceWrapper.organizer
+                        visible: incidenceInfo.incidenceWrapper.organizer.fullName
 
                         text: organizer.name ?
                             `[${organizer.name}](mailto:${organizer.email})` :
