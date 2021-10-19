@@ -174,6 +174,18 @@ QQC2.MenuBar {
         }
 
     }
+
+    QQC2.Menu {
+        title: i18nc("@action:menu", "Go")
+
+        KActionFromAction {
+            kalendarAction: "move_view_backwards"
+        }
+        KActionFromAction {
+            kalendarAction: "move_view_forwards"
+        }
+    }
+
     QQC2.Menu {
         title: i18nc("@action:menu", "Create")
 
