@@ -109,6 +109,15 @@ Labs.MenuBar {
         NativeMenuItemFromAction {
             kalendarAction: "move_view_forwards"
         }
+
+        Labs.MenuSeparator {}
+
+        NativeMenuItemFromAction {
+            kalendarAction: "move_view_to_today"
+        }
+        NativeMenuItemFromAction {
+            kalendarAction: "open_date_changer"
+        }
     }
 
     Labs.Menu {

@@ -184,6 +184,15 @@ QQC2.MenuBar {
         KActionFromAction {
             kalendarAction: "move_view_forwards"
         }
+
+        QQC2.MenuSeparator {}
+
+        KActionFromAction {
+            kalendarAction: "move_view_to_today"
+        }
+        KActionFromAction {
+            kalendarAction: "open_date_changer"
+        }
     }
 
     QQC2.Menu {

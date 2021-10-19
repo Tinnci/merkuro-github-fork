@@ -40,6 +40,8 @@ Q_SIGNALS:
     void openAboutPage();
     void moveViewForwards();
     void moveViewBackwards();
+    void moveViewToToday();
+    void openDateChanger();
     void toggleMenubar();
     void createNewEvent();
     void createNewTodo();
