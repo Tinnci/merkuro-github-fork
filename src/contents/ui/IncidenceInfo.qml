@@ -415,12 +415,8 @@ Kirigami.OverlayDrawer {
                         readOnly: true
                         wrapMode: Text.Wrap
                         textFormat: Text.RichText
-                        text: "<style>
-a{
-    color: " + Kirigami.Theme.linkColor + ";
-    text-decoration: none;
-}
-</style>" + incidenceInfo.incidenceWrapper.location.replace(LabelUtils.urlRegexp, (match) => `<a href="${match}">${match}</a>`)
+                        color: Kirigami.Theme.textColor
+                        text: incidenceInfo.incidenceWrapper.location.replace(LabelUtils.urlRegexp, (match) => `<a style="color: "${Kirigami.Theme.linkColor}"; text-decoration: none;" href="${match}">${match}</a>`)
                         onTextChanged: isLink = LabelUtils.urlRegexp.test(incidenceInfo.incidenceWrapper.location);
                         onLinkActivated: Qt.openUrlExternally(link)
                         visible: incidenceInfo.incidenceWrapper.location
