@@ -82,6 +82,12 @@ Kirigami.ScrollablePage {
                 edited(incidenceWrapper);
             } else {
                 added(incidenceWrapper);
+                if(root.incidenceWrapper.incidenceType == IncidenceWrapper.TypeTodo) {
+                    Config.lastUsedTodoCollection = root.incidenceWrapper.collectionId;
+                } else {
+                    Config.lastUsedEventCollection = root.incidenceWrapper.collectionId;
+                }
+                Config.save();
             }
             cancel();
         }
@@ -139,7 +145,6 @@ Kirigami.ScrollablePage {
                     valueRole: "collectionId"
                     currentIndex: model && collectionId !== -1 ? CalendarManager.getCalendarSelectableIndex(root.incidenceWrapper) : -1
 
-                    // Should default to default collection
                     model: {
                         if(root.incidenceWrapper.incidenceType === IncidenceWrapper.TypeEvent) {
                             return CalendarManager.selectableEventCalendars;
