@@ -82,7 +82,7 @@ Kirigami.ScrollablePage {
                 edited(incidenceWrapper);
             } else {
                 added(incidenceWrapper);
-                if(root.incidenceWrapper.incidenceType == IncidenceWrapper.TypeTodo) {
+                if(root.incidenceWrapper.incidenceType === IncidenceWrapper.TypeTodo) {
                     Config.lastUsedTodoCollection = root.incidenceWrapper.collectionId;
                 } else {
                     Config.lastUsedEventCollection = root.incidenceWrapper.collectionId;
@@ -340,7 +340,7 @@ Kirigami.ScrollablePage {
 
                     textRole: "display"
                     valueRole: "interval"
-                    onCurrentIndexChanged: if(currentIndex == 0) { root.incidenceWrapper.clearRecurrences() }
+                    onCurrentIndexChanged: if(currentIndex === 0) { root.incidenceWrapper.clearRecurrences() }
                     currentIndex: {
                         switch(root.incidenceWrapper.recurrenceData.type) {
                             case 0:
@@ -579,7 +579,7 @@ Kirigami.ScrollablePage {
                             id: recurEndDateCombo
 
                             Layout.fillWidth: true
-                            visible: endRecurType.currentIndex == 1
+                            visible: endRecurType.currentIndex === 1
                             onVisibleChanged: if (visible && isNaN(root.incidenceWrapper.recurrenceData.endDateTime.getTime())) { root.incidenceWrapper.setRecurrenceDataItem("endDateTime", new Date()); }
                             editable: true
                             editText: root.incidenceWrapper.recurrenceData.endDateTime.toLocaleDateString(Qt.locale(), Locale.NarrowFormat);
