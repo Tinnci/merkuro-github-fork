@@ -50,7 +50,7 @@ QQC2.ComboBox {
     popup: QQC2.Popup {
         id: timePopup
         width: parent.width
-        height: parent.width * 2
+        height: parent.width * 1.5
         y: parent.y + parent.height
         z: 1000
 

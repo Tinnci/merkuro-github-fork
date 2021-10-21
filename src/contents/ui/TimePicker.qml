@@ -59,6 +59,16 @@ Item {
         }
     }
 
+    function wheelHandler(parent, wheel) {
+        if(parent.currentIndex == parent.count - 1) {
+            wheel.angleDelta.y < 0 ? parent.currentIndex = 0 : parent.currentIndex -= 1;
+        } else if(parent.currentIndex == 0) {
+            wheel.angleDelta.y < 0 ? parent.currentIndex += 1 : parent.currentIndex = parent.count - 1;
+        } else {
+            wheel.angleDelta.y < 0 ? parent.currentIndex += 1 : parent.currentIndex -= 1;
+        }
+    }
+
     GridLayout {
         anchors.fill: parent
         columns: timePicker.secondsPicker ? 5 : 3
@@ -111,8 +121,10 @@ Item {
         QQC2.Tumbler {
             id: hourView
             Layout.fillWidth: true
+            Layout.fillHeight: true
             Layout.row: 2
             Layout.column: 0
+            wrap: true
 
             model: 24
 
@@ -129,7 +141,7 @@ Item {
 
             MouseArea {
                 anchors.fill: parent
-                onWheel: wheel.angleDelta.y < 0 ? hourView.currentIndex += 1 : hourView.currentIndex -= 1;
+                onWheel: timePicker.wheelHandler(parent, wheel)
             }
         }
 
@@ -144,6 +156,7 @@ Item {
         QQC2.Tumbler {
             id: minuteView
             Layout.fillWidth: true
+            Layout.fillHeight: true
             wrap: true
 
             property int selectedIndex: 0
@@ -170,7 +183,7 @@ Item {
 
             MouseArea {
                 anchors.fill: parent
-                onWheel: wheel.angleDelta.y < 0 ? minuteView.currentIndex += 1 : minuteView.currentIndex -= 1;
+                onWheel: timePicker.wheelHandler(parent, wheel)
             }
         }
 
@@ -208,7 +221,7 @@ Item {
 
             MouseArea {
                 anchors.fill: parent
-                onWheel: wheel.angleDelta.y < 0 ? secondsView.currentIndex += 1 : secondsView.currentIndex -= 1;
+                onWheel: timePicker.wheelHandler(parent, wheel)
             }
         }
 
