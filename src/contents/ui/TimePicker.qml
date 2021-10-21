@@ -126,6 +126,11 @@ Item {
                 opacity: hourView.currentIndex == thisIndex ? 1 : 0.7
                 text: modelData < 10 ? String(modelData).padStart(2, "0") : modelData
             }
+
+            MouseArea {
+                anchors.fill: parent
+                onWheel: wheel.angleDelta.y < 0 ? hourView.currentIndex += 1 : hourView.currentIndex -= 1;
+            }
         }
 
         Kirigami.Heading {
@@ -162,6 +167,11 @@ Item {
                 opacity: minuteView.currentIndex == thisIndex ? 1 : 0.7
                 text: minuteToDisplay < 10 ? String(minuteToDisplay).padStart(2, "0") : minuteToDisplay
             }
+
+            MouseArea {
+                anchors.fill: parent
+                onWheel: wheel.angleDelta.y < 0 ? minuteView.currentIndex += 1 : minuteView.currentIndex -= 1;
+            }
         }
 
 
@@ -194,6 +204,11 @@ Item {
                 verticalAlignment: Text.AlignVCenter
                 opacity: secondsView.currentIndex == thisIndex ? 1 : 0.7
                 text: modelData < 10 ? String(modelData).padStart(2, "0") : modelData
+            }
+
+            MouseArea {
+                anchors.fill: parent
+                onWheel: wheel.angleDelta.y < 0 ? secondsView.currentIndex += 1 : secondsView.currentIndex -= 1;
             }
         }
 
