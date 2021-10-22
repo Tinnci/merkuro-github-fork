@@ -171,6 +171,7 @@ Kirigami.Page {
             property int index: model.index
             property bool isCurrentItem: PathView.isCurrentItem
             property bool isNextOrCurrentItem: index >= pathView.currentIndex -1 && index <= pathView.currentIndex + 1
+            property int multiDayLinesShown: 0
 
             Loader {
                 id: modelLoader
@@ -192,13 +193,15 @@ Kirigami.Page {
 
             active: isNextOrCurrentItem
             //asynchronous: true
-            sourceComponent: ColumnLayout {
+            sourceComponent: Column {
+                id: viewColumn
                 width: pathView.width
                 height: pathView.height
                 spacing: 0
 
                 Row {
-                    Layout.fillWidth: true
+                    id: headingRow
+                    width: pathView.width
                     spacing: root.gridLineWidth
 
                     Kirigami.Heading {
@@ -258,7 +261,7 @@ Kirigami.Page {
 
                 Kirigami.Separator {
                     id: headerTopSeparator
-                    Layout.fillWidth: true
+                    width: pathView.width
                     height: root.gridLineWidth
                     z: -1
 
@@ -291,8 +294,8 @@ Kirigami.Page {
 
                 Item {
                     id: allDayHeader
-                    Layout.fillWidth: true
-                    height: allDayViewLoader.implicitHeight
+                    width: pathView.width
+                    height: (viewLoader.multiDayLinesShown * (Kirigami.Units.gridUnit + Kirigami.Units.smallSpacing)) + Kirigami.Units.smallSpacing
                     visible: allDayViewLoader.active
                     clip: true
 
@@ -319,7 +322,8 @@ Kirigami.Page {
                         anchors.leftMargin: root.hourLabelWidth
                         active: allDayIncidenceModelLoader.item.incidenceCount > 0
                         sourceComponent: Item {
-                            implicitHeight: Kirigami.Units.gridUnit * 3
+                            id: allDayViewItem
+                            implicitHeight: (viewLoader.multiDayLinesShown * (Kirigami.Units.gridUnit + Kirigami.Units.smallSpacing)) + Kirigami.Units.smallSpacing
                             clip: true
 
                             Repeater {
@@ -327,8 +331,9 @@ Kirigami.Page {
                                 Layout.topMargin: Kirigami.Units.largeSpacing
                                 //One row => one week
                                 Item {
+                                    id: weekItem
                                     width: parent.width
-                                    height: Kirigami.Units.gridUnit * 3
+                                    implicitHeight: (viewLoader.multiDayLinesShown * (Kirigami.Units.gridUnit + Kirigami.Units.smallSpacing)) + Kirigami.Units.smallSpacing
                                     clip: true
                                     RowLayout {
                                         width: parent.width
@@ -393,6 +398,9 @@ Kirigami.Page {
                                                     }
 
                                                     model: incidences
+                                                    onCountChanged: {
+                                                        viewLoader.multiDayLinesShown = count
+                                                    }
 
                                                     delegate: Item {
                                                         id: line
@@ -424,7 +432,7 @@ Kirigami.Page {
 
                 Kirigami.Separator {
                     id: headerBottomSeparator
-                    Layout.fillWidth: true
+                    width: pathView.width
                     height: root.gridLineWidth
                     z: -1
                     visible: allDayViewLoader.active
@@ -441,8 +449,8 @@ Kirigami.Page {
 
                 QQC2.ScrollView {
                     id: hourlyView
-                    Layout.fillWidth: true
-                    Layout.fillHeight: true
+                    width: pathView.width
+                    height: pathView.height - headerBottomSeparator.height - allDayHeader.height - headerTopSeparator.height - headingRow.height
                     contentWidth: availableWidth
                     z: -2
                     QQC2.ScrollBar.horizontal.policy: QQC2.ScrollBar.AlwaysOff
