@@ -319,14 +319,17 @@ Kirigami.Page {
                     Kirigami.ShadowedRectangle {
                         anchors.left: parent.left
                         anchors.top: parent.bottom
-                        anchors.topMargin: root.gridLineWidth
                         width: root.hourLabelWidth
                         height: resetHeaderHeightButton.height
+                        z: -1
                         corners.bottomRightRadius: Kirigami.Units.smallSpacing
                         shadow.size: Kirigami.Units.largeSpacing
                         shadow.color: Qt.rgba(0.0, 0.0, 0.0, 0.2)
                         shadow.yOffset: 2
                         shadow.xOffset: 2
+                        color: Kirigami.Theme.backgroundColor
+                        border.width: root.gridLineWidth
+                        border.color: headerBottomSeparator.color
                         visible: allDayHeader.actualHeight !== allDayHeader.defaultHeight
 
                         QQC2.ToolButton {
@@ -344,12 +347,15 @@ Kirigami.Page {
 
                     QQC2.Label {
                         width: root.hourLabelWidth
+                        height: parent.height
                         padding: Kirigami.Units.smallSpacing
                         leftPadding: Kirigami.Units.largeSpacing
                         verticalAlignment: Text.AlignTop
                         horizontalAlignment: Text.AlignRight
                         text: i18n("Multi / All day")
                         wrapMode: Text.Wrap
+                        elide: Text.ElideRight
+                        font: Kirigami.Theme.smallFont
                         color: Kirigami.Theme.disabledTextColor
                     }
 
