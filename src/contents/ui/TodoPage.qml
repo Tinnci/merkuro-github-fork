@@ -23,6 +23,7 @@ Kirigami.ScrollablePage {
     signal deleteTodo(var todoPtr, date deleteDate)
     signal completeTodo(var todoPtr)
     signal addSubTodo(var parentWrapper)
+    signal deselect
 
     // We need to store a copy of opened incidence data or we will lose it as we scroll the listviews.
     function retainTodoData(todoData, collectionData) {
@@ -164,6 +165,7 @@ Kirigami.ScrollablePage {
                         root.deleteTodo(todoPtr, deleteDate);
                         completedSheet.close();
                     }
+                    onDeselect: root.deselect()
                     onCompleteTodo: root.completeTodo(todoPtr);
                     onAddSubTodo: root.addSubTodo(parentWrapper)
                 }
@@ -190,6 +192,7 @@ Kirigami.ScrollablePage {
         onDeleteTodo: root.deleteTodo(todoPtr, deleteDate)
         onCompleteTodo: root.completeTodo(todoPtr);
         onAddSubTodo: root.addSubTodo(parentWrapper)
+        onDeselect: root.deselect()
     }
 
     // TODO lazy load it

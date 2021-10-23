@@ -20,6 +20,7 @@ Kirigami.Page {
     signal deleteIncidence(var incidencePtr, date deleteDate)
     signal completeTodo(var incidencePtr)
     signal addSubTodo(var parentWrapper)
+    signal deselect()
 
     property var openOccurrence: {}
     property var filter: {
@@ -295,9 +296,20 @@ Kirigami.Page {
                 Item {
                     id: allDayHeader
                     width: pathView.width
-                    height: (viewLoader.multiDayLinesShown * (Kirigami.Units.gridUnit + Kirigami.Units.smallSpacing)) + Kirigami.Units.smallSpacing
+                    height: actualHeight
                     visible: allDayViewLoader.active
                     clip: true
+
+                    readonly property int minHeight: Kirigami.Units.gridUnit *2
+                    readonly property int maxHeight: applicationWindow().height / 2
+                    readonly property int defaultHeight: (viewLoader.multiDayLinesShown * (Kirigami.Units.gridUnit + Kirigami.Units.smallSpacing)) + Kirigami.Units.smallSpacing
+                    property int actualHeight: {
+                        if (Kalendar.Config.weekViewAllDayHeaderHeight === -1) {
+                            return defaultHeight;
+                        } else {
+                            return Kalendar.Config.weekViewAllDayHeaderHeight;
+                        }
+                    }
 
                     Rectangle {
                         id: headerBackground
@@ -323,7 +335,7 @@ Kirigami.Page {
                         active: allDayIncidenceModelLoader.item.incidenceCount > 0
                         sourceComponent: Item {
                             id: allDayViewItem
-                            implicitHeight: (viewLoader.multiDayLinesShown * (Kirigami.Units.gridUnit + Kirigami.Units.smallSpacing)) + Kirigami.Units.smallSpacing
+                            implicitHeight: allDayHeader.actualHeight
                             clip: true
 
                             Repeater {
@@ -333,7 +345,7 @@ Kirigami.Page {
                                 Item {
                                     id: weekItem
                                     width: parent.width
-                                    implicitHeight: (viewLoader.multiDayLinesShown * (Kirigami.Units.gridUnit + Kirigami.Units.smallSpacing)) + Kirigami.Units.smallSpacing
+                                    implicitHeight: allDayHeader.actualHeight
                                     clip: true
                                     RowLayout {
                                         width: parent.width
@@ -393,6 +405,7 @@ Kirigami.Page {
 
                                                                 addDate: parent.date
                                                                 onAddNewIncidence: root.addIncidence(type, addDate, false)
+                                                                onDeselect: root.deselect()
                                                             }
                                                         }
                                                     }
@@ -425,6 +438,32 @@ Kirigami.Page {
                                         }
                                     }
                                 }
+                            }
+                        }
+                    }
+
+                    MouseArea {
+                        anchors.left: parent.left
+                        anchors.bottom: parent.bottom
+                        anchors.right: parent.right
+                        height: 5
+                        z: Infinity
+                        cursorShape: !Kirigami.Settings.isMobile ? Qt.SplitVCursor : undefined
+                        preventStealing: true
+                        enabled: true
+                        visible: true
+                        onPressed: _lastY = mapToGlobal(mouseX, mouseY).y
+                        onReleased: {
+                            Kalendar.Config.weekViewAllDayHeaderHeight = allDayHeader.actualHeight;
+                            Kalendar.Config.save();
+                        }
+                        property real _lastY: -1
+
+                        onPositionChanged: {
+                            if (_lastY === -1) {
+                                return;
+                            } else {
+                                allDayHeader.actualHeight = Math.min(allDayHeader.maxHeight, Math.max(allDayHeader.minHeight, Kalendar.Config.weekViewAllDayHeaderHeight - _lastY + mapToGlobal(mouseX, mouseY).y))
                             }
                         }
                     }
@@ -552,6 +591,7 @@ Kirigami.Page {
                                                 anchors.fill: parent
                                                 addDate: new Date(DateUtils.addDaysToDate(viewLoader.startDate, dayColumn.index).setHours(index))
                                                 onAddNewIncidence: addIncidence(type, addDate, true)
+                                                onDeselect: root.deselect()
                                             }
                                         }
                                     }
