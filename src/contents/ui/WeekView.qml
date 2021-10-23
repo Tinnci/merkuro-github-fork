@@ -301,7 +301,7 @@ Kirigami.Page {
 
                     readonly property int minHeight: Kirigami.Units.gridUnit *2
                     readonly property int maxHeight: applicationWindow().height / 2
-                    readonly property int defaultHeight: (viewLoader.multiDayLinesShown * (Kirigami.Units.gridUnit + Kirigami.Units.smallSpacing)) + Kirigami.Units.smallSpacing
+                    readonly property int defaultHeight: viewLoader.multiDayLinesShown * (Kirigami.Units.gridUnit + Kirigami.Units.smallSpacing + root.incidenceSpacing)
                     property int actualHeight: {
                         if (Kalendar.Config.weekViewAllDayHeaderHeight === -1) {
                             return defaultHeight;
