@@ -298,7 +298,6 @@ Kirigami.Page {
                     width: pathView.width
                     height: actualHeight
                     visible: allDayViewLoader.active
-                    clip: true
 
                     readonly property int minHeight: Kirigami.Units.gridUnit *2
                     readonly property int maxHeight: applicationWindow().height / 2
@@ -315,6 +314,32 @@ Kirigami.Page {
                         id: headerBackground
                         anchors.fill: parent
                         color: Kirigami.Theme.backgroundColor
+                    }
+
+                    Kirigami.ShadowedRectangle {
+                        anchors.left: parent.left
+                        anchors.top: parent.bottom
+                        anchors.topMargin: root.gridLineWidth
+                        width: root.hourLabelWidth
+                        height: resetHeaderHeightButton.height
+                        corners.bottomRightRadius: Kirigami.Units.smallSpacing
+                        shadow.size: Kirigami.Units.largeSpacing
+                        shadow.color: Qt.rgba(0.0, 0.0, 0.0, 0.2)
+                        shadow.yOffset: 2
+                        shadow.xOffset: 2
+                        visible: allDayHeader.actualHeight !== allDayHeader.defaultHeight
+
+                        QQC2.ToolButton {
+                            id: resetHeaderHeightButton
+                            width: root.hourLabelWidth
+                            text: i18n("Reset")
+                            onClicked: {
+                                Kalendar.Config.weekViewAllDayHeaderHeight = -1;
+                                Kalendar.Config.save();
+                                allDayHeader.actualHeight = allDayHeader.defaultHeight;
+                            }
+                        }
+
                     }
 
                     QQC2.Label {
@@ -452,7 +477,13 @@ Kirigami.Page {
                         preventStealing: true
                         enabled: true
                         visible: true
-                        onPressed: _lastY = mapToGlobal(mouseX, mouseY).y
+                        onPressed: {
+                            _lastY = mapToGlobal(mouseX, mouseY).y;
+                            if(Kalendar.Config.weekViewAllDayHeaderHeight === -1) {
+                                // Stops shrink on first drag
+                                Kalendar.Config.weekViewAllDayHeaderHeight = allDayHeader.defaultHeight;
+                            }
+                        }
                         onReleased: {
                             Kalendar.Config.weekViewAllDayHeaderHeight = allDayHeader.actualHeight;
                             Kalendar.Config.save();
@@ -484,7 +515,6 @@ Kirigami.Page {
                         color: Qt.rgba(0.0, 0.0, 0.0, 0.15)
                     }
                 }
-
 
                 QQC2.ScrollView {
                     id: hourlyView
