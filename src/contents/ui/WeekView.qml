@@ -335,7 +335,7 @@ Kirigami.Page {
                         QQC2.ToolButton {
                             id: resetHeaderHeightButton
                             width: root.hourLabelWidth
-                            text: i18n("Reset")
+                            text: i18nc("@action:button", "Reset")
                             onClicked: {
                                 Kalendar.Config.weekViewAllDayHeaderHeight = -1;
                                 Kalendar.Config.save();
