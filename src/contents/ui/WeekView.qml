@@ -342,7 +342,6 @@ Kirigami.Page {
                                 allDayHeader.actualHeight = allDayHeader.defaultHeight;
                             }
                         }
-
                     }
 
                     QQC2.Label {
