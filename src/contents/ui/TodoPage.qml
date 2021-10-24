@@ -153,6 +153,7 @@ Kirigami.ScrollablePage {
                 root.deleteTodo(todoPtr, deleteDate);
                 completedSheet.closeDialog();
             }
+            onDeselect: root.deselect()
             onCompleteTodo: root.completeTodo(todoPtr);
             onAddSubTodo: root.addSubTodo(parentWrapper)
         }
@@ -231,9 +232,6 @@ Kirigami.ScrollablePage {
                             }
                         }
                     }
-                    onDeselect: root.deselect()
-                    onCompleteTodo: root.completeTodo(todoPtr);
-                    onAddSubTodo: root.addSubTodo(parentWrapper)
                 }
             }
         }
