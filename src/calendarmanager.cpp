@@ -660,8 +660,38 @@ void CalendarManager::editIncidence(IncidenceWrapper *incidenceWrapper)
     });
 }
 
-void CalendarManager::deleteIncidence(KCalendarCore::Incidence::Ptr incidence)
+bool CalendarManager::hasChildren(KCalendarCore::Incidence::Ptr incidence)
 {
+    return m_calendar->childIncidences(incidence->uid()).isEmpty();
+}
+
+void CalendarManager::deleteAllChildren(KCalendarCore::Incidence::Ptr incidence)
+{
+    auto allChildren = m_calendar->childIncidences(incidence->uid());
+
+    for (auto child : allChildren) {
+        if (m_calendar->childIncidences(child->uid()).isEmpty()) {
+            deleteAllChildren(child);
+        }
+    }
+
+    for (auto child : allChildren) {
+        m_calendar->deleteIncidence(child);
+    }
+}
+
+void CalendarManager::deleteIncidence(KCalendarCore::Incidence::Ptr incidence, bool deleteChildren)
+{
+    auto directChildren = m_calendar->childIncidences(incidence->uid());
+
+    if (deleteChildren) {
+        deleteAllChildren(incidence);
+    } else if (!directChildren.isEmpty()) {
+        for (auto child : directChildren) {
+            child->setRelatedTo(QStringLiteral(""));
+        }
+    }
+
     m_calendar->deleteIncidence(incidence);
 }
 
