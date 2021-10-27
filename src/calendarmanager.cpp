@@ -662,7 +662,7 @@ void CalendarManager::editIncidence(IncidenceWrapper *incidenceWrapper)
 
 bool CalendarManager::hasChildren(KCalendarCore::Incidence::Ptr incidence)
 {
-    return m_calendar->childIncidences(incidence->uid()).isEmpty();
+    return !m_calendar->childIncidences(incidence->uid()).isEmpty();
 }
 
 void CalendarManager::deleteAllChildren(KCalendarCore::Incidence::Ptr incidence)
@@ -689,6 +689,7 @@ void CalendarManager::deleteIncidence(KCalendarCore::Incidence::Ptr incidence, b
     } else if (!directChildren.isEmpty()) {
         for (auto child : directChildren) {
             child->setRelatedTo(QStringLiteral(""));
+            m_calendar->modifyIncidence(child);
         }
     }
 
