@@ -671,7 +671,7 @@ void CalendarManager::deleteAllChildren(KCalendarCore::Incidence::Ptr incidence)
     auto allChildren = m_calendar->childIncidences(incidence->uid());
 
     for (auto child : allChildren) {
-        if (m_calendar->childIncidences(child->uid()).isEmpty()) {
+        if (!m_calendar->childIncidences(child->uid()).isEmpty()) {
             deleteAllChildren(child);
         }
     }
