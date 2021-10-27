@@ -13,8 +13,12 @@ Kirigami.OverlaySheet {
     signal addException(date exceptionDate, var incidenceWrapper)
     signal addRecurrenceEndDate(date endDate, var incidenceWrapper)
     signal deleteIncidence(var incidencePtr)
+    signal deleteIncidenceWithChildren(var incidencePtr)
 
     property var incidenceWrapper
+    onIncidenceWrapperChanged: console.log(CalendarManager.hasChildren(incidenceWrapper.incidencePtr))
+    property bool incidenceHasChildren: incidenceWrapper !== undefined ? CalendarManager.hasChildren(incidenceWrapper.incidencePtr) : false
+    onIncidenceHasChildrenChanged: console.log(incidenceHasChildren)
     property date deleteDate
 
     header: Kirigami.Heading {
@@ -50,9 +54,17 @@ Kirigami.OverlaySheet {
             }
 
             QQC2.Button {
-                icon.name: "delete"
-                text: incidenceWrapper.recurrenceData.type > 0 ? i18n("Delete All") : i18n("Delete")
+                icon.name: "group-delete"
+                text: i18n("Delete Only This")
+                visible: deleteIncidenceSheet.incidenceHasChildren
                 onClicked: deleteIncidence(incidenceWrapper.incidencePtr)
+                QQC2.DialogButtonBox.buttonRole: QQC2.DialogButtonBox.AcceptRole
+            }
+
+            QQC2.Button {
+                icon.name: "delete"
+                text: deleteIncidenceSheet.incidenceHasChildren || incidenceWrapper.recurrenceData.type > 0 ? i18n("Delete All") : i18n("Delete")
+                onClicked: deleteIncidenceSheet.incidenceHasChildren ? deleteIncidenceWithChildren(incidenceWrapper.incidencePtr) : deleteIncidence(incidenceWrapper.incidencePtr)
                 QQC2.DialogButtonBox.buttonRole: QQC2.DialogButtonBox.AcceptRole
             }
 
