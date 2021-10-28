@@ -676,6 +676,11 @@ void CalendarManager::deleteAllChildren(KCalendarCore::Incidence::Ptr incidence)
     }
 
     for (auto child : allChildren) {
+        if (child->recurs()) {
+            for (auto instance : m_calendar->instances(child)) {
+                m_changer->deleteIncidence(m_calendar->item(instance));
+            }
+        }
         m_calendar->deleteIncidence(child);
     }
 }
@@ -691,12 +696,21 @@ void CalendarManager::deleteIncidence(KCalendarCore::Incidence::Ptr incidence, b
         } else {
             m_changer->startAtomicOperation(i18n("Delete task and make sub-tasks independent"));
             for (auto child : directChildren) {
+                for (auto instance : m_calendar->instances(child)) {
+                    KCalendarCore::Incidence::Ptr oldInstance(instance->clone());
+                    instance->setRelatedTo(QString());
+                    m_changer->modifyIncidence(m_calendar->item(instance), oldInstance);
+                }
+
                 KCalendarCore::Incidence::Ptr oldInc(child->clone());
                 child->setRelatedTo(QString());
+                m_changer->modifyIncidence(m_calendar->item(child), oldInc);
+            }
+        }
 
-                Akonadi::Item modifiedItem = m_calendar->item(child->instanceIdentifier());
-                modifiedItem.setPayload<KCalendarCore::Incidence::Ptr>(child);
-                m_changer->modifyIncidence(modifiedItem, oldInc);
+        if (incidence->recurs()) {
+            for (auto instance : m_calendar->instances(incidence)) {
+                m_changer->deleteIncidence(m_calendar->item(instance));
             }
         }
 
