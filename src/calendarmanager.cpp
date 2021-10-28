@@ -685,15 +685,25 @@ void CalendarManager::deleteIncidence(KCalendarCore::Incidence::Ptr incidence, b
 {
     auto directChildren = m_calendar->childIncidences(incidence->uid());
 
-    if (deleteChildren) {
-        deleteAllChildren(incidence);
-    } else if (!directChildren.isEmpty()) {
-        m_changer->startAtomicOperation(i18n("Make sub-to-dos independent"));
-        for (auto child : directChildren) {
-            child->setRelatedTo(QStringLiteral(""));
-            m_calendar->modifyIncidence(child);
+    if (!directChildren.isEmpty()) {
+        if (deleteChildren) {
+            m_changer->startAtomicOperation(i18n("Delete task and its sub-tasks"));
+            deleteAllChildren(incidence);
+        } else {
+            m_changer->startAtomicOperation(i18n("Delete task and make sub-tasks independent"));
+            for (auto child : directChildren) {
+                KCalendarCore::Incidence::Ptr oldInc(child->clone());
+                child->setRelatedTo(QString());
+
+                Akonadi::Item modifiedItem = m_calendar->item(child->instanceIdentifier());
+                modifiedItem.setPayload<KCalendarCore::Incidence::Ptr>(child);
+                m_changer->modifyIncidence(modifiedItem, oldInc);
+            }
         }
+
+        m_calendar->deleteIncidence(incidence);
         m_changer->endAtomicOperation();
+        return;
     }
 
     m_calendar->deleteIncidence(incidence);
