@@ -687,10 +687,12 @@ void CalendarManager::deleteIncidence(KCalendarCore::Incidence::Ptr incidence, b
     if (deleteChildren) {
         deleteAllChildren(incidence);
     } else if (!directChildren.isEmpty()) {
+        m_changer->startAtomicOperation(i18n("Make sub-to-dos independent"));
         for (auto child : directChildren) {
             child->setRelatedTo(QStringLiteral(""));
             m_calendar->modifyIncidence(child);
         }
+        m_changer->endAtomicOperation();
     }
 
     m_calendar->deleteIncidence(incidence);
