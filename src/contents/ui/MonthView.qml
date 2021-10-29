@@ -145,7 +145,8 @@ Kirigami.Page {
             property bool isNextOrCurrentItem: index >= pathView.currentIndex -1 && index <= pathView.currentIndex + 1
 
             active: isNextOrCurrentItem
-            //asynchronous: true
+            asynchronous: !PathView.isCurrentItem
+            visible: status === Loader.Ready
             sourceComponent: MultiDayView {
                 id: dayView
                 objectName: "monthView"
