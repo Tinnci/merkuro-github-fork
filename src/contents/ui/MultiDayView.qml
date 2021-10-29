@@ -212,67 +212,62 @@ Item {
                         Layout.fillHeight: true
                         property date startDate: periodStartDate
 
-                        QQC2.ScrollView {
+                        ListView {
+                            id: linesRepeater
+
                             anchors {
                                 fill: parent
                                 // Offset for date
                                 topMargin: root.showDayIndicator ? Kirigami.Units.gridUnit + Kirigami.Units.largeSpacing * 1.5 : 0
+                                rightMargin: spacing
                             }
 
-                            QQC2.ScrollBar.horizontal.policy: QQC2.ScrollBar.AlwaysOff
+                            clip: true
+                            spacing: root.dayWidth < (Kirigami.Units.gridUnit * 5 + Kirigami.Units.smallSpacing * 2) ?
+                            Kirigami.Units.smallSpacing / 2 : Kirigami.Units.smallSpacing
 
-                            ListView {
-                                id: linesRepeater
-                                Layout.fillWidth: true
-                                Layout.rightMargin: spacing
+                            DayMouseArea {
+                                id: listViewMenu
+                                anchors.fill: parent
+                                z: -1
 
-                                clip: true
-                                spacing: root.dayWidth < (Kirigami.Units.gridUnit * 5 + Kirigami.Units.smallSpacing * 2) ?
-                                    Kirigami.Units.smallSpacing / 2 : Kirigami.Units.smallSpacing
+                                function useGridSquareDate(type, root, globalPos) {
+                                    for(var i in root.children) {
+                                        var child = root.children[i];
+                                        var localpos = child.mapFromGlobal(globalPos.x, globalPos.y);
 
-                                DayMouseArea {
-                                    id: listViewMenu
-                                    anchors.fill: parent
-                                    z: -1
-
-                                    function useGridSquareDate(type, root, globalPos) {
-                                        for(var i in root.children) {
-                                            var child = root.children[i];
-                                            var localpos = child.mapFromGlobal(globalPos.x, globalPos.y);
-
-                                            if(child.contains(localpos) && child.gridSquareDate) {
-                                                addIncidence(type, child.gridSquareDate);
-                                            } else {
-                                                useGridSquareDate(type, child, globalPos);
-                                            }
+                                        if(child.contains(localpos) && child.gridSquareDate) {
+                                            addIncidence(type, child.gridSquareDate);
+                                        } else {
+                                            useGridSquareDate(type, child, globalPos);
                                         }
                                     }
-
-                                    onAddNewIncidence: useGridSquareDate(type, applicationWindow().contentItem, this.mapToGlobal(clickX, clickY))
-                                    onDeselect: root.deselect()
                                 }
 
-                                model: incidences
-                                onCountChanged: {
-                                    root.numberOfLinesShown = count
-                                }
+                                onAddNewIncidence: useGridSquareDate(type, applicationWindow().contentItem, this.mapToGlobal(clickX, clickY))
+                                onDeselect: root.deselect()
+                            }
 
-                                delegate: Item {
-                                    id: line
-                                    height: Kirigami.Units.gridUnit + Kirigami.Units.smallSpacing
+                            model: incidences
+                            onCountChanged: {
+                                root.numberOfLinesShown = count
+                            }
 
-                                    //Incidences
-                                    Repeater {
-                                        id: incidencesRepeater
-                                        model: modelData
+                            delegate: Item {
+                                id: line
+                                height: Kirigami.Units.gridUnit + Kirigami.Units.smallSpacing
 
-                                        MultiDayViewIncidenceDelegate {
-                                            dayWidth: root.dayWidth
-                                            parentViewSpacing: root.spacing
-                                            horizontalSpacing: linesRepeater.spacing
-                                            openOccurrenceId: root.openOccurrence ? root.openOccurrence.incidenceId : ""
-                                            isDark: root.isDark
-                                        }
+                                //Incidences
+                                Repeater {
+                                    id: incidencesRepeater
+                                    model: modelData
+
+                                    MultiDayViewIncidenceDelegate {
+                                        dayWidth: root.dayWidth
+                                        parentViewSpacing: root.spacing
+                                        horizontalSpacing: linesRepeater.spacing
+                                        openOccurrenceId: root.openOccurrence ? root.openOccurrence.incidenceId : ""
+                                        isDark: root.isDark
                                     }
                                 }
                             }
