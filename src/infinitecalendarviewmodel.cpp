@@ -96,10 +96,8 @@ QVariant InfiniteCalendarViewModel::data(const QModelIndex &idx, int role) const
             return QVariant::fromValue(m_monthViewModels[startDate]);
         }
         case ScheduleViewModelRole: {
-            const QDate firstDay = m_firstDayOfMonthDates[idx.row()];
-
-            if (!m_scheduleViewModels.contains(startDate)) {
-                m_scheduleViewModels[startDate] = generateMultiDayIncidenceModel(firstDay, firstDay.daysInMonth(), 1);
+            if (!m_scheduleViewModels.contains(firstDay)) {
+                m_scheduleViewModels[firstDay] = generateMultiDayIncidenceModel(firstDay, firstDay.daysInMonth(), 1);
             }
 
             return QVariant::fromValue(m_scheduleViewModels[firstDay]);
@@ -117,6 +115,18 @@ QVariant InfiniteCalendarViewModel::data(const QModelIndex &idx, int role) const
         return startDate.month();
     case SelectedYearRole:
         return startDate.year();
+    case WeekViewModelRole: {
+        if (!m_weekViewModels.contains(startDate)) {
+            m_weekViewModels[startDate] = new HourlyIncidenceModel;
+            m_weekViewModels[startDate]->setPeriodLength(7);
+            m_weekViewModels[startDate]->setModel(new IncidenceOccurrenceModel);
+            m_weekViewModels[startDate]->model()->setStart(startDate);
+            m_weekViewModels[startDate]->model()->setLength(7);
+            m_weekViewModels[startDate]->model()->setCalendar(m_calendar);
+        }
+
+        return QVariant::fromValue(m_weekViewModels[startDate]);
+    }
     default:
         qWarning() << "Unknown role for startdate:" << QMetaEnum::fromType<Roles>().valueToKey(role);
         return {};
@@ -272,9 +282,9 @@ void InfiniteCalendarViewModel::setScale(int scale)
 
     m_startDates.clear();
     m_firstDayOfMonthDates.clear();
-    m_monthViewModels.clear();
-    m_scheduleViewModels.clear();
-    m_weekViewModels.clear();
+    // m_monthViewModels.clear();
+    // m_scheduleViewModels.clear();
+    // m_weekViewModels.clear();
 
     m_scale = scale;
     setup();
