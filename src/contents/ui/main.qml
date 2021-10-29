@@ -671,7 +671,7 @@ Kirigami.ApplicationWindow {
         id: monthScaleModelLoader
         active: Config.lastOpenedView === Config.MonthView || Config.lastOpenedView === Config.ScheduleView
         onStatusChanged: if(status === Loader.Ready) asynchronous = true
-        Component.onCompleted: pageStack.currentItem.setToDate(root.selectedDate, true)
+        Component.onCompleted: if(pageStack.currentItem) pageStack.currentItem.setToDate(root.selectedDate, true)
         sourceComponent: InfiniteCalendarViewModel {
             scale: InfiniteCalendarViewModel.MonthScale
             calendar: CalendarManager.calendar
@@ -682,7 +682,7 @@ Kirigami.ApplicationWindow {
         id: weekScaleModelLoader
         active: Config.lastOpenedView === Config.WeekView
         onStatusChanged: if(status === Loader.Ready) asynchronous = true
-        Component.onCompleted: pageStack.currentItem.setToDate(root.selectedDate, true)
+        Component.onCompleted: if(pageStack.currentItem) pageStack.currentItem.setToDate(root.selectedDate, true)
         sourceComponent: InfiniteCalendarViewModel {
             scale: InfiniteCalendarViewModel.WeekScale
             calendar: CalendarManager.calendar

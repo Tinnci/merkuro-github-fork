@@ -87,6 +87,12 @@ QVariant InfiniteCalendarViewModel::data(const QModelIndex &idx, int role) const
         case SelectedYearRole:
             return firstDay.year();
         case MonthViewModelRole: {
+            if (m_datesToAdd > 5 && idx.row() < 2 && m_monthViewModels.count() < 3) {
+                return {}; // HACK: Prevent creating the models for the default index 1 date
+                // Unfortunately this gets called by the pathviews no matter what the currentIndex
+                // value is set to.
+            }
+
             if (!m_monthViewModels.contains(startDate)) {
                 m_monthViewModels[startDate] = generateMultiDayIncidenceModel(startDate, 42, 7);
             }
@@ -94,6 +100,10 @@ QVariant InfiniteCalendarViewModel::data(const QModelIndex &idx, int role) const
             return QVariant::fromValue(m_monthViewModels[startDate]);
         }
         case ScheduleViewModelRole: {
+            if (m_datesToAdd > 5 && idx.row() < 2 && m_scheduleViewModels.count() < 3) {
+                return {};
+            }
+
             if (!m_scheduleViewModels.contains(firstDay)) {
                 m_scheduleViewModels[firstDay] = generateMultiDayIncidenceModel(firstDay, firstDay.daysInMonth(), 1);
             }
@@ -114,6 +124,10 @@ QVariant InfiniteCalendarViewModel::data(const QModelIndex &idx, int role) const
     case SelectedYearRole:
         return startDate.year();
     case WeekViewModelRole: {
+        if (m_datesToAdd > 5 && idx.row() < 2 && m_weekViewModels.count() < 3) {
+            return {};
+        }
+
         if (!m_weekViewModels.contains(startDate)) {
             m_weekViewModels[startDate] = new HourlyIncidenceModel;
             m_weekViewModels[startDate]->setPeriodLength(7);
