@@ -350,7 +350,7 @@ void InfiniteCalendarViewModel::handleCalendarRowsInserted(const QModelIndex &pa
     };
 
     auto checkWeekModels = [&affectedWeekModels, this](QDate start, QDate end) {
-        for (auto startDate : m_scheduleViewModels.keys()) {
+        for (auto startDate : m_weekViewModels.keys()) {
             if (end < startDate || start > startDate.addDays(7)) {
                 continue;
             } else {
