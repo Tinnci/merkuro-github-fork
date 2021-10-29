@@ -668,10 +668,19 @@ Kirigami.ApplicationWindow {
     }
 
     Loader {
-        id: modelLoader
+        id: monthScaleModelLoader
         Component.onCompleted: asynchronous = true
         sourceComponent: InfiniteCalendarViewModel {
             scale: InfiniteCalendarViewModel.MonthScale
+            calendar: CalendarManager.calendar
+        }
+    }
+
+    Loader {
+        id: weekScaleModelLoader
+        Component.onCompleted: asynchronous = true
+        sourceComponent: InfiniteCalendarViewModel {
+            scale: InfiniteCalendarViewModel.WeekScale
             calendar: CalendarManager.calendar
         }
     }
@@ -689,7 +698,7 @@ Kirigami.ApplicationWindow {
             }
             currentDate: root.currentDate
             openOccurrence: root.openOccurrence
-            model: modelLoader.item
+            model: monthScaleModelLoader.item
 
             onAddIncidence: root.setUpAdd(type, addDate)
             onViewIncidence: root.setUpView(modelData, collectionData)
@@ -721,7 +730,7 @@ Kirigami.ApplicationWindow {
             }
             selectedDate: root.selectedDate
             openOccurrence: root.openOccurrence
-            model: modelLoader.item
+            model: monthScaleModelLoader.item
 
             onDayChanged: if(day !== root.selectedDate.getDate() && !initialMonth) root.selectedDate = new Date (year, month, day)
             onMonthChanged: if(month !== root.selectedDate.getMonth() && !initialMonth) root.selectedDate = new Date (year, month, day)
@@ -757,6 +766,7 @@ Kirigami.ApplicationWindow {
             selectedDate: root.selectedDate
             currentDate: root.currentDate
             openOccurrence: root.openOccurrence
+            model: weekScaleModelLoader.item
 
             onDayChanged: if(day !== root.selectedDate.getDate() && !initialWeek) root.selectedDate = new Date (year, month, day)
             onMonthChanged: if(month !== root.selectedDate.getMonth() && !initialWeek) root.selectedDate = new Date (year, month, day)
