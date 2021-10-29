@@ -17,6 +17,7 @@
 #include <AkonadiCore/AgentTypeModel>
 #endif
 #include <KWindowSystem>
+#include <QDebug>
 #include <QPointer>
 
 using namespace Akonadi;
