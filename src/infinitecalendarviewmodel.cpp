@@ -4,8 +4,14 @@
 #include "incidenceoccurrencemodel.h"
 #include <QDebug>
 #include <QMetaEnum>
+#include <akonadi_version.h>
 #include <cmath>
 #include <infinitecalendarviewmodel.h>
+#if AKONADI_VERSION >= QT_VERSION_CHECK(5, 18, 41)
+#include <Akonadi/EntityTreeModel>
+#else
+#include <AkonadiCore/EntityTreeModel>
+#endif
 
 InfiniteCalendarViewModel::InfiniteCalendarViewModel(QObject *parent)
     : QAbstractListModel(parent)
@@ -63,6 +69,7 @@ QVariant InfiniteCalendarViewModel::data(const QModelIndex &idx, int role) const
         auto model = new MultiDayIncidenceModel;
         model->setPeriodLength(periodLength);
         model->setModel(new IncidenceOccurrenceModel);
+        model->model()->setHandleOwnRefresh(false);
         model->model()->setStart(start);
         model->model()->setLength(length);
         model->model()->setCalendar(m_calendar);
@@ -111,6 +118,7 @@ QVariant InfiniteCalendarViewModel::data(const QModelIndex &idx, int role) const
             m_weekViewModels[startDate] = new HourlyIncidenceModel;
             m_weekViewModels[startDate]->setPeriodLength(7);
             m_weekViewModels[startDate]->setModel(new IncidenceOccurrenceModel);
+            m_weekViewModels[startDate]->model()->setHandleOwnRefresh(false);
             m_weekViewModels[startDate]->model()->setStart(startDate);
             m_weekViewModels[startDate]->model()->setLength(7);
             m_weekViewModels[startDate]->model()->setCalendar(m_calendar);
@@ -305,4 +313,99 @@ void InfiniteCalendarViewModel::setCalendar(Akonadi::ETMCalendar *calendar)
     for (auto model : m_weekViewModels) {
         model->model()->setCalendar(calendar);
     }
+
+    connect(m_calendar->model(), &QAbstractItemModel::dataChanged, this, &InfiniteCalendarViewModel::handleCalendarDataChanged);
+    connect(m_calendar->model(), &QAbstractItemModel::rowsInserted, this, &InfiniteCalendarViewModel::handleCalendarRowsInserted);
+    connect(m_calendar->model(), &QAbstractItemModel::rowsRemoved, this, &InfiniteCalendarViewModel::handleCalendarRowsRemoved);
+}
+
+void InfiniteCalendarViewModel::handleCalendarDataChanged(const QModelIndex &topLeft, const QModelIndex &bottomRight, const QVector<int> &roles)
+{
+}
+
+void InfiniteCalendarViewModel::handleCalendarRowsInserted(const QModelIndex &parent, int first, int last)
+{
+    QVector<QDate> affectedMonthModels;
+    QVector<QDate> affectedScheduleModels;
+    QVector<QDate> affectedWeekModels;
+
+    auto checkMonthModels = [&affectedMonthModels, this](QDate start, QDate end) {
+        for (auto startDate : m_monthViewModels.keys()) {
+            if (end < startDate || start > startDate.addDays(42)) {
+                continue;
+            } else {
+                affectedMonthModels.append(startDate);
+            }
+        }
+    };
+
+    auto checkScheduleModels = [&affectedScheduleModels, this](QDate start, QDate end) {
+        for (auto startDate : m_scheduleViewModels.keys()) {
+            if (end < startDate || start > startDate.addDays(start.daysInMonth())) {
+                continue;
+            } else {
+                affectedScheduleModels.append(startDate);
+            }
+        }
+    };
+
+    auto checkWeekModels = [&affectedWeekModels, this](QDate start, QDate end) {
+        for (auto startDate : m_scheduleViewModels.keys()) {
+            if (end < startDate || start > startDate.addDays(7)) {
+                continue;
+            } else {
+                affectedWeekModels.append(startDate);
+            }
+        }
+    };
+
+    auto checkModels = [=](QDate start, QDate end) {
+        checkMonthModels(start, end);
+        checkScheduleModels(start, end);
+        checkWeekModels(start, end);
+    };
+
+    for (int i = first; i <= last; i++) {
+        const auto index = m_calendar->model()->index(i, 0, parent);
+        const auto item = index.data(Akonadi::EntityTreeModel::ItemRole).value<Akonadi::Item>();
+
+        if (item.hasPayload<KCalendarCore::Incidence::Ptr>()) {
+            const auto incidence = item.payload<KCalendarCore::Incidence::Ptr>();
+
+            if (incidence->type() == KCalendarCore::Incidence::TypeTodo) {
+                const auto todo = incidence.staticCast<KCalendarCore::Todo>();
+                const QDate dateStart = todo->dtStart().date();
+                const QDate dateDue = todo->dtDue().date();
+
+                if (!dateStart.isValid() && !dateDue.isValid()) {
+                    continue;
+                } else if (!dateStart.isValid()) {
+                    checkModels(dateDue, dateDue);
+                }
+
+            } else if (!incidence->dtStart().isValid()) {
+                continue;
+            } else if (incidence->type() == KCalendarCore::Incidence::TypeEvent) {
+                const auto event = incidence.staticCast<KCalendarCore::Event>();
+                const QDate dateStart = event->dtStart().date();
+                const QDate dateEnd = event->dtEnd().date();
+
+                checkModels(dateStart, dateEnd);
+            }
+        }
+    }
+
+    for (auto startDate : affectedMonthModels) {
+        m_monthViewModels[startDate]->model()->updateQuery();
+    }
+    for (auto startDate : affectedScheduleModels) {
+        m_scheduleViewModels[startDate]->model()->updateQuery();
+    }
+    for (auto startDate : affectedWeekModels) {
+        m_weekViewModels[startDate]->model()->updateQuery();
+    }
+}
+
+void InfiniteCalendarViewModel::handleCalendarRowsRemoved(const QModelIndex &parent, int first, int last)
+{
 }
