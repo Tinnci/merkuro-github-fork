@@ -59,6 +59,10 @@ public:
     Akonadi::ETMCalendar *calendar();
     void setCalendar(Akonadi::ETMCalendar *calendar);
 
+    void handleCalendarDataChanged(const QModelIndex &topLeft, const QModelIndex &bottomRight, const QVector<int> &roles);
+    void handleCalendarRowsInserted(const QModelIndex &parent, int first, int last);
+    void handleCalendarRowsRemoved(const QModelIndex &parent, int first, int last);
+
 Q_SIGNALS:
     void datesToAddChanged();
     void scaleChanged();
