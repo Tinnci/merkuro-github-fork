@@ -143,9 +143,10 @@ Kirigami.Page {
             property int year: model.selectedYear
 
             property bool isNextOrCurrentItem: index >= pathView.currentIndex -1 && index <= pathView.currentIndex + 1
+            property bool isCurrentItem: PathView.isCurrentItem
 
             active: isNextOrCurrentItem
-            asynchronous: !PathView.isCurrentItem
+            asynchronous: isCurrentItem
             visible: status === Loader.Ready
             sourceComponent: MultiDayView {
                 id: dayView
@@ -154,6 +155,7 @@ Kirigami.Page {
                 height: pathView.height
                 model: monthViewModel // from monthPage model
                 filter: monthPage.filter
+                scrollBarsEnabled: viewLoader.isCurrentItem // Workaround for async load crashing
 
                 startDate: viewLoader.startDate
                 currentDate: monthPage.currentDate

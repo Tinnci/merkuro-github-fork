@@ -23,6 +23,7 @@ Kirigami.Page {
     signal deselect()
 
     property var openOccurrence: {}
+    property var model
     property var filter: {
         "tags": []
     }
@@ -130,9 +131,7 @@ Kirigami.Page {
             }
         }
 
-        model: Kalendar.InfiniteCalendarViewModel {
-            scale: Kalendar.InfiniteCalendarViewModel.WeekScale
-        }
+        model: root.model
 
         property date dateToUse
         property int startIndex
@@ -169,24 +168,6 @@ Kirigami.Page {
             readonly property int daysFromWeekStart: DateUtils.fullDaysBetweenDates(startDate, root.currentDate) - 1
             // As long as the date is even slightly larger, it will return 1; since we start from the startDate at 00:00, adjust
 
-            Loader {
-                id: modelLoader
-                active: viewLoader.isNextOrCurrentItem
-                asynchronous: true
-                sourceComponent: Kalendar.HourlyIncidenceModel {
-                    id: hourlyModel
-                    filters: Kalendar.HourlyIncidenceModel.NoAllDay | Kalendar.HourlyIncidenceModel.NoMultiDay
-                    model: Kalendar.IncidenceOccurrenceModel {
-                        id: occurrenceModel
-                        objectName: "incidenceOccurrenceModel"
-                        start: viewLoader.startDate
-                        length: root.daysToShow
-                        filter: root.filter ? root.filter : {}
-                        calendar: Kalendar.CalendarManager.calendar
-                    }
-                }
-            }
-
             active: isNextOrCurrentItem
             //asynchronous: true
             sourceComponent: Column {
@@ -217,7 +198,7 @@ Kirigami.Page {
                     Repeater {
                         id: dayHeadings
 
-                        model: modelLoader.item.rowCount()
+                        model: weekViewModel.rowCount()
                         delegate: Kirigami.Heading {
                             id: dayHeading
 
@@ -552,8 +533,8 @@ Kirigami.Page {
                     z: -2
                     QQC2.ScrollBar.horizontal.policy: QQC2.ScrollBar.AlwaysOff
 
-                    readonly property real periodsPerHour: 60 / modelLoader.item.periodLength
-                    readonly property real daySections: (60 * 24) / modelLoader.item.periodLength
+                    readonly property real periodsPerHour: 60 / weekViewModel.periodLength
+                    readonly property real daySections: (60 * 24) / weekViewModel.periodLength
                     readonly property real dayHeight: (daySections * Kirigami.Units.gridUnit) + (root.gridLineWidth * 23)
                     readonly property real hourHeight: periodsPerHour * Kirigami.Units.gridUnit
                     readonly property real minuteHeight: hourHeight / 60
@@ -654,7 +635,7 @@ Kirigami.Page {
                                 anchors.fill: parent
                                 spacing: root.gridLineWidth
                                 orientation: Qt.Horizontal
-                                model: modelLoader.item
+                                model: weekViewModel
 
                                 boundsBehavior: Flickable.StopAtBounds
 
