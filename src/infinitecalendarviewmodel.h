@@ -3,6 +3,9 @@
 
 #pragma once
 
+#include "hourlyincidencemodel.h"
+#include "multidayincidencemodel.h"
+#include <Akonadi/Calendar/ETMCalendar>
 #include <QAbstractItemModel>
 #include <QCalendar>
 #include <QDateTime>
@@ -15,6 +18,7 @@ class InfiniteCalendarViewModel : public QAbstractListModel
     Q_PROPERTY(int datesToAdd READ datesToAdd WRITE setDatesToAdd NOTIFY datesToAddChanged)
     Q_PROPERTY(int scale READ scale WRITE setScale NOTIFY scaleChanged)
     Q_PROPERTY(QStringList weekViewLocalisedHourLabels MEMBER m_weekViewLocalisedHourLabels CONSTANT)
+    Q_PROPERTY(Akonadi::ETMCalendar *calendar READ calendar WRITE setCalendar NOTIFY calendarChanged)
 
 public:
     // The decade scale is designed to be used in a 4x3 grid, so shows 12 years at a time
@@ -26,6 +30,9 @@ public:
         FirstDayOfMonthRole,
         SelectedMonthRole,
         SelectedYearRole,
+        MonthViewModelRole,
+        ScheduleViewModelRole,
+        WeekViewModelRole
     };
     Q_ENUM(Roles);
 
@@ -49,9 +56,13 @@ public:
     int scale();
     void setScale(int scale);
 
+    Akonadi::ETMCalendar *calendar();
+    void setCalendar(Akonadi::ETMCalendar *calendar);
+
 Q_SIGNALS:
     void datesToAddChanged();
     void scaleChanged();
+    void calendarChanged();
 
 private:
     QVector<QDate> m_startDates;
@@ -60,4 +71,8 @@ private:
     QLocale m_locale;
     int m_datesToAdd = 10;
     int m_scale = MonthScale;
+    mutable QHash<QDate, MultiDayIncidenceModel *> m_monthViewModels;
+    mutable QHash<QDate, MultiDayIncidenceModel *> m_scheduleViewModels;
+    mutable QHash<QDate, HourlyIncidenceModel *> m_weekViewModels;
+    Akonadi::ETMCalendar *m_calendar;
 };
