@@ -45,6 +45,7 @@ Kirigami.Page {
     readonly property real incidenceSpacing: Kirigami.Units.smallSpacing / 2
     readonly property real gridLineWidth: 1.0
     readonly property real hourLabelWidth: Kirigami.Units.gridUnit * 3.5
+    readonly property real periodHeight: Kirigami.Units.gridUnit / 2
 
     property var hourStrings: []
     Component.onCompleted: {
@@ -519,8 +520,8 @@ Kirigami.Page {
 
                     readonly property real periodsPerHour: 60 / weekViewModel.periodLength
                     readonly property real daySections: (60 * 24) / weekViewModel.periodLength
-                    readonly property real dayHeight: (daySections * Kirigami.Units.gridUnit) + (root.gridLineWidth * 23)
-                    readonly property real hourHeight: periodsPerHour * Kirigami.Units.gridUnit
+                    readonly property real dayHeight: (daySections * root.periodHeight) + (root.gridLineWidth * 23)
+                    readonly property real hourHeight: periodsPerHour * root.periodHeight
                     readonly property real minuteHeight: hourHeight / 60
 
                     Connections {
@@ -529,7 +530,9 @@ Kirigami.Page {
                             if(!Kirigami.Settings.isMobile) root.scrollbarWidth = hourlyView.QQC2.ScrollBar.vertical.width;
                         }
                     }
-                    Component.onCompleted: if(!Kirigami.Settings.isMobile) root.scrollbarWidth = hourlyView.QQC2.ScrollBar.vertical.width
+                    Component.onCompleted: {
+                        if(!Kirigami.Settings.isMobile) root.scrollbarWidth = hourlyView.QQC2.ScrollBar.vertical.width
+                    }
 
                     Item {
                         id: hourlyViewContents
@@ -554,7 +557,7 @@ Kirigami.Page {
 
                             model: root.hourStrings
                             delegate: QQC2.Label {
-                                height: (Kirigami.Units.gridUnit * hourlyView.periodsPerHour)
+                                height: root.periodHeight * hourlyView.periodsPerHour
                                 width: root.hourLabelWidth
                                 rightPadding: Kirigami.Units.smallSpacing
                                 verticalAlignment: Text.AlignBottom
@@ -629,9 +632,9 @@ Kirigami.Page {
                                                 root.openOccurrence.incidenceId === modelData.incidenceId : false
 
                                             x: root.incidenceSpacing + (modelData.priorTakenWidthShare * root.dayWidth)
-                                            y: (modelData.starts * Kirigami.Units.gridUnit) + root.incidenceSpacing + gridLineYCompensation
+                                            y: (modelData.starts * root.periodHeight) + root.incidenceSpacing + gridLineYCompensation
                                             width: (root.dayWidth * modelData.widthShare) - (root.incidenceSpacing * 2)
-                                            height: (modelData.duration * Kirigami.Units.gridUnit) - (root.incidenceSpacing * 2) + gridLineHeightCompensation - root.gridLineWidth
+                                            height: (modelData.duration * root.periodHeight) - (root.incidenceSpacing * 2) + gridLineHeightCompensation - root.gridLineWidth
                                             radius: Kirigami.Units.smallSpacing
                                             color: Qt.rgba(0,0,0,0)
                                             clip: true
