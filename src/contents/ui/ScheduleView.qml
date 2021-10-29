@@ -22,6 +22,7 @@ Kirigami.Page {
     signal deselect()
 
     property var openOccurrence
+    property var model
     property var filter: {
         "tags": []
     }
@@ -127,9 +128,7 @@ Kirigami.Page {
             }
         }
 
-        model: Kalendar.InfiniteCalendarViewModel {
-            scale: Kalendar.InfiniteCalendarViewModel.MonthScale
-        }
+        model: root.model
 
         property date dateToUse
         property int startIndex
@@ -195,23 +194,7 @@ Kirigami.Page {
 
                     header: Kalendar.Config.showMonthHeader ? monthHeaderComponent : null
 
-                    Loader {
-                        id: modelLoader
-                        asynchronous: true
-                        sourceComponent: Kalendar.MultiDayIncidenceModel {
-                            periodLength: 1
-                            model: Kalendar.IncidenceOccurrenceModel {
-                                id: occurrenceModel
-                                objectName: "incidenceOccurrenceModel"
-                                start: viewLoader.firstDayOfMonth
-                                length: new Date(start.getFullYear(), start.getMonth(), 0).getDate()
-                                filter: root.filter ? root.filter : {}
-                                calendar: Kalendar.CalendarManager.calendar
-                            }
-                        }
-                    }
-
-                    model: modelLoader.item
+                    model: scheduleViewModel
 
                     delegate: DayMouseArea {
                         id: dayMouseArea
