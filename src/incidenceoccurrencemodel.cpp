@@ -93,13 +93,13 @@ void IncidenceOccurrenceModel::updateQuery()
     mEnd = mStart.addDays(mLength);
 
     if (m_handleOwnRefresh) {
+        // We track certain changes in the calendar to know if we need to update our incidence records
         QObject::connect(m_coreCalendar->model(), &QAbstractItemModel::dataChanged, this, &IncidenceOccurrenceModel::refreshView);
-        QObject::connect(m_coreCalendar->model(), &QAbstractItemModel::layoutChanged, this, &IncidenceOccurrenceModel::refreshView);
-        QObject::connect(m_coreCalendar->model(), &QAbstractItemModel::modelReset, this, &IncidenceOccurrenceModel::refreshView);
         QObject::connect(m_coreCalendar->model(), &QAbstractItemModel::rowsInserted, this, &IncidenceOccurrenceModel::refreshView);
-        QObject::connect(m_coreCalendar->model(), &QAbstractItemModel::rowsMoved, this, &IncidenceOccurrenceModel::refreshView);
         QObject::connect(m_coreCalendar->model(), &QAbstractItemModel::rowsRemoved, this, &IncidenceOccurrenceModel::refreshView);
     }
+
+    QObject::connect(m_coreCalendar->model(), &QAbstractItemModel::modelReset, this, &IncidenceOccurrenceModel::refreshView);
 
     refreshView();
 }
