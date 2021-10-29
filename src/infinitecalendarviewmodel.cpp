@@ -1,6 +1,7 @@
 // SPDX-FileCopyrightText: 2021 Claudio Cambra <claudio.cambra@gmail.com>
 // SPDX-License-Identifier: LGPL-2.1-or-later
 
+#include "incidenceoccurrencemodel.h"
 #include <QDebug>
 #include <QMetaEnum>
 #include <cmath>
@@ -58,6 +59,16 @@ QVariant InfiniteCalendarViewModel::data(const QModelIndex &idx, int role) const
 
     const QDate startDate = m_startDates[idx.row()];
 
+    auto generateMultiDayIncidenceModel = [=](QDate start, int length, int periodLength) {
+        auto model = new MultiDayIncidenceModel;
+        model->setPeriodLength(periodLength);
+        model->setModel(new IncidenceOccurrenceModel);
+        model->model()->setStart(start);
+        model->model()->setLength(length);
+        model->model()->setCalendar(m_calendar);
+        return model;
+    };
+
     if (m_scale == MonthScale && role != StartDateRole) {
         const QDate firstDay = m_firstDayOfMonthDates[idx.row()];
 
@@ -68,6 +79,22 @@ QVariant InfiniteCalendarViewModel::data(const QModelIndex &idx, int role) const
             return firstDay.month();
         case SelectedYearRole:
             return firstDay.year();
+        case MonthViewModelRole: {
+            if (!m_monthViewModels.contains(startDate)) {
+                m_monthViewModels[startDate] = generateMultiDayIncidenceModel(startDate, 42, 7);
+            }
+
+            return QVariant::fromValue(m_monthViewModels[startDate]);
+        }
+        case ScheduleViewModelRole: {
+            const QDate firstDay = m_firstDayOfMonthDates[idx.row()];
+
+            if (!m_scheduleViewModels.contains(startDate)) {
+                m_scheduleViewModels[startDate] = generateMultiDayIncidenceModel(firstDay, firstDay.daysInMonth(), 1);
+            }
+
+            return QVariant::fromValue(m_scheduleViewModels[firstDay]);
+        }
         default:
             qWarning() << "Unknown role for startdate:" << QMetaEnum::fromType<Roles>().valueToKey(role);
             return {};
@@ -100,6 +127,9 @@ QHash<int, QByteArray> InfiniteCalendarViewModel::roleNames() const
         {FirstDayOfMonthRole, QByteArrayLiteral("firstDay")},
         {SelectedMonthRole, QByteArrayLiteral("selectedMonth")},
         {SelectedYearRole, QByteArrayLiteral("selectedYear")},
+        {MonthViewModelRole, QByteArrayLiteral("monthViewModel")},
+        {ScheduleViewModelRole, QByteArrayLiteral("scheduleViewModel")},
+        {WeekViewModelRole, QByteArrayLiteral("weekViewModel")},
     };
 }
 
@@ -233,9 +263,35 @@ void InfiniteCalendarViewModel::setScale(int scale)
 
     m_startDates.clear();
     m_firstDayOfMonthDates.clear();
+    m_monthViewModels.clear();
+    m_scheduleViewModels.clear();
+    m_weekViewModels.clear();
+
     m_scale = scale;
     setup();
     Q_EMIT scaleChanged();
 
     endResetModel();
+}
+
+Akonadi::ETMCalendar *InfiniteCalendarViewModel::calendar()
+{
+    return m_calendar;
+}
+
+void InfiniteCalendarViewModel::setCalendar(Akonadi::ETMCalendar *calendar)
+{
+    m_calendar = calendar;
+
+    for (auto model : m_monthViewModels) {
+        model->model()->setCalendar(calendar);
+    }
+
+    for (auto model : m_scheduleViewModels) {
+        model->model()->setCalendar(calendar);
+    }
+
+    for (auto model : m_weekViewModels) {
+        model->model()->setCalendar(calendar);
+    }
 }
