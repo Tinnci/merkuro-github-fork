@@ -667,6 +667,15 @@ Kirigami.ApplicationWindow {
         }
     }
 
+    Loader {
+        id: modelLoader
+        Component.onCompleted: asynchronous = true
+        sourceComponent: InfiniteCalendarViewModel {
+            scale: InfiniteCalendarViewModel.MonthScale
+            calendar: CalendarManager.calendar
+        }
+    }
+
     Component {
         id: monthViewComponent
 
@@ -680,6 +689,7 @@ Kirigami.ApplicationWindow {
             }
             currentDate: root.currentDate
             openOccurrence: root.openOccurrence
+            model: modelLoader.item
 
             onAddIncidence: root.setUpAdd(type, addDate)
             onViewIncidence: root.setUpView(modelData, collectionData)

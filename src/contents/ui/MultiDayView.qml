@@ -24,6 +24,7 @@ Item {
     signal deselect()
 
     property var openOccurrence
+    property var model
 
     property int daysToShow: daysPerRow * 6
     property int daysPerRow: 7
@@ -50,28 +51,10 @@ Item {
     property int numberOfRows: (daysToShow / daysPerRow)
     property var dayHeight: ((height - bgLoader.dayLabels.height) / numberOfRows) - spacing
     property real spacing: Kalendar.Config.monthGridBorderWidth
-    required property bool loadModel
     readonly property bool isDark: LabelUtils.isDarkColor(Kirigami.Theme.backgroundColor)
 
     implicitHeight: (numberOfRows > 1 ? Kirigami.Units.gridUnit * 10 * numberOfRows : numberOfLinesShown * Kirigami.Units.gridUnit) + bgLoader.dayLabels.height
     height: implicitHeight
-
-    Loader {
-        id: modelLoader
-        active: root.loadModel
-        asynchronous: true
-        sourceComponent: Kalendar.MultiDayIncidenceModel {
-            periodLength: 7
-            model: Kalendar.IncidenceOccurrenceModel {
-                id: occurrenceModel
-                objectName: "incidenceOccurrenceModel"
-                start: root.startDate
-                length: root.daysToShow
-                filter: root.filter ? root.filter : {}
-                calendar: Kalendar.CalendarManager.calendar
-            }
-        }
-    }
 
     Kirigami.Separator {
         id: gridBackground
@@ -213,7 +196,7 @@ Item {
 
         //Weeks
         Repeater {
-            model: modelLoader.item
+            model: root.model
             //One row => one week
             Item {
                 width: parent.width

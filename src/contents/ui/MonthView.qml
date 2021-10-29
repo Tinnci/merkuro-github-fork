@@ -23,6 +23,7 @@ Kirigami.Page {
     signal deselect()
 
     property var openOccurrence
+    property var model
     property date startDate
     property date currentDate
     property date firstDayOfMonth
@@ -112,9 +113,7 @@ Kirigami.Page {
             }
         }
 
-        model: Kalendar.InfiniteCalendarViewModel {
-            scale: Kalendar.InfiniteCalendarViewModel.MonthScale
-        }
+        model: monthPage.model
 
         property int startIndex
         Component.onCompleted: {
@@ -152,12 +151,12 @@ Kirigami.Page {
                 objectName: "monthView"
                 width: pathView.width
                 height: pathView.height
-                loadModel: viewLoader.isNextOrCurrentItem
+                model: monthViewModel // from monthPage model
                 filter: monthPage.filter
 
-                startDate: model.startDate
+                startDate: viewLoader.startDate
                 currentDate: monthPage.currentDate
-                month: model.firstDay.getMonth()
+                month: viewLoader.month
 
                 dayHeaderDelegate: QQC2.Control {
                     Layout.maximumHeight: Kirigami.Units.gridUnit * 2
