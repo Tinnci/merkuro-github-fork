@@ -123,6 +123,7 @@ QVariant InfiniteCalendarViewModel::data(const QModelIndex &idx, int role) const
             m_weekViewModels[startDate]->model()->setStart(startDate);
             m_weekViewModels[startDate]->model()->setLength(7);
             m_weekViewModels[startDate]->model()->setCalendar(m_calendar);
+            m_weekViewModels[startDate]->setFilters(HourlyIncidenceModel::NoAllDay | HourlyIncidenceModel::NoMultiDay);
         }
 
         return QVariant::fromValue(m_weekViewModels[startDate]);

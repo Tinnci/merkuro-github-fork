@@ -690,9 +690,23 @@ Kirigami.ApplicationWindow {
         }
     }
 
+    Connections {
+            target: pageStack
+            function onCurrentItemChanged() {
+                if(pageStack.currentItem && (pageStack.currentItem.objectName === "monthView" || pageStack.currentItem.objectName === "scheduleView")) {
+                    monthScaleModelLoader.active = true
+                }
+                if(pageStack.currentItem && pageStack.currentItem.objectName === "weekView") {
+                    weekScaleModelLoader.active = true
+                }
+            }
+        }
+
     Loader {
         id: monthScaleModelLoader
+
         Component.onCompleted: asynchronous = true
+        active: false
         sourceComponent: InfiniteCalendarViewModel {
             scale: InfiniteCalendarViewModel.MonthScale
             calendar: CalendarManager.calendar
@@ -702,6 +716,7 @@ Kirigami.ApplicationWindow {
     Loader {
         id: weekScaleModelLoader
         Component.onCompleted: asynchronous = true
+        active: false
         sourceComponent: InfiniteCalendarViewModel {
             scale: InfiniteCalendarViewModel.WeekScale
             calendar: CalendarManager.calendar
