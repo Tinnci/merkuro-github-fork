@@ -721,6 +721,7 @@ Kirigami.ApplicationWindow {
             }
             selectedDate: root.selectedDate
             openOccurrence: root.openOccurrence
+            model: modelLoader.item
 
             onDayChanged: if(day !== root.selectedDate.getDate() && !initialMonth) root.selectedDate = new Date (year, month, day)
             onMonthChanged: if(month !== root.selectedDate.getMonth() && !initialMonth) root.selectedDate = new Date (year, month, day)
