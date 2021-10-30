@@ -264,23 +264,6 @@ Kirigami.Page {
                     }
                 }
 
-                Loader {
-                    id: allDayIncidenceModelLoader
-                    asynchronous: true
-                    sourceComponent: Kalendar.MultiDayIncidenceModel {
-                        periodLength: root.daysToShow
-                        filters: Kalendar.MultiDayIncidenceModel.AllDayOnly | Kalendar.MultiDayIncidenceModel.MultiDayOnly
-                        model: Kalendar.IncidenceOccurrenceModel {
-                            id: occurrenceModel
-                            objectName: "incidenceOccurrenceModel"
-                            start: viewLoader.startDate
-                            length: root.daysToShow
-                            filter: root.filter ? root.filter : {}
-                            calendar: Kalendar.CalendarManager.calendar
-                        }
-                    }
-                }
-
                 Item {
                     id: allDayHeader
                     width: pathView.width
@@ -351,14 +334,14 @@ Kirigami.Page {
                         id: allDayViewLoader
                         anchors.fill: parent
                         anchors.leftMargin: root.hourLabelWidth
-                        active: allDayIncidenceModelLoader.item.incidenceCount > 0
+                        active: weekViewMultiDayViewModel.incidenceCount > 0
                         sourceComponent: Item {
                             id: allDayViewItem
                             implicitHeight: allDayHeader.actualHeight
                             clip: true
 
                             Repeater {
-                                model: allDayIncidenceModelLoader.item
+                                model: weekViewMultiDayViewModel // from root.model
                                 Layout.topMargin: Kirigami.Units.largeSpacing
                                 //One row => one week
                                 Item {
@@ -585,7 +568,7 @@ Kirigami.Page {
                                 anchors.fill: parent
                                 spacing: root.gridLineWidth
                                 orientation: Qt.Horizontal
-                                model: weekViewModel
+                                model: weekViewModel // From root.model
 
                                 boundsBehavior: Flickable.StopAtBounds
 
