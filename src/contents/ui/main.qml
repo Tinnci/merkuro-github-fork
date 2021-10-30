@@ -109,9 +109,7 @@ Kirigami.ApplicationWindow {
         if(pageStack.layers.depth > 1) {
             pageStack.layers.pop(pageStack.layers.initialItem);
         }
-        let filterCache = pageStack.currentItem.filter;
         pageStack.replace(newViewComponent);
-        pageStack.currentItem.filter = filterCache;
 
         if(filterHeader.active) {
             pageStack.currentItem.header = filterHeader.item;
