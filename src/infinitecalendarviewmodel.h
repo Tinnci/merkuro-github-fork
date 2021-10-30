@@ -10,6 +10,7 @@
 #include <QCalendar>
 #include <QDateTime>
 #include <QLocale>
+#include <QQueue>
 
 class InfiniteCalendarViewModel : public QAbstractListModel
 {
@@ -37,6 +38,9 @@ public:
         WeekViewMultiDayModelRole
     };
     Q_ENUM(Roles);
+
+    enum ModelType { TypeMonth, TypeSchedule, TypeWeek, TypeWeekMultiDay };
+    Q_ENUM(ModelType);
 
     explicit InfiniteCalendarViewModel(QObject *parent = nullptr);
     ~InfiniteCalendarViewModel() override = default;
@@ -81,11 +85,28 @@ private:
     QLocale m_locale;
     int m_datesToAdd = 10;
     int m_scale = MonthScale;
+
+    struct Model {
+        QVector<QDate> affectedStartDates;
+        int modelLength;
+        int modelType;
+        QHash<QDate, MultiDayIncidenceModel *> *multiDayModels;
+        QHash<QDate, HourlyIncidenceModel *> *weekModels;
+        QQueue<QDate> *liveKeysQueue;
+    };
+
+    QVector<Model> m_models;
     mutable QHash<QDate, MultiDayIncidenceModel *> m_monthViewModels;
     mutable QHash<QDate, MultiDayIncidenceModel *> m_scheduleViewModels;
     mutable QHash<QDate, HourlyIncidenceModel *> m_weekViewModels;
     mutable QHash<QDate, MultiDayIncidenceModel *> m_weekViewMultiDayModels;
     QSet<Akonadi::Item::Id> m_insertedIds;
+    mutable QQueue<QDate> m_liveMonthViewModelKeys;
+    mutable QQueue<QDate> m_liveScheduleViewModelKeys;
+    mutable QQueue<QDate> m_liveWeekViewModelKeys;
+    mutable QQueue<QDate> m_liveWeekViewMultiDayModelKeys;
+    int m_maxLiveModels = 8;
+    mutable int m_lastAccessedModelType = TypeMonth;
     Akonadi::ETMCalendar *m_calendar;
     QVariantMap mFilter;
 };

@@ -18,6 +18,14 @@ InfiniteCalendarViewModel::InfiniteCalendarViewModel(QObject *parent)
     : QAbstractListModel(parent)
 {
     setup();
+
+    Model monthModel = {QVector<QDate>(), 42, TypeMonth, &m_monthViewModels, {}, &m_liveMonthViewModelKeys};
+    Model scheduleModel = {QVector<QDate>(), 0, TypeSchedule, &m_scheduleViewModels, {}, &m_liveScheduleViewModelKeys};
+    Model weekModel = {QVector<QDate>(), 7, TypeWeek, {}, &m_weekViewModels, &m_liveWeekViewModelKeys};
+    Model weekMultiDayModel = {QVector<QDate>(), 7, TypeWeekMultiDay, &m_weekViewMultiDayModels, {}, &m_liveWeekViewMultiDayModelKeys};
+
+    m_models = QVector<Model>{monthModel, scheduleModel, weekModel, weekMultiDayModel};
+    qDebug() << m_models[0].modelLength;
 }
 
 void InfiniteCalendarViewModel::setup()
@@ -75,7 +83,7 @@ QVariant InfiniteCalendarViewModel::data(const QModelIndex &idx, int role) const
 
     const QDate startDate = m_startDates[idx.row()];
 
-    auto generateMultiDayIncidenceModel = [=](QDate start, int length, int periodLength) {
+    auto generateMultiDayIncidenceModel = [&](QDate start, int length, int periodLength) {
         auto model = new MultiDayIncidenceModel;
         model->setPeriodLength(periodLength);
         model->setModel(new IncidenceOccurrenceModel);
@@ -84,7 +92,50 @@ QVariant InfiniteCalendarViewModel::data(const QModelIndex &idx, int role) const
         model->model()->setLength(length);
         model->model()->setFilter(mFilter);
         model->model()->setCalendar(m_calendar);
+
         return model;
+    };
+
+    auto cleanUpModels = [&, this]() {
+        int numLiveModels = m_liveMonthViewModelKeys.length() + m_liveScheduleViewModelKeys.length() + m_liveWeekViewModelKeys.length()
+            + m_liveWeekViewMultiDayModelKeys.length();
+
+        while (numLiveModels > m_maxLiveModels) {
+            for (int i = 0; i < m_models.length(); i++) {
+                if (m_models[i].liveKeysQueue->length() > m_maxLiveModels) {
+                    while (m_models[i].liveKeysQueue->length() > m_maxLiveModels) {
+                        auto firstKey = m_models[i].liveKeysQueue->dequeue();
+
+                        if (m_models[i].modelType == TypeWeek && m_models[i].weekModels->contains(firstKey)) {
+                            delete m_models[i].weekModels->value(firstKey);
+                            m_models[i].weekModels->remove(firstKey);
+                        } else if (m_models[i].multiDayModels->contains(firstKey)) {
+                            delete m_models[i].multiDayModels->value(firstKey);
+                            m_models[i].multiDayModels->remove(firstKey);
+                        }
+                    }
+
+                } else if(m_models[i].modelType == m_lastAccessedModelType/* ||
+                   ((m_lastAccessedModelType == TypeWeek && m_models[i].modelType == TypeWeekMultiDay) ||
+                   (m_lastAccessedModelType == TypeWeekMultiDay && m_models[i].modelType == TypeWeek))*/) {
+                    continue;
+
+                } else if (m_models[i].liveKeysQueue->length() > 0) {
+                    auto firstKey = m_models[i].liveKeysQueue->dequeue();
+
+                    if (m_models[i].modelType == TypeWeek && m_models[i].weekModels->contains(firstKey)) {
+                        delete m_models[i].weekModels->value(firstKey);
+                        m_models[i].weekModels->remove(firstKey);
+                    } else if (m_models[i].multiDayModels->contains(firstKey)) {
+                        delete m_models[i].multiDayModels->value(firstKey);
+                        m_models[i].multiDayModels->remove(firstKey);
+                    }
+                }
+
+                numLiveModels = m_liveMonthViewModelKeys.length() + m_liveScheduleViewModelKeys.length() + m_liveWeekViewModelKeys.length()
+                    + m_liveWeekViewMultiDayModelKeys.length();
+            }
+        }
     };
 
     if (m_scale == MonthScale && role != StartDateRole) {
@@ -98,6 +149,8 @@ QVariant InfiniteCalendarViewModel::data(const QModelIndex &idx, int role) const
         case SelectedYearRole:
             return firstDay.year();
         case MonthViewModelRole: {
+            m_lastAccessedModelType = TypeMonth;
+
             if (m_datesToAdd > 5 && idx.row() < 2 && m_monthViewModels.count() < 3) {
                 return {}; // HACK: Prevent creating the models for the default index 1 date
                 // Unfortunately this gets called by the pathviews no matter what the currentIndex
@@ -105,17 +158,25 @@ QVariant InfiniteCalendarViewModel::data(const QModelIndex &idx, int role) const
             }
             if (!m_monthViewModels.contains(startDate)) {
                 m_monthViewModels[startDate] = generateMultiDayIncidenceModel(startDate, 42, 7);
+
+                m_liveMonthViewModelKeys.enqueue(startDate);
+                cleanUpModels();
             }
 
             return QVariant::fromValue(m_monthViewModels[startDate]);
         }
         case ScheduleViewModelRole: {
+            m_lastAccessedModelType = TypeSchedule;
+
             if (m_datesToAdd > 5 && idx.row() < 2 && m_scheduleViewModels.count() < 3) {
                 return {};
             }
 
             if (!m_scheduleViewModels.contains(firstDay)) {
                 m_scheduleViewModels[firstDay] = generateMultiDayIncidenceModel(firstDay, firstDay.daysInMonth(), 1);
+
+                m_liveScheduleViewModelKeys.enqueue(startDate);
+                cleanUpModels();
             }
 
             return QVariant::fromValue(m_scheduleViewModels[firstDay]);
@@ -134,6 +195,8 @@ QVariant InfiniteCalendarViewModel::data(const QModelIndex &idx, int role) const
     case SelectedYearRole:
         return startDate.year();
     case WeekViewModelRole: {
+        m_lastAccessedModelType = TypeWeek;
+
         if (m_datesToAdd > 5 && idx.row() < 2 && m_weekViewModels.count() < 3) {
             return {};
         }
@@ -148,11 +211,16 @@ QVariant InfiniteCalendarViewModel::data(const QModelIndex &idx, int role) const
             m_weekViewModels[startDate]->model()->setLength(7);
             m_weekViewModels[startDate]->model()->setFilter(mFilter);
             m_weekViewModels[startDate]->model()->setCalendar(m_calendar);
+
+            m_liveWeekViewModelKeys.enqueue(startDate);
+            cleanUpModels();
         }
 
         return QVariant::fromValue(m_weekViewModels[startDate]);
     }
     case WeekViewMultiDayModelRole: {
+        m_lastAccessedModelType = TypeWeekMultiDay;
+
         if (m_datesToAdd > 5 && idx.row() < 2 && m_weekViewMultiDayModels.count() < 3) {
             return {};
         }
@@ -160,6 +228,9 @@ QVariant InfiniteCalendarViewModel::data(const QModelIndex &idx, int role) const
         if (!m_weekViewMultiDayModels.contains(startDate)) {
             m_weekViewMultiDayModels[startDate] = generateMultiDayIncidenceModel(startDate, 7, 7);
             m_weekViewMultiDayModels[startDate]->setFilters(MultiDayIncidenceModel::AllDayOnly | MultiDayIncidenceModel::MultiDayOnly);
+
+            m_liveWeekViewMultiDayModelKeys.enqueue(startDate);
+            cleanUpModels();
         }
 
         return QVariant::fromValue(m_weekViewMultiDayModels[startDate]);
@@ -369,28 +440,15 @@ void InfiniteCalendarViewModel::handleCalendarDataChanged(const QModelIndex &top
 
 void InfiniteCalendarViewModel::handleCalendarRowsInserted(const QModelIndex &parent, int first, int last)
 {
-    enum ModelType { TypeMonth, TypeSchedule, TypeWeek, TypeWeekMultiDay };
-
-    struct Model {
-        QVector<QDate> affectedStartDates;
-        int modelLength;
-        int modelType;
-        QHash<QDate, MultiDayIncidenceModel *> *multiDayModels;
-        QHash<QDate, HourlyIncidenceModel *> *weekModels;
-    };
-
-    Model monthModel = {QVector<QDate>(), 42, TypeMonth, &m_monthViewModels, {}};
-    Model scheduleModel = {QVector<QDate>(), 0, TypeSchedule, &m_scheduleViewModels, {}};
-    Model weekModel = {QVector<QDate>(), 7, TypeWeek, {}, &m_weekViewModels};
-    Model weekMultiDayModel = {QVector<QDate>(), 7, TypeWeekMultiDay, &m_weekViewMultiDayModels, {}};
-
-    QVector<Model> models{monthModel, scheduleModel, weekModel, weekMultiDayModel};
-
-    auto checkModels = [&](QDate start, QDate end, KCalendarCore::Incidence::Ptr incidence) {
-        for (auto &model : models) {
+    auto checkModels = [this](QDate start, QDate end, KCalendarCore::Incidence::Ptr incidence) {
+        for (auto &model : m_models) {
             auto modelKeys = model.modelType != TypeWeek ? model.multiDayModels->keys() : model.weekModels->keys();
 
             for (const auto &modelStartDate : modelKeys) {
+                if (model.affectedStartDates.contains(modelStartDate)) {
+                    continue;
+                }
+
                 QDate modelEndDate =
                     model.modelType == TypeSchedule ? modelStartDate.addDays(modelStartDate.daysInMonth()) : modelStartDate.addDays(model.modelLength);
 
@@ -435,7 +493,7 @@ void InfiniteCalendarViewModel::handleCalendarRowsInserted(const QModelIndex &pa
         }
     }
 
-    for (auto &model : models) {
+    for (auto &model : m_models) {
         if (model.modelType != TypeWeek) {
             for (const auto &startDate : model.affectedStartDates) {
                 model.multiDayModels->value(startDate)->model()->updateQuery();
