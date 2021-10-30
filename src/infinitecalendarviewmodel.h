@@ -33,7 +33,8 @@ public:
         SelectedYearRole,
         MonthViewModelRole,
         ScheduleViewModelRole,
-        WeekViewModelRole
+        WeekViewModelRole,
+        WeekViewMultiDayModelRole
     };
     Q_ENUM(Roles);
 
@@ -83,6 +84,7 @@ private:
     mutable QHash<QDate, MultiDayIncidenceModel *> m_monthViewModels;
     mutable QHash<QDate, MultiDayIncidenceModel *> m_scheduleViewModels;
     mutable QHash<QDate, HourlyIncidenceModel *> m_weekViewModels;
+    mutable QHash<QDate, MultiDayIncidenceModel *> m_weekViewMultiDayModels;
     Akonadi::ETMCalendar *m_calendar;
     QVariantMap mFilter;
 };
