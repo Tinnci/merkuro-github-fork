@@ -330,6 +330,7 @@ Akonadi::ETMCalendar *InfiniteCalendarViewModel::calendar()
 
 void InfiniteCalendarViewModel::setCalendar(Akonadi::ETMCalendar *calendar)
 {
+    m_insertedIds.clear();
     m_calendar = calendar;
 
     for (auto model : m_monthViewModels) {
@@ -399,9 +400,10 @@ void InfiniteCalendarViewModel::handleCalendarRowsInserted(const QModelIndex &pa
         const auto index = m_calendar->model()->index(i, 0, parent);
         const auto item = index.data(Akonadi::EntityTreeModel::ItemRole).value<Akonadi::Item>();
 
-        if (item.hasPayload<KCalendarCore::Incidence::Ptr>()) {
+        if (item.hasPayload<KCalendarCore::Incidence::Ptr>() && !m_insertedIds.contains(item.id())) {
+            // If the id is already in the set then we don't need to check anything
+            m_insertedIds.insert(item.id());
             const auto incidence = item.payload<KCalendarCore::Incidence::Ptr>();
-            // qDebug()<<incidence->summary();
 
             if (incidence->type() == KCalendarCore::Incidence::TypeTodo) {
                 const auto todo = incidence.staticCast<KCalendarCore::Todo>();
@@ -437,8 +439,11 @@ void InfiniteCalendarViewModel::handleCalendarRowsInserted(const QModelIndex &pa
     }
 }
 
-void InfiniteCalendarViewModel::handleCalendarRowsRemoved(const QModelIndex &parent, int first, int last)
+void InfiniteCalendarViewModel::handleCalendarRowsRemoved(const QModelIndex &, int, int)
 {
+    // We don't know if this is a collection being removed or an incidence being deleted, so be safe
+    // The IncidenceOccurrenceModels also handle this themselves for this reason
+    m_insertedIds.clear();
 }
 
 QVariantMap InfiniteCalendarViewModel::filter() const
