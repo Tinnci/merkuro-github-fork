@@ -352,8 +352,9 @@ Kirigami.ApplicationWindow {
         }
         onViewAllTodosClicked: if(todoMode) {
             root.filter.collectionId = -1;
+            root.filter.tags = [];
             root.filter.name = "";
-            pageStack.currentItem.filterChanged();
+            root.filterChanged();
         }
     }
 
