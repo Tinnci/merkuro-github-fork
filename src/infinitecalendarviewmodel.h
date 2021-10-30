@@ -83,6 +83,7 @@ private:
     mutable QHash<QDate, MultiDayIncidenceModel *> m_scheduleViewModels;
     mutable QHash<QDate, HourlyIncidenceModel *> m_weekViewModels;
     mutable QHash<QDate, MultiDayIncidenceModel *> m_weekViewMultiDayModels;
+    QSet<Akonadi::Item::Id> m_insertedIds;
     Akonadi::ETMCalendar *m_calendar;
     QVariantMap mFilter;
 };
