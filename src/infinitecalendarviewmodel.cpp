@@ -370,11 +370,8 @@ void InfiniteCalendarViewModel::handleCalendarRowsInserted(const QModelIndex &pa
     };
 
     Model monthModel = {QVector<QDate>(), 42, TypeMonth, &m_monthViewModels, {}};
-
     Model scheduleModel = {QVector<QDate>(), 0, TypeSchedule, &m_scheduleViewModels, {}};
-
     Model weekModel = {QVector<QDate>(), 7, TypeWeek, {}, &m_weekViewModels};
-
     Model weekMultiDayModel = {QVector<QDate>(), 7, TypeWeekMultiDay, &m_weekViewMultiDayModels, {}};
 
     QVector<Model> models{monthModel, scheduleModel, weekModel, weekMultiDayModel};
@@ -390,7 +387,8 @@ void InfiniteCalendarViewModel::handleCalendarRowsInserted(const QModelIndex &pa
                 if (incidence->recurs() && incidence->recurrence()->timesInInterval(modelStartDate.startOfDay(), modelEndDate.endOfDay()).length()) {
                     model.affectedStartDates.append(modelStartDate);
                 } else if (!incidence->recurs()
-                           && (((start <= modelStartDate) && (end >= modelStartDate)) || ((start < modelEndDate) && (end > modelEndDate)))) {
+                           && (((start <= modelStartDate) && (end >= modelStartDate)) || ((start < modelEndDate) && (end > modelEndDate))
+                               || ((start >= modelStartDate) && (end <= modelEndDate)))) {
                     model.affectedStartDates.append(modelStartDate);
                 }
             }
@@ -403,6 +401,7 @@ void InfiniteCalendarViewModel::handleCalendarRowsInserted(const QModelIndex &pa
 
         if (item.hasPayload<KCalendarCore::Incidence::Ptr>()) {
             const auto incidence = item.payload<KCalendarCore::Incidence::Ptr>();
+            // qDebug()<<incidence->summary();
 
             if (incidence->type() == KCalendarCore::Incidence::TypeTodo) {
                 const auto todo = incidence.staticCast<KCalendarCore::Todo>();
@@ -415,8 +414,6 @@ void InfiniteCalendarViewModel::handleCalendarRowsInserted(const QModelIndex &pa
                     checkModels(dateDue, dateDue, incidence);
                 }
 
-            } else if (!incidence->dtStart().isValid()) {
-                continue;
             } else if (incidence->type() == KCalendarCore::Incidence::TypeEvent) {
                 const auto event = incidence.staticCast<KCalendarCore::Event>();
                 const QDate dateStart = event->dtStart().date();
