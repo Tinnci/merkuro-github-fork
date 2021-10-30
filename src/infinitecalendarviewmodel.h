@@ -18,6 +18,7 @@ class InfiniteCalendarViewModel : public QAbstractListModel
     Q_PROPERTY(int datesToAdd READ datesToAdd WRITE setDatesToAdd NOTIFY datesToAddChanged)
     Q_PROPERTY(int scale READ scale WRITE setScale NOTIFY scaleChanged)
     Q_PROPERTY(Akonadi::ETMCalendar *calendar READ calendar WRITE setCalendar NOTIFY calendarChanged)
+    Q_PROPERTY(QVariantMap filter READ filter WRITE setFilter NOTIFY filterChanged)
 
 public:
     // The decade scale is designed to be used in a 4x3 grid, so shows 12 years at a time
@@ -58,6 +59,9 @@ public:
     Akonadi::ETMCalendar *calendar();
     void setCalendar(Akonadi::ETMCalendar *calendar);
 
+    QVariantMap filter() const;
+    void setFilter(const QVariantMap &filter);
+
     void handleCalendarDataChanged(const QModelIndex &topLeft, const QModelIndex &bottomRight, const QVector<int> &roles);
     void handleCalendarRowsInserted(const QModelIndex &parent, int first, int last);
     void handleCalendarRowsRemoved(const QModelIndex &parent, int first, int last);
@@ -66,6 +70,7 @@ Q_SIGNALS:
     void datesToAddChanged();
     void scaleChanged();
     void calendarChanged();
+    void filterChanged();
 
 private:
     QVector<QDate> m_startDates;
@@ -77,4 +82,5 @@ private:
     mutable QHash<QDate, MultiDayIncidenceModel *> m_scheduleViewModels;
     mutable QHash<QDate, HourlyIncidenceModel *> m_weekViewModels;
     Akonadi::ETMCalendar *m_calendar;
+    QVariantMap mFilter;
 };

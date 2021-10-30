@@ -72,6 +72,7 @@ QVariant InfiniteCalendarViewModel::data(const QModelIndex &idx, int role) const
         model->model()->setHandleOwnRefresh(false);
         model->model()->setStart(start);
         model->model()->setLength(length);
+        model->model()->setFilter(mFilter);
         model->model()->setCalendar(m_calendar);
         return model;
     };
@@ -92,7 +93,6 @@ QVariant InfiniteCalendarViewModel::data(const QModelIndex &idx, int role) const
                 // Unfortunately this gets called by the pathviews no matter what the currentIndex
                 // value is set to.
             }
-
             if (!m_monthViewModels.contains(startDate)) {
                 m_monthViewModels[startDate] = generateMultiDayIncidenceModel(startDate, 42, 7);
             }
@@ -131,12 +131,13 @@ QVariant InfiniteCalendarViewModel::data(const QModelIndex &idx, int role) const
         if (!m_weekViewModels.contains(startDate)) {
             m_weekViewModels[startDate] = new HourlyIncidenceModel;
             m_weekViewModels[startDate]->setPeriodLength(7);
+            m_weekViewModels[startDate]->setFilters(HourlyIncidenceModel::NoAllDay | HourlyIncidenceModel::NoMultiDay);
             m_weekViewModels[startDate]->setModel(new IncidenceOccurrenceModel);
             m_weekViewModels[startDate]->model()->setHandleOwnRefresh(false);
             m_weekViewModels[startDate]->model()->setStart(startDate);
             m_weekViewModels[startDate]->model()->setLength(7);
+            m_weekViewModels[startDate]->model()->setFilter(mFilter);
             m_weekViewModels[startDate]->model()->setCalendar(m_calendar);
-            m_weekViewModels[startDate]->setFilters(HourlyIncidenceModel::NoAllDay | HourlyIncidenceModel::NoMultiDay);
         }
 
         return QVariant::fromValue(m_weekViewModels[startDate]);
@@ -422,4 +423,24 @@ void InfiniteCalendarViewModel::handleCalendarRowsInserted(const QModelIndex &pa
 
 void InfiniteCalendarViewModel::handleCalendarRowsRemoved(const QModelIndex &parent, int first, int last)
 {
+}
+
+QVariantMap InfiniteCalendarViewModel::filter() const
+{
+    return mFilter;
+}
+
+void InfiniteCalendarViewModel::setFilter(const QVariantMap &filter)
+{
+    mFilter = filter;
+    for (auto model : m_monthViewModels) {
+        model->model()->setFilter(filter);
+    }
+    for (auto model : m_scheduleViewModels) {
+        model->model()->setFilter(filter);
+    }
+    for (auto model : m_weekViewModels) {
+        model->model()->setFilter(filter);
+    }
+    Q_EMIT filterChanged();
 }
