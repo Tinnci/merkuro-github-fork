@@ -23,9 +23,6 @@ Kirigami.Page {
 
     property var openOccurrence
     property var model
-    property var filter: {
-        "tags": []
-    }
     property date selectedDate: new Date()
     property date startDate: DateUtils.getFirstDayOfMonth(selectedDate)
     property int day: selectedDate.getDate()
