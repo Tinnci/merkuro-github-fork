@@ -58,18 +58,26 @@ Kirigami.ApplicationWindow {
 
     pageStack.globalToolBar.canContainHandles: true
     pageStack.globalToolBar.style: Kirigami.ApplicationHeaderStyle.ToolBar
-    pageStack.initialPage: switch (Config.lastOpenedView) {
-        case Config.MonthView:
-            return monthViewComponent;
-        case Config.WeekView:
-            return weekViewComponent;
-        case Config.ScheduleView:
-            return scheduleViewComponent;
-        case Config.TodoView:
-            filterHeader.active = true;
-            return todoViewComponent;
-        default:
-            return Kirigami.Settings.isMobile ? scheduleViewComponent : monthViewComponent;
+    pageStack.initialPage: Item {}
+
+    Component.onCompleted: {
+        switch (Config.lastOpenedView) {
+            case Config.MonthView:
+                monthViewAction.trigger();
+                break;
+            case Config.WeekView:
+                weekViewAction.trigger();
+                break;
+            case Config.ScheduleView:
+                scheduleViewAction.trigger();
+                break;
+            case Config.TodoView:
+                todoViewAction.trigger();
+                break;
+            default:
+                monthViewAction.trigger();
+                break;
+        }
     }
 
     QQC2.Action {
@@ -130,14 +138,17 @@ Kirigami.ApplicationWindow {
     Connections {
         target: KalendarApplication
         function onOpenMonthView() {
+            monthScaleModelLoader.active = true;
             root.switchView(monthViewComponent);
         }
 
         function onOpenWeekView() {
+            weekScaleModelLoader.active = true;
             root.switchView(weekViewComponent);
         }
 
         function onOpenScheduleView() {
+            monthScaleModelLoader.active = true;
             root.switchView(scheduleViewComponent);
         }
 
@@ -705,23 +716,10 @@ Kirigami.ApplicationWindow {
         }
     }
 
-    Connections {
-        target: pageStack
-        function onCurrentItemChanged() {
-            if(pageStack.currentItem && (pageStack.currentItem.objectName === "monthView" || pageStack.currentItem.objectName === "scheduleView")) {
-                monthScaleModelLoader.active = true
-            }
-            if(pageStack.currentItem && pageStack.currentItem.objectName === "weekView") {
-                weekScaleModelLoader.active = true
-            }
-        }
-    }
-
     Loader {
         id: monthScaleModelLoader
         active: Config.lastOpenedView === Config.MonthView || Config.lastOpenedView === Config.ScheduleView
         onStatusChanged: if(status === Loader.Ready) asynchronous = true
-        Component.onCompleted: if(pageStack.currentItem) pageStack.currentItem.setToDate(root.selectedDate, true)
         sourceComponent: InfiniteCalendarViewModel {
             scale: InfiniteCalendarViewModel.MonthScale
             calendar: CalendarManager.calendar
@@ -732,7 +730,6 @@ Kirigami.ApplicationWindow {
         id: weekScaleModelLoader
         active: Config.lastOpenedView === Config.WeekView
         onStatusChanged: if(status === Loader.Ready) asynchronous = true
-        Component.onCompleted: if(pageStack.currentItem) pageStack.currentItem.setToDate(root.selectedDate, true)
         sourceComponent: InfiniteCalendarViewModel {
             scale: InfiniteCalendarViewModel.WeekScale
             calendar: CalendarManager.calendar
