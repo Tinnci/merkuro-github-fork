@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: LGPL-2.1-or-later
 
 #include "incidenceoccurrencemodel.h"
+#include <QAbstractItemModel>
 #include <QDebug>
 #include <QMetaEnum>
 #include <akonadi_version.h>
@@ -367,56 +368,42 @@ void InfiniteCalendarViewModel::handleCalendarDataChanged(const QModelIndex &top
 
 void InfiniteCalendarViewModel::handleCalendarRowsInserted(const QModelIndex &parent, int first, int last)
 {
-    QVector<QDate> affectedMonthModels;
-    QVector<QDate> affectedScheduleModels;
-    QVector<QDate> affectedWeekModels;
-    QVector<QDate> affectedWeekMultiDayModels;
+    enum ModelType { TypeMonth, TypeSchedule, TypeWeek, TypeWeekMultiDay };
 
-    auto checkMonthModels = [&affectedMonthModels, this](QDate start, QDate end) {
-        for (auto startDate : m_monthViewModels.keys()) {
-            if (end < startDate || start > startDate.addDays(42)) {
-                continue;
-            } else {
-                affectedMonthModels.append(startDate);
-            }
-        }
+    struct Model {
+        QVector<QDate> affectedStartDates;
+        int modelLength;
+        int modelType;
+        QHash<QDate, MultiDayIncidenceModel *> *multiDayModels;
+        QHash<QDate, HourlyIncidenceModel *> *weekModels;
     };
 
-    auto checkScheduleModels = [&affectedScheduleModels, this](QDate start, QDate end) {
-        for (auto startDate : m_scheduleViewModels.keys()) {
-            if (end < startDate || start > startDate.addDays(start.daysInMonth())) {
-                continue;
-            } else {
-                affectedScheduleModels.append(startDate);
+    Model monthModel = {QVector<QDate>(), 42, TypeMonth, &m_monthViewModels, {}};
+
+    Model scheduleModel = {QVector<QDate>(), 0, TypeSchedule, &m_scheduleViewModels, {}};
+
+    Model weekModel = {QVector<QDate>(), 7, TypeWeek, {}, &m_weekViewModels};
+
+    Model weekMultiDayModel = {QVector<QDate>(), 7, TypeWeekMultiDay, &m_weekViewMultiDayModels, {}};
+
+    QVector<Model> models{monthModel, scheduleModel, weekModel, weekMultiDayModel};
+
+    auto checkModels = [&](QDate start, QDate end, KCalendarCore::Incidence::Ptr incidence) {
+        for (auto &model : models) {
+            auto modelKeys = model.modelType != TypeWeek ? model.multiDayModels->keys() : model.weekModels->keys();
+
+            for (const auto &modelStartDate : modelKeys) {
+                QDate modelEndDate =
+                    model.modelType == TypeSchedule ? modelStartDate.addDays(modelStartDate.daysInMonth()) : modelStartDate.addDays(model.modelLength);
+
+                if (incidence->recurs() && incidence->recurrence()->timesInInterval(modelStartDate.startOfDay(), modelEndDate.endOfDay()).length()) {
+                    model.affectedStartDates.append(modelStartDate);
+                } else if (!incidence->recurs()
+                           && (((start <= modelStartDate) && (end >= modelStartDate)) || ((start < modelEndDate) && (end > modelEndDate)))) {
+                    model.affectedStartDates.append(modelStartDate);
+                }
             }
         }
-    };
-
-    auto checkWeekModels = [&affectedWeekModels, this](QDate start, QDate end) {
-        for (auto startDate : m_weekViewModels.keys()) {
-            if (end < startDate || start > startDate.addDays(7)) {
-                continue;
-            } else {
-                affectedWeekModels.append(startDate);
-            }
-        }
-    };
-
-    auto checkWeekMultiDayModels = [&affectedWeekMultiDayModels, this](QDate start, QDate end) {
-        for (auto startDate : m_weekViewMultiDayModels.keys()) {
-            if (end < startDate || start > startDate.addDays(7)) {
-                continue;
-            } else {
-                affectedWeekMultiDayModels.append(startDate);
-            }
-        }
-    };
-
-    auto checkModels = [=](QDate start, QDate end) {
-        checkMonthModels(start, end);
-        checkScheduleModels(start, end);
-        checkWeekModels(start, end);
-        checkWeekMultiDayModels(start, end);
     };
 
     for (int i = first; i <= last; i++) {
@@ -434,7 +421,7 @@ void InfiniteCalendarViewModel::handleCalendarRowsInserted(const QModelIndex &pa
                 if (!dateStart.isValid() && !dateDue.isValid()) {
                     continue;
                 } else if (!dateStart.isValid()) {
-                    checkModels(dateDue, dateDue);
+                    checkModels(dateDue, dateDue, incidence);
                 }
 
             } else if (!incidence->dtStart().isValid()) {
@@ -444,22 +431,21 @@ void InfiniteCalendarViewModel::handleCalendarRowsInserted(const QModelIndex &pa
                 const QDate dateStart = event->dtStart().date();
                 const QDate dateEnd = event->dtEnd().date();
 
-                checkModels(dateStart, dateEnd);
+                checkModels(dateStart, dateEnd, incidence);
             }
         }
     }
 
-    for (auto startDate : affectedMonthModels) {
-        m_monthViewModels[startDate]->model()->updateQuery();
-    }
-    for (auto startDate : affectedScheduleModels) {
-        m_scheduleViewModels[startDate]->model()->updateQuery();
-    }
-    for (auto startDate : affectedWeekModels) {
-        m_weekViewModels[startDate]->model()->updateQuery();
-    }
-    for (auto startDate : affectedWeekMultiDayModels) {
-        m_weekViewMultiDayModels[startDate]->model()->updateQuery();
+    for (auto &model : models) {
+        if (model.modelType != TypeWeek) {
+            for (const auto &startDate : model.affectedStartDates) {
+                model.multiDayModels->value(startDate)->model()->updateQuery();
+            }
+        } else {
+            for (const auto &startDate : model.affectedStartDates) {
+                model.weekModels->value(startDate)->model()->updateQuery();
+            }
+        }
     }
 }
 
