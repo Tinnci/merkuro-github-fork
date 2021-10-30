@@ -179,7 +179,8 @@ Kirigami.Page {
             property int multiDayLinesShown: 0
 
             active: isNextOrCurrentItem
-            //asynchronous: true
+            asynchronous: !isCurrentItem
+            visible: status === Loader.Ready
             sourceComponent: Column {
                 id: viewColumn
                 width: pathView.width
