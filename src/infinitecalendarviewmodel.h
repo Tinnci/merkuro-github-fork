@@ -67,6 +67,9 @@ public:
     QVariantMap filter() const;
     void setFilter(const QVariantMap &filter);
 
+    void checkModels(const QDate &start, const QDate &end, KCalendarCore::Incidence::Ptr incidence);
+    void checkCalendarIndex(const QModelIndex &index);
+    void triggerAffectedModelUpdates();
     void handleCalendarDataChanged(const QModelIndex &topLeft, const QModelIndex &bottomRight, const QVector<int> &roles);
     void handleCalendarRowsInserted(const QModelIndex &parent, int first, int last);
     void handleCalendarRowsRemoved(const QModelIndex &parent, int first, int last);
