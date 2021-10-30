@@ -142,6 +142,18 @@ QVariant InfiniteCalendarViewModel::data(const QModelIndex &idx, int role) const
 
         return QVariant::fromValue(m_weekViewModels[startDate]);
     }
+    case WeekViewMultiDayModelRole: {
+        if (m_datesToAdd > 5 && idx.row() < 2 && m_weekViewMultiDayModels.count() < 3) {
+            return {};
+        }
+
+        if (!m_weekViewMultiDayModels.contains(startDate)) {
+            m_weekViewMultiDayModels[startDate] = generateMultiDayIncidenceModel(startDate, 7, 7);
+            m_weekViewMultiDayModels[startDate]->setFilters(MultiDayIncidenceModel::AllDayOnly | MultiDayIncidenceModel::MultiDayOnly);
+        }
+
+        return QVariant::fromValue(m_weekViewMultiDayModels[startDate]);
+    }
     default:
         qWarning() << "Unknown role for startdate:" << QMetaEnum::fromType<Roles>().valueToKey(role);
         return {};
@@ -164,6 +176,7 @@ QHash<int, QByteArray> InfiniteCalendarViewModel::roleNames() const
         {MonthViewModelRole, QByteArrayLiteral("monthViewModel")},
         {ScheduleViewModelRole, QByteArrayLiteral("scheduleViewModel")},
         {WeekViewModelRole, QByteArrayLiteral("weekViewModel")},
+        {WeekViewMultiDayModelRole, QByteArrayLiteral("weekViewMultiDayViewModel")},
     };
 }
 
@@ -300,6 +313,7 @@ void InfiniteCalendarViewModel::setScale(int scale)
     // m_monthViewModels.clear();
     // m_scheduleViewModels.clear();
     // m_weekViewModels.clear();
+    // m_weekViewMultiDayModels.clear();
 
     m_scale = scale;
     setup();
@@ -329,6 +343,10 @@ void InfiniteCalendarViewModel::setCalendar(Akonadi::ETMCalendar *calendar)
         model->model()->setCalendar(calendar);
     }
 
+    for (auto model : m_weekViewMultiDayModels) {
+        model->model()->setCalendar(calendar);
+    }
+
     connect(m_calendar->model(), &QAbstractItemModel::dataChanged, this, &InfiniteCalendarViewModel::handleCalendarDataChanged);
     connect(m_calendar->model(), &QAbstractItemModel::rowsInserted, this, &InfiniteCalendarViewModel::handleCalendarRowsInserted);
     connect(m_calendar->model(), &QAbstractItemModel::rowsRemoved, this, &InfiniteCalendarViewModel::handleCalendarRowsRemoved);
@@ -343,6 +361,7 @@ void InfiniteCalendarViewModel::handleCalendarRowsInserted(const QModelIndex &pa
     QVector<QDate> affectedMonthModels;
     QVector<QDate> affectedScheduleModels;
     QVector<QDate> affectedWeekModels;
+    QVector<QDate> affectedWeekMultiDayModels;
 
     auto checkMonthModels = [&affectedMonthModels, this](QDate start, QDate end) {
         for (auto startDate : m_monthViewModels.keys()) {
@@ -374,10 +393,21 @@ void InfiniteCalendarViewModel::handleCalendarRowsInserted(const QModelIndex &pa
         }
     };
 
+    auto checkWeekMultiDayModels = [&affectedWeekMultiDayModels, this](QDate start, QDate end) {
+        for (auto startDate : m_weekViewMultiDayModels.keys()) {
+            if (end < startDate || start > startDate.addDays(7)) {
+                continue;
+            } else {
+                affectedWeekMultiDayModels.append(startDate);
+            }
+        }
+    };
+
     auto checkModels = [=](QDate start, QDate end) {
         checkMonthModels(start, end);
         checkScheduleModels(start, end);
         checkWeekModels(start, end);
+        checkWeekMultiDayModels(start, end);
     };
 
     for (int i = first; i <= last; i++) {
@@ -419,6 +449,9 @@ void InfiniteCalendarViewModel::handleCalendarRowsInserted(const QModelIndex &pa
     for (auto startDate : affectedWeekModels) {
         m_weekViewModels[startDate]->model()->updateQuery();
     }
+    for (auto startDate : affectedWeekMultiDayModels) {
+        m_weekViewMultiDayModels[startDate]->model()->updateQuery();
+    }
 }
 
 void InfiniteCalendarViewModel::handleCalendarRowsRemoved(const QModelIndex &parent, int first, int last)
@@ -440,6 +473,9 @@ void InfiniteCalendarViewModel::setFilter(const QVariantMap &filter)
         model->model()->setFilter(filter);
     }
     for (auto model : m_weekViewModels) {
+        model->model()->setFilter(filter);
+    }
+    for (auto model : m_weekViewMultiDayModels) {
         model->model()->setFilter(filter);
     }
     Q_EMIT filterChanged();
