@@ -28,6 +28,12 @@ Kirigami.ApplicationWindow {
     }
     property date selectedDate: new Date()
     property var openOccurrence: {}
+    property var filter: {
+        "collectionId": -1,
+        "tags": [],
+        "name": ""
+    }
+    onFilterChanged: if(pageStack.currentItem.objectName === "todoView") pageStack.currentItem.filter = filter
     readonly property bool isDark: LabelUtils.isDarkColor(Kirigami.Theme.backgroundColor)
 
     readonly property var monthViewAction: KalendarApplication.action("open_month_view")
@@ -99,29 +105,6 @@ Kirigami.ApplicationWindow {
         }
     }
 
-<<<<<<< HEAD
-    Component.onCompleted: {
-        switch (Config.lastOpenedView) {
-            case Config.MonthView:
-                monthViewAction.trigger();
-                break;
-            case Config.WeekView:
-                weekViewAction.trigger();
-                break;
-            case Config.ScheduleView:
-                scheduleViewAction.trigger();
-                break;
-            case Config.TodoView:
-                todoViewAction.trigger();
-                break;
-            default:
-                Kirigami.Settings.isMobile ? scheduleViewAction.trigger() : monthViewAction.trigger();
-                break;
-        }
-    }
-
-=======
->>>>>>> ec196a5 (Implemented centralised and specific model updating method)
     function switchView(newViewComponent) {
         if(pageStack.layers.depth > 1) {
             pageStack.layers.pop(pageStack.layers.initialItem);
@@ -355,10 +338,10 @@ Kirigami.ApplicationWindow {
             pageStack.currentItem.filterChanged();
         }
         onCalendarClicked: if(todoMode) {
-            pageStack.currentItem.filter ?
-                pageStack.currentItem.filter.collectionId = collectionId :
-                pageStack.currentItem.filter = {"collectionId" : collectionId};
-            pageStack.currentItem.filterChanged();
+            root.filter ?
+                root.filter.collectionId = collectionId :
+                root.filter = {"collectionId" : collectionId};
+            root.filterChanged();
             pageStack.currentItem.filterCollectionDetails = CalendarManager.getCollectionDetails(collectionId);
         }
         onCalendarCheckChanged: {
@@ -368,12 +351,12 @@ Kirigami.ApplicationWindow {
                 // HACK: The Todo View should be able to detect change in collection filtering independently
             }
         }
-        onTagClicked: if(!pageStack.currentItem.filter || !pageStack.currentItem.filter.tags || !pageStack.currentItem.filter.tags.includes(tagName)) {
-            pageStack.currentItem.filter ? pageStack.currentItem.filter.tags ?
-                pageStack.currentItem.filter.tags.push(tagName) :
-                pageStack.currentItem.filter.tags = [tagName] :
-                pageStack.currentItem.filter = {"tags" : [tagName]};
-            pageStack.currentItem.filterChanged();
+        onTagClicked: if(!root.filter || !root.filter.tags || !root.filter.tags.includes(tagName)) {
+            root.filter ? root.filter.tags ?
+                root.filter.tags.push(tagName) :
+                root.filter.tags = [tagName] :
+                root.filter = {"tags" : [tagName]};
+            root.filterChanged();
             filterHeader.active = true;
             pageStack.currentItem.header = filterHeader.item;
         } else if (pageStack.currentItem.filter.tags.includes(tagName)) {
@@ -381,8 +364,8 @@ Kirigami.ApplicationWindow {
             pageStack.currentItem.filterChanged();
         }
         onViewAllTodosClicked: if(todoMode) {
-            pageStack.currentItem.filter.collectionId = -1;
-            pageStack.currentItem.filter.name = "";
+            root.filter.collectionId = -1;
+            root.filter.name = "";
             pageStack.currentItem.filterChanged();
         }
     }
@@ -484,7 +467,7 @@ Kirigami.ApplicationWindow {
         id: globalMenuLoader
         active: !Kirigami.Settings.isMobile
         sourceComponent: GlobalMenu {
-            todoMode: pageStack.currentItem && pageStack.currentItem.filterCollectionId !== undefined
+            todoMode: pageStack.currentItem && pageStack.currentItem.objectName === "todoView"
         }
         onLoaded: item.parentWindow = root;
     }
@@ -556,18 +539,18 @@ Kirigami.ApplicationWindow {
                 id: header
                 anchors.fill: parent
                 todoMode: pageStack.currentItem ? pageStack.currentItem.objectName === "todoView" : false
-                filter: pageStack.currentItem && pageStack.currentItem.filter ?
-                    pageStack.currentItem.filter : {"tags": [], "collectionId": -1}
+                filter: root.filter ?
+                    root.filter : {"tags": [], "collectionId": -1}
                 isDark: root.isDark
                 clip: true
 
                 onRemoveFilterTag: {
-                    pageStack.currentItem.filter.tags.splice(pageStack.currentItem.filter.tags.indexOf(tagName), 1);
-                    pageStack.currentItem.filterChanged();
+                    root.filter.tags.splice(root.filter.tags.indexOf(tagName), 1);
+                    root.filterChanged();
                 }
                 onResetFilterCollection: {
-                    pageStack.currentItem.filter.collectionId = -1;
-                    pageStack.currentItem.filterChanged();
+                    root.filter.collectionId = -1;
+                    root.filterChanged();
                 }
             }
             Kirigami.Separator {
@@ -723,6 +706,7 @@ Kirigami.ApplicationWindow {
         sourceComponent: InfiniteCalendarViewModel {
             scale: InfiniteCalendarViewModel.MonthScale
             calendar: CalendarManager.calendar
+            filter: root.filter
         }
     }
 
@@ -733,6 +717,7 @@ Kirigami.ApplicationWindow {
         sourceComponent: InfiniteCalendarViewModel {
             scale: InfiniteCalendarViewModel.WeekScale
             calendar: CalendarManager.calendar
+            filter: root.filter
         }
     }
 
@@ -862,6 +847,8 @@ Kirigami.ApplicationWindow {
                     text: i18n("Tasks")
                 }
             }
+
+            filter: if(root.filter) root.filter
 
             onAddTodo: root.setUpAdd(IncidenceWrapper.TypeTodo, new Date(), collectionId)
             onViewTodo: root.setUpView(todoData, collectionData)
