@@ -515,7 +515,7 @@ Kirigami.ScrollablePage {
                                                         Qt.locale().firstDayOfWeek + index - 1 - 7 :
                                                         Qt.locale().firstDayOfWeek + index - 1
 
-                                checked: root.incidenceWrapper.recurrenceData.weekdays[dayNumber]
+                                checked: if(root.incidenceWrapper.recurrenceData) root.incidenceWrapper.recurrenceData.weekdays[dayNumber]
                                 onClicked: {
                                     let newWeekdays = [...root.incidenceWrapper.recurrenceData.weekdays];
                                     newWeekdays[dayNumber] = !root.incidenceWrapper.recurrenceData.weekdays[dayNumber];

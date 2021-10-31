@@ -47,6 +47,8 @@ QQC2.ComboBox {
 
                 function timeChangeHandler() {
                     if(!popupTimePicker.visible) {
+                        // JS for some insane reason always tries to give you a datetime in the local timezone, even though
+                        // we want the hours in the datetime's timezone, not our local timezone
                         const adjusted = DateUtils.adjustDateTimeToLocalTimeZone(root.dateTime, root.timeZoneOffset)
 
                         popupTimePicker.hours = adjusted.getHours();
