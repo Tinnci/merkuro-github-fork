@@ -194,7 +194,6 @@ void IncidenceTreeModel::Private::onDataChanged(const QModelIndex &begin, const 
 
             Node::Ptr newParentNode;
             const QString newParentUid = incidence->relatedTo();
-            qDebug() << incidence->summary() << newParentUid;
             if (!newParentUid.isEmpty()) {
                 Q_ASSERT(m_uidMap.contains(newParentUid));
                 newParentNode = m_uidMap.value(newParentUid);
