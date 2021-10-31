@@ -20,30 +20,23 @@ import "dateutils.js" as DateUtils
 QQC2.ComboBox {
     id: root
 
-    signal newTimeChosen(date newTime)
+    signal newTimeChosen(int hours, int minutes)
 
     property int timeZoneOffset: 0
+    property string display
     property date dateTime
-    property RegularExpressionValidator timeValidator: RegularExpressionValidator {
-        regularExpression: /^([0-1]?[0-9]|2[0-3]):([0-5][0-9])(:[0-5][0-9])?$/
-    }
-    property RegularExpressionValidator inputValidator: RegularExpressionValidator {
-        regularExpression: /[0-9]{0,2}[:][0-9]{0,2}/
-    }
     property alias timePicker: popupTimePicker
 
     editable: true
-    editText: activeFocus && !popupTimePicker.visible ? editText : DateUtils.adjustDateTimeToLocalTimeZone(dateTime, timeZoneOffset).toLocaleTimeString(Qt.locale(), "HH:mm")
+    editText: activeFocus && !popupTimePicker.visible ? editText : display
 
     inputMethodHints: Qt.ImhTime
-    validator: activeFocus ? inputValidator : timeValidator
 
     onEditTextChanged: {
-
-        if (acceptableInput && activeFocus && !popupTimePicker.visible) { // Need to check for activeFocus or on load the text gets reset to 00:00
-            const dateFromTime = Date.fromLocaleTimeString(Qt.locale(), editText, "HH:mm");
+        if (activeFocus && !popupTimePicker.visible) { // Need to check for activeFocus or on load the text gets reset to 00:00
+            const dateFromTime = Date.fromLocaleTimeString(Qt.locale(), editText, Locale.NarrowFormat);
             if(!isNaN(dateFromTime.getTime())) {
-                newTimeChosen(new Date(DateUtils.adjustDateTimeToLocalTimeZone(dateTime, timeZoneOffset).setHours(dateFromTime.getHours(), dateFromTime.getMinutes())));
+                newTimeChosen(dateFromTime.getHours(), dateFromTime.getMinutes());
             }
         }
     }
@@ -65,6 +58,7 @@ QQC2.ComboBox {
                 function timeChangeHandler() {
                     if(!popupTimePicker.visible) {
                         const adjusted = DateUtils.adjustDateTimeToLocalTimeZone(root.dateTime, root.timeZoneOffset)
+
                         popupTimePicker.hours = adjusted.getHours();
                         popupTimePicker.minutes = adjusted.getMinutes();
                     }
@@ -81,8 +75,7 @@ QQC2.ComboBox {
 
             function valuesChangedHandler() {
                 if(visible) {
-                    const newDt = new Date(DateUtils.adjustDateTimeToLocalTimeZone(root.dateTime, root.timeZoneOffset).setHours(hours, minutes));
-                    root.newTimeChosen(newDt);
+                    root.newTimeChosen(hours, minutes);
                 }
             }
 
