@@ -381,10 +381,6 @@ void InfiniteCalendarViewModel::setScale(int scale)
 
     m_startDates.clear();
     m_firstDayOfMonthDates.clear();
-    // m_monthViewModels.clear();
-    // m_scheduleViewModels.clear();
-    // m_weekViewModels.clear();
-    // m_weekViewMultiDayModels.clear();
 
     m_scale = scale;
     setup();
