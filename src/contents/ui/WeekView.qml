@@ -311,6 +311,20 @@ Kirigami.Page {
                         }
                     }
 
+                    NumberAnimation {
+                        id: resetAnimation
+                        target: allDayHeader
+                        property: "height"
+                        to: allDayHeader.defaultHeight
+                        duration: Kirigami.Units.longDuration
+                        easing.type: Easing.InOutQuad
+                        onFinished: {
+                            Kalendar.Config.weekViewAllDayHeaderHeight = -1;
+                            Kalendar.Config.save();
+                            allDayHeader.actualHeight = allDayHeader.defaultHeight;
+                        }
+                    }
+
                     Rectangle {
                         id: headerBackground
                         anchors.fill: parent
@@ -337,11 +351,7 @@ Kirigami.Page {
                             id: resetHeaderHeightButton
                             width: root.hourLabelWidth
                             text: i18nc("@action:button", "Reset")
-                            onClicked: {
-                                Kalendar.Config.weekViewAllDayHeaderHeight = -1;
-                                Kalendar.Config.save();
-                                allDayHeader.actualHeight = allDayHeader.defaultHeight;
-                            }
+                            onClicked: resetAnimation.start()
                         }
                     }
 
