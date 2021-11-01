@@ -58,7 +58,7 @@ Kirigami.ApplicationWindow {
 
     pageStack.globalToolBar.canContainHandles: true
     pageStack.globalToolBar.style: Kirigami.ApplicationHeaderStyle.ToolBar
-    pageStack.initialPage: Kirigami.Settings.isMobile ? scheduleViewComponent : monthViewComponent
+    pageStack.initialPage: Item {}
 
     QQC2.Action {
         id: closeOverlayAction
@@ -94,7 +94,7 @@ Kirigami.ApplicationWindow {
                 todoViewAction.trigger();
                 break;
             default:
-                monthViewAction.trigger();
+                Kirigami.Settings.isMobile ? scheduleViewAction.trigger() : monthViewAction.trigger();
                 break;
         }
     }
@@ -104,7 +104,7 @@ Kirigami.ApplicationWindow {
             pageStack.layers.pop(pageStack.layers.initialItem);
         }
         let filterCache = pageStack.currentItem.filter;
-        pageStack.replace(newViewComponent);
+        pageStack.layers.replace(newViewComponent);
         pageStack.currentItem.filter = filterCache;
 
         if(filterHeader.active) {
