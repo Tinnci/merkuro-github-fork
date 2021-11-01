@@ -676,11 +676,6 @@ void CalendarManager::deleteAllChildren(KCalendarCore::Incidence::Ptr incidence)
     }
 
     for (auto child : allChildren) {
-        if (child->recurs()) {
-            for (auto instance : m_calendar->instances(child)) {
-                m_changer->deleteIncidence(m_calendar->item(instance));
-            }
-        }
         m_calendar->deleteIncidence(child);
     }
 }
@@ -705,12 +700,6 @@ void CalendarManager::deleteIncidence(KCalendarCore::Incidence::Ptr incidence, b
                 KCalendarCore::Incidence::Ptr oldInc(child->clone());
                 child->setRelatedTo(QString());
                 m_changer->modifyIncidence(m_calendar->item(child), oldInc);
-            }
-        }
-
-        if (incidence->recurs()) {
-            for (auto instance : m_calendar->instances(incidence)) {
-                m_changer->deleteIncidence(m_calendar->item(instance));
             }
         }
 
