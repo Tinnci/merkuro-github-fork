@@ -17,7 +17,7 @@ Rectangle {
     height: parent.height
     opacity: isOpenOccurrence || isInCurrentMonth ?
         1.0 : 0.5
-    Behavior on opacity { NumberAnimation { duration: Kirigami.Units.longDuration; easing.type: Easing.OutCubic } }
+    Behavior on opacity { NumberAnimation { duration: Kirigami.Units.shortDuration; easing.type: Easing.OutCubic } }
     radius: Kirigami.Units.smallSpacing
     color: Qt.rgba(0,0,0,0)
 
@@ -73,7 +73,7 @@ Rectangle {
             color: isOpenOccurrence ? (LabelUtils.isDarkColor(modelData.color) ? "white" : "black") :
                 isInCurrentMonth ? incidenceContents.textColor :
                 incidenceContents.otherMonthTextColor(modelData.color)
-            Behavior on color { ColorAnimation { duration: Kirigami.Units.longDuration; easing.type: Easing.OutCubic } }
+            Behavior on color { ColorAnimation { duration: Kirigami.Units.shortDuration; easing.type: Easing.OutCubic } }
             visible: !parent.spaceRestricted
         }
 
@@ -87,7 +87,7 @@ Rectangle {
             color: isOpenOccurrence ? (LabelUtils.isDarkColor(modelData.color) ? "white" : "black") :
                 isInCurrentMonth ? incidenceContents.textColor :
                 incidenceContents.otherMonthTextColor(modelData.color)
-            Behavior on color { ColorAnimation { duration: Kirigami.Units.longDuration; easing.type: Easing.OutCubic } }
+            Behavior on color { ColorAnimation { duration: Kirigami.Units.shortDuration; easing.type: Easing.OutCubic } }
         }
     }
 
