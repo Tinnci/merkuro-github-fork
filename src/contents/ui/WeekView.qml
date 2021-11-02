@@ -684,7 +684,7 @@ Kirigami.Page {
                                                     font.weight: Font.Medium
                                                     color: isOpenOccurrence ? (LabelUtils.isDarkColor(modelData.color) ? "white" : "black") :
                                                         incidenceContents.textColor
-                                                    Behavior on color { ColorAnimation { duration: Kirigami.Units.longDuration; easing.type: Easing.OutCubic } }
+                                                    Behavior on color { ColorAnimation { duration: Kirigami.Units.shortDuration; easing.type: Easing.OutCubic } }
                                                 }
 
                                                 RowLayout {
@@ -698,7 +698,7 @@ Kirigami.Page {
                                                         isMask: true
                                                         color: isOpenOccurrence ? (LabelUtils.isDarkColor(modelData.color) ? "white" : "black") :
                                                             incidenceContents.textColor
-                                                        Behavior on color { ColorAnimation { duration: Kirigami.Units.longDuration; easing.type: Easing.OutCubic } }
+                                                        Behavior on color { ColorAnimation { duration: Kirigami.Units.shortDuration; easing.type: Easing.OutCubic } }
                                                         visible: parent.width > Kirigami.Units.gridUnit * 4
                                                     }
                                                     QQC2.Label {
@@ -709,7 +709,7 @@ Kirigami.Page {
                                                         wrapMode: Text.Wrap
                                                         color: isOpenOccurrence ? (LabelUtils.isDarkColor(modelData.color) ? "white" : "black") :
                                                             incidenceContents.textColor
-                                                        Behavior on color { ColorAnimation { duration: Kirigami.Units.longDuration; easing.type: Easing.OutCubic } }
+                                                        Behavior on color { ColorAnimation { duration: Kirigami.Units.shortDuration; easing.type: Easing.OutCubic } }
                                                         visible: parent.width > Kirigami.Units.gridUnit * 3
                                                     }
                                                 }
