@@ -494,8 +494,15 @@ Kirigami.ApplicationWindow {
                 left: parent.left
                 right: parent.right
             }
-            height: visible ? header.implicitHeight + headerSeparator.height : 0
-            visible: header.todoMode || header.filter.tags.length > 0 || header.visible
+
+            property bool show: header.todoMode || header.filter.tags.length > 0
+
+            height: show ? header.implicitHeight + headerSeparator.height : 0
+
+            Behavior on height { NumberAnimation {
+                duration: Kirigami.Units.longDuration
+                easing.type: Easing.InOutQuad
+            } }
 
             Rectangle {
                 width: header.width
@@ -512,6 +519,7 @@ Kirigami.ApplicationWindow {
                 filter: pageStack.layers.currentItem && pageStack.layers.currentItem.filter ?
                     pageStack.layers.currentItem.filter : {"tags": [], "collectionId": -1}
                 isDark: root.isDark
+                clip: true
 
                 onRemoveFilterTag: {
                     pageStack.layers.currentItem.filter.tags.splice(pageStack.layers.currentItem.filter.tags.indexOf(tagName), 1);

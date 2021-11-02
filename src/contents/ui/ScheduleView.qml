@@ -392,7 +392,7 @@ Kirigami.Page {
                                                             color: incidenceCard.isOpenOccurrence ?
                                                                 (LabelUtils.isDarkColor(modelData.color) ? "white" : "black") :
                                                                 cardContents.textColor
-                                                            Behavior on color { ColorAnimation { duration: Kirigami.Units.longDuration; easing.type: Easing.OutCubic } }
+                                                            Behavior on color { ColorAnimation { duration: Kirigami.Units.shortDuration; easing.type: Easing.OutCubic } }
                                                         }
 
                                                         QQC2.Label {
@@ -405,7 +405,7 @@ Kirigami.Page {
                                                             color: incidenceCard.isOpenOccurrence ?
                                                                 (LabelUtils.isDarkColor(modelData.color) ? "white" : "black") :
                                                                 cardContents.textColor
-                                                            Behavior on color { ColorAnimation { duration: Kirigami.Units.longDuration; easing.type: Easing.OutCubic } }
+                                                            Behavior on color { ColorAnimation { duration: Kirigami.Units.shortDuration; easing.type: Easing.OutCubic } }
                                                             text: {
                                                                 if(incidenceCard.multiday) {
                                                                     return i18n("%1 (Day %2 of %3)", modelData.text, incidenceCard.dayOfMultidayIncidence, incidenceCard.incidenceDays);
@@ -433,7 +433,7 @@ Kirigami.Page {
                                                             isMask: true
                                                             color: incidenceCard.isOpenOccurrence ? (LabelUtils.isDarkColor(modelData.color) ? "white" : "black") :
                                                                 cardContents.textColor
-                                                            Behavior on color { ColorAnimation { duration: Kirigami.Units.longDuration; easing.type: Easing.OutCubic } }
+                                                            Behavior on color { ColorAnimation { duration: Kirigami.Units.shortDuration; easing.type: Easing.OutCubic } }
                                                             visible: modelData.recurs
                                                         }
                                                         Kirigami.Icon {
@@ -443,7 +443,7 @@ Kirigami.Page {
                                                             isMask: true
                                                             color: incidenceCard.isOpenOccurrence ? (LabelUtils.isDarkColor(modelData.color) ? "white" : "black") :
                                                                 cardContents.textColor
-                                                            Behavior on color { ColorAnimation { duration: Kirigami.Units.longDuration; easing.type: Easing.OutCubic } }
+                                                            Behavior on color { ColorAnimation { duration: Kirigami.Units.shortDuration; easing.type: Easing.OutCubic } }
                                                             visible: modelData.hasReminders
                                                         }
                                                     }
@@ -460,7 +460,7 @@ Kirigami.Page {
                                                         horizontalAlignment: root.isLarge ? Text.AlignRight : Text.AlignLeft
                                                         color: incidenceCard.isOpenOccurrence ? (LabelUtils.isDarkColor(modelData.color) ? "white" : "black") :
                                                             cardContents.textColor
-                                                        Behavior on color { ColorAnimation { duration: Kirigami.Units.longDuration; easing.type: Easing.OutCubic } }
+                                                        Behavior on color { ColorAnimation { duration: Kirigami.Units.shortDuration; easing.type: Easing.OutCubic } }
                                                         text: {
                                                             if (modelData.allDay) {
                                                                 i18n("Runs all day")
