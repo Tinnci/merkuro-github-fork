@@ -103,12 +103,12 @@ Kirigami.ApplicationWindow {
         if(pageStack.layers.depth > 1) {
             pageStack.layers.pop(pageStack.layers.initialItem);
         }
-        let filterCache = pageStack.layers.currentItem.filter;
-        pageStack.layers.replace(newViewComponent);
-        pageStack.layers.currentItem.filter = filterCache;
+        let filterCache = pageStack.currentItem.filter;
+        pageStack.replace(newViewComponent);
+        pageStack.currentItem.filter = filterCache;
 
         if(filterHeader.active) {
-            pageStack.layers.currentItem.header = filterHeader.item;
+            pageStack.currentItem.header = filterHeader.item;
         }
     }
 
@@ -132,15 +132,15 @@ Kirigami.ApplicationWindow {
         }
 
         function onMoveViewForwards() {
-            pageStack.layers.currentItem.nextAction.trigger();
+            pageStack.currentItem.nextAction.trigger();
         }
 
         function onMoveViewBackwards() {
-            pageStack.layers.currentItem.previousAction.trigger();
+            pageStack.currentItem.previousAction.trigger();
         }
 
         function onMoveViewToToday() {
-            pageStack.layers.currentItem.todayAction.trigger();
+            pageStack.currentItem.todayAction.trigger();
         }
 
         function onOpenDateChanger() {
@@ -198,7 +198,7 @@ Kirigami.ApplicationWindow {
         }
 
         function onTodoViewShowCompleted() {
-            pageStack.pushDialogLayer(pageStack.layers.currentItem.completedSheetComponent)
+            pageStack.pushDialogLayer(pageStack.currentItem.completedSheetComponent)
         }
 
         function onQuit() {
@@ -273,8 +273,8 @@ Kirigami.ApplicationWindow {
         }
     }
 
-    title: if(pageStack.layers.currentItem) {
-        switch (pageStack.layers.currentItem.objectName) {
+    title: if(pageStack.currentItem) {
+        switch (pageStack.currentItem.objectName) {
             case "monthView":
                 return i18n("Month View");
                 break;
@@ -301,7 +301,7 @@ Kirigami.ApplicationWindow {
 
         sourceComponent: WindowMenu {
             parentWindow: root
-            todoMode: pageStack.layers.currentItem.objectName == "todoView"
+            todoMode: pageStack.currentItem.objectName === "todoView"
             Kirigami.Theme.colorSet: Kirigami.Theme.Header
         }
     }
@@ -309,7 +309,7 @@ Kirigami.ApplicationWindow {
     footer: Loader {
         id: bottomLoader
         active: Kirigami.Settings.isMobile
-        visible: pageStack.layers.currentItem.objectName != "settingsPage"
+        visible: pageStack.currentItem.objectName !== "settingsPage"
 
         source: Qt.resolvedUrl("qrc:/BottomToolBar.qml")
     }
@@ -317,34 +317,34 @@ Kirigami.ApplicationWindow {
     globalDrawer: Sidebar {
         id: sidebar
         bottomPadding: menuLoader.active ? menuLoader.height : 0
-        todoMode: pageStack.layers.currentItem ? pageStack.layers.currentItem.objectName === "todoView" : false
+        todoMode: pageStack.currentItem ? pageStack.currentItem.objectName === "todoView" : false
         onCalendarClicked: if(todoMode) {
-            pageStack.layers.currentItem.filter ?
-                pageStack.layers.currentItem.filter.collectionId = collectionId :
-                pageStack.layers.currentItem.filter = {"collectionId" : collectionId};
-            pageStack.layers.currentItem.filterChanged();
-            pageStack.layers.currentItem.filterCollectionDetails = CalendarManager.getCollectionDetails(collectionId);
+            pageStack.currentItem.filter ?
+                pageStack.currentItem.filter.collectionId = collectionId :
+                pageStack.currentItem.filter = {"collectionId" : collectionId};
+            pageStack.currentItem.filterChanged();
+            pageStack.currentItem.filterCollectionDetails = CalendarManager.getCollectionDetails(collectionId);
         }
         onCalendarCheckChanged: {
             CalendarManager.save();
-            if(todoMode && collectionId === pageStack.layers.currentItem.filterCollectionId) {
-                pageStack.layers.currentItem.filterCollectionDetails = CalendarManager.getCollectionDetails(pageStack.layers.currentItem.filterCollectionId);
+            if(todoMode && collectionId === pageStack.currentItem.filterCollectionId) {
+                pageStack.currentItem.filterCollectionDetails = CalendarManager.getCollectionDetails(pageStack.currentItem.filterCollectionId);
                 // HACK: The Todo View should be able to detect change in collection filtering independently
             }
         }
-        onTagClicked: if(!pageStack.layers.currentItem.filter || !pageStack.layers.currentItem.filter.tags || !pageStack.layers.currentItem.filter.tags.includes(tagName)) {
-            pageStack.layers.currentItem.filter ? pageStack.layers.currentItem.filter.tags ?
-                pageStack.layers.currentItem.filter.tags.push(tagName) :
-                pageStack.layers.currentItem.filter.tags = [tagName] :
-                pageStack.layers.currentItem.filter = {"tags" : [tagName]};
-            pageStack.layers.currentItem.filterChanged();
+        onTagClicked: if(!pageStack.currentItem.filter || !pageStack.currentItem.filter.tags || !pageStack.currentItem.filter.tags.includes(tagName)) {
+            pageStack.currentItem.filter ? pageStack.currentItem.filter.tags ?
+                pageStack.currentItem.filter.tags.push(tagName) :
+                pageStack.currentItem.filter.tags = [tagName] :
+                pageStack.currentItem.filter = {"tags" : [tagName]};
+            pageStack.currentItem.filterChanged();
             filterHeader.active = true;
-            pageStack.layers.currentItem.header = filterHeader.item;
+            pageStack.currentItem.header = filterHeader.item;
         }
         onViewAllTodosClicked: if(todoMode) {
-            pageStack.layers.currentItem.filter.collectionId = -1;
-            pageStack.layers.currentItem.filter.name = "";
-            pageStack.layers.currentItem.filterChanged();
+            pageStack.currentItem.filter.collectionId = -1;
+            pageStack.currentItem.filter.name = "";
+            pageStack.currentItem.filterChanged();
         }
     }
 
@@ -356,8 +356,8 @@ Kirigami.ApplicationWindow {
         modal: !root.wideScreen || !enabled
         onEnabledChanged: drawerOpen = enabled && !modal
         onModalChanged: drawerOpen = !modal
-        enabled: incidenceData != undefined && pageStack.layers.depth < 2 && pageStack.depth < 3
-        handleVisible: enabled && pageStack.layers.depth < 2 && pageStack.depth < 3
+        enabled: incidenceData != undefined && pageStack.depth < 2 && pageStack.depth < 3
+        handleVisible: enabled && pageStack.depth < 2 && pageStack.depth < 3
         interactive: Kirigami.Settings.isMobile // Otherwise get weird bug where drawer gets dragged around despite no click
 
         onIncidenceDataChanged: root.openOccurrence = incidenceData;
@@ -426,10 +426,10 @@ Kirigami.ApplicationWindow {
     DateChanger {
         id: dateChangeDrawer
         y: pageStack.globalToolBar.height - 1
-        showDays: pageStack.layers.currentItem && pageStack.layers.currentItem.objectName !== "monthView"
+        showDays: pageStack.currentItem && pageStack.currentItem.objectName !== "monthView"
         date: root.selectedDate
         onDateSelected: if(visible) {
-            pageStack.layers.currentItem.setToDate(date);
+            pageStack.currentItem.setToDate(date);
             root.selectedDate = date;
         }
     }
@@ -438,14 +438,14 @@ Kirigami.ApplicationWindow {
         id: incidenceEditor
         onAdded: CalendarManager.addIncidence(incidenceWrapper)
         onEdited: CalendarManager.editIncidence(incidenceWrapper)
-        onCancel: pageStack.layers.pop()
+        onCancel: pageStack.pop()
     }
 
     Loader {
         id: globalMenuLoader
         active: !Kirigami.Settings.isMobile
         sourceComponent: GlobalMenu {
-            todoMode: pageStack.layers.currentItem && pageStack.layers.currentItem.filterCollectionId !== undefined
+            todoMode: pageStack.currentItem && pageStack.currentItem.filterCollectionId !== undefined
         }
         onLoaded: item.parentWindow = root;
     }
@@ -516,19 +516,19 @@ Kirigami.ApplicationWindow {
             FilterHeader {
                 id: header
                 anchors.fill: parent
-                todoMode: pageStack.layers.currentItem ? pageStack.layers.currentItem.objectName === "todoView" : false
-                filter: pageStack.layers.currentItem && pageStack.layers.currentItem.filter ?
-                    pageStack.layers.currentItem.filter : {"tags": [], "collectionId": -1}
+                todoMode: pageStack.currentItem ? pageStack.currentItem.objectName === "todoView" : false
+                filter: pageStack.currentItem && pageStack.currentItem.filter ?
+                    pageStack.currentItem.filter : {"tags": [], "collectionId": -1}
                 isDark: root.isDark
                 clip: true
 
                 onRemoveFilterTag: {
-                    pageStack.layers.currentItem.filter.tags.splice(pageStack.layers.currentItem.filter.tags.indexOf(tagName), 1);
-                    pageStack.layers.currentItem.filterChanged();
+                    pageStack.currentItem.filter.tags.splice(pageStack.currentItem.filter.tags.indexOf(tagName), 1);
+                    pageStack.currentItem.filterChanged();
                 }
                 onSearchTextChanged: if(todoMode) {
-                    pageStack.layers.currentItem.filter.name = text;
-                    pageStack.layers.currentItem.filterChanged();
+                    pageStack.currentItem.filter.name = text;
+                    pageStack.currentItem.filterChanged();
                 }
             }
             Kirigami.Separator {
