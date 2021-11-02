@@ -356,8 +356,8 @@ Kirigami.ApplicationWindow {
         modal: !root.wideScreen || !enabled
         onEnabledChanged: drawerOpen = enabled && !modal
         onModalChanged: drawerOpen = !modal
-        enabled: incidenceData != undefined && pageStack.depth < 2 && pageStack.depth < 3
-        handleVisible: enabled && pageStack.depth < 2 && pageStack.depth < 3
+        enabled: incidenceData != undefined && pageStack.layers.depth < 2 && pageStack.depth < 3
+        handleVisible: enabled && pageStack.layers.depth < 2 && pageStack.depth < 3
         interactive: Kirigami.Settings.isMobile // Otherwise get weird bug where drawer gets dragged around despite no click
 
         onIncidenceDataChanged: root.openOccurrence = incidenceData;
