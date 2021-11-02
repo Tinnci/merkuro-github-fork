@@ -104,7 +104,7 @@ Kirigami.ApplicationWindow {
             pageStack.layers.pop(pageStack.layers.initialItem);
         }
         let filterCache = pageStack.currentItem.filter;
-        pageStack.layers.replace(newViewComponent);
+        pageStack.replace(newViewComponent);
         pageStack.currentItem.filter = filterCache;
 
         if(filterHeader.active) {
@@ -301,7 +301,7 @@ Kirigami.ApplicationWindow {
 
         sourceComponent: WindowMenu {
             parentWindow: root
-            todoMode: pageStack.currentItem.objectName == "todoView"
+            todoMode: pageStack.currentItem.objectName === "todoView"
             Kirigami.Theme.colorSet: Kirigami.Theme.Header
         }
     }
@@ -309,7 +309,7 @@ Kirigami.ApplicationWindow {
     footer: Loader {
         id: bottomLoader
         active: Kirigami.Settings.isMobile
-        visible: pageStack.layers.currentItem.objectName != "settingsPage"
+        visible: pageStack.currentItem.objectName !== "settingsPage"
 
         source: Qt.resolvedUrl("qrc:/BottomToolBar.qml")
     }
@@ -369,8 +369,8 @@ Kirigami.ApplicationWindow {
         modal: !root.wideScreen || !enabled
         onEnabledChanged: drawerOpen = enabled && !modal
         onModalChanged: drawerOpen = !modal
-        enabled: incidenceData != undefined && pageStack.layers.depth < 2 && pageStack.depth < 3
-        handleVisible: enabled && pageStack.layers.depth < 2 && pageStack.depth < 3
+        enabled: incidenceData != undefined && pageStack.depth < 2 && pageStack.depth < 3
+        handleVisible: enabled && pageStack.depth < 2 && pageStack.depth < 3
         interactive: Kirigami.Settings.isMobile // Otherwise get weird bug where drawer gets dragged around despite no click
 
         onIncidenceDataChanged: root.openOccurrence = incidenceData;
@@ -451,7 +451,7 @@ Kirigami.ApplicationWindow {
         id: incidenceEditor
         onAdded: CalendarManager.addIncidence(incidenceWrapper)
         onEdited: CalendarManager.editIncidence(incidenceWrapper)
-        onCancel: pageStack.layers.pop()
+        onCancel: pageStack.pop()
     }
 
     Loader {
