@@ -511,6 +511,7 @@ Kirigami.ApplicationWindow {
             property bool show: header.todoMode || header.filter.tags.length > 0
 
             height: show ? header.implicitHeight + headerSeparator.height : 0
+            clip: height === 0
 
             Behavior on height { NumberAnimation {
                 duration: Kirigami.Units.longDuration
