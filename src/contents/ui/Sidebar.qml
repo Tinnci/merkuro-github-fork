@@ -22,6 +22,7 @@ Kirigami.OverlayDrawer {
 
     property bool todoMode: false
     property alias toolbar: toolbar
+    property var activeTags : []
 
     Connections {
         target: applicationWindow()
@@ -327,22 +328,34 @@ Kirigami.OverlayDrawer {
                     }
                 }
 
-                Repeater {
-                    id: tagList
+                Flow {
+                    id: tagFlow
+                    Layout.fillWidth: true
+                    Layout.topMargin: Kirigami.Units.largeSpacing
+                    Layout.leftMargin: Kirigami.Settings.isMobile ?
+                        Kirigami.Units.iconSizes.smallMedium + Kirigami.Units.largeSpacing * 3 :
+                        Kirigami.Units.iconSizes.smallMedium + Kirigami.Units.largeSpacing * 2
+                    Layout.rightMargin: Kirigami.Units.largeSpacing
+                    spacing: Kirigami.Settings.isMobile ? Kirigami.Units.largeSpacing : Kirigami.Units.smallSpacing
+                    visible: tagList.count > 0
 
-                    model: TagManager.tagModel
+                    Repeater {
+                        id: tagList
 
-                    delegate: Kirigami.BasicListItem {
-                        Layout.fillWidth: true
-                        enabled: !sidebar.collapsed
+                        model: TagManager.tagModel
 
-                        label: display
-                        labelItem.color: Kirigami.Theme.textColor
-                        reserveSpaceForIcon: true
+                        delegate: Tag {
+                            implicitWidth: itemLayout.implicitWidth > tagFlow.width ? tagFlow.width : itemLayout.implicitWidth
+                            text: display
+                            showAction: false
+                            backgroundColor: sidebar.activeTags.includes(display) ? Kirigami.Theme.highlightColor : Kirigami.Theme.backgroundColor
 
-                        separatorVisible: false
-
-                        onClicked: tagClicked(display)
+                            MouseArea {
+                                anchors.fill: parent
+                                enabled: !sidebar.collapsed
+                                onClicked: tagClicked(display)
+                            }
+                        }
                     }
                 }
 
