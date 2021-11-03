@@ -154,8 +154,8 @@ Kirigami.OverlayDrawer {
 
                 Component.onCompleted: {
                     for (let i in actions) {
-                        let action = actions[i]
-                        action.displayHint = Kirigami.DisplayHint.AlwaysHide
+                        let action = actions[i];
+                        action.displayHint = Kirigami.DisplayHint.AlwaysHide;
                     }
                     visible = !Kirigami.Settings.isMobile && !Config.showMenubar && !Kirigami.Settings.hasPlatformMenuBar
                     //HACK: Otherwise if menubar is open and then hidden hamburger refuses to appear (?)
@@ -302,42 +302,49 @@ Kirigami.OverlayDrawer {
                 anchors.fill: parent
                 spacing: 0
 
-                RowLayout {
-                    id: tagsHeadingLayout
+                Kirigami.BasicListItem {
+                    id: tagsHeadingItem
+
+                    property bool expanded: Config.tagsSectionExpanded
+
                     Layout.topMargin: Kirigami.Units.largeSpacing
-                    Layout.leftMargin: Kirigami.Settings.isMobile ? Kirigami.Units.largeSpacing * 2 : Kirigami.Units.largeSpacing
-                    spacing: Kirigami.Settings.isMobile ? Kirigami.Units.largeSpacing * 2 : Kirigami.Units.largeSpacing
+                    separatorVisible: false
+                    hoverEnabled: false
                     visible: tagList.count > 0
 
-                    Kirigami.Icon {
+                    Kirigami.Heading { id: headingSizeCalculator }
+
+                    leading: Kirigami.Icon {
                         implicitWidth: Kirigami.Units.iconSizes.smallMedium
                         implicitHeight: Kirigami.Units.iconSizes.smallMedium
                         color: Kirigami.Theme.disabledTextColor
                         isMask: true
                         source: "action-rss_tag"
                     }
-                    Kirigami.Heading {
-                        id: tagsHeading
-                        Layout.fillWidth: true
-                        Layout.alignment: Qt.AlignVCenter
-                        text: i18n("Tags")
-                        color: Kirigami.Theme.disabledTextColor
-
-                        level: 4
-                        z: 10
+                    text: i18n("Tags")
+                    labelItem.color: Kirigami.Theme.disabledTextColor
+                    labelItem.font.pointSize: headingSizeCalculator.headerPointSize(4)
+                    trailing: Kirigami.Icon {
+                        implicitWidth: Kirigami.Units.iconSizes.small
+                        implicitHeight: Kirigami.Units.iconSizes.small
+                        source: tagsHeadingItem.expanded ? 'arrow-up' : 'arrow-down'
+                    }
+                    onClicked: {
+                        Config.tagsSectionExpanded = !Config.tagsSectionExpanded;
+                        Config.save();
                     }
                 }
 
                 Flow {
                     id: tagFlow
                     Layout.fillWidth: true
-                    Layout.topMargin: Kirigami.Units.largeSpacing
                     Layout.leftMargin: Kirigami.Settings.isMobile ?
                         Kirigami.Units.iconSizes.smallMedium + Kirigami.Units.largeSpacing * 3 :
                         Kirigami.Units.iconSizes.smallMedium + Kirigami.Units.largeSpacing * 2
                     Layout.rightMargin: Kirigami.Units.largeSpacing
+                    Layout.bottomMargin: Kirigami.Units.largeSpacing
                     spacing: Kirigami.Settings.isMobile ? Kirigami.Units.largeSpacing : Kirigami.Units.smallSpacing
-                    visible: tagList.count > 0
+                    visible: tagList.count > 0 && tagsHeadingItem.expanded
 
                     Repeater {
                         id: tagList
@@ -359,27 +366,32 @@ Kirigami.OverlayDrawer {
                     }
                 }
 
-                RowLayout {
-                    Layout.topMargin: tagsHeading.visible ? Kirigami.Units.largeSpacing * 2 : Kirigami.Units.largeSpacing
-                    Layout.leftMargin: Kirigami.Settings.isMobile ? Kirigami.Units.largeSpacing * 2 : Kirigami.Units.largeSpacing
-                    spacing: Kirigami.Settings.isMobile ? Kirigami.Units.largeSpacing * 2 : Kirigami.Units.largeSpacing
+                Kirigami.BasicListItem {
+                    id: calendarHeadingItem
+                    property bool expanded: Config.calendarsSectionExpanded
 
-                    Kirigami.Icon {
+                    separatorVisible: false
+                    hoverEnabled: false
+                    Layout.topMargin: Kirigami.Units.largeSpacing
+
+                    leading: Kirigami.Icon {
                         implicitWidth: Kirigami.Units.iconSizes.smallMedium
                         implicitHeight: Kirigami.Units.iconSizes.smallMedium
                         color: Kirigami.Theme.disabledTextColor
                         isMask: true
                         source: "view-calendar"
                     }
-                    Kirigami.Heading {
-                        id: calendarsHeading
-                        Layout.alignment: Qt.AlignVCenter
-                        Layout.fillWidth: true
-                        text: i18n("Calendars")
-                        color: Kirigami.Theme.disabledTextColor
-
-                        level: 4
-                        z: 10
+                    text: i18n("Calendars")
+                    labelItem.color: Kirigami.Theme.disabledTextColor
+                    labelItem.font.pointSize: headingSizeCalculator.headerPointSize(4)
+                    trailing: Kirigami.Icon {
+                        implicitWidth: Kirigami.Units.iconSizes.small
+                        implicitHeight: Kirigami.Units.iconSizes.small
+                        source: calendarHeadingItem.expanded ? 'arrow-up' : 'arrow-down'
+                    }
+                    onClicked: {
+                        Config.calendarsSectionExpanded = !Config.calendarsSectionExpanded;
+                        Config.save();
                     }
                 }
 
@@ -403,6 +415,7 @@ Kirigami.OverlayDrawer {
                                 leftPadding: Kirigami.Settings.isMobile ? Kirigami.Units.largeSpacing * 2 : Kirigami.Units.largeSpacing
                                 hoverEnabled: false
                                 enabled: !sidebar.collapsed
+                                visible: calendarHeadingItem.expanded
                                 background: Item {}
 
                                 separatorVisible: false
@@ -435,6 +448,7 @@ Kirigami.OverlayDrawer {
                                 separatorVisible: false
                                 reserveSpaceForIcon: true
                                 enabled: !sidebar.collapsed
+                                visible: calendarHeadingItem.expanded
 
                                 trailing: ColoredCheckbox {
                                     id: calendarCheckbox
