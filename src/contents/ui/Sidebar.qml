@@ -412,9 +412,11 @@ Kirigami.OverlayDrawer {
                 Repeater {
                     id: calendarList
 
-                    model: KDescendantsProxyModel {
+                    property var calendarModel: KDescendantsProxyModel {
                         model: sidebar.todoMode ? CalendarManager.todoCollections : CalendarManager.viewCollections
                     }
+
+                    model: calendarHeadingItem.expanded ? calendarModel : []
 
                     delegate: DelegateChooser {
                         role: 'kDescendantExpandable'
@@ -429,7 +431,6 @@ Kirigami.OverlayDrawer {
                                 leftPadding: Kirigami.Settings.isMobile ? Kirigami.Units.largeSpacing * 2 : Kirigami.Units.largeSpacing
                                 hoverEnabled: false
                                 enabled: !sidebar.collapsed
-                                visible: calendarHeadingItem.expanded
                                 background: Item {}
 
                                 separatorVisible: false
@@ -462,7 +463,6 @@ Kirigami.OverlayDrawer {
                                 separatorVisible: false
                                 reserveSpaceForIcon: true
                                 enabled: !sidebar.collapsed
-                                visible: calendarHeadingItem.expanded
 
                                 trailing: ColoredCheckbox {
                                     id: calendarCheckbox
