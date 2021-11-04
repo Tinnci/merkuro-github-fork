@@ -23,6 +23,7 @@ Kirigami.OverlayDrawer {
     property bool todoMode: false
     property alias toolbar: toolbar
     property var activeTags : []
+    property alias searchText: searchField.text
 
     Connections {
         target: applicationWindow()
@@ -79,86 +80,99 @@ Kirigami.OverlayDrawer {
             topPadding: 0
             bottomPadding: 0
 
-            //Kirigami.SearchField { // TODO: Make this open a new search results page
-                //id: searchItem
-                //Layout.fillWidth: true
-            //}
-
-            Kirigami.Heading {
-                anchors.left: parent.left
-                anchors.leftMargin: Kirigami.Units.largeSpacing + Kirigami.Units.smallSpacing
-                anchors.verticalCenter: parent.verticalCenter
-                text: i18n("Kalendar")
-
-                opacity: sidebar.collapsed ? 0 : 1
-                Behavior on opacity {
-                    OpacityAnimator {
-                        duration: Kirigami.Units.longDuration
-                        easing.type: Easing.InOutQuad
-                    }
-                }
-            }
-
-            Kirigami.ActionToolBar {
-                id: menu
-
-                Connections {
-                    target: Config
-                    onShowMenubarChanged: if(!Kirigami.Settings.isMobile && !Kirigami.Settings.hasPlatformMenuBar) menu.visible = !Config.showMenubar
-                }
-
+            RowLayout {
                 anchors.fill: parent
-                overflowIconName: "application-menu"
 
-                actions: [
-                    Kirigami.Action {
-                        icon.name: "edit-undo"
-                        text: CalendarManager.undoRedoData.undoAvailable ?
-                            i18n("Undo: ") + CalendarManager.undoRedoData.nextUndoDescription : undoAction.text
-                        shortcut: undoAction.shortcut
-                        enabled: CalendarManager.undoRedoData.undoAvailable
-                        onTriggered: CalendarManager.undoAction();
-                    },
-                    Kirigami.Action {
-                        icon.name: KalendarApplication.iconName(redoAction.icon)
-                        text: CalendarManager.undoRedoData.redoAvailable ?
-                            i18n("Redo: ") + CalendarManager.undoRedoData.nextRedoDescription : redoAction.text
-                        shortcut: redoAction.shortcut
-                        enabled: CalendarManager.undoRedoData.redoAvailable
-                        onTriggered: CalendarManager.redoAction();
-                    },
-                    KActionFromAction {
-                        kalendarAction: "toggle_menubar"
-                    },
-                    Kirigami.Action {
-                        text: i18n("Configure")
-                        icon.name: "settings-configure"
-                        KActionFromAction {
-                            kalendarAction: "open_tag_manager"
-                        }
-                        KActionFromAction {
-                            kalendarAction: 'options_configure_keybinding'
-                        }
-                        KActionFromAction {
-                            kalendarAction: "options_configure"
-                        }
-                    },
-                    Kirigami.Action {
-                        icon.name: KalendarApplication.iconName(quitAction.icon)
-                        text: quitAction.text
-                        shortcut: quitAction.shortcut
-                        onTriggered: quitAction.trigger()
-                        visible: !Kirigami.Settings.isMobile
-                    }
-                ]
+                Kirigami.Heading { // TODO: Remove once search results page complete
+                    Layout.leftMargin: Kirigami.Units.smallSpacing + Kirigami.Units.largeSpacing
+                    text: i18n("Kalendar")
 
-                Component.onCompleted: {
-                    for (let i in actions) {
-                        let action = actions[i];
-                        action.displayHint = Kirigami.DisplayHint.AlwaysHide;
+                    visible: !sidebar.todoMode
+                    opacity: sidebar.collapsed ? 0 : 1
+                    Behavior on opacity {
+                        OpacityAnimator {
+                            duration: Kirigami.Units.longDuration
+                            easing.type: Easing.InOutQuad
+                        }
                     }
-                    visible = !Kirigami.Settings.isMobile && !Config.showMenubar && !Kirigami.Settings.hasPlatformMenuBar
-                    //HACK: Otherwise if menubar is open and then hidden hamburger refuses to appear (?)
+                }
+
+                Kirigami.SearchField { // TODO: Make this open a new search results page
+                    id: searchField
+                    Layout.fillWidth: true
+                    placeholderText: i18n("Kalendar")
+
+                    visible: sidebar.todoMode
+                    opacity: sidebar.collapsed ? 0 : 1
+                    Behavior on opacity {
+                        OpacityAnimator {
+                            duration: Kirigami.Units.longDuration
+                            easing.type: Easing.InOutQuad
+                        }
+                    }
+                }
+
+                Kirigami.ActionToolBar {
+                    id: menu
+
+                    Connections {
+                        target: Config
+                        onShowMenubarChanged: if(!Kirigami.Settings.isMobile && !Kirigami.Settings.hasPlatformMenuBar) menu.visible = !Config.showMenubar
+                    }
+
+                    Layout.fillHeight: true
+                    overflowIconName: "application-menu"
+
+                    actions: [
+                        Kirigami.Action {
+                            icon.name: "edit-undo"
+                            text: CalendarManager.undoRedoData.undoAvailable ?
+                                i18n("Undo: ") + CalendarManager.undoRedoData.nextUndoDescription : undoAction.text
+                            shortcut: undoAction.shortcut
+                            enabled: CalendarManager.undoRedoData.undoAvailable
+                            onTriggered: CalendarManager.undoAction();
+                        },
+                        Kirigami.Action {
+                            icon.name: KalendarApplication.iconName(redoAction.icon)
+                            text: CalendarManager.undoRedoData.redoAvailable ?
+                                i18n("Redo: ") + CalendarManager.undoRedoData.nextRedoDescription : redoAction.text
+                            shortcut: redoAction.shortcut
+                            enabled: CalendarManager.undoRedoData.redoAvailable
+                            onTriggered: CalendarManager.redoAction();
+                        },
+                        KActionFromAction {
+                            kalendarAction: "toggle_menubar"
+                        },
+                        Kirigami.Action {
+                            text: i18n("Configure")
+                            icon.name: "settings-configure"
+                            KActionFromAction {
+                                kalendarAction: "open_tag_manager"
+                            }
+                            KActionFromAction {
+                                kalendarAction: 'options_configure_keybinding'
+                            }
+                            KActionFromAction {
+                                kalendarAction: "options_configure"
+                            }
+                        },
+                        Kirigami.Action {
+                            icon.name: KalendarApplication.iconName(quitAction.icon)
+                            text: quitAction.text
+                            shortcut: quitAction.shortcut
+                            onTriggered: quitAction.trigger()
+                            visible: !Kirigami.Settings.isMobile
+                        }
+                    ]
+
+                    Component.onCompleted: {
+                        for (let i in actions) {
+                            let action = actions[i]
+                            action.displayHint = Kirigami.DisplayHint.AlwaysHide
+                        }
+                        visible = !Kirigami.Settings.isMobile && !Config.showMenubar && !Kirigami.Settings.hasPlatformMenuBar
+                        //HACK: Otherwise if menubar is open and then hidden hamburger refuses to appear (?)
+                    }
                 }
             }
         }
