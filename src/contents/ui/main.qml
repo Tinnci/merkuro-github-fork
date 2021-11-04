@@ -324,7 +324,7 @@ Kirigami.ApplicationWindow {
             if(pageStack.currentItem.filter) {
                 pageStack.currentItem.filter.name = searchText;
             } else {
-                pageStack.currentItem.filter = {"name": searchText};
+                pageStack.currentItem.filter = {name: searchText};
             }
             pageStack.currentItem.filterChanged();
         }
