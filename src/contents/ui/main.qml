@@ -58,7 +58,7 @@ Kirigami.ApplicationWindow {
 
     pageStack.globalToolBar.canContainHandles: true
     pageStack.globalToolBar.style: Kirigami.ApplicationHeaderStyle.ToolBar
-    pageStack.initialPage: Item {}
+    pageStack.initialPage: Kirigami.Settings.isMobile ? scheduleViewComponent : monthViewComponent
 
     QQC2.Action {
         id: closeOverlayAction
