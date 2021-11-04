@@ -587,7 +587,7 @@ Kirigami.Page {
                                         (hourLabelsColumn.currentTimeLabelTop < textYBottom && hourLabelsColumn.currentTimeLabelBottom > textYBottom) ||
                                         (hourLabelsColumn.currentTimeLabelTop >= textYTop && hourLabelsColumn.currentTimeLabelBottom <= textYBottom))
 
-                                    y: ((Kirigami.Units.gridUnit * hourlyView.periodsPerHour) * (index + 1)) + (root.gridLineWidth * (index + 1)) -
+                                    y: ((root.periodHeight * hourlyView.periodsPerHour) * (index + 1)) + (root.gridLineWidth * (index + 1)) -
                                         (fontMetrics.height / 2) - (root.gridLineWidth / 2)
                                     width: root.hourLabelWidth
                                     rightPadding: Kirigami.Units.smallSpacing

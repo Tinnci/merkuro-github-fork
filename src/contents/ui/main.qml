@@ -325,15 +325,15 @@ Kirigami.ApplicationWindow {
         id: sidebar
         bottomPadding: menuLoader.active ? menuLoader.height : 0
         todoMode: pageStack.currentItem ? pageStack.currentItem.objectName === "todoView" : false
-        activeTags: pageStack.currentItem && pageStack.currentItem.filter && pageStack.currentItem.filter.tags ?
-                    pageStack.currentItem.filter.tags : []
+        activeTags: root.filter && root.filter.tags ?
+                    root.filter.tags : []
         onSearchTextChanged: {
-            if(pageStack.currentItem.filter) {
-                pageStack.currentItem.filter.name = searchText;
+            if(root.filter) {
+                root.filter.name = searchText;
             } else {
-                pageStack.currentItem.filter = {name: searchText};
+                root.filter = {name: searchText};
             }
-            pageStack.currentItem.filterChanged();
+            root.filterChanged();
         }
         onCalendarClicked: if(todoMode) {
             root.filter ?
@@ -357,9 +357,9 @@ Kirigami.ApplicationWindow {
             root.filterChanged();
             filterHeader.active = true;
             pageStack.currentItem.header = filterHeader.item;
-        } else if (pageStack.currentItem.filter.tags.includes(tagName)) {
-            pageStack.currentItem.filter.tags = pageStack.currentItem.filter.tags.filter((tag) => tag !== tagName);
-            pageStack.currentItem.filterChanged();
+        } else if (root.filter.tags.includes(tagName)) {
+            root.filter.tags = root.filter.tags.filter((tag) => tag !== tagName);
+            root.filterChanged();
         }
         onViewAllTodosClicked: if(todoMode) {
             root.filter.collectionId = -1;
