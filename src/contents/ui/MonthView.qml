@@ -143,7 +143,7 @@ Kirigami.Page {
             property bool isCurrentItem: PathView.isCurrentItem
 
             active: isNextOrCurrentItem
-            asynchronous: isCurrentItem
+            asynchronous: !isCurrentItem
             visible: status === Loader.Ready
             sourceComponent: MultiDayView {
                 id: dayView
