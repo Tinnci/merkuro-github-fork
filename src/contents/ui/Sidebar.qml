@@ -324,7 +324,7 @@ Kirigami.OverlayDrawer {
                     Layout.topMargin: Kirigami.Units.largeSpacing
                     separatorVisible: false
                     hoverEnabled: false
-                    visible: tagList.count > 0
+                    visible: TagManager.tagModel.rowCount() > 0
 
                     Kirigami.Heading { id: headingSizeCalculator }
 
@@ -358,7 +358,7 @@ Kirigami.OverlayDrawer {
                     Layout.rightMargin: Kirigami.Units.largeSpacing
                     Layout.bottomMargin: Kirigami.Units.largeSpacing
                     spacing: Kirigami.Settings.isMobile ? Kirigami.Units.largeSpacing : Kirigami.Units.smallSpacing
-                    visible: tagList.count > 0 && tagsHeadingItem.expanded
+                    visible: TagManager.tagModel.rowCount() > 0 && tagsHeadingItem.expanded
 
                     Repeater {
                         id: tagList
