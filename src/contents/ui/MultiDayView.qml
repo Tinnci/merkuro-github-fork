@@ -44,7 +44,7 @@ Item {
     property Component weekHeaderDelegate
     property int month
     property alias bgLoader: backgroundLoader.item
-    property bool scrollBarsEnabled: true
+    property bool scrollBarsEnabled: false
 
     //Internal
     property int numberOfLinesShown: 0
@@ -216,69 +216,66 @@ Item {
                         Layout.fillHeight: true
                         property date startDate: periodStartDate
 
-                        QQC2.ScrollView {
+                        ListView {
+                            id: linesRepeater
+
                             anchors {
                                 fill: parent
                                 // Offset for date
                                 topMargin: root.showDayIndicator ? Kirigami.Units.gridUnit + Kirigami.Units.largeSpacing * 1.5 : 0
+                                rightMargin: spacing
                             }
 
-                            QQC2.ScrollBar.horizontal.policy: QQC2.ScrollBar.AlwaysOff
-                            QQC2.ScrollBar.horizontal.enabled: false
-                            QQC2.ScrollBar.vertical.enabled: root.scrollBarsEnabled
+                            flickableDirection: Flickable.VerticalFlick
+                            boundsBehavior: Kirigami.Settings.isMobile ? Flickable.DragAndOvershootBounds : Flickable.StopAtBounds
+                            QQC2.ScrollBar.vertical: QQC2.ScrollBar {}
 
-                            ListView {
-                                id: linesRepeater
-                                Layout.fillWidth: true
-                                Layout.rightMargin: spacing
+                            clip: true
+                            spacing: root.dayWidth < (Kirigami.Units.gridUnit * 5 + Kirigami.Units.smallSpacing * 2) ?
+                                Kirigami.Units.smallSpacing / 2 : Kirigami.Units.smallSpacing
 
-                                clip: true
-                                spacing: root.dayWidth < (Kirigami.Units.gridUnit * 5 + Kirigami.Units.smallSpacing * 2) ?
-                                    Kirigami.Units.smallSpacing / 2 : Kirigami.Units.smallSpacing
+                            DayMouseArea {
+                                id: listViewMenu
+                                anchors.fill: parent
+                                z: -1
 
-                                DayMouseArea {
-                                    id: listViewMenu
-                                    anchors.fill: parent
-                                    z: -1
+                                function useGridSquareDate(type, root, globalPos) {
+                                    for(var i in root.children) {
+                                        var child = root.children[i];
+                                        var localpos = child.mapFromGlobal(globalPos.x, globalPos.y);
 
-                                    function useGridSquareDate(type, root, globalPos) {
-                                        for(var i in root.children) {
-                                            var child = root.children[i];
-                                            var localpos = child.mapFromGlobal(globalPos.x, globalPos.y);
-
-                                            if(child.contains(localpos) && child.gridSquareDate) {
-                                                addIncidence(type, child.gridSquareDate);
-                                            } else {
-                                                useGridSquareDate(type, child, globalPos);
-                                            }
+                                        if(child.contains(localpos) && child.gridSquareDate) {
+                                            addIncidence(type, child.gridSquareDate);
+                                        } else {
+                                            useGridSquareDate(type, child, globalPos);
                                         }
                                     }
-
-                                    onAddNewIncidence: useGridSquareDate(type, applicationWindow().contentItem, this.mapToGlobal(clickX, clickY))
-                                    onDeselect: root.deselect()
                                 }
 
-                                model: incidences
-                                onCountChanged: {
-                                    root.numberOfLinesShown = count
-                                }
+                                onAddNewIncidence: useGridSquareDate(type, applicationWindow().contentItem, this.mapToGlobal(clickX, clickY))
+                                onDeselect: root.deselect()
+                            }
 
-                                delegate: Item {
-                                    id: line
-                                    height: Kirigami.Units.gridUnit + Kirigami.Units.smallSpacing
+                            model: incidences
+                            onCountChanged: {
+                                root.numberOfLinesShown = count
+                            }
 
-                                    //Incidences
-                                    Repeater {
-                                        id: incidencesRepeater
-                                        model: modelData
+                            delegate: Item {
+                                id: line
+                                height: Kirigami.Units.gridUnit + Kirigami.Units.smallSpacing
 
-                                        MultiDayViewIncidenceDelegate {
-                                            dayWidth: root.dayWidth
-                                            parentViewSpacing: root.spacing
-                                            horizontalSpacing: linesRepeater.spacing
-                                            openOccurrenceId: root.openOccurrence ? root.openOccurrence.incidenceId : ""
-                                            isDark: root.isDark
-                                        }
+                                //Incidences
+                                Repeater {
+                                    id: incidencesRepeater
+                                    model: modelData
+
+                                    MultiDayViewIncidenceDelegate {
+                                        dayWidth: root.dayWidth
+                                        parentViewSpacing: root.spacing
+                                        horizontalSpacing: linesRepeater.spacing
+                                        openOccurrenceId: root.openOccurrence ? root.openOccurrence.incidenceId : ""
+                                        isDark: root.isDark
                                     }
                                 }
                             }
