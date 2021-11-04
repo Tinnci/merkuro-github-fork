@@ -19,12 +19,12 @@ InfiniteCalendarViewModel::InfiniteCalendarViewModel(QObject *parent)
 {
     setup();
 
-    Model monthModel = {QVector<QDate>(), 42, TypeMonth, &m_monthViewModels, {}, &m_liveMonthViewModelKeys};
-    Model scheduleModel = {QVector<QDate>(), 0, TypeSchedule, &m_scheduleViewModels, {}, &m_liveScheduleViewModelKeys};
-    Model weekModel = {QVector<QDate>(), 7, TypeWeek, {}, &m_weekViewModels, &m_liveWeekViewModelKeys};
-    Model weekMultiDayModel = {QVector<QDate>(), 7, TypeWeekMultiDay, &m_weekViewMultiDayModels, {}, &m_liveWeekViewMultiDayModelKeys};
+    ModelMetaData monthModel = {QVector<QDate>(), 42, TypeMonth, &m_monthViewModels, {}, &m_liveMonthViewModelKeys};
+    ModelMetaData scheduleModel = {QVector<QDate>(), 0, TypeSchedule, &m_scheduleViewModels, {}, &m_liveScheduleViewModelKeys};
+    ModelMetaData weekModel = {QVector<QDate>(), 7, TypeWeek, {}, &m_weekViewModels, &m_liveWeekViewModelKeys};
+    ModelMetaData weekMultiDayModel = {QVector<QDate>(), 7, TypeWeekMultiDay, &m_weekViewMultiDayModels, {}, &m_liveWeekViewMultiDayModelKeys};
 
-    m_models = QVector<Model>{monthModel, scheduleModel, weekModel, weekMultiDayModel};
+    m_models = QVector<ModelMetaData>{monthModel, scheduleModel, weekModel, weekMultiDayModel};
 }
 
 void InfiniteCalendarViewModel::setup()
