@@ -363,7 +363,7 @@ Kirigami.OverlayDrawer {
                     Repeater {
                         id: tagList
 
-                        model: TagManager.tagModel
+                        model: parent.visible ? TagManager.tagModel : []
 
                         delegate: Tag {
                             implicitWidth: itemLayout.implicitWidth > tagFlow.width ? tagFlow.width : itemLayout.implicitWidth
