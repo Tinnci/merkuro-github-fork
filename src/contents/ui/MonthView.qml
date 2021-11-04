@@ -151,7 +151,6 @@ Kirigami.Page {
                 width: pathView.width
                 height: pathView.height
                 model: monthViewModel // from monthPage model
-                scrollBarsEnabled: viewLoader.isCurrentItem // Workaround for async load crashing
 
                 startDate: viewLoader.startDate
                 currentDate: monthPage.currentDate
