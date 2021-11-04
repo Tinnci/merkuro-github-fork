@@ -498,7 +498,7 @@ void InfiniteCalendarViewModel::triggerAffectedModelUpdates()
     }
 }
 
-void InfiniteCalendarViewModel::handleCalendarDataChanged(const QModelIndex &topLeft, const QModelIndex &bottomRight, const QVector<int> &roles)
+void InfiniteCalendarViewModel::handleCalendarDataChanged(const QModelIndex &topLeft, const QModelIndex &bottomRight, const QVector<int> &)
 {
     const auto parent = topLeft.parent();
     int first = topLeft.row();
