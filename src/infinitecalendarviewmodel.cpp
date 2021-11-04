@@ -457,9 +457,8 @@ void InfiniteCalendarViewModel::checkCalendarIndex(const QModelIndex &index)
 {
     const auto item = index.data(Akonadi::EntityTreeModel::ItemRole).value<Akonadi::Item>();
 
-    if (item.hasPayload<KCalendarCore::Incidence::Ptr>() && !m_insertedIds.contains(item.id())) {
+    if (item.hasPayload<KCalendarCore::Incidence::Ptr>()) {
         // If the id is already in the set then we don't need to check anything
-        m_insertedIds.insert(item.id());
         const auto incidence = item.payload<KCalendarCore::Incidence::Ptr>();
 
         if (incidence->type() == KCalendarCore::Incidence::TypeTodo) {
@@ -516,7 +515,13 @@ void InfiniteCalendarViewModel::handleCalendarRowsInserted(const QModelIndex &pa
 {
     for (int i = first; i <= last; i++) {
         const auto index = m_calendar->model()->index(i, 0, parent);
-        checkCalendarIndex(index);
+        const auto item = index.data(Akonadi::EntityTreeModel::ItemRole).value<Akonadi::Item>();
+
+        if (!m_insertedIds.contains(item.id())) {
+            qDebug() << "ALREADY GOT";
+            m_insertedIds.insert(item.id());
+            checkCalendarIndex(index);
+        }
     }
 
     triggerAffectedModelUpdates();
