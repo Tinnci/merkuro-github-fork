@@ -81,7 +81,7 @@ Kirigami.ApplicationWindow {
                 todoViewAction.trigger();
                 break;
             default:
-                monthViewAction.trigger();
+                Kirigami.Settings.isMobile ? scheduleViewAction.trigger() : monthViewAction.trigger();
                 break;
         }
     }
