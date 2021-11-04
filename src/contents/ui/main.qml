@@ -9,6 +9,7 @@ import QtQuick.Controls 2.15 as QQC2
 import QtQuick.Layouts 1.15
 import QtQml.Models 2.15
 import QtGraphicalEffects 1.12
+import QtQuick.Dialogs 1.0
 
 import "dateutils.js" as DateUtils
 import "labelutils.js" as LabelUtils
@@ -43,6 +44,7 @@ Kirigami.ApplicationWindow {
     readonly property var createEventAction: KalendarApplication.action("create_event")
     readonly property var createTodoAction: KalendarApplication.action("create_todo")
     readonly property var configureAction: KalendarApplication.action("options_configure")
+    readonly property var importAction: KalendarApplication.action("import_calendar")
     readonly property var quitAction: KalendarApplication.action("file_quit")
     readonly property var undoAction: KalendarApplication.action("edit_undo")
     readonly property var redoAction: KalendarApplication.action("edit_redo")
@@ -202,7 +204,7 @@ Kirigami.ApplicationWindow {
         }
 
         function onImportCalendar() {
-             Qt.quit();
+             importFileDialog.open();
         }
 
         function onQuit() {
@@ -559,6 +561,7 @@ Kirigami.ApplicationWindow {
                 width: Kirigami.Units.gridUnit * 30,
                 height: Kirigami.Units.gridUnit * 30
             });
+        }
     }
 
     Component {
