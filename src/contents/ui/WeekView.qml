@@ -335,7 +335,7 @@ Kirigami.Page {
                         anchors.left: parent.left
                         anchors.top: parent.bottom
                         width: root.hourLabelWidth
-                        height: allDayHeader.actualHeight !== allDayHeader.defaultHeight ?
+                        height: Kalendar.Config.weekViewAllDayHeaderHeight !== -1 ?
                             resetHeaderHeightButton.height :
                             0
                         z: -1
