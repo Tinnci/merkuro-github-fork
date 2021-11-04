@@ -89,7 +89,7 @@ private:
     int m_datesToAdd = 10;
     int m_scale = MonthScale;
 
-    struct Model {
+    struct ModelMetaData {
         QVector<QDate> affectedStartDates;
         int modelLength;
         int modelType;
@@ -98,7 +98,7 @@ private:
         QQueue<QDate> *liveKeysQueue;
     };
 
-    QVector<Model> m_models;
+    QVector<ModelMetaData> m_models;
     mutable QHash<QDate, MultiDayIncidenceModel *> m_monthViewModels;
     mutable QHash<QDate, MultiDayIncidenceModel *> m_scheduleViewModels;
     mutable QHash<QDate, HourlyIncidenceModel *> m_weekViewModels;
