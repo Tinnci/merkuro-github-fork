@@ -517,8 +517,11 @@ void InfiniteCalendarViewModel::handleCalendarRowsInserted(const QModelIndex &pa
         const auto index = m_calendar->model()->index(i, 0, parent);
         const auto item = index.data(Akonadi::EntityTreeModel::ItemRole).value<Akonadi::Item>();
 
+        // Sometimes the calendar updates with inserted rows for incidences that we have already checked.
+        // We keep track of which incidence ids have already been checked on prior row insertions, so that
+        // we can skip these ones.
+
         if (!m_insertedIds.contains(item.id())) {
-            qDebug() << "ALREADY GOT";
             m_insertedIds.insert(item.id());
             checkCalendarIndex(index);
         }
