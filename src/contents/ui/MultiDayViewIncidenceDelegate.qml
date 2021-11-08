@@ -14,6 +14,7 @@ Rectangle {
     x: ((dayWidth + parentViewSpacing) * modelData.starts) + horizontalSpacing
     z: 10
     width: ((dayWidth + parentViewSpacing) * modelData.duration) - (horizontalSpacing * 2) - parentViewSpacing // Account for spacing added to x and for spacing at end of line
+    //Behavior on width { NumberAnimation { duration: Kirigami.Units.shortDuration; easing.type: Easing.OutCubic } }
     height: parent.height
     opacity: isOpenOccurrence || isInCurrentMonth ?
         1.0 : 0.5
@@ -32,6 +33,9 @@ Rectangle {
         modelData.endTime.getMonth() == root.month || modelData.startTime.getMonth() == root.month :
         true
     property bool isDark: false
+    property alias mouseArea: mouseArea
+    property var incidencePtr: modelData.incidencePtr
+    property var collectionId: modelData.collectionId
 
     IncidenceBackground {
         id: incidenceBackground
@@ -94,8 +98,12 @@ Rectangle {
     }
 
     IncidenceMouseArea {
+        id: mouseArea
         incidenceData: modelData
         collectionId: modelData.collectionId
+
+        drag.target: parent
+        onReleased: parent.Drag.drop()
 
         onViewClicked: viewIncidence(modelData, collectionData)
         onEditClicked: editIncidence(incidencePtr, collectionId)
