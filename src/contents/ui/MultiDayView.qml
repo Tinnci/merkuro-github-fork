@@ -139,14 +139,29 @@ Item {
                                             anchors.fill: parent
                                             Kirigami.Theme.inherit: false
                                             Kirigami.Theme.colorSet: Kirigami.Theme.View
-                                            color: gridItem.isToday ? Kirigami.Theme.activeBackgroundColor :
+                                            color: incidenceDropArea.containsDrag ?  Kirigami.Theme.positiveBackgroundColor :
+                                                gridItem.isToday ? Kirigami.Theme.activeBackgroundColor :
                                                 gridItem.isCurrentMonth ? Kirigami.Theme.backgroundColor : Kirigami.Theme.alternateBackgroundColor
 
                                             DayMouseArea {
+                                                id: backgroundDayMouseArea
                                                 anchors.fill: parent
                                                 addDate: gridItem.date
                                                 onAddNewIncidence: addIncidence(type, addDate)
                                                 onDeselect: root.deselect()
+
+                                                DropArea {
+                                                    id: incidenceDropArea
+                                                    anchors.fill: parent
+                                                    z: 9999
+                                                    onDropped: {
+                                                        let incidenceWrapper = Qt.createQmlObject('import org.kde.kalendar 1.0; IncidenceWrapper {id: incidence}', incidenceDropArea, "incidence");
+                                                        incidenceWrapper.incidencePtr = drop.source.incidencePtr;
+                                                        incidenceWrapper.collectionId = drop.source.collectionId;
+                                                        incidenceWrapper.setIncidenceStartDate(backgroundDayMouseArea.addDate.getDate(), backgroundDayMouseArea.addDate.getMonth() + 1, backgroundDayMouseArea.addDate.getFullYear());
+                                                        Kalendar.CalendarManager.editIncidence(incidenceWrapper);
+                                                    }
+                                                }
                                             }
                                         }
 
@@ -272,11 +287,20 @@ Item {
                                     model: modelData
 
                                     MultiDayViewIncidenceDelegate {
+                                        id: incidenceDelegate
                                         dayWidth: root.dayWidth
+                                        height: line.height
                                         parentViewSpacing: root.spacing
                                         horizontalSpacing: linesRepeater.spacing
                                         openOccurrenceId: root.openOccurrence ? root.openOccurrence.incidenceId : ""
                                         isDark: root.isDark
+
+                                        Drag.active: mouseArea.drag.active
+                                        states: State {
+                                            when: incidenceDelegate.mouseArea.drag.active
+                                            ParentChange { target: incidenceDelegate; parent: root }
+                                            PropertyChanges { target: incidenceDelegate; width: dayWidth * 0.75 }
+                                        }
                                     }
                                 }
                             }
