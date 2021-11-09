@@ -180,6 +180,7 @@ Kirigami.Page {
                      */
                     Layout.bottomMargin: Kirigami.Units.largeSpacing * 5
                     highlightRangeMode: ListView.ApplyRange
+
                     onCountChanged: if(root.initialMonth) root.moveToSelected()
 
                     Component {
@@ -223,6 +224,8 @@ Kirigami.Page {
                             anchors.fill: parent
                             z: 9999
                             onDropped: {
+                                root.selectedDate = dayMouseArea.addDate;
+
                                 let incidenceWrapper = Qt.createQmlObject('import org.kde.kalendar 1.0; IncidenceWrapper {id: incidence}', incidenceDropArea, "incidence");
                                 incidenceWrapper.incidencePtr = drop.source.incidencePtr;
                                 incidenceWrapper.collectionId = drop.source.collectionId;
