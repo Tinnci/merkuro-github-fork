@@ -163,7 +163,6 @@ Item {
                                                         Kalendar.CalendarManager.editIncidence(incidenceWrapper);
 
                                                         const pos = mapToItem(root, backgroundRectangle.x, backgroundRectangle.y);
-                                                        //drop.source.parent = this;
                                                         drop.source.x = pos.x + Kirigami.Units.smallSpacing;
                                                         drop.source.y = root.showDayIndicator ?
                                                             pos.y + Kirigami.Units.gridUnit + Kirigami.Units.largeSpacing * 1.5 :
