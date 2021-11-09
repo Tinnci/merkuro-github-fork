@@ -123,7 +123,7 @@ Rectangle {
         incidenceData: modelData
         collectionId: modelData.collectionId
 
-        drag.target: parent
+        drag.target: !Kirigami.Settings.isMobile && !modelData.isReadOnly ? parent : undefined
         onReleased: parent.Drag.drop()
 
         onViewClicked: viewIncidence(modelData, collectionData)
