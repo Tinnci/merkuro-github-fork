@@ -49,7 +49,9 @@ Item {
     property int numberOfLinesShown: 0
     property int numberOfRows: (daysToShow / daysPerRow)
     property var dayHeight: ((height - bgLoader.dayLabels.height) / numberOfRows) - spacing
-    property real spacing: Kalendar.Config.monthGridBorderWidth
+    property real spacing: Kalendar.Config.monthGridBorderWidth // Between grid squares in background
+    property real listViewSpacing: root.dayWidth < (Kirigami.Units.gridUnit * 5 + Kirigami.Units.smallSpacing * 2) ?
+        Kirigami.Units.smallSpacing / 2 : Kirigami.Units.smallSpacing // Between lines of incidences ( ====== <- )
     readonly property bool isDark: LabelUtils.isDarkColor(Kirigami.Theme.backgroundColor)
 
     implicitHeight: (numberOfRows > 1 ? Kirigami.Units.gridUnit * 10 * numberOfRows : numberOfLinesShown * Kirigami.Units.gridUnit) + bgLoader.dayLabels.height
@@ -163,7 +165,7 @@ Item {
                                                         Kalendar.CalendarManager.editIncidence(incidenceWrapper);
 
                                                         const pos = mapToItem(root, backgroundRectangle.x, backgroundRectangle.y);
-                                                        drop.source.x = pos.x + Kirigami.Units.smallSpacing;
+                                                        drop.source.x = pos.x + root.listViewSpacing;
                                                         drop.source.y = root.showDayIndicator ?
                                                             pos.y + Kirigami.Units.gridUnit + Kirigami.Units.largeSpacing * 1.5 :
                                                             pos.y;
@@ -255,8 +257,7 @@ Item {
                             QQC2.ScrollBar.vertical: QQC2.ScrollBar {}
 
                             clip: true
-                            spacing: root.dayWidth < (Kirigami.Units.gridUnit * 5 + Kirigami.Units.smallSpacing * 2) ?
-                                Kirigami.Units.smallSpacing / 2 : Kirigami.Units.smallSpacing
+                            spacing: root.listViewSpacing
 
                             DayMouseArea {
                                 id: listViewMenu
