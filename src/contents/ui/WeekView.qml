@@ -696,9 +696,15 @@ Kirigami.Page {
                                                             incidenceWrapper.setIncidenceStartDate(backgroundDayMouseArea.addDate.getDate(), backgroundDayMouseArea.addDate.getMonth() + 1, backgroundDayMouseArea.addDate.getFullYear());
                                                             incidenceWrapper.setIncidenceStartTime(backgroundRectangle.index, dropAreaRepeater.minutes * index)
                                                             Kalendar.CalendarManager.editIncidence(incidenceWrapper);
+
+                                                            const pos = mapToItem(root, dropAreaHighlightRectangle.x, dropAreaHighlightRectangle.y);
+                                                            //drop.source.parent = this;
+                                                            drop.source.x = pos.x + incidenceSpacing;
+                                                            drop.source.y = pos.y + incidenceSpacing;
                                                         }
 
                                                         Rectangle {
+                                                            id: dropAreaHighlightRectangle
                                                             anchors.fill: parent
                                                             visible: incidenceDropArea.containsDrag
                                                             color: Kirigami.Theme.positiveBackgroundColor
@@ -726,7 +732,7 @@ Kirigami.Page {
 
                                             readonly property real gridLineYCompensation: (modelData.starts / hourlyView.periodsPerHour) * root.gridLineWidth
                                             readonly property real gridLineHeightCompensation: (modelData.duration / hourlyView.periodsPerHour) * root.gridLineWidth
-                                            readonly property bool isOpenOccurrence: root.openOccurrence ?
+                                            property bool isOpenOccurrence: root.openOccurrence ?
                                                 root.openOccurrence.incidenceId === modelData.incidenceId : false
 
                                             x: root.incidenceSpacing + (modelData.priorTakenWidthShare * root.dayWidth)
@@ -735,12 +741,29 @@ Kirigami.Page {
                                             height: (modelData.duration * root.periodHeight) - (root.incidenceSpacing * 2) + gridLineHeightCompensation - root.gridLineWidth
                                             radius: Kirigami.Units.smallSpacing
                                             color: Qt.rgba(0,0,0,0)
-                                            clip: true
                                             visible: !modelData.allDay
 
                                             property alias mouseArea: mouseArea
                                             property var incidencePtr: modelData.incidencePtr
                                             property var collectionId: modelData.collectionId
+                                            property bool repositionAnimationEnabled: false
+
+                                            // Drag reposition animations -- when the incidence goes to the correct cell of the monthgrid
+                                            Behavior on x {
+                                                enabled: repositionAnimationEnabled
+                                                NumberAnimation {
+                                                    duration: Kirigami.Units.shortDuration
+                                                    easing.type: Easing.OutCubic
+                                                }
+                                            }
+
+                                            Behavior on y {
+                                                enabled: repositionAnimationEnabled
+                                                NumberAnimation {
+                                                    duration: Kirigami.Units.shortDuration
+                                                    easing.type: Easing.OutCubic
+                                                }
+                                            }
 
                                             IncidenceBackground {
                                                 id: incidenceBackground
@@ -753,6 +776,8 @@ Kirigami.Page {
 
                                                 readonly property color textColor: LabelUtils.getIncidenceLabelColor(modelData.color, root.isDark)
                                                 readonly property bool isTinyHeight: parent.height <= Kirigami.Units.gridUnit
+
+                                                clip: true
 
                                                 anchors {
                                                     fill: parent
@@ -825,10 +850,17 @@ Kirigami.Page {
                                             }
 
                                             Drag.active: mouseArea.drag.active
-                                            states: State {
-                                                when: incidenceDelegate.mouseArea.drag.active
-                                                ParentChange { target: incidenceDelegate; parent: root }
-                                                PropertyChanges { target: incidenceDelegate; width: dayWidth * 0.75 }
+
+                                            Connections {
+                                                target: incidenceDelegate.mouseArea.drag
+                                                function onActiveChanged() {
+                                                    // We can destructively set a bunch of properties as the model
+                                                    // will reset anyway. If you change the model behaviour you WILL
+                                                    // need to change how this works.
+                                                    incidenceDelegate.parent = root;
+                                                    incidenceDelegate.repositionAnimationEnabled = true;
+                                                    incidenceDelegate.isOpenOccurrence = true;
+                                                }
                                             }
                                         }
                                     }
