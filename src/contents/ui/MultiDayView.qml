@@ -136,6 +136,7 @@ Item {
                                         property bool isCurrentMonth: month === root.month
 
                                         Rectangle {
+                                            id: backgroundRectangle
                                             anchors.fill: parent
                                             Kirigami.Theme.inherit: false
                                             Kirigami.Theme.colorSet: Kirigami.Theme.View
@@ -160,6 +161,14 @@ Item {
                                                         incidenceWrapper.collectionId = drop.source.collectionId;
                                                         incidenceWrapper.setIncidenceStartDate(backgroundDayMouseArea.addDate.getDate(), backgroundDayMouseArea.addDate.getMonth() + 1, backgroundDayMouseArea.addDate.getFullYear());
                                                         Kalendar.CalendarManager.editIncidence(incidenceWrapper);
+
+                                                        const pos = mapToItem(root, backgroundRectangle.x, backgroundRectangle.y);
+                                                        //drop.source.parent = this;
+                                                        drop.source.x = pos.x + Kirigami.Units.smallSpacing;
+                                                        drop.source.y = root.showDayIndicator ?
+                                                            pos.y + Kirigami.Units.gridUnit + Kirigami.Units.largeSpacing * 1.5 :
+                                                            pos.y;
+                                                        drop.source.opacity = 0;
                                                     }
                                                 }
                                             }
@@ -296,10 +305,17 @@ Item {
                                         isDark: root.isDark
 
                                         Drag.active: mouseArea.drag.active
-                                        states: State {
-                                            when: incidenceDelegate.mouseArea.drag.active
-                                            ParentChange { target: incidenceDelegate; parent: root }
-                                            PropertyChanges { target: incidenceDelegate; width: dayWidth * 0.75 }
+
+                                        Connections {
+                                            target: incidenceDelegate.mouseArea.drag
+                                            function onActiveChanged() {
+                                                // We can destructively set a bunch of properties as the model
+                                                // will reset anyway. If you change the model behaviour you WILL
+                                                // need to change how this works.
+                                                incidenceDelegate.parent = root;
+                                                incidenceDelegate.repositionAnimationEnabled = true;
+                                                incidenceDelegate.isOpenOccurrence = true;
+                                            }
                                         }
                                     }
                                 }
