@@ -226,7 +226,7 @@ Kirigami.Page {
                             onDropped: {
                                 root.selectedDate = dayMouseArea.addDate;
 
-                                let incidenceWrapper = Qt.createQmlObject('import org.kde.kalendar 1.0; IncidenceWrapper {id: incidence}', incidenceDropArea, "incidence");
+                                const incidenceWrapper = Qt.createQmlObject('import org.kde.kalendar 1.0; IncidenceWrapper {id: incidence}', incidenceDropArea, "incidence");
                                 incidenceWrapper.incidencePtr = drop.source.incidencePtr;
                                 incidenceWrapper.collectionId = drop.source.collectionId;
                                 incidenceWrapper.setIncidenceStartDate(dayMouseArea.addDate.getDate(), dayMouseArea.addDate.getMonth() + 1, dayMouseArea.addDate.getFullYear());
