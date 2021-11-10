@@ -432,7 +432,7 @@ Kirigami.Page {
                                                                     anchors.fill: parent
                                                                     z: 9999
                                                                     onDropped: {
-                                                                        let incidenceWrapper = Qt.createQmlObject('import org.kde.kalendar 1.0; IncidenceWrapper {id: incidence}', incidenceDropArea, "incidence");
+                                                                        const incidenceWrapper = Qt.createQmlObject('import org.kde.kalendar 1.0; IncidenceWrapper {id: incidence}', incidenceDropArea, "incidence");
                                                                         incidenceWrapper.incidencePtr = drop.source.incidencePtr;
                                                                         incidenceWrapper.collectionId = drop.source.collectionId;
                                                                         incidenceWrapper.setIncidenceStartDate(listViewMenu.addDate.getDate(), listViewMenu.addDate.getMonth() + 1, listViewMenu.addDate.getFullYear());
