@@ -460,6 +460,7 @@ Kirigami.OverlayDrawer {
                         DelegateChoice {
                             roleValue: false
                             Kirigami.BasicListItem {
+                                id: calendarItem
                                 label: display
                                 labelItem.color: Kirigami.Theme.textColor
                                 leftPadding: Kirigami.Settings.isMobile ? Kirigami.Units.largeSpacing * 2 : Kirigami.Units.largeSpacing
@@ -483,6 +484,13 @@ Kirigami.OverlayDrawer {
                                 onClicked: {
                                     calendarClicked(collectionId);
                                     if(sidebar.modal) sidebar.close()
+                                }
+
+                                CalendarItemMouseArea {
+                                    id: calendarItemMouseArea
+                                    parent: calendarItem.contentItem // Otherwise label elide breaks
+                                    collectionId: model.collectionId
+                                    anchors.fill: parent
                                 }
                             }
                         }
