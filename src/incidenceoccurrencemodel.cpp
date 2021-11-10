@@ -302,7 +302,7 @@ QVariant IncidenceOccurrenceModel::data(const QModelIndex &idx, int role) const
         return todo->isOverdue();
     }
     case IsReadOnly: {
-        auto collection = m_coreCalendar->collection(incidence.collectionId);
+        const auto collection = m_coreCalendar->collection(incidence.collectionId);
         return collection.rights().testFlag(Akonadi::Collection::ReadOnly);
     }
     case IncidenceId:
