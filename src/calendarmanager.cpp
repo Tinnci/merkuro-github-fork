@@ -825,7 +825,7 @@ void CalendarManager::updateCollection(qint64 collectionId)
 void CalendarManager::deleteCollection(qint64 collectionId)
 {
     auto collection = m_calendar->collection(collectionId);
-    bool isTopLevel = collection.parentCollection() == Akonadi::Collection::root();
+    const bool isTopLevel = collection.parentCollection() == Akonadi::Collection::root();
 
     if (!isTopLevel) {
         // deletes contents
