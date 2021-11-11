@@ -835,11 +835,13 @@ void CalendarManager::deleteCollection(qint64 collectionId)
                 qWarning() << "Error occurred deleting collection: " << job->errorString();
             }
         });
-    } else {
-        // deletes the agent, not the contents
-        const Akonadi::AgentInstance instance = Akonadi::AgentManager::self()->instance(collection.resource());
-        if (instance.isValid()) {
-            Akonadi::AgentManager::self()->removeInstance(instance);
+        return;
+    }
+    // deletes the agent, not the contents
+    const Akonadi::AgentInstance instance = Akonadi::AgentManager::self()->instance(collection.resource());
+    if (instance.isValid()) {
+        Akonadi::AgentManager::self()->removeInstance(instance);
+    }
         }
     }
 }
