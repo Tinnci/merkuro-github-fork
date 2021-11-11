@@ -61,7 +61,7 @@ MouseArea {
 
             QQC2.MenuItem {
                 icon.name: "edit-entry"
-                text:i18n("Edit calendar…")
+                text: i18nc("@action:inmenu", "Edit calendar…")
                 onClicked: Kalendar.CalendarManager.editCollection(calendarMouseArea.collectionId);
             }
             QQC2.MenuItem {
