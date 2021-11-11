@@ -809,6 +809,12 @@ void CalendarManager::redoAction()
     m_changer->history()->redo();
 }
 
+void CalendarManager::updateCollection(qint64 collectionId)
+{
+    auto collection = m_calendar->collection(collectionId);
+    Akonadi::AgentManager::self()->synchronizeCollection(collection, false);
+}
+
 Q_DECLARE_METATYPE(KCalendarCore::Incidence::Ptr);
 
 #include "calendarmanager.moc"

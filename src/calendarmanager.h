@@ -87,6 +87,8 @@ public:
     Q_INVOKABLE void undoAction();
     Q_INVOKABLE void redoAction();
 
+    Q_INVOKABLE void updateCollection(qint64 collectionId);
+
 private Q_SLOTS:
     void delayedInit();
 
