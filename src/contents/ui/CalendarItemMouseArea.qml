@@ -21,14 +21,12 @@ MouseArea {
     anchors.fill: parent
     hoverEnabled: true
     acceptedButtons: Qt.RightButton
-    propagateComposedEvents: true
     onClicked: {
         if (mouse.button == Qt.RightButton) {
             clickX = mouseX;
             clickY = mouseY;
             calendarActions.createObject(calendarMouseArea, {}).open();
         }
-        mouse.accepted = false;
     }
     onPressAndHold: if(Kirigami.Settings.isMobile) {
         clickX = mouseX;
