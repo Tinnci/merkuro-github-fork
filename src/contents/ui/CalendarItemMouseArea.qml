@@ -71,7 +71,7 @@ MouseArea {
             }
             QQC2.MenuItem {
                 icon.name: "edit-delete"
-                text:i18n("Delete calendar")
+                text: i18nc("@action:inmenu", "Delete calendar")
                 enabled: calendarMouseArea.collectionDetails["canDelete"]
                 onClicked: deleteCalendar(calendarMouseArea.collectionId, calendarMouseArea.collectionDetails)
             }
