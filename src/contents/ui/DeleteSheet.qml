@@ -153,7 +153,7 @@ Kirigami.Page {
 
                     QQC2.Button {
                         icon.name: "dialog-cancel"
-                        text: i18n("Cancel")
+                        text: i18nc("@action:button", "Cancel")
                         onClicked: cancel()
                     }
                 }
