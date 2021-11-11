@@ -30,7 +30,7 @@ Kirigami.Page {
 
    title: incidenceWrapper && incidenceWrapper.incidenceTypeStr ?
         i18nc("%1 is the type of the incidence (e.g event, todo, journal entry)", "Delete %1", incidenceWrapper.incidenceTypeStr) :
-        collectionId ? i18n("Delete calendar") : i18n("Delete")
+        collectionId ? i18nc("@title:window", "Delete calendar") : i18nc("@title:window", "Delete")
 
     ColumnLayout {
         anchors.fill: parent
