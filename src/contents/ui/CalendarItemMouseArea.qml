@@ -68,7 +68,7 @@ MouseArea {
             QQC2.MenuItem {
                 icon.name: "view-refresh"
                 text:i18n("Update calendar")
-                //onClicked: viewClicked(incidenceData, collectionDetails);
+                onClicked: Kalendar.CalendarManager.updateCollection(calendarMouseArea.collectionId);
             }
             QQC2.MenuItem {
                 icon.name: "edit-delete"
@@ -79,7 +79,7 @@ MouseArea {
             QQC2.MenuSeparator {
             }
             QQC2.MenuItem {
-                icon.name: "color-pickere"
+                icon.name: "color-picker"
                 text:i18n("Set calendar colour…")
                 onClicked: {
                     colorDialogLoader.active = true;
