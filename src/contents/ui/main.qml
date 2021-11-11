@@ -419,6 +419,12 @@ Kirigami.ApplicationWindow {
             root.filter.name = "";
             root.filterChanged();
         }
+        onDeleteCalendar: {
+            deleteSheet.incidenceWrapper = undefined;
+            deleteSheet.collectionId = collectionId;
+            deleteSheet.collectionDetails = collectionDetails;
+            deleteSheet.open();
+        }
     }
 
     contextDrawer: IncidenceInfo {
@@ -804,12 +810,12 @@ Kirigami.ApplicationWindow {
     }
 
     function setUpDelete(incidencePtr, deleteDate) {
-        deleteIncidenceSheet.incidenceWrapper = Qt.createQmlObject('import org.kde.kalendar 1.0; IncidenceWrapper {id: incidence}',
-                                                                   deleteIncidenceSheet,
+        deleteSheet.incidenceWrapper = Qt.createQmlObject('import org.kde.kalendar 1.0; IncidenceWrapper {id: incidence}',
+                                                                   deleteSheet,
                                                                    "incidence");
-        deleteIncidenceSheet.incidenceWrapper.incidencePtr = incidencePtr;
-        deleteIncidenceSheet.deleteDate = deleteDate;
-        deleteIncidenceSheet.open();
+        deleteSheet.incidenceWrapper.incidencePtr = incidencePtr;
+        deleteSheet.deleteDate = deleteDate;
+        deleteSheet.open();
     }
 
     function completeTodo(incidencePtr) {
@@ -825,25 +831,29 @@ Kirigami.ApplicationWindow {
         }
     }
 
-    DeleteIncidenceSheet {
-        id: deleteIncidenceSheet
+    DeleteSheet {
+        id: deleteSheet
         onAddException: {
             incidenceWrapper.recurrenceExceptionsModel.addExceptionDateTime(exceptionDate);
             CalendarManager.editIncidence(incidenceWrapper);
-            deleteIncidenceSheet.close();
+            deleteSheet.close();
         }
         onAddRecurrenceEndDate: {
             incidenceWrapper.setRecurrenceDataItem("endDateTime", endDate);
             CalendarManager.editIncidence(incidenceWrapper);
-            deleteIncidenceSheet.close();
+            deleteSheet.close();
         }
         onDeleteIncidence: {
             CalendarManager.deleteIncidence(incidencePtr);
-            deleteIncidenceSheet.close();
+            deleteSheet.close();
         }
         onDeleteIncidenceWithChildren: {
             CalendarManager.deleteIncidence(incidencePtr, true);
-            deleteIncidenceSheet.close();
+            deleteSheet.close();
+        }
+        onDeleteCollection: {
+            CalendarManager.deleteCollection(collectionId);
+            deleteSheet.close();
         }
     }
 
