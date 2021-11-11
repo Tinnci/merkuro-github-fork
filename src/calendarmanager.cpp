@@ -841,8 +841,6 @@ void CalendarManager::deleteCollection(qint64 collectionId)
     if (instance.isValid()) {
         Akonadi::AgentManager::self()->removeInstance(instance);
     }
-        }
-    }
 }
 
 void CalendarManager::editCollection(qint64 collectionId)
