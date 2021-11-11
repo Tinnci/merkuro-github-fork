@@ -171,7 +171,7 @@ Kirigami.Page {
 
                     QQC2.Button {
                         icon.name: "delete"
-                        text: i18n("Delete")
+                        text: i18nc("@action:button", "Delete")
                         onClicked: deleteCollection(deleteSheet.collectionId)
                     }
 
