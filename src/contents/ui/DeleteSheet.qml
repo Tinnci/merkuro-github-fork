@@ -126,7 +126,7 @@ Kirigami.Page {
 
                     QQC2.Button {
                         icon.name: "edit-table-delete-row"
-                        text: i18n("Also Delete Future")
+                        text: i18nc("@action:button", "Also Delete Future")
                         visible: incidenceWrapper.recurrenceData.type > 0
                         onClicked: {
                             // We want to include the delete date in the deletion
