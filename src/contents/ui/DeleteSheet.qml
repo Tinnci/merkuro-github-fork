@@ -147,7 +147,7 @@ Kirigami.Page {
 
                     QQC2.Button {
                         icon.name: "delete"
-                        text: deleteSheet.incidenceHasChildren || incidenceWrapper.recurrenceData.type > 0 ? i18n("Delete All") : i18n("Delete")
+                        text: deleteSheet.incidenceHasChildren || incidenceWrapper.recurrenceData.type > 0 ? i18nc("@action:button", "Delete All") : i18nc("@action:button", "Delete")
                         onClicked: deleteSheet.incidenceHasChildren ? deleteIncidenceWithChildren(incidenceWrapper.incidencePtr) : deleteIncidence(incidenceWrapper.incidencePtr)
                     }
 
