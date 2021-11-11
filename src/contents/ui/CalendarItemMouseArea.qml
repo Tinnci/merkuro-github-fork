@@ -39,7 +39,7 @@ MouseArea {
         active: false
         sourceComponent: ColorDialog {
             id: colorDialog
-            title: i18n("Choose Calendar Color")
+            title: i18nc("@title:window", Choose Calendar Color")
             color: calendarMouseArea.collectionDetails.color
             onAccepted: Kalendar.CalendarManager.setCollectionColor(calendarMouseArea.collectionId, color)
             onRejected: {
