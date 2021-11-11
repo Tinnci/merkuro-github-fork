@@ -11,6 +11,8 @@ import org.kde.kalendar 1.0 as Kalendar
 MouseArea {
     id: calendarMouseArea
 
+    signal deleteCalendar(int collectionId, var collectionDetails)
+
     property double clickX
     property double clickY
     property var collectionId
@@ -62,7 +64,7 @@ MouseArea {
             QQC2.MenuItem {
                 icon.name: "edit-entry"
                 text:i18n("Edit calendar…")
-                enabled: !calendarMouseArea.collectionDetails["readOnly"]
+                enabled: !calendarMouseArea.collectionDetails["canChange"]
                 //onClicked: editClicked(incidenceData.incidencePtr, incidenceData.collectionId)
             }
             QQC2.MenuItem {
@@ -73,8 +75,8 @@ MouseArea {
             QQC2.MenuItem {
                 icon.name: "edit-delete"
                 text:i18n("Delete calendar")
-                enabled: !calendarMouseArea.collectionDetails["readOnly"]
-                //onClicked: deleteClicked(incidenceData.incidencePtr, incidenceData.startTime)
+                enabled: calendarMouseArea.collectionDetails["canDelete"]
+                onClicked: deleteCalendar(calendarMouseArea.collectionId, calendarMouseArea.collectionDetails)
             }
             QQC2.MenuSeparator {
             }
