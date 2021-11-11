@@ -424,7 +424,7 @@ Kirigami.ApplicationWindow {
             root.filterChanged();
         }
         onDeleteCalendar: {
-            const openDialogWindow = pageStack.pushDialogLayer(deleteSheetComponent, {
+            const openDialogWindow = pageStack.pushDialogLayer(deleteCalendarSheetComponent, {
                 collectionId: collectionId,
                 collectionDetails: collectionDetails
             }, {
@@ -832,7 +832,7 @@ Kirigami.ApplicationWindow {
         let incidenceWrapper = Qt.createQmlObject('import org.kde.kalendar 1.0; IncidenceWrapper {id: incidence}', root, "incidence");
         incidenceWrapper.incidencePtr = incidencePtr;
 
-        const openDialogWindow = pageStack.pushDialogLayer(deleteSheetComponent, {
+        const openDialogWindow = pageStack.pushDialogLayer(deleteIncidenceSheetComponent, {
             incidenceWrapper: incidenceWrapper,
             deleteDate: deleteDate
         }, {
@@ -859,9 +859,9 @@ Kirigami.ApplicationWindow {
     }
 
     Component {
-        id: deleteSheetComponent
-        DeleteSheet {
-            id: deleteSheet
+        id: deleteIncidenceSheetComponent
+        DeleteIncidenceSheet {
+            id: deleteIncidenceSheet
 
             onAddException: {
                 incidenceWrapper.recurrenceExceptionsModel.addExceptionDateTime(exceptionDate);
@@ -881,6 +881,15 @@ Kirigami.ApplicationWindow {
                 CalendarManager.deleteIncidence(incidencePtr, true);
                 closeDialog();
             }
+            onCancel: closeDialog()
+        }
+    }
+
+    Component {
+        id: deleteCalendarSheetComponent
+        DeleteCalendarSheet {
+            id: deleteCalendarSheet
+
             onDeleteCollection: {
                 CalendarManager.deleteCollection(collectionId);
                 closeDialog();
