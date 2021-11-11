@@ -79,7 +79,7 @@ MouseArea {
             }
             QQC2.MenuItem {
                 icon.name: "color-picker"
-                text:i18n("Set calendar colour…")
+                text: i18nc("@action:inmenu", "Set calendar colour…")
                 onClicked: {
                     colorDialogLoader.active = true;
                     colorDialogLoader.item.open();
