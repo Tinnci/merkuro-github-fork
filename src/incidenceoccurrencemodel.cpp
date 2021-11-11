@@ -101,7 +101,7 @@ void IncidenceOccurrenceModel::updateQuery()
     QObject::connect(m_coreCalendar->model(), &QAbstractItemModel::rowsRemoved, this, &IncidenceOccurrenceModel::refreshView);
     QObject::connect(m_coreCalendar->model(), &QAbstractItemModel::modelReset, this, &IncidenceOccurrenceModel::refreshView);
     QObject::connect(m_coreCalendar, &Akonadi::ETMCalendar::collectionsAdded, this, &IncidenceOccurrenceModel::refreshView);
-    QO
+    QObject::connect(m_coreCalendar, &Akonadi::ETMCalendar::collectionsRemoved, this, &IncidenceOccurrenceModel::refreshView);
 
     refreshView();
 }
