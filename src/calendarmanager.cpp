@@ -17,6 +17,7 @@
 #include <Akonadi/AgentManager>
 #include <Akonadi/AttributeFactory>
 #include <Akonadi/CollectionColorAttribute>
+#include <Akonadi/CollectionDeleteJob>
 #include <Akonadi/CollectionFilterProxyModel>
 #include <Akonadi/CollectionIdentificationAttribute>
 #include <Akonadi/CollectionModifyJob>
@@ -32,6 +33,7 @@
 #include <AkonadiCore/AgentManager>
 #include <AkonadiCore/AttributeFactory>
 #include <AkonadiCore/CollectionColorAttribute>
+#include <AkonadiCore/CollectionDeleteJob>
 #include <AkonadiCore/CollectionIdentificationAttribute>
 #include <AkonadiCore/CollectionModifyJob>
 #include <AkonadiCore/CollectionUtils>
@@ -776,6 +778,9 @@ QVariantMap CalendarManager::getCollectionDetails(QVariant collectionId)
     collectionDetails[QLatin1String("count")] = collection.statistics().count();
     collectionDetails[QLatin1String("isResource")] = Akonadi::CollectionUtils::isResource(collection);
     collectionDetails[QLatin1String("readOnly")] = collection.rights().testFlag(Collection::ReadOnly);
+    collectionDetails[QLatin1String("canChange")] = collection.rights().testFlag(Collection::CanChangeCollection);
+    collectionDetails[QLatin1String("canCreate")] = collection.rights().testFlag(Collection::CanCreateCollection);
+    collectionDetails[QLatin1String("canDelete")] = collection.rights().testFlag(Collection::CanDeleteCollection);
     collectionDetails[QLatin1String("isFiltered")] = isFiltered;
     collectionDetails[QLatin1String("allCalendarsRow")] = allCalendarsRow;
 
@@ -787,7 +792,6 @@ void CalendarManager::setCollectionColor(qint64 collectionId, QColor color)
     auto collection = m_calendar->collection(collectionId);
     Akonadi::CollectionColorAttribute *colorAttr = collection.attribute<Akonadi::CollectionColorAttribute>(Akonadi::Collection::AddIfMissing);
     colorAttr->setColor(color);
-
     Akonadi::CollectionModifyJob *modifyJob = new Akonadi::CollectionModifyJob(collection);
     connect(modifyJob, &Akonadi::CollectionModifyJob::result, this, [this, collectionId, color](KJob *job) {
         if (job->error()) {
@@ -813,6 +817,28 @@ void CalendarManager::updateCollection(qint64 collectionId)
 {
     auto collection = m_calendar->collection(collectionId);
     Akonadi::AgentManager::self()->synchronizeCollection(collection, false);
+}
+
+void CalendarManager::deleteCollection(qint64 collectionId)
+{
+    auto collection = m_calendar->collection(collectionId);
+    bool isTopLevel = collection.parentCollection() == Akonadi::Collection::root();
+
+    if (!isTopLevel) {
+        // deletes contents
+        auto job = new Akonadi::CollectionDeleteJob(collection, this);
+        connect(job, &Akonadi::CollectionDeleteJob::result, this, [this](KJob *job) {
+            if (job->error()) {
+                qWarning() << "Error occurred deleting collection: " << job->errorString();
+            }
+        });
+    } else {
+        // deletes the agent, not the contents
+        const Akonadi::AgentInstance instance = Akonadi::AgentManager::self()->instance(collection.resource());
+        if (instance.isValid()) {
+            Akonadi::AgentManager::self()->removeInstance(instance);
+        }
+    }
 }
 
 Q_DECLARE_METATYPE(KCalendarCore::Incidence::Ptr);

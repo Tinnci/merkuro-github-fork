@@ -19,6 +19,7 @@ Kirigami.OverlayDrawer {
     signal calendarCheckChanged(int collectionId, bool checked)
     signal viewAllTodosClicked
     signal tagClicked(string tagName)
+    signal deleteCalendar(int collectionId, var collectionDetails)
 
     property bool todoMode: false
     property alias toolbar: toolbar
@@ -491,6 +492,8 @@ Kirigami.OverlayDrawer {
                                     parent: calendarItem.contentItem // Otherwise label elide breaks
                                     collectionId: model.collectionId
                                     anchors.fill: parent
+
+                                    onDeleteCalendar: sidebar.deleteCalendar(collectionId, collectionDetails)
                                 }
                             }
                         }
