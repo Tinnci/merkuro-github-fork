@@ -119,7 +119,7 @@ Kirigami.Page {
 
                     QQC2.Button {
                         icon.name: "deletecell"
-                        text: i18n("Only Delete Current")
+                        text: i18nc("@action:button", "Only Delete Current")
                         visible: incidenceWrapper.recurrenceData.type > 0
                         onClicked: addException(deleteDate, incidenceWrapper)
                     }
