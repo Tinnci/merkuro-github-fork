@@ -62,8 +62,7 @@ MouseArea {
             QQC2.MenuItem {
                 icon.name: "edit-entry"
                 text:i18n("Edit calendar…")
-                enabled: !calendarMouseArea.collectionDetails["canChange"]
-                //onClicked: editClicked(incidenceData.incidencePtr, incidenceData.collectionId)
+                onClicked: Kalendar.CalendarManager.editCollection(calendarMouseArea.collectionId);
             }
             QQC2.MenuItem {
                 icon.name: "view-refresh"
