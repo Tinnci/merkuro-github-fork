@@ -21,6 +21,7 @@
 #include <Akonadi/CollectionFilterProxyModel>
 #include <Akonadi/CollectionIdentificationAttribute>
 #include <Akonadi/CollectionModifyJob>
+#include <Akonadi/CollectionPropertiesDialog>
 #include <Akonadi/CollectionUtils>
 #include <Akonadi/Control>
 #include <Akonadi/EntityDisplayAttribute>
@@ -40,6 +41,7 @@
 #include <AkonadiCore/EntityDisplayAttribute>
 #include <AkonadiCore/ItemModifyJob>
 #include <AkonadiCore/ItemMoveJob>
+#include <AkonadiWidgets/CollectionPropertiesDialog>
 #include <CollectionFilterProxyModel>
 #include <EntityTreeModel>
 #include <Monitor>
@@ -56,6 +58,7 @@
 #include <KLocalizedString>
 #include <QApplication>
 #include <QMetaEnum>
+#include <QPointer>
 #include <QRandomGenerator>
 #include <QTimer>
 #include <etmcalendar.h>
@@ -838,6 +841,14 @@ void CalendarManager::deleteCollection(qint64 collectionId)
             Akonadi::AgentManager::self()->removeInstance(instance);
         }
     }
+}
+
+void CalendarManager::editCollection(qint64 collectionId)
+{
+    auto collection = m_calendar->collection(collectionId);
+    QPointer<Akonadi::CollectionPropertiesDialog> dlg = new Akonadi::CollectionPropertiesDialog(collection);
+    dlg->setWindowTitle(i18nc("@title:window", "Properties of Calendar %1", collection.name()));
+    dlg->show();
 }
 
 Q_DECLARE_METATYPE(KCalendarCore::Incidence::Ptr);
