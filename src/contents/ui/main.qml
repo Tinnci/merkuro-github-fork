@@ -211,7 +211,11 @@ Kirigami.ApplicationWindow {
         }
 
         function onTodoViewShowCompleted() {
-            pageStack.pushDialogLayer(pageStack.currentItem.completedSheetComponent)
+            const openDialogWindow = pageStack.pushDialogLayer(pageStack.currentItem.completedSheetComponent);
+
+            if(!Kirigami.Settings.isMobile) {
+                openDialogWindow.Keys.escapePressed.connect(function() { openDialogWindow.closeDialog() });
+            }
         }
 
         function onImportCalendar() {
@@ -420,10 +424,17 @@ Kirigami.ApplicationWindow {
             root.filterChanged();
         }
         onDeleteCalendar: {
-            deleteSheet.incidenceWrapper = undefined;
-            deleteSheet.collectionId = collectionId;
-            deleteSheet.collectionDetails = collectionDetails;
-            deleteSheet.open();
+            const openDialogWindow = pageStack.pushDialogLayer(deleteSheetComponent, {
+                collectionId: collectionId,
+                collectionDetails: collectionDetails
+            }, {
+                width: Kirigami.Units.gridUnit * 30,
+                height: Kirigami.Units.gridUnit * 6
+            });
+
+            if(!Kirigami.Settings.isMobile) {
+                openDialogWindow.Keys.escapePressed.connect(function() { openDialogWindow.closeDialog() });
+            }
         }
     }
 
@@ -662,6 +673,10 @@ Kirigami.ApplicationWindow {
                 width: Kirigami.Units.gridUnit * 30,
                 height: Kirigami.Units.gridUnit * 8
             });
+
+            if(!Kirigami.Settings.isMobile) {
+                openDialogWindow.Keys.escapePressed.connect(function() { openDialogWindow.closeDialog() });
+            }
         }
     }
 
@@ -692,6 +707,10 @@ Kirigami.ApplicationWindow {
                                 width: Kirigami.Units.gridUnit * 30,
                                 height: Kirigami.Units.gridUnit * 30
                             });
+
+                            if(!Kirigami.Settings.isMobile) {
+                                openDialogWindow.Keys.escapePressed.connect(function() { openDialogWindow.closeDialog() });
+                            }
                         }
                     }
                     QQC2.Button {
@@ -810,12 +829,20 @@ Kirigami.ApplicationWindow {
     }
 
     function setUpDelete(incidencePtr, deleteDate) {
-        deleteSheet.incidenceWrapper = Qt.createQmlObject('import org.kde.kalendar 1.0; IncidenceWrapper {id: incidence}',
-                                                                   deleteSheet,
-                                                                   "incidence");
-        deleteSheet.incidenceWrapper.incidencePtr = incidencePtr;
-        deleteSheet.deleteDate = deleteDate;
-        deleteSheet.open();
+        let incidenceWrapper = Qt.createQmlObject('import org.kde.kalendar 1.0; IncidenceWrapper {id: incidence}', root, "incidence");
+        incidenceWrapper.incidencePtr = incidencePtr;
+
+        const openDialogWindow = pageStack.pushDialogLayer(deleteSheetComponent, {
+            incidenceWrapper: incidenceWrapper,
+            deleteDate: deleteDate
+        }, {
+            width: Kirigami.Units.gridUnit * 30,
+            height: Kirigami.Units.gridUnit * 6
+        });
+
+        if(!Kirigami.Settings.isMobile) {
+            openDialogWindow.Keys.escapePressed.connect(function() { openDialogWindow.closeDialog() });
+        }
     }
 
     function completeTodo(incidencePtr) {
@@ -831,29 +858,34 @@ Kirigami.ApplicationWindow {
         }
     }
 
-    DeleteSheet {
-        id: deleteSheet
-        onAddException: {
-            incidenceWrapper.recurrenceExceptionsModel.addExceptionDateTime(exceptionDate);
-            CalendarManager.editIncidence(incidenceWrapper);
-            deleteSheet.close();
-        }
-        onAddRecurrenceEndDate: {
-            incidenceWrapper.setRecurrenceDataItem("endDateTime", endDate);
-            CalendarManager.editIncidence(incidenceWrapper);
-            deleteSheet.close();
-        }
-        onDeleteIncidence: {
-            CalendarManager.deleteIncidence(incidencePtr);
-            deleteSheet.close();
-        }
-        onDeleteIncidenceWithChildren: {
-            CalendarManager.deleteIncidence(incidencePtr, true);
-            deleteSheet.close();
-        }
-        onDeleteCollection: {
-            CalendarManager.deleteCollection(collectionId);
-            deleteSheet.close();
+    Component {
+        id: deleteSheetComponent
+        DeleteSheet {
+            id: deleteSheet
+
+            onAddException: {
+                incidenceWrapper.recurrenceExceptionsModel.addExceptionDateTime(exceptionDate);
+                CalendarManager.editIncidence(incidenceWrapper);
+                closeDialog();
+            }
+            onAddRecurrenceEndDate: {
+                incidenceWrapper.setRecurrenceDataItem("endDateTime", endDate);
+                CalendarManager.editIncidence(incidenceWrapper);
+                closeDialog();
+            }
+            onDeleteIncidence: {
+                CalendarManager.deleteIncidence(incidencePtr);
+                closeDialog();
+            }
+            onDeleteIncidenceWithChildren: {
+                CalendarManager.deleteIncidence(incidencePtr, true);
+                closeDialog();
+            }
+            onDeleteCollection: {
+                CalendarManager.deleteCollection(collectionId);
+                closeDialog();
+            }
+            onCancel: closeDialog()
         }
     }
 
