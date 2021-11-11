@@ -66,7 +66,7 @@ MouseArea {
             }
             QQC2.MenuItem {
                 icon.name: "view-refresh"
-                text:i18n("Update calendar")
+                text: i18nc("@action:inmenu", "Update calendar")
                 onClicked: Kalendar.CalendarManager.updateCollection(calendarMouseArea.collectionId);
             }
             QQC2.MenuItem {
