@@ -140,7 +140,7 @@ Kirigami.Page {
 
                     QQC2.Button {
                         icon.name: "group-delete"
-                        text: i18n("Delete Only This")
+                        text: i18nc("@action:button", "Delete Only This")
                         visible: deleteSheet.incidenceHasChildren && incidenceWrapper.recurrenceData.type === 0
                         onClicked: deleteIncidence(incidenceWrapper.incidencePtr)
                     }
