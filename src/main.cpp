@@ -131,7 +131,7 @@ int main(int argc, char *argv[])
     }
 
     if (!parser.positionalArguments().empty()) {
-        kalendarApplication->importCalendarFromFile(QUrl::fromUserInput(parser.positionalArguments().first()));
+        Q_EMIT kalendarApplication->importCalendarFromFile(QUrl::fromUserInput(parser.positionalArguments().first()));
     }
 
     return app.exec();
