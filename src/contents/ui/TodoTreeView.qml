@@ -69,9 +69,12 @@ TreeListView {
                 }
 
             }
+            readonly property bool isOverdue: section === i18n("Overdue")
+            readonly property bool isToday: DateUtils.sameDay(new Date(section), new Date())
+
             level: 3
             font.weight: Font.Bold
-            color: section === i18n("Overdue") ? Kirigami.Theme.negativeTextColor : Kirigami.Theme.textColor
+            color: isOverdue ? Kirigami.Theme.negativeTextColor : isToday ? Kirigami.Theme.highlightColor : Kirigami.Theme.textColor
         }
     }
 
