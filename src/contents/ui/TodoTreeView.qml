@@ -37,7 +37,7 @@ TreeListView {
     currentIndex: -1
     clip: true
 
-    section.criteria: sortBy == Kalendar.TodoSortFilterProxyModel.SummaryColumn ?
+    section.criteria: sortBy === Kalendar.TodoSortFilterProxyModel.SummaryColumn ?
         ViewSection.FirstCharacter : ViewSection.FullString
     section.property: switch(sortBy) {
         case Kalendar.TodoSortFilterProxyModel.PriorityColumn:
