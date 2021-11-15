@@ -1,6 +1,7 @@
 // SPDX-FileCopyrightText: 2021 Claudio Cambra <claudio.cambra@gmail.com>
 // SPDX-License-Identifier: LGPL-2.1-or-later
 
+#include <QDateTime>
 #include <extratodomodel.h>
 
 ExtraTodoModel::ExtraTodoModel(QObject *parent)
@@ -111,14 +112,27 @@ QVariant ExtraTodoModel::data(const QModelIndex &index, int role) const
         return todoPtr->categories();
     } else if (role == Roles::CategoriesDisplayRole) {
         return todoPtr->categories().join(i18nc("List separator", ", "));
-    } else if (role == Roles::TreeDepthRole) {
+    } else if (role == Roles::TreeDepthRole || role == TopMostParentSummary || role == TopMostParentDueDate || role == TopMostParentPriority) {
         int depth = 0;
         auto idx = index;
         while (idx.parent().isValid()) {
             idx = idx.parent();
             depth++;
         }
-        return depth;
+
+        auto todo = idx.data(TodoModel::TodoPtrRole).value<KCalendarCore::Todo::Ptr>();
+
+        if (role == Roles::TreeDepthRole) {
+            return depth;
+        } else if (role == TopMostParentSummary) {
+            return todo->summary();
+        } else if (role == TopMostParentDueDate) {
+            bool isOverdue = (todo->hasDueDate() && todo->dtDue().date() < QDate::currentDate() && todo->allDay())
+                || (todo->hasDueDate() && todo->dtDue() < QDateTime::currentDateTime() && !todo->allDay());
+            return isOverdue ? i18n("Overdue") : todo->hasDueDate() ? todo->dtDue().toString() : i18n("No set date");
+        } else if (role == TopMostParentPriority) {
+            return todo->priority();
+        }
     }
 
     return KExtraColumnsProxyModel::data(index, role);
@@ -149,6 +163,9 @@ QHash<int, QByteArray> ExtraTodoModel::roleNames() const
     roleNames[Roles::CategoriesRole] = "todoCategories"; // Simply 'categories' causes issues
     roleNames[Roles::CategoriesDisplayRole] = "categoriesDisplay";
     roleNames[Roles::TreeDepthRole] = "treeDepth";
+    roleNames[Roles::TopMostParentDueDate] = "topMostParentDueDate";
+    roleNames[Roles::TopMostParentSummary] = "topMostParentSummary";
+    roleNames[Roles::TopMostParentPriority] = "topMostParentPriority";
 
     return roleNames;
 }
