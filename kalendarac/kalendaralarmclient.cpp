@@ -3,7 +3,7 @@
 // SPDX-License-Identifier: GPL-2.0-or-later WITH Qt-Commercial-exception-1.0
 
 #include "kalendaralarmclient.h"
-
+#include "alarmdockwindow.h"
 #include "kalendaracadaptor.h"
 
 #include <CalendarSupport/Utils>
@@ -21,7 +21,14 @@ KalendarAlarmClient::KalendarAlarmClient(QObject *parent)
     : QObject(parent)
 {
     new KalendaracAdaptor(this);
-    QDBusConnection::sessionBus().registerObject(QStringLiteral("/kalendarac"), this);
+    QDBusConnection::sessionBus().registerObject(QStringLiteral("/ac"), this);
+
+    if (dockerEnabled()) {
+        mDocker = new AlarmDockWindow;
+        connect(this, &KalendarAlarmClient::reminderCount, mDocker, &AlarmDockWindow::slotUpdate);
+        connect(mDocker, &AlarmDockWindow::quitSignal, this, &KalendarAlarmClient::slotQuit);
+        connect(mDocker, &AlarmDockWindow::showReminderSignal, this, &KalendarAlarmClient::showReminder);
+    }
 
     // Check if Akonadi is already configured
     const QString akonadiConfigFile = Akonadi::ServerManager::serverConfigFilePath(Akonadi::ServerManager::ReadWrite);
@@ -46,6 +53,12 @@ KalendarAlarmClient::KalendarAlarmClient(QObject *parent)
 
     mCheckTimer.start(1000 * interval); // interval in seconds
     connect(qApp, &QApplication::commitDataRequest, this, &KalendarAlarmClient::slotCommitData);
+}
+
+KalendarAlarmClient::~KalendarAlarmClient()
+{
+    delete mDocker;
+    // delete mDialog;
 }
 
 void KalendarAlarmClient::setupAkonadi()
@@ -117,6 +130,13 @@ void KalendarAlarmClient::deferredInit()
 
     // Now that everything is set up, a first check for reminders can be performed.
     checkAlarms();
+}
+
+bool KalendarAlarmClient::dockerEnabled()
+{
+    KConfig kalendarConfig(QStandardPaths::locate(QStandardPaths::ConfigLocation, QStringLiteral("kalendarrc")));
+    KConfigGroup generalGroup(&kalendarConfig, "System Tray");
+    return generalGroup.readEntry("ShowReminderDaemon", true);
 }
 
 bool KalendarAlarmClient::collectionsAvailable() const
@@ -193,6 +213,12 @@ void KalendarAlarmClient::createReminder(const Akonadi::Item &aitem, const QDate
     saveLastCheckTime();
 }
 
+void KalendarAlarmClient::showReminder()
+{
+    /*createDialog();
+    mDialog->show();*/
+}
+
 void KalendarAlarmClient::slotQuit()
 {
     qDebug() << "Quit";
@@ -263,4 +289,27 @@ QStringList KalendarAlarmClient::dumpAlarms() const
     }
 
     return lst;
+}
+
+void KalendarAlarmClient::hide()
+{
+    delete mDocker;
+    mDocker = nullptr;
+}
+
+void KalendarAlarmClient::show()
+{
+    if (!mDocker) {
+        if (dockerEnabled()) {
+            mDocker = new AlarmDockWindow;
+            connect(this, &KalendarAlarmClient::reminderCount, mDocker, &AlarmDockWindow::slotUpdate);
+            connect(mDocker, &AlarmDockWindow::quitSignal, this, &KalendarAlarmClient::slotQuit);
+        }
+
+        /*if (mDialog) {
+            connect(mDialog, &AlarmDialog::reminderCount, mDocker, &AlarmDockWindow::slotUpdate);
+            connect(mDocker, &AlarmDockWindow::suspendAllSignal, mDialog, &AlarmDialog::suspendAll);
+            connect(mDocker, &AlarmDockWindow::dismissAllSignal, mDialog, &AlarmDialog::dismissAll);
+        }*/
+    }
 }

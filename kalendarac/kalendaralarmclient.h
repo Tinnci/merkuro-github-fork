@@ -16,6 +16,8 @@
 #include <Akonadi/Calendar/ETMCalendar>
 #include <QSessionManager>
 
+class AlarmDockWindow;
+
 class KalendarAlarmClient : public QObject
 {
     Q_OBJECT
@@ -23,10 +25,12 @@ class KalendarAlarmClient : public QObject
 
 public:
     explicit KalendarAlarmClient(QObject *parent = nullptr);
-    ~KalendarAlarmClient() override = default;
+    ~KalendarAlarmClient() override;
 
     // DBUS interface
     void quit();
+    void hide();
+    void show();
     void forceAlarmCheck();
     Q_REQUIRED_RESULT QString dumpDebug() const;
     Q_REQUIRED_RESULT QStringList dumpAlarms() const;
@@ -44,10 +48,12 @@ private:
     void setupAkonadi();
     void slotCommitData(QSessionManager &);
     void showReminder();
+    Q_REQUIRED_RESULT bool dockerEnabled();
     Q_REQUIRED_RESULT bool collectionsAvailable() const;
     void createReminder(const Akonadi::Item &incidence, const QDateTime &dt, const QString &displayText);
     void saveLastCheckTime();
 
+    AlarmDockWindow *mDocker = nullptr; // the panel icon
     Akonadi::ETMCalendar::Ptr mCalendar;
     Akonadi::EntityTreeModel *mETM = nullptr;
 
