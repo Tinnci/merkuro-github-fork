@@ -79,7 +79,7 @@ target_link_libraries(kalendar
     KF5::Contacts
     KF5::ItemModels
     KF5::XmlGui
-    KF5::EventViews # for reading KOrganizer calendar colors
+    KF5::EventViews
 
 )
 kconfig_add_kcfg_files(kalendar GENERATE_MOC kalendarconfig.kcfgc)
