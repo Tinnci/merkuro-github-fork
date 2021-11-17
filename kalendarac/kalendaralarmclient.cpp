@@ -21,7 +21,7 @@ KalendarAlarmClient::KalendarAlarmClient(QObject *parent)
     : QObject(parent)
 {
     new KalendaracAdaptor(this);
-    QDBusConnection::sessionBus().registerObject(QStringLiteral("/ac"), this);
+    QDBusConnection::sessionBus().registerObject(QStringLiteral("/kalendarac"), this);
 
     // Check if Akonadi is already configured
     const QString akonadiConfigFile = Akonadi::ServerManager::serverConfigFilePath(Akonadi::ServerManager::ReadWrite);
@@ -41,7 +41,7 @@ KalendarAlarmClient::KalendarAlarmClient(QObject *parent)
 
     KConfigGroup alarmGroup(KSharedConfig::openConfig(), "Alarms");
     const int interval = alarmGroup.readEntry("Interval", 60);
-    // qCDebug(KOALARMCLIENT_LOG) << "KOAlarmClient check interval:" << interval << "seconds.";
+    qDebug() << "KalendarAlarmClient check interval:" << interval << "seconds.";
     mLastChecked = alarmGroup.readEntry("CalendarsLastChecked", QDateTime::currentDateTime().addDays(-9));
 
     mCheckTimer.start(1000 * interval); // interval in seconds
@@ -81,7 +81,7 @@ void KalendarAlarmClient::deferredInit()
         return;
     }
 
-    // qCDebug(KOALARMCLIENT_LOG) << "Performing delayed initialization.";
+    qDebug() << "Performing delayed initialization.";
 
     // load reminders that were active when quitting
     KConfigGroup genGroup(KSharedConfig::openConfig(), "General");
@@ -151,18 +151,21 @@ void KalendarAlarmClient::checkAlarms()
     // We do not want to miss any reminders, so don't perform check unless
     // the collections are available and populated.
     if (!collectionsAvailable()) {
-        // qCDebug(KOALARMCLIENT_LOG) << "Collections are not available; aborting check.";
+        qDebug() << "Collections are not available; aborting check.";
         return;
     }
 
     const QDateTime from = mLastChecked.addSecs(1);
     mLastChecked = QDateTime::currentDateTime();
 
-    // qCDebug(KOALARMCLIENT_LOG) << "Check:" << from.toString() << " -" << mLastChecked.toString();
+    qDebug() << "Check:" << from.toString() << " -" << mLastChecked.toString();
 
     const Alarm::List alarms = mCalendar->alarms(from, mLastChecked, true /* exclude blocked alarms */);
 
+    qDebug() << alarms.length();
+
     for (const Alarm::Ptr &alarm : alarms) {
+        qDebug() << alarm->parentUid();
         const QString uid = alarm->customProperty("ETMCalendar", "parentUid");
         const Akonadi::Item::Id id = mCalendar->item(uid).id();
         const Akonadi::Item item = mCalendar->item(id);
@@ -173,6 +176,7 @@ void KalendarAlarmClient::checkAlarms()
 
 void KalendarAlarmClient::createReminder(const Akonadi::Item &aitem, const QDateTime &remindAtDate, const QString &displayText)
 {
+    qDebug() << "creating reminder";
     if (!CalendarSupport::hasIncidence(aitem)) {
         return;
     }
@@ -191,6 +195,7 @@ void KalendarAlarmClient::createReminder(const Akonadi::Item &aitem, const QDate
 
 void KalendarAlarmClient::slotQuit()
 {
+    qDebug() << "Quit";
     Q_EMIT saveAllSignal();
     saveLastCheckTime();
     quit();
@@ -205,6 +210,7 @@ void KalendarAlarmClient::saveLastCheckTime()
 
 void KalendarAlarmClient::quit()
 {
+    qDebug() << "Quit";
     // qCDebug(KOALARMCLIENT_LOG);
     qApp->quit();
 }
