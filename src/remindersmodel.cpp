@@ -84,16 +84,7 @@ bool RemindersModel::setData(const QModelIndex &idx, const QVariant &value, int 
         // offset can be set in seconds or days, if we want it to be before the incidence,
         // it has to be set to a negative value.
         KCalendarCore::Duration offset(value.toInt());
-        auto alarm = m_incidence->alarms()[idx.row()];
-
-        alarm->setStartOffset(offset);
-
-        if (m_incidence->type() == KCalendarCore::Incidence::TypeTodo && !m_incidence->dtStart().isValid()) {
-            auto todo = m_incidence.staticCast<KCalendarCore::Todo>();
-            alarm->setTime(todo->dtDue().addSecs(offset));
-        } else {
-            alarm->setTime(m_incidence->dtStart().addSecs(offset));
-        }
+        m_incidence->alarms()[idx.row()]->setStartOffset(offset);
         break;
     }
     case EndOffsetRole: {
@@ -130,13 +121,7 @@ void RemindersModel::addAlarm()
     alarm->setEnabled(true);
     alarm->setType(KCalendarCore::Alarm::Display);
     alarm->setText(m_incidence->summary());
-
-    if (m_incidence->type() == KCalendarCore::Incidence::TypeTodo && !m_incidence->dtStart().isValid()) {
-        auto todo = m_incidence.staticCast<KCalendarCore::Todo>();
-        alarm->setTime(todo->dtDue());
-    } else {
-        alarm->setTime(m_incidence->dtStart());
-    }
+    alarm->setStartOffset(0);
 
     m_incidence->addAlarm(alarm);
     Q_EMIT alarmsChanged();
