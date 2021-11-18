@@ -23,7 +23,7 @@ AlarmDockWindow::AlarmDockWindow()
     KConfigGroup config(KSharedConfig::openConfig(), "General");
     const bool autostartSet = config.hasKey("Autostart");
     const bool autostart = config.readEntry("Autostart", true);
-    const bool grabFocus = config.readEntry("GrabFocus", false);
+    // const bool grabFocus = config.readEntry("GrabFocus", false);
     const bool alarmsEnabled = config.readEntry("Enabled", true);
 
     // Don't mention Daemon here since it's a technical
@@ -44,14 +44,14 @@ AlarmDockWindow::AlarmDockWindow()
     changeSystrayIcon(alarmsEnabled);
 
     // Set up the context menu
-    mSuspendAll = contextMenu()->addAction(i18nc("@action:inmenu", "&Suspend All Reminders"), this, &AlarmDockWindow::slotSuspendAll);
-    mDismissAll = contextMenu()->addAction(i18nc("@action:inmenu", "&Dismiss All Reminders"), this, &AlarmDockWindow::slotDismissAll);
+    // mSuspendAll = contextMenu()->addAction(i18nc("@action:inmenu", "&Suspend All Reminders"), this, &AlarmDockWindow::slotSuspendAll);
+    // mDismissAll = contextMenu()->addAction(i18nc("@action:inmenu", "&Dismiss All Reminders"), this, &AlarmDockWindow::slotDismissAll);
     // leave mShow always enabled that way you can get to alarms that are
     // suspended and inactive to dismiss them before they go off again
     // (as opposed to the other two that are initially disabled)
     // mShow = contextMenu()->addAction(i18nc("@action:inmenu", "Show &Reminders"), this, &AlarmDockWindow::showReminderSignal);
-    mSuspendAll->setEnabled(false);
-    mDismissAll->setEnabled(false);
+    // mSuspendAll->setEnabled(false);
+    // mDismissAll->setEnabled(false);
 
     contextMenu()->addSeparator();
     mAlarmsEnabled = contextMenu()->addAction(i18nc("@action:inmenu", "Enable Reminders"));
@@ -65,7 +65,7 @@ AlarmDockWindow::AlarmDockWindow()
     mAlarmsEnabled->setChecked(alarmsEnabled);
     mAutostart->setChecked(autostart);
 
-    mGrabFocus = contextMenu()->addAction(i18nc("@action:inmenu", "Reminder Requests Focus"));
+    /*mGrabFocus = contextMenu()->addAction(i18nc("@action:inmenu", "Reminder Requests Focus"));
     mGrabFocus->setToolTip(i18nc("@info:tooltip",
                                  "When this option is enabled the reminder dialog will "
                                  "automatically receive keyboard focus when it opens."));
@@ -73,7 +73,7 @@ AlarmDockWindow::AlarmDockWindow()
     // ToolTips aren't enabled for menus by default.
     contextMenu()->setToolTipsVisible(true);
     mGrabFocus->setCheckable(true);
-    mGrabFocus->setChecked(grabFocus);
+    mGrabFocus->setChecked(grabFocus);*/
 
     // Disable standard quit behaviour. We have to intercept the quit even,
     // if the main window is hidden.
