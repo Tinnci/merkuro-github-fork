@@ -17,6 +17,7 @@
 #include <QSessionManager>
 
 class AlarmDockWindow;
+class NotificationHandler;
 
 class KalendarAlarmClient : public QObject
 {
@@ -43,14 +44,13 @@ Q_SIGNALS:
     void saveAllSignal();
 
 private:
-    void deferredInit();
+    void restoreSuspendedFromConfig();
+    QString alarmText(const QString &uid) const;
     void checkAlarms();
     void setupAkonadi();
     void slotCommitData(QSessionManager &);
-    void showReminder();
     Q_REQUIRED_RESULT bool dockerEnabled();
     Q_REQUIRED_RESULT bool collectionsAvailable() const;
-    void createReminder(const Akonadi::Item &incidence, const QDateTime &dt, const QString &displayText);
     void saveLastCheckTime();
 
     AlarmDockWindow *mDocker = nullptr; // the panel icon
@@ -59,4 +59,5 @@ private:
 
     QDateTime mLastChecked;
     QTimer mCheckTimer;
+    NotificationHandler *m_notificationHandler;
 };
