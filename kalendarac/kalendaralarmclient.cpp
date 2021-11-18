@@ -11,8 +11,8 @@
 
 #include <KCheckableProxyModel>
 #include <KConfigGroup>
-#include <KSharedConfig>
 #include <KLocalizedString>
+#include <KSharedConfig>
 
 #include <QApplication>
 #include <QDBusConnection>
