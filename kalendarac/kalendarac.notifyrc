@@ -1,5 +1,5 @@
 [Global]
-IconName=kalendar
+IconName=org.kde.kalendar
 DesktopEntry=org.kde.kalendar
 Comment=Manage your tasks and events with Kalendar
 Comment[ca]=Gestioneu les tasques i esdeveniments amb el Kalendar
