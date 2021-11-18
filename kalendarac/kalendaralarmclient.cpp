@@ -3,6 +3,7 @@
 
 #include "kalendaralarmclient.h"
 #include "alarmdockwindow.h"
+#include "alarmnotification.h"
 #include "kalendaracadaptor.h"
 #include "notificationhandler.h"
 
@@ -55,6 +56,8 @@ KalendarAlarmClient::KalendarAlarmClient(QObject *parent)
 
     mCheckTimer.start(1000 * interval); // interval in seconds
     connect(qApp, &QApplication::commitDataRequest, this, &KalendarAlarmClient::slotCommitData);
+
+    restoreSuspendedFromConfig();
 }
 
 KalendarAlarmClient::~KalendarAlarmClient()
@@ -71,8 +74,8 @@ void KalendarAlarmClient::setupAkonadi()
 
     connect(&mCheckTimer, &QTimer::timeout, this, &KalendarAlarmClient::checkAlarms);
     // connect(m_notificationHandler, &NotificationHandler::scheduleAlarmCheck, this, &KalendarAlarmClient::scheduleAlarmCheck);
-    connect(mETM, &Akonadi::EntityTreeModel::collectionPopulated, this, &KalendarAlarmClient::restoreSuspendedFromConfig);
-    connect(mETM, &Akonadi::EntityTreeModel::collectionTreeFetched, this, &KalendarAlarmClient::restoreSuspendedFromConfig);
+    connect(mETM, &Akonadi::EntityTreeModel::collectionPopulated, this, &KalendarAlarmClient::deferredInit);
+    connect(mETM, &Akonadi::EntityTreeModel::collectionTreeFetched, this, &KalendarAlarmClient::deferredInit);
 
     checkAlarms();
 }
@@ -90,47 +93,13 @@ void checkAllItems(KCheckableProxyModel *model, const QModelIndex &parent = QMod
     }
 }
 
-void KalendarAlarmClient::restoreSuspendedFromConfig()
+void KalendarAlarmClient::deferredInit()
 {
     if (!collectionsAvailable()) {
         return;
     }
 
-    if (!collectionsAvailable()) {
-        return;
-    }
-
     qDebug() << "Performing delayed initialization.";
-
-    // load reminders that were active when quitting
-    KConfigGroup genGroup(KSharedConfig::openConfig(), "General");
-    const int numReminders = genGroup.readEntry("Reminders", 0);
-
-    for (int i = 1; i <= numReminders; ++i) {
-        const QString group(QStringLiteral("Incidence-%1").arg(i));
-        const KConfigGroup incGroup(KSharedConfig::openConfig(), group);
-
-        const QUrl url(incGroup.readEntry("AkonadiUrl"));
-        Akonadi::Item::Id akonadiItemId = -1;
-        if (!url.isValid()) {
-            // logic to migrate old KOrganizer incidence uid's to a Akonadi item.
-            const QString uid = incGroup.readEntry("UID");
-            if (!uid.isEmpty()) {
-                akonadiItemId = mCalendar->item(uid).id();
-            }
-        } else {
-            akonadiItemId = Akonadi::Item::fromUrl(url).id();
-        }
-
-        if (akonadiItemId >= 0) {
-            const QDateTime dt = incGroup.readEntry("RemindAt", QDateTime());
-            Akonadi::Item i = mCalendar->item(Akonadi::Item::fromUrl(url).id());
-            if (CalendarSupport::hasIncidence(i) && !CalendarSupport::incidence(i)->alarms().isEmpty()) {
-                auto uid = CalendarSupport::incidence(i)->uid();
-                m_notificationHandler->addSuspendedNotification(uid, alarmText(uid), dt);
-            }
-        }
-    }
 
     KCheckableProxyModel *checkableModel = mCalendar->checkableProxyModel();
     checkAllItems(checkableModel);
@@ -139,17 +108,47 @@ void KalendarAlarmClient::restoreSuspendedFromConfig()
     checkAlarms();
 }
 
-QString KalendarAlarmClient::alarmText(const QString &uid) const
+void KalendarAlarmClient::restoreSuspendedFromConfig()
 {
-    const Alarm::List alarms = mCalendar->alarms(QDateTime(), QDateTime::currentDateTime(), true /* exclude blocked alarms */);
+    qDebug() << "\nrestoreSuspendedFromConfig:Restore suspended alarms from config";
+    KConfigGroup suspendedGroup(KSharedConfig::openConfig(), "Suspended");
+    const auto suspendedAlarms = suspendedGroup.groupList();
 
-    for (const auto &alarm : qAsConst(alarms)) {
-        if (alarm->parentUid() == uid) {
-            return alarm->text();
+    for (const auto &s : suspendedAlarms) {
+        KConfigGroup suspendedAlarm(&suspendedGroup, s);
+        QString uid = suspendedAlarm.readEntry("UID");
+        QString txt = suspendedAlarm.readEntry("Text");
+        QDateTime remindAt = QDateTime::fromString(suspendedAlarm.readEntry("RemindAt"), QStringLiteral("yyyy,M,d,HH,m,s"));
+        qDebug() << "restoreSuspendedFromConfig:Restoring alarm" << uid << "," << txt << "," << remindAt.toString();
+
+        if (!(uid.isEmpty() && remindAt.isValid() && !(txt.isEmpty()))) {
+            m_notificationHandler->addSuspendedNotification(uid, txt, remindAt);
         }
     }
+}
 
-    return QString();
+void KalendarAlarmClient::flushSuspendedToConfig()
+{
+    KConfigGroup suspendedGroup(KSharedConfig::openConfig(), "Suspended");
+    suspendedGroup.deleteGroup();
+
+    const auto suspendedNotifications = m_notificationHandler->suspendedNotifications();
+
+    if (suspendedNotifications.isEmpty()) {
+        qDebug() << "flushSuspendedToConfig:No suspended notification exists, nothing to write to config";
+        KSharedConfig::openConfig()->sync();
+
+        return;
+    }
+
+    for (const auto &s : suspendedNotifications) {
+        qDebug() << "flushSuspendedToConfig:Flushing suspended alarm" << s->uid() << " to config";
+        KConfigGroup notificationGroup(&suspendedGroup, s->uid());
+        notificationGroup.writeEntry("UID", s->uid());
+        notificationGroup.writeEntry("Text", s->text());
+        notificationGroup.writeEntry("RemindAt", s->remindAt());
+    }
+    KSharedConfig::openConfig()->sync();
 }
 
 bool KalendarAlarmClient::dockerEnabled()
@@ -207,19 +206,20 @@ void KalendarAlarmClient::checkAlarms()
     qDebug() << alarms.length();
 
     for (const Alarm::Ptr &alarm : alarms) {
-        qDebug() << alarm->time() << alarm->text();
+        qDebug() << alarm->time() << alarm->text() << alarm->parentUid();
         m_notificationHandler->addActiveNotification(alarm->parentUid(),
                                                      QLatin1String("%1\n%2").arg(alarm->time().toString(QLatin1String("hh:mm")), alarm->text()));
     }
 
     m_notificationHandler->sendNotifications();
     saveLastCheckTime();
+    flushSuspendedToConfig();
 }
 
 void KalendarAlarmClient::slotQuit()
 {
-    qDebug() << "Quit";
     Q_EMIT saveAllSignal();
+    flushSuspendedToConfig();
     saveLastCheckTime();
     quit();
 }
@@ -233,7 +233,6 @@ void KalendarAlarmClient::saveLastCheckTime()
 
 void KalendarAlarmClient::quit()
 {
-    qDebug() << "Quit";
     // qCDebug(KOALARMCLIENT_LOG);
     qApp->quit();
 }
