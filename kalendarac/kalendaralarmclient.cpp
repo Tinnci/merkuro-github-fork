@@ -207,8 +207,9 @@ void KalendarAlarmClient::checkAlarms()
     qDebug() << alarms.length();
 
     for (const Alarm::Ptr &alarm : alarms) {
+        qDebug() << alarm->time() << alarm->text();
         m_notificationHandler->addActiveNotification(alarm->parentUid(),
-                                                     QStringLiteral("%1\n%2").arg(alarm->time().toString(QStringLiteral("hh:mm")), alarm->text()));
+                                                     QLatin1String("%1\n%2").arg(alarm->time().toString(QLatin1String("hh:mm")), alarm->text()));
     }
 
     m_notificationHandler->sendNotifications();
