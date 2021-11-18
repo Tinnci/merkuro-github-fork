@@ -1,10 +1,10 @@
-// SPDX-FileCopyrightText: 2002, 2003 Cornelius Schumacher <schumacher@kde.org>
 // SPDX-FileCopyrightText: 2021 Claudio Cambra <claudio.cambra@gmail.com>
 // SPDX-License-Identifier: GPL-2.0-or-later WITH Qt-Commercial-exception-1.0
 
 #include "kalendaralarmclient.h"
 #include "alarmdockwindow.h"
 #include "kalendaracadaptor.h"
+#include "notificationhandler.h"
 
 #include <CalendarSupport/Utils>
 
@@ -14,6 +14,7 @@
 
 #include <QApplication>
 #include <QDBusConnection>
+#include <QDateTime>
 
 using namespace KCalendarCore;
 
@@ -23,11 +24,12 @@ KalendarAlarmClient::KalendarAlarmClient(QObject *parent)
     new KalendaracAdaptor(this);
     QDBusConnection::sessionBus().registerObject(QStringLiteral("/ac"), this);
 
+    m_notificationHandler = new NotificationHandler(this);
+
     if (dockerEnabled()) {
         mDocker = new AlarmDockWindow;
         connect(this, &KalendarAlarmClient::reminderCount, mDocker, &AlarmDockWindow::slotUpdate);
         connect(mDocker, &AlarmDockWindow::quitSignal, this, &KalendarAlarmClient::slotQuit);
-        connect(mDocker, &AlarmDockWindow::showReminderSignal, this, &KalendarAlarmClient::showReminder);
     }
 
     // Check if Akonadi is already configured
@@ -58,7 +60,6 @@ KalendarAlarmClient::KalendarAlarmClient(QObject *parent)
 KalendarAlarmClient::~KalendarAlarmClient()
 {
     delete mDocker;
-    // delete mDialog;
 }
 
 void KalendarAlarmClient::setupAkonadi()
@@ -69,8 +70,9 @@ void KalendarAlarmClient::setupAkonadi()
     mETM = mCalendar->entityTreeModel();
 
     connect(&mCheckTimer, &QTimer::timeout, this, &KalendarAlarmClient::checkAlarms);
-    connect(mETM, &Akonadi::EntityTreeModel::collectionPopulated, this, &KalendarAlarmClient::deferredInit);
-    connect(mETM, &Akonadi::EntityTreeModel::collectionTreeFetched, this, &KalendarAlarmClient::deferredInit);
+    // connect(m_notificationHandler, &NotificationHandler::scheduleAlarmCheck, this, &KalendarAlarmClient::scheduleAlarmCheck);
+    connect(mETM, &Akonadi::EntityTreeModel::collectionPopulated, this, &KalendarAlarmClient::restoreSuspendedFromConfig);
+    connect(mETM, &Akonadi::EntityTreeModel::collectionTreeFetched, this, &KalendarAlarmClient::restoreSuspendedFromConfig);
 
     checkAlarms();
 }
@@ -88,8 +90,12 @@ void checkAllItems(KCheckableProxyModel *model, const QModelIndex &parent = QMod
     }
 }
 
-void KalendarAlarmClient::deferredInit()
+void KalendarAlarmClient::restoreSuspendedFromConfig()
 {
+    if (!collectionsAvailable()) {
+        return;
+    }
+
     if (!collectionsAvailable()) {
         return;
     }
@@ -120,7 +126,8 @@ void KalendarAlarmClient::deferredInit()
             const QDateTime dt = incGroup.readEntry("RemindAt", QDateTime());
             Akonadi::Item i = mCalendar->item(Akonadi::Item::fromUrl(url).id());
             if (CalendarSupport::hasIncidence(i) && !CalendarSupport::incidence(i)->alarms().isEmpty()) {
-                createReminder(i, dt, QString());
+                auto uid = CalendarSupport::incidence(i)->uid();
+                m_notificationHandler->addSuspendedNotification(uid, alarmText(uid), dt);
             }
         }
     }
@@ -130,6 +137,19 @@ void KalendarAlarmClient::deferredInit()
 
     // Now that everything is set up, a first check for reminders can be performed.
     checkAlarms();
+}
+
+QString KalendarAlarmClient::alarmText(const QString &uid) const
+{
+    const Alarm::List alarms = mCalendar->alarms(QDateTime(), QDateTime::currentDateTime(), true /* exclude blocked alarms */);
+
+    for (const auto &alarm : qAsConst(alarms)) {
+        if (alarm->parentUid() == uid) {
+            return alarm->text();
+        }
+    }
+
+    return QString();
 }
 
 bool KalendarAlarmClient::dockerEnabled()
@@ -181,42 +201,18 @@ void KalendarAlarmClient::checkAlarms()
     qDebug() << "Check:" << from.toString() << " -" << mLastChecked.toString();
 
     const Alarm::List alarms = mCalendar->alarms(from, mLastChecked, true /* exclude blocked alarms */);
+    FilterPeriod fPeriod{.from = from, .to = mLastChecked};
+    m_notificationHandler->setPeriod(fPeriod);
 
     qDebug() << alarms.length();
 
     for (const Alarm::Ptr &alarm : alarms) {
-        qDebug() << alarm->parentUid();
-        const QString uid = alarm->customProperty("ETMCalendar", "parentUid");
-        const Akonadi::Item::Id id = mCalendar->item(uid).id();
-        const Akonadi::Item item = mCalendar->item(id);
-
-        createReminder(item, mLastChecked, alarm->text());
-    }
-}
-
-void KalendarAlarmClient::createReminder(const Akonadi::Item &aitem, const QDateTime &remindAtDate, const QString &displayText)
-{
-    qDebug() << "creating reminder";
-    if (!CalendarSupport::hasIncidence(aitem)) {
-        return;
+        m_notificationHandler->addActiveNotification(alarm->parentUid(),
+                                                     QStringLiteral("%1\n%2").arg(alarm->time().toString(QStringLiteral("hh:mm")), alarm->text()));
     }
 
-    if (remindAtDate.addDays(10) < mLastChecked) {
-        // ignore reminders more than 10 days old
-        return;
-    }
-
-    // createDialog();
-
-    // mDialog->addIncidence(aitem, remindAtDate, displayText);
-    // mDialog->wakeUp();
+    m_notificationHandler->sendNotifications();
     saveLastCheckTime();
-}
-
-void KalendarAlarmClient::showReminder()
-{
-    /*createDialog();
-    mDialog->show();*/
 }
 
 void KalendarAlarmClient::slotQuit()
@@ -305,11 +301,5 @@ void KalendarAlarmClient::show()
             connect(this, &KalendarAlarmClient::reminderCount, mDocker, &AlarmDockWindow::slotUpdate);
             connect(mDocker, &AlarmDockWindow::quitSignal, this, &KalendarAlarmClient::slotQuit);
         }
-
-        /*if (mDialog) {
-            connect(mDialog, &AlarmDialog::reminderCount, mDocker, &AlarmDockWindow::slotUpdate);
-            connect(mDocker, &AlarmDockWindow::suspendAllSignal, mDialog, &AlarmDialog::suspendAll);
-            connect(mDocker, &AlarmDockWindow::dismissAllSignal, mDialog, &AlarmDialog::dismissAll);
-        }*/
     }
 }
