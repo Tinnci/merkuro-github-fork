@@ -44,8 +44,9 @@ Q_SIGNALS:
     void saveAllSignal();
 
 private:
+    void deferredInit();
     void restoreSuspendedFromConfig();
-    QString alarmText(const QString &uid) const;
+    void flushSuspendedToConfig();
     void checkAlarms();
     void setupAkonadi();
     void slotCommitData(QSessionManager &);
