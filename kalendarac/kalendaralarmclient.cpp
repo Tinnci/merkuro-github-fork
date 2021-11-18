@@ -206,9 +206,21 @@ void KalendarAlarmClient::checkAlarms()
     qDebug() << alarms.length();
 
     for (const Alarm::Ptr &alarm : alarms) {
-        qDebug() << alarm->time() << alarm->text() << alarm->parentUid();
-        m_notificationHandler->addActiveNotification(alarm->parentUid(),
-                                                     QLatin1String("%1\n%2").arg(alarm->time().toString(QLatin1String("hh:mm")), alarm->text()));
+        const QString uid = alarm->customProperty("ETMCalendar", "parentUid");
+        const KCalendarCore::Incidence::Ptr incidence = mCalendar->incidence(uid);
+        QString timeText;
+
+        if (incidence && incidence->type() == KCalendarCore::Incidence::TypeTodo && !incidence->dtStart().isValid()) {
+            auto todo = incidence.staticCast<KCalendarCore::Todo>();
+            timeText = QLocale::system().toString(todo->dtDue().time(), QLocale::NarrowFormat);
+        } else if (incidence) {
+            timeText = QLocale::system().toString(incidence->dtStart().time(), QLocale::NarrowFormat);
+        } else {
+            QLocale::system().toString(alarm->time(), QLocale::NarrowFormat);
+        }
+
+        qDebug() << timeText << alarm->text() << uid;
+        m_notificationHandler->addActiveNotification(uid, QLatin1String("%1\n%2").arg(timeText, alarm->text()));
     }
 
     m_notificationHandler->sendNotifications();
