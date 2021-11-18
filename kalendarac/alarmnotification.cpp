@@ -15,7 +15,7 @@ AlarmNotification::AlarmNotification(NotificationHandler *handler, const QString
     , m_notification_handler{handler}
 {
     m_notification = new KNotification(QStringLiteral("alarm"));
-    m_notification->setActions({i18n("Remind later"), i18n("Dismiss")});
+    m_notification->setActions({i18n("Remind in 5 mins"), i18n("Dismiss")});
 
     connect(m_notification, &KNotification::action1Activated, this, &AlarmNotification::suspend);
     connect(m_notification, &KNotification::action2Activated, this, &AlarmNotification::dismiss);
