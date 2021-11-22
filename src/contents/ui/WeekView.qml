@@ -21,6 +21,8 @@ Kirigami.Page {
     signal completeTodo(var incidencePtr)
     signal addSubTodo(var parentWrapper)
     signal deselect()
+    signal moveIncidence(int startOffset, date occurrenceDate, var incidenceWrapper)
+    signal resizeIncidence(int endOffset, date occurrenceDate, var incidenceWrapper)
 
     property var openOccurrence: {}
     property var model
@@ -742,9 +744,15 @@ Kirigami.Page {
                                                                 // We want the date as if it were "from the top" of the droparea
                                                                 const posDate = new Date(backgroundDayMouseArea.addDate.getFullYear(), backgroundDayMouseArea.addDate.getMonth(), backgroundDayMouseArea.addDate.getDate(), backgroundRectangle.index, dropAreaRepeater.minutes * index);
 
-                                                                // This is a case where we want to set datetime according to the view timezone
-                                                                incidenceWrapper.setIncidenceStart(posDate, true);
-                                                                Kalendar.CalendarManager.editIncidence(incidenceWrapper);
+                                                                if (incidenceWrapper.recurrenceData.type === 0) {
+                                                                    // This is a case where we want to set datetime according to the view timezone
+                                                                    incidenceWrapper.setIncidenceStart(posDate, true);
+                                                                    Kalendar.CalendarManager.editIncidence(incidenceWrapper);
+                                                                } else {
+                                                                    const startOffset = posDate.getTime() - drop.source.occurrenceDate.getTime();
+                                                                    console.log(startOffset, posDate.getTime(), drop.source.occurrenceDate.getTime())
+                                                                    root.moveIncidence(startOffset, drop.source.occurrenceDate, incidenceWrapper);
+                                                                }
 
                                                             } else { // The resize affects the end time
                                                                 incidenceWrapper.incidencePtr = drop.source.parent.incidencePtr;
@@ -760,8 +768,14 @@ Kirigami.Page {
                                                                 const hour = isNextHour ? backgroundRectangle.index + 1 : backgroundRectangle.index;
 
                                                                 const posDate = new Date(backgroundDayMouseArea.addDate.getFullYear(), backgroundDayMouseArea.addDate.getMonth(), backgroundDayMouseArea.addDate.getDate(), hour, minute);
-                                                                incidenceWrapper.setIncidenceEnd(posDate, true);
-                                                                Kalendar.CalendarManager.editIncidence(incidenceWrapper);
+
+                                                                if (incidenceWrapper.recurrenceData.type === 0) {
+                                                                    incidenceWrapper.setIncidenceEnd(posDate, true);
+                                                                    Kalendar.CalendarManager.editIncidence(incidenceWrapper);
+                                                                } else {
+                                                                    const endOffset = posDate.getTime() - drop.source.parent.occurrenceEndDate.getTime();
+                                                                    root.resizeIncidence(endOffset, drop.source.parent.occurrenceDate, incidenceWrapper);
+                                                                }
                                                             }
                                                         }
 
@@ -809,6 +823,8 @@ Kirigami.Page {
                                             property alias mouseArea: mouseArea
                                             property var incidencePtr: modelData.incidencePtr
                                             property var collectionId: modelData.collectionId
+                                            property date occurrenceDate: modelData.startTime
+                                            property date occurrenceEndDate: modelData.endTime
                                             property bool repositionAnimationEnabled: false
                                             property bool caught: false
                                             property real caughtX: x
