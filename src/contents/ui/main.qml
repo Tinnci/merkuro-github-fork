@@ -886,6 +886,22 @@ Kirigami.ApplicationWindow {
         }
     }
 
+    function setUpIncidenceDateChange(incidenceWrapper, startOffset, endOffset, occurrenceDate) {
+        const openDialogWindow = pageStack.pushDialogLayer(recurringIncidenceChangeSheetComponent, {
+            incidenceWrapper: incidenceWrapper,
+            startOffset: startOffset,
+            endOffset: endOffset,
+            occurrenceDate: occurrenceDate
+        }, {
+            width: Kirigami.Units.gridUnit * 30,
+            height: Kirigami.Units.gridUnit * 6
+        });
+
+        if(!Kirigami.Settings.isMobile) {
+            openDialogWindow.Keys.escapePressed.connect(function() { openDialogWindow.closeDialog() });
+        }
+    }
+
     Component {
         id: deleteIncidenceSheetComponent
         DeleteIncidenceSheet {
@@ -947,6 +963,27 @@ Kirigami.ApplicationWindow {
 
             onDeleteCollection: {
                 CalendarManager.deleteCollection(collectionId);
+                closeDialog();
+            }
+            onCancel: closeDialog()
+        }
+    }
+
+    Component {
+        id: recurringIncidenceChangeSheetComponent
+        RecurringIncidenceChangeSheet {
+            id: recurringIncidenceChangeSheet
+
+            onChangeAll: {
+                CalendarManager.updateIncidenceDates(incidenceWrapper, startOffset, endOffset, IncidenceWrapper.AllOccurrences);
+                closeDialog();
+            }
+            onChangeThis: {
+                CalendarManager.updateIncidenceDates(incidenceWrapper, startOffset, endOffset, IncidenceWrapper.SelectedOccurrence, occurrenceDate);
+                closeDialog();
+            }
+            onChangeThisAndFuture: {
+                CalendarManager.updateIncidenceDates(incidenceWrapper, startOffset, endOffset, IncidenceWrapper.FutureOccurrences, occurrenceDate);
                 closeDialog();
             }
             onCancel: closeDialog()
@@ -1071,6 +1108,8 @@ Kirigami.ApplicationWindow {
             onCompleteTodo: root.completeTodo(incidencePtr)
             onAddSubTodo: root.setUpAddSubTodo(parentWrapper)
             onDeselect: incidenceInfo.close()
+            onMoveIncidence: root.setUpIncidenceDateChange(incidenceWrapper, startOffset, startOffset, occurrenceDate) // We move the entire incidence
+            onResizeIncidence: root.setUpIncidenceDateChange(incidenceWrapper, 0, endOffset, occurrenceDate)
 
             actions.contextualActions: createAction
         }
