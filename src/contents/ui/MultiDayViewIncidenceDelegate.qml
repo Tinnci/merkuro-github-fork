@@ -49,6 +49,7 @@ Rectangle {
     property string openOccurrenceId: ""
     property bool isOpenOccurrence: openOccurrenceId ?
         openOccurrenceId === modelData.incidenceId : false
+    onIsOpenOccurrenceChanged: console.log(parent)
     property bool reactToCurrentMonth: true
     readonly property bool isInCurrentMonth: reactToCurrentMonth && currentMonth ?
         modelData.endTime.getMonth() == root.month || modelData.startTime.getMonth() == root.month :
