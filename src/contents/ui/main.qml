@@ -907,18 +907,22 @@ Kirigami.ApplicationWindow {
     }
 
     function setUpIncidenceDateChange(incidenceWrapper, startOffset, endOffset, occurrenceDate) {
-        const openDialogWindow = pageStack.pushDialogLayer(recurringIncidenceChangeSheetComponent, {
-            incidenceWrapper: incidenceWrapper,
-            startOffset: startOffset,
-            endOffset: endOffset,
-            occurrenceDate: occurrenceDate
-        }, {
-            width: Kirigami.Units.gridUnit * 30,
-            height: Kirigami.Units.gridUnit * 6
-        });
+        if(incidenceWrapper.recurrenceData.type === 0) {
+            CalendarManager.updateIncidenceDates(incidenceWrapper, startOffset, endOffset);
+        } else {
+            const openDialogWindow = pageStack.pushDialogLayer(recurringIncidenceChangeSheetComponent, {
+                incidenceWrapper: incidenceWrapper,
+                startOffset: startOffset,
+                endOffset: endOffset,
+                occurrenceDate: occurrenceDate
+            }, {
+                width: Kirigami.Units.gridUnit * 30,
+                height: Kirigami.Units.gridUnit * 6
+            });
 
-        if(!Kirigami.Settings.isMobile) {
-            openDialogWindow.Keys.escapePressed.connect(function() { openDialogWindow.closeDialog() });
+            if(!Kirigami.Settings.isMobile) {
+                openDialogWindow.Keys.escapePressed.connect(function() { openDialogWindow.closeDialog() });
+            }
         }
     }
 
