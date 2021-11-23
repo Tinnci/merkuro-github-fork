@@ -772,6 +772,7 @@ void CalendarManager::updateIncidenceDates(IncidenceWrapper *incidenceWrapper, i
                 m_changer->createIncidence(newIncidence, m_calendar->collection(incidenceWrapper->collectionId()));
                 m_changer->endAtomicOperation();
             } else {
+                qDebug() << i18n("Unable to add the exception item to the calendar. No change will be done.");
             }
             break;
         }
@@ -779,7 +780,6 @@ void CalendarManager::updateIncidenceDates(IncidenceWrapper *incidenceWrapper, i
     } else { // Doesn't recur
         KCalendarCore::Incidence::Ptr oldIncidence(incidenceWrapper->incidencePtr()->clone());
         setNewDates(incidenceWrapper->incidencePtr());
-        qDebug() << incidenceWrapper->incidenceStart();
         m_changer->modifyIncidence(item, oldIncidence);
     }
 }
