@@ -918,7 +918,8 @@ Kirigami.ApplicationWindow {
                 caughtDelegate: caughtDelegate
             }, {
                 width: Kirigami.Units.gridUnit * 34,
-                height: Kirigami.Units.gridUnit * 6
+                height: Kirigami.Units.gridUnit * 6,
+                onClosing: caughtDelegate.caught = false
             });
 
             if(!Kirigami.Settings.isMobile) {
