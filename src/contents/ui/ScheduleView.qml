@@ -21,6 +21,7 @@ Kirigami.Page {
     signal completeTodo(var incidencePtr)
     signal addSubTodo(var parentWrapper)
     signal deselect()
+    signal moveIncidence(int startOffset, date occurrenceDate, var incidenceWrapper)
 
     onAddIncidence: pathView.currentItem.item.savedYScrollPos = pathView.currentItem.item.QQC2.ScrollBar.vertical.visualPosition
     onViewIncidence: pathView.currentItem.item.savedYScrollPos = pathView.currentItem.item.QQC2.ScrollBar.vertical.visualPosition
@@ -257,8 +258,11 @@ Kirigami.Page {
                                 const incidenceWrapper = Qt.createQmlObject('import org.kde.kalendar 1.0; IncidenceWrapper {id: incidence}', incidenceDropArea, "incidence");
                                 incidenceWrapper.incidencePtr = drop.source.incidencePtr;
                                 incidenceWrapper.collectionId = drop.source.collectionId;
-                                incidenceWrapper.setIncidenceStartDate(dayMouseArea.addDate.getDate(), dayMouseArea.addDate.getMonth() + 1, dayMouseArea.addDate.getFullYear());
-                                Kalendar.CalendarManager.editIncidence(incidenceWrapper);
+
+                                let sameTimeOnDate = new Date(dayMouseArea.addDate);
+                                sameTimeOnDate = new Date(sameTimeOnDate.setHours(drop.source.occurrenceDate.getHours(), drop.source.occurrenceDate.getMinutes()));
+                                const offset = sameTimeOnDate.getTime() - drop.source.occurrenceDate.getTime();
+                                root.moveIncidence(offset, drop.source.occurrenceDate, incidenceWrapper);
                             }
                         }
 
@@ -395,6 +399,8 @@ Kirigami.Page {
                                                 property alias mouseArea: incidenceMouseArea
                                                 property var incidencePtr: modelData.incidencePtr
                                                 property var collectionId: modelData.collectionId
+                                                property date occurrenceDate: modelData.startTime
+                                                property date occurrenceEndDate: modelData.endTime
                                                 property bool repositionAnimationEnabled: false
                                                 property bool caught: false
                                                 property real caughtX: 0
