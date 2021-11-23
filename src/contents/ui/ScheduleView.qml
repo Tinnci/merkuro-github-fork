@@ -21,7 +21,7 @@ Kirigami.Page {
     signal completeTodo(var incidencePtr)
     signal addSubTodo(var parentWrapper)
     signal deselect()
-    signal moveIncidence(int startOffset, date occurrenceDate, var incidenceWrapper)
+    signal moveIncidence(int startOffset, date occurrenceDate, var incidenceWrapper, Item caughtDelegate)
 
     property var openOccurrence
     property var model
@@ -255,7 +255,7 @@ Kirigami.Page {
                                 let sameTimeOnDate = new Date(dayMouseArea.addDate);
                                 sameTimeOnDate = new Date(sameTimeOnDate.setHours(drop.source.occurrenceDate.getHours(), drop.source.occurrenceDate.getMinutes()));
                                 const offset = sameTimeOnDate.getTime() - drop.source.occurrenceDate.getTime();
-                                root.moveIncidence(offset, drop.source.occurrenceDate, incidenceWrapper);
+                                root.moveIncidence(offset, drop.source.occurrenceDate, incidenceWrapper, drop.source);
                             }
                         }
 

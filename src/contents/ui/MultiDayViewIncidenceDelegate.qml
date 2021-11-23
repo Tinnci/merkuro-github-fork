@@ -14,6 +14,7 @@ Rectangle {
     id: incidenceDelegate
 
     x: ((dayWidth + parentViewSpacing) * modelData.starts) + horizontalSpacing
+    y: 0
     z: 10
     width: ((dayWidth + parentViewSpacing) * modelData.duration) - (horizontalSpacing * 2) - parentViewSpacing // Account for spacing added to x and for spacing at end of line
     //Behavior on width { NumberAnimation { duration: Kirigami.Units.shortDuration; easing.type: Easing.OutCubic } }
@@ -48,6 +49,7 @@ Rectangle {
     property string openOccurrenceId: ""
     property bool isOpenOccurrence: openOccurrenceId ?
         openOccurrenceId === modelData.incidenceId : false
+    onIsOpenOccurrenceChanged: console.log(parent)
     property bool reactToCurrentMonth: true
     readonly property bool isInCurrentMonth: reactToCurrentMonth && currentMonth ?
         modelData.endTime.getMonth() == root.month || modelData.startTime.getMonth() == root.month :
@@ -66,6 +68,32 @@ Rectangle {
     Drag.active: mouseArea.drag.active
     Drag.hotSpot.x: mouseArea.mouseX
     Drag.hotSpot.y: mouseArea.mouseY
+
+    states: [
+        State {
+            when: !incidenceDelegate.mouseArea.drag.active && !incidenceDelegate.caught
+        },
+        State {
+            when: incidenceDelegate.mouseArea.drag.active
+            ParentChange { target: incidenceDelegate; parent: root }
+            PropertyChanges {
+                target: incidenceDelegate
+                isOpenOccurrence: true
+                y: 0
+            }
+        },
+        State {
+            when: incidenceDelegate.caught
+            ParentChange { target: incidenceDelegate; parent: root }
+            PropertyChanges {
+                target: incidenceDelegate
+                repositionAnimationEnabled: true
+                x: caughtX
+                y: caughtY
+                opacity: 0
+            }
+        }
+    ]
 
     IncidenceBackground {
         id: incidenceBackground
