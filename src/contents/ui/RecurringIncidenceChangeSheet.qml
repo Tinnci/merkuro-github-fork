@@ -27,13 +27,6 @@ Kirigami.Page {
 
     title: i18n("Change incidence date")
 
-    QQC2.Action {
-        id: changeAction
-        enabled: incidenceWrapper !== undefined
-        shortcut: "Return"
-        onTriggered: changeThis()
-    }
-
     ColumnLayout {
         anchors.fill: parent
 
@@ -43,42 +36,41 @@ Kirigami.Page {
 
             QQC2.Label {
                 Layout.fillWidth: true
+                Layout.fillHeight: true
                 text: i18n("The item you are trying to change is a recurring item. Should the changes be applied only to this single occurrence, also to future items, or to all items in the recurrence?")
                 wrapMode: Text.WordWrap
             }
         }
 
-        RowLayout {
+        Kirigami.ActionToolBar {
             Layout.fillWidth: true
-            spacing: Kirigami.Units.smallSpacing
+            flat: false
+            alignment: Qt.AlignRight
 
-            Item {
-                Layout.fillWidth: true
-            }
-
-            QQC2.Button {
-                icon.name: "deletecell"
-                text: i18n("Only This Item")
-                onClicked: changeThis()
-            }
-
-            QQC2.Button {
-                icon.name: "edit-table-delete-row"
-                text: i18n("Also Future Items")
-                onClicked: changeThisAndFuture()
-            }
-
-            QQC2.Button {
-                icon.name: "group-delete"
-                text: i18n("All Occurrences")
-                onClicked: changeAll()
-            }
-
-            QQC2.Button {
-                icon.name: "dialog-cancel"
-                text: i18n("Cancel")
-                onClicked: cancel()
-            }
+            actions: [
+                QQC2.Action {
+                    icon.name: "deletecell"
+                    enabled: incidenceWrapper !== undefined
+                    shortcut: "Return"
+                    text: i18n("Only This Item")
+                    onTriggered: changeThis()
+                },
+                QQC2.Action {
+                    icon.name: "edit-table-delete-row"
+                    text: i18n("Also Future Items")
+                    onTriggered: changeThisAndFuture()
+                },
+                QQC2.Action {
+                    icon.name: "group-delete"
+                    text: i18n("All Occurrences")
+                    onTriggered: changeAll()
+                },
+                QQC2.Action {
+                    icon.name: "dialog-cancel"
+                    text: i18n("Cancel")
+                    onTriggered: cancel()
+                }
+            ]
         }
     }
 }
