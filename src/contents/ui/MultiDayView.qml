@@ -171,7 +171,9 @@ Item {
                                                         incidenceWrapper.incidencePtr = drop.source.incidencePtr;
                                                         incidenceWrapper.collectionId = drop.source.collectionId;
 
-                                                        const offset = backgroundDayMouseArea.addDate.getTime() - drop.source.occurrenceDate.getTime();
+                                                        let sameTimeOnDate = new Date(backgroundDayMouseArea.addDate);
+                                                        sameTimeOnDate = new Date(sameTimeOnDate.setHours(drop.source.occurrenceDate.getHours(), drop.source.occurrenceDate.getMinutes()));
+                                                        const offset = sameTimeOnDate.getTime() - drop.source.occurrenceDate.getTime();
                                                         root.moveIncidence(offset, drop.source.occurrenceDate, incidenceWrapper);
                                                     }
                                                 }
