@@ -884,7 +884,7 @@ Kirigami.ApplicationWindow {
             incidenceWrapper: incidenceWrapper,
             deleteDate: deleteDate
         }, {
-            width: Kirigami.Units.gridUnit * 30,
+            width: Kirigami.Units.gridUnit * 32,
             height: Kirigami.Units.gridUnit * 6
         });
 
@@ -917,7 +917,7 @@ Kirigami.ApplicationWindow {
                 occurrenceDate: occurrenceDate,
                 caughtDelegate: caughtDelegate
             }, {
-                width: Kirigami.Units.gridUnit * 30,
+                width: Kirigami.Units.gridUnit * 34,
                 height: Kirigami.Units.gridUnit * 6
             });
 
