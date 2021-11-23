@@ -906,7 +906,7 @@ Kirigami.ApplicationWindow {
         }
     }
 
-    function setUpIncidenceDateChange(incidenceWrapper, startOffset, endOffset, occurrenceDate) {
+    function setUpIncidenceDateChange(incidenceWrapper, startOffset, endOffset, occurrenceDate, caughtDelegate) {
         if(incidenceWrapper.recurrenceData.type === 0) {
             CalendarManager.updateIncidenceDates(incidenceWrapper, startOffset, endOffset);
         } else {
@@ -914,7 +914,8 @@ Kirigami.ApplicationWindow {
                 incidenceWrapper: incidenceWrapper,
                 startOffset: startOffset,
                 endOffset: endOffset,
-                occurrenceDate: occurrenceDate
+                occurrenceDate: occurrenceDate,
+                caughtDelegate: caughtDelegate
             }, {
                 width: Kirigami.Units.gridUnit * 30,
                 height: Kirigami.Units.gridUnit * 6
@@ -1010,7 +1011,10 @@ Kirigami.ApplicationWindow {
                 CalendarManager.updateIncidenceDates(incidenceWrapper, startOffset, endOffset, IncidenceWrapper.FutureOccurrences, occurrenceDate);
                 closeDialog();
             }
-            onCancel: closeDialog()
+            onCancel: {
+                caughtDelegate.caught = false;
+                closeDialog();
+            }
         }
     }
 
@@ -1058,7 +1062,7 @@ Kirigami.ApplicationWindow {
             onCompleteTodo: root.completeTodo(incidencePtr)
             onAddSubTodo: root.setUpAddSubTodo(parentWrapper)
             onDeselect: incidenceInfo.close()
-            onMoveIncidence: root.setUpIncidenceDateChange(incidenceWrapper, startOffset, startOffset, occurrenceDate)
+            onMoveIncidence: root.setUpIncidenceDateChange(incidenceWrapper, startOffset, startOffset, occurrenceDate, caughtDelegate)
 
             onMonthChanged: if(month !== root.selectedDate.getMonth() && !initialMonth) root.selectedDate = new Date (year, month, 1)
             onYearChanged: if(year !== root.selectedDate.getFullYear() && !initialMonth) root.selectedDate = new Date (year, month, 1)
@@ -1097,7 +1101,7 @@ Kirigami.ApplicationWindow {
             onCompleteTodo: root.completeTodo(incidencePtr)
             onAddSubTodo: root.setUpAddSubTodo(parentWrapper)
             onDeselect: incidenceInfo.close()
-            onMoveIncidence: root.setUpIncidenceDateChange(incidenceWrapper, startOffset, startOffset, occurrenceDate)
+            onMoveIncidence: root.setUpIncidenceDateChange(incidenceWrapper, startOffset, startOffset, occurrenceDate, caughtDelegate)
 
             actions.contextualActions: createAction
         }
@@ -1134,8 +1138,8 @@ Kirigami.ApplicationWindow {
             onCompleteTodo: root.completeTodo(incidencePtr)
             onAddSubTodo: root.setUpAddSubTodo(parentWrapper)
             onDeselect: incidenceInfo.close()
-            onMoveIncidence: root.setUpIncidenceDateChange(incidenceWrapper, startOffset, startOffset, occurrenceDate) // We move the entire incidence
-            onResizeIncidence: root.setUpIncidenceDateChange(incidenceWrapper, 0, endOffset, occurrenceDate)
+            onMoveIncidence: root.setUpIncidenceDateChange(incidenceWrapper, startOffset, startOffset, occurrenceDate, caughtDelegate) // We move the entire incidence
+            onResizeIncidence: root.setUpIncidenceDateChange(incidenceWrapper, 0, endOffset, occurrenceDate, caughtDelegate)
 
             actions.contextualActions: createAction
         }
