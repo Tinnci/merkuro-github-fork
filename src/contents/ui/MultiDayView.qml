@@ -22,6 +22,7 @@ Item {
     signal completeTodo(var incidencePtr)
     signal addSubTodo(var parentWrapper)
     signal deselect()
+    signal moveIncidence(int startOffset, date occurrenceDate, var incidenceWrapper)
 
     property var openOccurrence
     property var model
@@ -169,8 +170,9 @@ Item {
                                                         const incidenceWrapper = Qt.createQmlObject('import org.kde.kalendar 1.0; IncidenceWrapper {id: incidence}', incidenceDropArea, "incidence");
                                                         incidenceWrapper.incidencePtr = drop.source.incidencePtr;
                                                         incidenceWrapper.collectionId = drop.source.collectionId;
-                                                        incidenceWrapper.setIncidenceStartDate(backgroundDayMouseArea.addDate.getDate(), backgroundDayMouseArea.addDate.getMonth() + 1, backgroundDayMouseArea.addDate.getFullYear());
-                                                        Kalendar.CalendarManager.editIncidence(incidenceWrapper);
+
+                                                        const offset = backgroundDayMouseArea.addDate.getTime() - drop.source.occurrenceDate.getTime();
+                                                        root.moveIncidence(offset, drop.source.occurrenceDate, incidenceWrapper);
                                                     }
                                                 }
                                             }
