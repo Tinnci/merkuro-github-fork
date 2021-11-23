@@ -21,8 +21,8 @@ Kirigami.Page {
     signal completeTodo(var incidencePtr)
     signal addSubTodo(var parentWrapper)
     signal deselect()
-    signal moveIncidence(int startOffset, date occurrenceDate, var incidenceWrapper)
-    signal resizeIncidence(int endOffset, date occurrenceDate, var incidenceWrapper)
+    signal moveIncidence(int startOffset, date occurrenceDate, var incidenceWrapper, Item caughtDelegate)
+    signal resizeIncidence(int endOffset, date occurrenceDate, var incidenceWrapper, Item caughtDelegate)
 
     property var openOccurrence: {}
     property var model
@@ -745,7 +745,7 @@ Kirigami.Page {
                                                                 const posDate = new Date(backgroundDayMouseArea.addDate.getFullYear(), backgroundDayMouseArea.addDate.getMonth(), backgroundDayMouseArea.addDate.getDate(), backgroundRectangle.index, dropAreaRepeater.minutes * index);
 
                                                                 const startOffset = posDate.getTime() - drop.source.occurrenceDate.getTime();
-                                                                root.moveIncidence(startOffset, drop.source.occurrenceDate, incidenceWrapper);
+                                                                root.moveIncidence(startOffset, drop.source.occurrenceDate, incidenceWrapper, drop.source);
 
                                                             } else { // The resize affects the end time
                                                                 incidenceWrapper.incidencePtr = drop.source.parent.incidencePtr;
@@ -763,7 +763,7 @@ Kirigami.Page {
                                                                 const posDate = new Date(backgroundDayMouseArea.addDate.getFullYear(), backgroundDayMouseArea.addDate.getMonth(), backgroundDayMouseArea.addDate.getDate(), hour, minute);
 
                                                                 const endOffset = posDate.getTime() - drop.source.parent.occurrenceEndDate.getTime();
-                                                                root.resizeIncidence(endOffset, drop.source.parent.occurrenceDate, incidenceWrapper);
+                                                                root.resizeIncidence(endOffset, drop.source.parent.occurrenceDate, incidenceWrapper, drop.source.parent);
                                                             }
                                                         }
 

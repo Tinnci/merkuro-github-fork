@@ -21,6 +21,7 @@ Kirigami.Page {
     property int startOffset: 0
     property int endOffset: 0
     property date occurrenceDate
+    property Item caughtDelegate
 
     padding: Kirigami.Units.largeSpacing
 
