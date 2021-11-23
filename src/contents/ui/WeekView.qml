@@ -448,8 +448,11 @@ Kirigami.Page {
                                                                         const incidenceWrapper = Qt.createQmlObject('import org.kde.kalendar 1.0; IncidenceWrapper {id: incidence}', incidenceDropArea, "incidence");
                                                                         incidenceWrapper.incidencePtr = drop.source.incidencePtr;
                                                                         incidenceWrapper.collectionId = drop.source.collectionId;
-                                                                        incidenceWrapper.setIncidenceStartDate(listViewMenu.addDate.getDate(), listViewMenu.addDate.getMonth() + 1, listViewMenu.addDate.getFullYear());
-                                                                        Kalendar.CalendarManager.editIncidence(incidenceWrapper);
+
+                                                                        let sameTimeOnDate = new Date(listViewMenu.addDate);
+                                                                        sameTimeOnDate = new Date(sameTimeOnDate.setHours(drop.source.occurrenceDate.getHours(), drop.source.occurrenceDate.getMinutes()));
+                                                                        const offset = sameTimeOnDate.getTime() - drop.source.occurrenceDate.getTime();
+                                                                        root.moveIncidence(offset, drop.source.occurrenceDate, incidenceWrapper, drop.source);
                                                                     }
                                                                 }
                                                             }
@@ -478,24 +481,6 @@ Kirigami.Page {
                                                                 openOccurrenceId: root.openOccurrence ? root.openOccurrence.incidenceId : ""
                                                                 isDark: root.isDark
                                                                 reactToCurrentMonth: false
-
-                                                                states: [
-                                                                    State {
-                                                                        when: incidenceDelegate.mouseArea.drag.active
-                                                                        ParentChange { target: incidenceDelegate; parent: root }
-                                                                        PropertyChanges { target: incidenceDelegate; isOpenOccurrence: true }
-                                                                    },
-                                                                    State {
-                                                                        when: incidenceDelegate.caught
-                                                                        ParentChange { target: incidenceDelegate; parent: root }
-                                                                        PropertyChanges {
-                                                                            target: incidenceDelegate
-                                                                            repositionAnimationEnabled: true
-                                                                            x: caughtX
-                                                                            y: caughtY
-                                                                        }
-                                                                    }
-                                                                ]
                                                             }
                                                         }
                                                     }
