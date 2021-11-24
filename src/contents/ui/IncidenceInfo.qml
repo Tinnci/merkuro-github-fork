@@ -14,7 +14,7 @@ Kirigami.OverlayDrawer {
     id: incidenceInfo
 
     signal addSubTodo(var parentWrapper)
-    signal editIncidence(var incidencePtr, var collectionId)
+    signal editIncidence(var incidencePtr)
     signal deleteIncidence(var incidencePtr, date deleteDate)
     signal tagClicked(string tagName)
 
@@ -55,6 +55,7 @@ Kirigami.OverlayDrawer {
         incidenceWrapper = Qt.createQmlObject('import org.kde.kalendar 1.0; IncidenceWrapper {id: incidence}',
                                               incidenceInfo, "incidence");
         incidenceWrapper.incidenceItem = CalendarManager.incidenceItem(incidenceData.incidencePtr);
+        collectionData = CalendarManager.getCollectionDetails(incidenceWrapper.collectionId);
     }
 
     enabled: true
@@ -122,7 +123,7 @@ Kirigami.OverlayDrawer {
                                 icon.name: "edit-entry"
                                 text: i18n("Edit")
                                 enabled: incidenceInfo.collectionData && !incidenceInfo.collectionData.readOnly
-                                onTriggered: editIncidence(incidenceInfo.incidenceData.incidencePtr, incidenceInfo.incidenceWrapper.collectionId)
+                                onTriggered: editIncidence(incidenceInfo.incidenceData.incidencePtr)
                             },
                             Kirigami.Action {
                                 icon.name: "edit-delete"
@@ -178,7 +179,7 @@ Kirigami.OverlayDrawer {
                         Layout.fillWidth: true
                         height: Kirigami.Units.gridUnit / 2
 
-                        color: incidenceInfo.incidenceData.color
+                        color: incidenceInfo.collectionData.color
                     }
 
                     ColumnLayout {
