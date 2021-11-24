@@ -31,7 +31,8 @@ IncidenceWrapper::IncidenceWrapper(QObject *parent)
     scope.setFetchRelations(true);
     scope.setAncestorRetrieval(Akonadi::ItemFetchScope::Parent);
     setFetchScope(scope);
-    setIncidencePtr(KCalendarCore::Incidence::Ptr(new KCalendarCore::Event));
+
+    setNewEvent();
 }
 
 IncidenceWrapper::~IncidenceWrapper()
@@ -132,7 +133,13 @@ QString IncidenceWrapper::uid() const
 
 qint64 IncidenceWrapper::collectionId() const
 {
-    return item().parentCollection().id();
+    return m_collectionId < 0 ? item().parentCollection().id() : m_collectionId;
+}
+
+void IncidenceWrapper::setCollectionId(qint64 collectionId)
+{
+    m_collectionId = collectionId;
+    Q_EMIT collectionIdChanged();
 }
 
 QString IncidenceWrapper::parent() const
@@ -638,13 +645,18 @@ void IncidenceWrapper::setNewEvent()
     auto event = KCalendarCore::Event::Ptr(new KCalendarCore::Event);
     event->setDtStart(QDateTime::currentDateTime());
     event->setDtEnd(QDateTime::currentDateTime().addSecs(60 * 60));
-    setIncidencePtr(event);
+
+    Akonadi::Item incidenceItem;
+    incidenceItem.setPayload<KCalendarCore::Event::Ptr>(event);
+    setIncidenceItem(incidenceItem);
 }
 
 void IncidenceWrapper::setNewTodo()
 {
     auto todo = KCalendarCore::Todo::Ptr(new KCalendarCore::Todo);
-    setIncidencePtr(todo);
+    Akonadi::Item incidenceItem;
+    incidenceItem.setPayload<KCalendarCore::Todo::Ptr>(todo);
+    setIncidenceItem(incidenceItem);
 }
 
 void IncidenceWrapper::addAlarms(KCalendarCore::Alarm::List alarms)

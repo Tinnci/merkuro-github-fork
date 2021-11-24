@@ -12,9 +12,9 @@
 #if AKONADI_VERSION >= QT_VERSION_CHECK(5, 18, 41)
 #include <Akonadi/CollectionIdentificationAttribute>
 #include <Akonadi/Item>
+#include <Akonadi/ItemFetchJob>
+#include <Akonadi/ItemFetchScope>
 #include <Akonadi/ItemMonitor>
-#include <AkonadiCore/ItemFetchAcope>
-#include <AkonadiCore/ItemFetchJob>
 #else
 #include <AkonadiCore/CollectionIdentificationAttribute>
 #include <AkonadiCore/Item>
@@ -46,7 +46,7 @@ class IncidenceWrapper : public QObject, public Akonadi::ItemMonitor
     Q_PROPERTY(QString incidenceIconName READ incidenceIconName NOTIFY incidenceIconNameChanged)
     Q_PROPERTY(QString uid READ uid CONSTANT);
 
-    Q_PROPERTY(qint64 collectionId READ collectionId NOTIFY collectionIdChanged)
+    Q_PROPERTY(qint64 collectionId READ collectionId WRITE setCollectionId NOTIFY collectionIdChanged)
     Q_PROPERTY(QString parent READ parent WRITE setParent NOTIFY parentChanged)
     Q_PROPERTY(QString summary READ summary WRITE setSummary NOTIFY summaryChanged)
     Q_PROPERTY(QStringList categories READ categories WRITE setCategories NOTIFY categoriesChanged)
@@ -225,6 +225,7 @@ protected:
 private:
     KCalendarCore::Incidence::Ptr m_incidence;
     KCalendarCore::Incidence::Ptr m_originalIncidence;
+    qint64 m_collectionId = -1; // For when we want to edit, this is temporary
     RemindersModel m_remindersModel;
     AttendeesModel m_attendeesModel;
     RecurrenceExceptionsModel m_recurrenceExceptionsModel;
