@@ -712,7 +712,6 @@ void IncidenceWrapper::clearRecurrences()
 
 void IncidenceWrapper::itemChanged(const Akonadi::Item &item)
 {
-    qDebug() << "WEEEE";
     if (item.hasPayload<KCalendarCore::Incidence::Ptr>()) {
         qDebug() << item.payload<KCalendarCore::Incidence::Ptr>()->summary() << item.parentCollection().id();
         setIncidencePtr(item.payload<KCalendarCore::Incidence::Ptr>());
