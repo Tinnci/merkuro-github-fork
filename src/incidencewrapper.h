@@ -11,8 +11,16 @@
 #include <akonadi_version.h>
 #if AKONADI_VERSION >= QT_VERSION_CHECK(5, 18, 41)
 #include <Akonadi/CollectionIdentificationAttribute>
+#include <Akonadi/Item>
+#include <Akonadi/ItemMonitor>
+#include <AkonadiCore/ItemFetchAcope>
+#include <AkonadiCore/ItemFetchJob>
 #else
 #include <AkonadiCore/CollectionIdentificationAttribute>
+#include <AkonadiCore/Item>
+#include <AkonadiCore/ItemFetchJob>
+#include <AkonadiCore/ItemFetchScope>
+#include <AkonadiCore/ItemMonitor>
 #endif
 #include "attachmentsmodel.h"
 #include "attendeesmodel.h"
@@ -27,9 +35,10 @@
  * adding and editing the incidence in the collection of our choice.
  */
 
-class IncidenceWrapper : public QObject, public KCalendarCore::IncidenceBase::IncidenceObserver
+class IncidenceWrapper : public QObject, public Akonadi::ItemMonitor
 {
     Q_OBJECT
+    Q_PROPERTY(Akonadi::Item incidenceItem READ incidenceItem WRITE setIncidenceItem NOTIFY incidenceItemChanged)
     Q_PROPERTY(KCalendarCore::Incidence::Ptr incidencePtr READ incidencePtr WRITE setIncidencePtr NOTIFY incidencePtrChanged)
     Q_PROPERTY(KCalendarCore::Incidence::Ptr originalIncidencePtr READ originalIncidencePtr NOTIFY originalIncidencePtrChanged)
     Q_PROPERTY(int incidenceType READ incidenceType NOTIFY incidenceTypeChanged)
@@ -37,7 +46,7 @@ class IncidenceWrapper : public QObject, public KCalendarCore::IncidenceBase::In
     Q_PROPERTY(QString incidenceIconName READ incidenceIconName NOTIFY incidenceIconNameChanged)
     Q_PROPERTY(QString uid READ uid CONSTANT);
 
-    Q_PROPERTY(qint64 collectionId READ collectionId WRITE setCollectionId NOTIFY collectionIdChanged)
+    Q_PROPERTY(qint64 collectionId READ collectionId NOTIFY collectionIdChanged)
     Q_PROPERTY(QString parent READ parent WRITE setParent NOTIFY parentChanged)
     Q_PROPERTY(QString summary READ summary WRITE setSummary NOTIFY summaryChanged)
     Q_PROPERTY(QStringList categories READ categories WRITE setCategories NOTIFY categoriesChanged)
@@ -100,10 +109,10 @@ public:
     IncidenceWrapper(QObject *parent = nullptr);
     ~IncidenceWrapper() override;
 
-    void incidenceUpdate(const QString &uid, const QDateTime &recurrenceId) override;
-    void incidenceUpdated(const QString &uid, const QDateTime &recurrenceId) override;
     void notifyDataChanged();
 
+    Akonadi::Item incidenceItem() const;
+    void setIncidenceItem(const Akonadi::Item &incidenceItem);
     KCalendarCore::Incidence::Ptr incidencePtr() const;
     void setIncidencePtr(KCalendarCore::Incidence::Ptr incidencePtr);
     KCalendarCore::Incidence::Ptr originalIncidencePtr();
@@ -176,8 +185,7 @@ public:
     Q_INVOKABLE void clearRecurrences();
 
 Q_SIGNALS:
-    void incidenceChanged();
-    void incidenceAboutToChange();
+    void incidenceItemChanged();
     void incidencePtrChanged(KCalendarCore::Incidence::Ptr incidencePtr);
     void originalIncidencePtrChanged();
     void incidenceTypeChanged();
@@ -211,10 +219,12 @@ Q_SIGNALS:
     void todoPercentCompleteChanged();
     void attendeesChanged();
 
+protected:
+    void itemChanged(const Akonadi::Item &item) override;
+
 private:
     KCalendarCore::Incidence::Ptr m_incidence;
     KCalendarCore::Incidence::Ptr m_originalIncidence;
-    qint64 m_collectionId;
     RemindersModel m_remindersModel;
     AttendeesModel m_attendeesModel;
     RecurrenceExceptionsModel m_recurrenceExceptionsModel;

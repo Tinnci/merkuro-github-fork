@@ -51,11 +51,10 @@ Kirigami.OverlayDrawer {
         }
     }
 
-
     onIncidenceDataChanged: {
         incidenceWrapper = Qt.createQmlObject('import org.kde.kalendar 1.0; IncidenceWrapper {id: incidence}',
                                               incidenceInfo, "incidence");
-        incidenceWrapper.incidencePtr = incidenceData.incidencePtr;
+        incidenceWrapper.incidenceItem = CalendarManager.incidenceItem(incidenceData.incidencePtr);
     }
 
     enabled: true
@@ -106,7 +105,6 @@ Kirigami.OverlayDrawer {
                                 text: i18n("Add Sub-Task")
                                 visible: incidenceInfo.incidenceWrapper.incidenceType === IncidenceWrapper.TypeTodo
                                 onTriggered: {
-                                    incidenceInfo.incidenceWrapper.collectionId = collectionData.id;
                                     addSubTodo(incidenceInfo.incidenceWrapper);
                                 }
                             },
@@ -124,7 +122,7 @@ Kirigami.OverlayDrawer {
                                 icon.name: "edit-entry"
                                 text: i18n("Edit")
                                 enabled: incidenceInfo.collectionData && !incidenceInfo.collectionData.readOnly
-                                onTriggered: editIncidence(incidenceInfo.incidenceData.incidencePtr, incidenceInfo.incidenceData.collectionId)
+                                onTriggered: editIncidence(incidenceInfo.incidenceData.incidencePtr, incidenceInfo.incidenceWrapper.collectionId)
                             },
                             Kirigami.Action {
                                 icon.name: "edit-delete"
@@ -160,7 +158,7 @@ Kirigami.OverlayDrawer {
                         Kirigami.Heading {
                             Layout.fillWidth: true
 
-                            text: "<b>" + incidenceInfo.incidenceData.text + "</b>"
+                            text: "<b>" + incidenceInfo.incidenceWrapper.summary + "</b>"
                             wrapMode: Text.Wrap
                         }
                         Kirigami.Icon {

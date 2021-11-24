@@ -852,15 +852,14 @@ Kirigami.ApplicationWindow {
         let editorToUse = root.editorToUse();
         editorToUse.incidenceWrapper = Qt.createQmlObject('import org.kde.kalendar 1.0; IncidenceWrapper {id: incidence}',
             editorToUse, "incidence");
-        editorToUse.incidenceWrapper.incidencePtr = incidencePtr;
+        editorToUse.incidenceWrapper.incidenceItem = CalendarManager.incidenceItem(incidencePtr);
         editorToUse.incidenceWrapper.triggerEditMode();
-        editorToUse.incidenceWrapper.collectionId = collectionId;
         editorToUse.editMode = true;
     }
 
     function setUpDelete(incidencePtr, deleteDate) {
         let incidenceWrapper = Qt.createQmlObject('import org.kde.kalendar 1.0; IncidenceWrapper {id: incidence}', root, "incidence");
-        incidenceWrapper.incidencePtr = incidencePtr;
+        incidenceWrapper.incidenceItem = CalendarManager.incidenceItem(incidencePtr);
 
         const openDialogWindow = pageStack.pushDialogLayer(deleteIncidenceSheetComponent, {
             incidenceWrapper: incidenceWrapper,
