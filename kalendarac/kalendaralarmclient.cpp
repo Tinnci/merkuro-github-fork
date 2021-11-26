@@ -1,5 +1,5 @@
 // SPDX-FileCopyrightText: 2021 Claudio Cambra <claudio.cambra@gmail.com>
-// SPDX-License-Identifier: GPL-2.0-or-later WITH Qt-Commercial-exception-1.0
+// SPDX-License-Identifier: LGPL-2.1-or-later
 
 #include "kalendaralarmclient.h"
 #include "alarmdockwindow.h"
