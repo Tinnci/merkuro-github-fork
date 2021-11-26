@@ -45,13 +45,6 @@ private:
 
     QAction *mAlarmsEnabled = nullptr;
     QAction *mAutostart = nullptr;
-    QAction *mSuspendAll = nullptr;
-    QAction *mDismissAll = nullptr;
-    // True/Enable if the notify daemon should grab focus (activate window) away
-    // from the current application.  This makes it easy to dismiss, but if the
-    // user is typing AlarmDialog now gets those keys and space or return will
-    // dismiss all notifications before the user has a chance to read them.
-    QAction *mGrabFocus = nullptr;
     QAction *mShow = nullptr;
 
     bool mAutostartSet = false;
