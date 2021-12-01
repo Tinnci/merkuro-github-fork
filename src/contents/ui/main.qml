@@ -165,6 +165,8 @@ Kirigami.ApplicationWindow {
                 pageStack.currentItem[key] = value;
             }
         }
+
+        pageStack.currentItem.setToDate(root.selectedDate, true)
     }
 
     Connections {
@@ -1127,8 +1129,6 @@ Kirigami.ApplicationWindow {
             onMonthChanged: if(month !== root.selectedDate.getMonth() && !initialMonth) root.selectedDate = new Date (year, month, 1)
             onYearChanged: if(year !== root.selectedDate.getFullYear() && !initialMonth) root.selectedDate = new Date (year, month, 1)
 
-            Component.onCompleted: setToDate(root.selectedDate, true)
-
             actions.contextualActions: createAction
         }
     }
@@ -1151,8 +1151,6 @@ Kirigami.ApplicationWindow {
             onDayChanged: if(day !== root.selectedDate.getDate() && !initialMonth) root.selectedDate = new Date (year, month, day)
             onMonthChanged: if(month !== root.selectedDate.getMonth() && !initialMonth) root.selectedDate = new Date (year, month, day)
             onYearChanged: if(year !== root.selectedDate.getFullYear() && !initialMonth) root.selectedDate = new Date (year, month, day)
-
-            Component.onCompleted: setToDate(root.selectedDate, true)
 
             onAddIncidence: root.setUpAdd(type, addDate)
             onViewIncidence: root.setUpView(modelData)
@@ -1205,8 +1203,6 @@ Kirigami.ApplicationWindow {
             onDayChanged: if(day !== root.selectedDate.getDate() && !initialWeek) root.selectedDate = new Date (year, month, day)
             onMonthChanged: if(month !== root.selectedDate.getMonth() && !initialWeek) root.selectedDate = new Date (year, month, day)
             onYearChanged: if(year !== root.selectedDate.getFullYear() && !initialWeek) root.selectedDate = new Date (year, month, day)
-
-            Component.onCompleted: setToDate(root.selectedDate, true)
 
             onAddIncidence: root.setUpAdd(type, addDate, null, includeTime)
             onViewIncidence: root.setUpView(modelData)
