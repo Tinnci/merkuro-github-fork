@@ -7,6 +7,7 @@
 #include "notificationhandler.h"
 
 #include <CalendarSupport/Utils>
+#include <akonadi-calendar_version.h>
 
 #include <KCheckableProxyModel>
 #include <KConfigGroup>
@@ -177,7 +178,11 @@ void KalendarAlarmClient::checkAlarms()
 
     const Alarm::List alarms = mCalendar->alarms(from, mLastChecked, true /* exclude blocked alarms */);
     for (const Alarm::Ptr &alarm : alarms) {
+#if AKONADICALENDAR_VERSION < QT_VERSION_CHECK(5, 19, 41)
         const QString uid = alarm->customProperty("ETMCalendar", "parentUid");
+#else
+        const QString uid = alarm->parentUid();
+#endif
         const KCalendarCore::Incidence::Ptr incidence = mCalendar->incidence(uid);
         QString timeText;
 
