@@ -3,6 +3,8 @@
 # SPDX-License-Identifier: BSD-2-Clause
 
 add_executable(kalendar)
+
+qt_add_dbus_adaptor(dbus_adapter_srcs ../kalendarac/org.kde.calendar.Calendar.xml kalendarapplication.h KalendarApplication)
 target_sources(kalendar PRIVATE
     about.cpp
     about.h
@@ -49,7 +51,8 @@ target_sources(kalendar PRIVATE
     timezonelistmodel.h
     todosortfilterproxymodel.cpp
     todosortfilterproxymodel.h
-    resources.qrc)
+    resources.qrc
+    ${dbus_adapter_srcs})
 
 ecm_qt_declare_logging_category(kalendar HEADER kalendar_debug.h IDENTIFIER KALENDAR_LOG CATEGORY_NAME org.kde.kalendar DESCRIPTION "kalendar" EXPORT KALENDAR)
 

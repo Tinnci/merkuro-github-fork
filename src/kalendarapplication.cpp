@@ -6,6 +6,7 @@
 
 #include "kalendarapplication.h"
 
+#include "calendaradaptor.h"
 #include "commandbarfiltermodel.h"
 #include "kalendar_debug.h"
 #include <CalendarSupport/Utils>
@@ -14,7 +15,9 @@
 #include <KLocalizedString>
 #include <KSharedConfig>
 #include <KWindowConfig>
+#include <KWindowSystem>
 #include <KXmlGui/KShortcutsDialog>
+#include <QGuiApplication>
 #include <QMenu>
 #include <QQuickWindow>
 #include <QSortFilterProxyModel>
@@ -29,6 +32,9 @@ KalendarApplication::KalendarApplication(QObject *parent)
 {
     mSortCollection.setComponentDisplayName(i18n("Sort"));
     setupActions();
+
+    new CalendarAdaptor(this);
+    QDBusConnection::sessionBus().registerObject(QStringLiteral("/Calendar"), this);
 }
 
 KalendarApplication::~KalendarApplication()
@@ -571,4 +577,16 @@ void KalendarApplication::saveWindowGeometry(QQuickWindow *window)
     KWindowConfig::saveWindowPosition(window, windowGroup);
     KWindowConfig::saveWindowSize(window, windowGroup);
     dataResource.sync();
+}
+
+void KalendarApplication::showIncidenceByUid(const QString &uid, const QDateTime &occurrence, const QString &xdgActivationToken)
+{
+    // TODO select uid/occurence
+
+    KWindowSystem::setCurrentXdgActivationToken(xdgActivationToken);
+    QWindow *window = QGuiApplication::topLevelWindows().isEmpty() ? nullptr : QGuiApplication::topLevelWindows().at(0);
+    if (window) {
+        KWindowSystem::activateWindow(window);
+        window->raise();
+    }
 }
