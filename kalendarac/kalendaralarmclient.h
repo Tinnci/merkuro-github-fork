@@ -31,6 +31,8 @@ public:
     void dismiss(AlarmNotification *notification);
     /** Suspends the display of the alarm \p notification. */
     void suspend(AlarmNotification *notification);
+    /** Show incidence in the calendar application. */
+    void showIncidence(const QString &uid);
 
 private:
     void deferredInit();

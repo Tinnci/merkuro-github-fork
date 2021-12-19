@@ -8,6 +8,8 @@ set(kalendarac_SRCS
     kalendaracmain.cpp
     )
 
+qt_add_dbus_interface(kalendarac_SRCS org.kde.calendar.Calendar.xml calendarinterface)
+
 add_executable(kalendarac ${kalendarac_SRCS} ${RESOURCES})
 
 target_link_libraries(kalendarac

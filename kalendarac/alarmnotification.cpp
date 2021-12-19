@@ -39,6 +39,9 @@ void AlarmNotification::send(KalendarAlarmClient *client, const KCalendarCore::I
         QObject::connect(m_notification, &KNotification::closed, client, [this, client]() {
             client->dismiss(this);
         });
+        QObject::connect(m_notification, &KNotification::defaultActivated, client, [this, client]() {
+            client->showIncidence(uid());
+        });
         QObject::connect(m_notification, &KNotification::action1Activated, client, [this, client]() {
             client->suspend(this);
             QObject::disconnect(m_notification, &KNotification::closed, client, nullptr);
@@ -51,6 +54,7 @@ void AlarmNotification::send(KalendarAlarmClient *client, const KCalendarCore::I
     // change the content unconditionally, that will also update already existing notifications
     m_notification->setTitle(incidence->summary());
     m_notification->setText(m_text);
+    m_notification->setDefaultAction(i18n("View"));
 
     if (!m_text.isEmpty() && m_text != incidence->summary()) { // MS Teams sometimes repeats the summary as the alarm text, we don't need that
         m_notification->setText(m_text);
