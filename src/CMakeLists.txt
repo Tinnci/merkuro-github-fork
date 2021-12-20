@@ -89,3 +89,6 @@ target_link_libraries(kalendar
 )
 kconfig_add_kcfg_files(kalendar GENERATE_MOC kalendarconfig.kcfgc)
 install(TARGETS kalendar ${KF5_INSTALL_TARGETS_DEFAULT_ARGS})
+
+configure_file(org.kde.kalendar.service.in org.kde.kalendar.service)
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/org.kde.kalendar.service DESTINATION ${KDE_INSTALL_DBUSSERVICEDIR})
