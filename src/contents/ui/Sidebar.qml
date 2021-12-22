@@ -498,6 +498,7 @@ Kirigami.OverlayDrawer {
                                     (Kirigami.Units.largeSpacing * model.kDescendantLevel) + (Kirigami.Units.iconSizes.smallMedium * (model.kDescendantLevel - 1))
                                 separatorVisible: false
                                 enabled: !sidebar.collapsed
+                                highlighted: incidenceDropArea.containsDrag
 
                                 leading: Kirigami.Icon {
                                     implicitWidth: Kirigami.Units.iconSizes.smallMedium
@@ -529,6 +530,46 @@ Kirigami.OverlayDrawer {
                                     parent: calendarItem.contentItem // Otherwise label elide breaks
                                     collectionId: model.collectionId
                                     anchors.fill: parent
+
+                                    DropArea {
+                                        id: incidenceDropArea
+                                        anchors.fill: parent
+                                        z: 9999
+                                        onDropped: console.log("HEHEH") /*if(viewLoader.isCurrentItem) {
+                                            let incidenceWrapper = Qt.createQmlObject('import org.kde.kalendar 1.0; IncidenceWrapper {id: incidence}', incidenceDropArea, "incidence");
+
+                                            if(drop.source.objectName === "incidenceDelegate") {
+                                                incidenceWrapper.incidenceItem = Kalendar.CalendarManager.incidenceItem(drop.source.incidencePtr);
+
+                                                const pos = mapToItem(root, dropAreaHighlightRectangle.x, dropAreaHighlightRectangle.y);
+                                                drop.source.caughtX = pos.x + incidenceSpacing;
+                                                drop.source.caughtY = pos.y + incidenceSpacing;
+                                                drop.source.caught = true;
+
+                                                // We want the date as if it were "from the top" of the droparea
+                                                const posDate = new Date(backgroundDayMouseArea.addDate.getFullYear(), backgroundDayMouseArea.addDate.getMonth(), backgroundDayMouseArea.addDate.getDate(), backgroundRectangle.index, dropAreaRepeater.minutes * index);
+
+                                                const startOffset = posDate.getTime() - drop.source.occurrenceDate.getTime();
+                                                root.moveIncidence(startOffset, drop.source.occurrenceDate, incidenceWrapper, drop.source);
+
+                                            } else { // The resize affects the end time
+                                                incidenceWrapper.incidenceItem = Kalendar.CalendarManager.incidenceItem(drop.source.parent.incidencePtr);
+
+                                                const pos = mapToItem(drop.source.parent, dropAreaHighlightRectangle.x, dropAreaHighlightRectangle.y);
+                                                drop.source.parent.caughtHeight = (pos.y + dropAreaHighlightRectangle.height - incidenceSpacing)
+                                                drop.source.parent.caught = true;
+
+                                                // We want the date as if it were "from the bottom" of the droparea
+                                                const minute = (dropAreaRepeater.minutes * (index + 1)) % 60;
+                                                const isNextHour = minute === 0 && index !== 0;
+                                                const hour = isNextHour ? backgroundRectangle.index + 1 : backgroundRectangle.index;
+
+                                                const posDate = new Date(backgroundDayMouseArea.addDate.getFullYear(), backgroundDayMouseArea.addDate.getMonth(), backgroundDayMouseArea.addDate.getDate(), hour, minute);
+
+                                                const endOffset = posDate.getTime() - drop.source.parent.occurrenceEndDate.getTime();
+                                                root.resizeIncidence(endOffset, drop.source.parent.occurrenceDate, incidenceWrapper, drop.source.parent);
+                                            }*/
+                                        }
 
                                     onDeleteCalendar: sidebar.deleteCalendar(collectionId, collectionDetails)
                                 }
