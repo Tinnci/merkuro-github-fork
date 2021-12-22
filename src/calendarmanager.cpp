@@ -707,13 +707,7 @@ void CalendarManager::editIncidence(IncidenceWrapper *incidenceWrapper)
         return;
     }
 
-    Akonadi::Collection newCollection(incidenceWrapper->collectionId());
-    modifiedItem.setParentCollection(newCollection);
-    auto job = new Akonadi::ItemMoveJob(modifiedItem, newCollection);
-    // Add some type of check here?
-    connect(job, &KJob::result, job, [=]() {
-        qCDebug(KALENDAR_LOG) << job->error();
-    });
+    changeIncidenceCollection(modifiedItem, incidenceWrapper->collectionId());
 }
 
 void CalendarManager::updateIncidenceDates(IncidenceWrapper *incidenceWrapper, int startOffset, int endOffset, int occurrences, const QDateTime &occurrenceDate)
@@ -845,6 +839,26 @@ void CalendarManager::deleteIncidence(KCalendarCore::Incidence::Ptr incidence, b
     }
 
     m_calendar->deleteIncidence(incidence);
+}
+
+void CalendarManager::changeIncidenceCollection(KCalendarCore::Incidence::Ptr incidence, qint64 collectionId)
+{
+    KCalendarCore::Incidence::Ptr incidenceClone(incidence->clone());
+    Akonadi::Item modifiedItem = m_calendar->item(incidence->instanceIdentifier());
+    modifiedItem.setPayload<KCalendarCore::Incidence::Ptr>(incidenceClone);
+
+    changeIncidenceCollection(modifiedItem, collectionId);
+}
+
+void CalendarManager::changeIncidenceCollection(Akonadi::Item item, qint64 collectionId)
+{
+    Akonadi::Collection newCollection(collectionId);
+    item.setParentCollection(newCollection);
+    auto job = new Akonadi::ItemMoveJob(item, newCollection);
+    // Add some type of check here?
+    connect(job, &KJob::result, job, [=]() {
+        qCDebug(KALENDAR_LOG) << job->error();
+    });
 }
 
 QVariantMap CalendarManager::getCollectionDetails(QVariant collectionId)
