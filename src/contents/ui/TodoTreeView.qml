@@ -131,6 +131,7 @@ TreeListView {
     }
     delegate: BasicTreeItem {
         id: listItem
+        objectName: "taskDelegate"
         Layout.fillWidth: true
 
         Binding {

@@ -531,47 +531,21 @@ Kirigami.OverlayDrawer {
                                     collectionId: model.collectionId
                                     anchors.fill: parent
 
+                                    onDeleteCalendar: sidebar.deleteCalendar(collectionId, collectionDetails)
+
                                     DropArea {
                                         id: incidenceDropArea
                                         anchors.fill: parent
                                         z: 9999
-                                        onDropped: console.log("HEHEH") /*if(viewLoader.isCurrentItem) {
-                                            let incidenceWrapper = Qt.createQmlObject('import org.kde.kalendar 1.0; IncidenceWrapper {id: incidence}', incidenceDropArea, "incidence");
+                                        onDropped: if(drop.source.objectName === "taskDelegate") {
+                                            CalendarManager.changeIncidenceCollection(drop.source.incidencePtr, calendarItemMouseArea.collectionId);
 
-                                            if(drop.source.objectName === "incidenceDelegate") {
-                                                incidenceWrapper.incidenceItem = Kalendar.CalendarManager.incidenceItem(drop.source.incidencePtr);
-
-                                                const pos = mapToItem(root, dropAreaHighlightRectangle.x, dropAreaHighlightRectangle.y);
-                                                drop.source.caughtX = pos.x + incidenceSpacing;
-                                                drop.source.caughtY = pos.y + incidenceSpacing;
-                                                drop.source.caught = true;
-
-                                                // We want the date as if it were "from the top" of the droparea
-                                                const posDate = new Date(backgroundDayMouseArea.addDate.getFullYear(), backgroundDayMouseArea.addDate.getMonth(), backgroundDayMouseArea.addDate.getDate(), backgroundRectangle.index, dropAreaRepeater.minutes * index);
-
-                                                const startOffset = posDate.getTime() - drop.source.occurrenceDate.getTime();
-                                                root.moveIncidence(startOffset, drop.source.occurrenceDate, incidenceWrapper, drop.source);
-
-                                            } else { // The resize affects the end time
-                                                incidenceWrapper.incidenceItem = Kalendar.CalendarManager.incidenceItem(drop.source.parent.incidencePtr);
-
-                                                const pos = mapToItem(drop.source.parent, dropAreaHighlightRectangle.x, dropAreaHighlightRectangle.y);
-                                                drop.source.parent.caughtHeight = (pos.y + dropAreaHighlightRectangle.height - incidenceSpacing)
-                                                drop.source.parent.caught = true;
-
-                                                // We want the date as if it were "from the bottom" of the droparea
-                                                const minute = (dropAreaRepeater.minutes * (index + 1)) % 60;
-                                                const isNextHour = minute === 0 && index !== 0;
-                                                const hour = isNextHour ? backgroundRectangle.index + 1 : backgroundRectangle.index;
-
-                                                const posDate = new Date(backgroundDayMouseArea.addDate.getFullYear(), backgroundDayMouseArea.addDate.getMonth(), backgroundDayMouseArea.addDate.getDate(), hour, minute);
-
-                                                const endOffset = posDate.getTime() - drop.source.parent.occurrenceEndDate.getTime();
-                                                root.resizeIncidence(endOffset, drop.source.parent.occurrenceDate, incidenceWrapper, drop.source.parent);
-                                            }*/
+                                            const pos = mapToItem(applicationWindow().contentItem, calendarItem.x, calendarItem.y);
+                                            drop.source.caughtX = pos.x;
+                                            drop.source.caughtY = pos.y;
+                                            drop.source.caught = true;
                                         }
-
-                                    onDeleteCalendar: sidebar.deleteCalendar(collectionId, collectionDetails)
+                                    }
                                 }
                             }
                         }
