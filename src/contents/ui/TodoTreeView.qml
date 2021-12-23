@@ -154,11 +154,26 @@ TreeListView {
         property bool caught: false
         property real caughtX: x
         property real caughtY: y
-        property real caughtHeight: height
 
         Drag.active: mouseArea.drag.active
         Drag.hotSpot.x: mouseArea.mouseX
         Drag.hotSpot.y: mouseArea.mouseY
+
+        Behavior on x {
+            enabled: repositionAnimationEnabled
+            NumberAnimation {
+                duration: Kirigami.Units.shortDuration
+                easing.type: Easing.OutCubic
+            }
+        }
+
+        Behavior on y {
+            enabled: repositionAnimationEnabled
+            NumberAnimation {
+                duration: Kirigami.Units.shortDuration
+                easing.type: Easing.OutCubic
+            }
+        }
 
         states: [
             State {
@@ -176,7 +191,6 @@ TreeListView {
                     repositionAnimationEnabled: true
                     x: caughtX
                     y: caughtY
-                    height: caughtHeight
                 }
             }
         ]

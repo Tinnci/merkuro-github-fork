@@ -540,7 +540,7 @@ Kirigami.OverlayDrawer {
                                         onDropped: if(drop.source.objectName === "taskDelegate") {
                                             CalendarManager.changeIncidenceCollection(drop.source.incidencePtr, calendarItemMouseArea.collectionId);
 
-                                            const pos = mapToItem(applicationWindow().contentItem, calendarItem.x, calendarItem.y);
+                                            const pos = mapToItem(applicationWindow().contentItem, x, y);
                                             drop.source.caughtX = pos.x;
                                             drop.source.caughtY = pos.y;
                                             drop.source.caught = true;
