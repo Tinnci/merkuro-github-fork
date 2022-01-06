@@ -244,11 +244,16 @@ TreeListView {
                         y: parent.height / 2 - height / 2
                         anchors.horizontalCenter: parent.horizontalCenter
                         anchors.verticalCenter: parent.verticalCenter
+
+                        // The icon provides the main circle for the checkbox when not checked,
+                        // whereas the rectangle provides the circle when it is checked.
+                        // The rectangle always provides the tinted background.
+
                         Kirigami.Icon {
                             isMask: true
                             color: model.color
                             anchors.fill: parent
-                            anchors.margins: parent.height * -0.175
+                            anchors.margins: parent.height * -0.16
                             visible: !todoCheckbox.checked
                             source: {
                                 if (model.percent >= 75) {
@@ -265,10 +270,9 @@ TreeListView {
                         }
                         Rectangle {
                             anchors.fill: parent
-                            visible: todoCheckbox.checked
                             radius: todoCheckbox.radius
-                            border.color: todoCheckbox.color
-                            color: Qt.rgba(0,0,0,0)
+                            border.color: todoCheckbox.checked ? todoCheckbox.color : Qt.rgba(0,0,0,0)
+                            color: Qt.rgba(todoCheckbox.color.r, todoCheckbox.color.g, todoCheckbox.color.b, 0.1)
 
                             Rectangle {
                                 anchors.margins: parent.height * 0.2
