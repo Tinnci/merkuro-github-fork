@@ -248,6 +248,7 @@ TreeListView {
                             isMask: true
                             color: model.color
                             anchors.fill: parent
+                            anchors.margins: parent.height * -0.175
                             visible: !todoCheckbox.checked
                             source: {
                                 if (model.percent >= 75) {
