@@ -62,12 +62,6 @@ if (USE_UNITY_CMAKE_SUPPORT)
     add_definitions(-DUNITY_CMAKE_SUPPORT)
 endif()
 
-################# testing ######################
-
-if (BUILD_TESTING)
-    add_subdirectory(autotests)
-endif()
-
 ################# build and install #################
 
 add_definitions(-DQT_NO_CAST_FROM_ASCII -DQT_NO_CAST_TO_ASCII -DQT_NO_URL_CAST_FROM_STRING)
@@ -77,6 +71,10 @@ add_definitions(-DQT_DISABLE_DEPRECATED_BEFORE=0x050f02)
 add_definitions(-DKF_DISABLE_DEPRECATED_BEFORE_AND_AT=0x055800)
 add_subdirectory(src)
 add_subdirectory(kalendarac)
+
+if (BUILD_TESTING)
+    add_subdirectory(autotests)
+endif()
 
 install(PROGRAMS org.kde.kalendar.desktop DESTINATION ${KDE_INSTALL_APPDIR})
 install(FILES org.kde.kalendar.appdata.xml DESTINATION ${KDE_INSTALL_METAINFODIR})
