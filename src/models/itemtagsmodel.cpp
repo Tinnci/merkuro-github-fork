@@ -12,7 +12,7 @@
 #include <AkonadiCore/ItemFetchScope>
 #endif
 #include <KCalendarCore/Incidence>
-#include <itemtagsmodel.h>
+#include <models/itemtagsmodel.h>
 
 ItemTagsModel::ItemTagsModel(QObject *parent)
     : QAbstractListModel(parent)

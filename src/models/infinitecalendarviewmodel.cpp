@@ -7,7 +7,7 @@
 #include <QMetaEnum>
 #include <akonadi_version.h>
 #include <cmath>
-#include <infinitecalendarviewmodel.h>
+#include <models/infinitecalendarviewmodel.h>
 #if AKONADI_VERSION >= QT_VERSION_CHECK(5, 18, 41)
 #include <Akonadi/EntityTreeModel>
 #else
@@ -159,7 +159,6 @@ QVariant InfiniteCalendarViewModel::data(const QModelIndex &idx, int role) const
                         m_models[i].multiDayModels->remove(firstKey);
                     }
                 }
-
 
                 numLiveModels = m_liveMonthViewModelKeys.length() + m_liveScheduleViewModelKeys.length() + m_liveWeekViewModelKeys.length()
                     + m_liveWeekViewMultiDayModelKeys.length() + m_liveThreeDayViewModelKeys.length() + m_liveThreeDayViewMultiDayModelKeys.length()

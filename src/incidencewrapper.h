@@ -22,10 +22,10 @@
 #include <AkonadiCore/ItemFetchScope>
 #include <AkonadiCore/ItemMonitor>
 #endif
-#include "attachmentsmodel.h"
-#include "attendeesmodel.h"
-#include "recurrenceexceptionsmodel.h"
-#include "remindersmodel.h"
+#include "models/attachmentsmodel.h"
+#include "models/attendeesmodel.h"
+#include "models/recurrenceexceptionsmodel.h"
+#include "models/remindersmodel.h"
 
 /**
  * This class is a wrapper for a KCalendarCore::Incidence::Ptr object.
