@@ -7,6 +7,7 @@
 
 #pragma once
 
+#include <Akonadi/Calendar/ETMCalendar>
 #include <KConfigWatcher>
 #include <QAbstractItemModel>
 #include <QColor>
@@ -14,7 +15,6 @@
 #include <QList>
 #include <QSharedPointer>
 #include <QTimer>
-#include <etmcalendar.h>
 
 namespace KCalendarCore
 {
