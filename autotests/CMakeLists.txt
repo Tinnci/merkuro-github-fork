@@ -10,5 +10,18 @@ include_directories(${kalendar_BINARY_DIR}/src)
 
 set(incidenceOccurrenceModelTest_SOURCES
     incidenceoccurrencemodeltest.cpp
-    ../src/incidenceoccurrencemodel.cpp
 )
+
+ecm_add_test(${incidenceOccurrenceModelTest_SOURCES}
+    TEST_NAME "incidenceOccurrenceModelTest"
+    LINK_LIBRARIES
+        Qt::Test
+        Qt5::Core
+        Qt5::Gui
+        KF5::ConfigCore
+        KF5::AkonadiCore
+        KF5::AkonadiCalendar
+)
+
+target_include_directories(incidenceOccurrenceModelTest PRIVATE ${CMAKE_SOURCE_DIR}/src)
+
