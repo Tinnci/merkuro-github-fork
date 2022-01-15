@@ -8,20 +8,18 @@ include_directories(${kalendar_CURRENT_BINARY_DIR})
 include_directories(${kalendar_BINARY_DIR})
 include_directories(${kalendar_BINARY_DIR}/src)
 
-set(incidenceOccurrenceModelTest_SOURCES
+set(incidenceOccurrenceModelTest_SRCS
     incidenceoccurrencemodeltest.cpp
+    ../src/models/incidenceoccurrencemodel.cpp
 )
+ecm_qt_declare_logging_category(incidenceOccurrenceModelTest_SRCS HEADER kalendar_debug.h IDENTIFIER KALENDAR_LOG CATEGORY_NAME org.kde.kalendar DESCRIPTION "kalendar" EXPORT KALENDAR)
 
-ecm_add_test(${incidenceOccurrenceModelTest_SOURCES}
-    TEST_NAME "incidenceOccurrenceModelTest"
-    LINK_LIBRARIES
-        Qt::Test
-        Qt5::Core
-        Qt5::Gui
-        KF5::ConfigCore
-        KF5::AkonadiCore
-        KF5::AkonadiCalendar
+set (incidenceOccurrenceModelTest_LIBS
+    Qt::Test
+    Qt5::Core
+    KF5::ConfigCore
+    KF5::CalendarCore
+    KF5::AkonadiCore
+    KF5::AkonadiCalendar
 )
-
-target_include_directories(incidenceOccurrenceModelTest PRIVATE ${CMAKE_SOURCE_DIR}/src)
-
+add_akonadi_isolated_test_advanced(incidenceoccurrencemodeltest.cpp "${incidenceOccurrenceModelTest_SRCS}" "${incidenceOccurrenceModelTest_LIBS}")

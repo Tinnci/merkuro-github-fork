@@ -116,7 +116,9 @@ void IncidenceOccurrenceModel::updateFromSource()
     m_incidences.clear();
     load();
 
+    qDebug() << "CHECKING CALENDAR";
     if (m_coreCalendar) {
+        qDebug() << "GETTING INCIDENCES";
         KCalendarCore::OccurrenceIterator occurrenceIterator{*m_coreCalendar, QDateTime{mStart, {0, 0, 0}}, QDateTime{mEnd, {12, 59, 59}}};
 
         while (occurrenceIterator.hasNext()) {
