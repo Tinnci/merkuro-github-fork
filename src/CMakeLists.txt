@@ -6,49 +6,49 @@ add_executable(kalendar)
 target_sources(kalendar PRIVATE
     about.cpp
     about.h
-    actionsmodel.cpp
-    actionsmodel.h
+    models/actionsmodel.cpp
+    models/actionsmodel.h
     agentconfiguration.cpp
     agentconfiguration.h
-    attachmentsmodel.cpp
-    attachmentsmodel.h
-    attendeesmodel.cpp
-    attendeesmodel.h
+    models/attachmentsmodel.cpp
+    models/attachmentsmodel.h
+    models/attendeesmodel.cpp
+    models/attendeesmodel.h
     calendarmanager.cpp
     calendarmanager.h
-    commandbarfiltermodel.cpp
-    commandbarfiltermodel.h
+    models/commandbarfiltermodel.cpp
+    models/commandbarfiltermodel.h
     contactsmanager.cpp
     contactsmanager.h
-    extratodomodel.cpp
-    extratodomodel.h
-    hourlyincidencemodel.cpp
-    hourlyincidencemodel.h
-    incidenceoccurrencemodel.cpp
-    incidenceoccurrencemodel.h
+    models/extratodomodel.cpp
+    models/extratodomodel.h
+    models/hourlyincidencemodel.cpp
+    models/hourlyincidencemodel.h
+    models/incidenceoccurrencemodel.cpp
+    models/incidenceoccurrencemodel.h
     incidencewrapper.cpp
     incidencewrapper.h
-    infinitecalendarviewmodel.cpp
-    infinitecalendarviewmodel.h
-    itemtagsmodel.cpp
-    itemtagsmodel.h
+    models/infinitecalendarviewmodel.cpp
+    models/infinitecalendarviewmodel.h
+    models/itemtagsmodel.cpp
+    models/itemtagsmodel.h
     kalendarapplication.cpp
     kalendarapplication.h
     main.cpp
-    monthmodel.cpp
-    monthmodel.h
-    multidayincidencemodel.cpp
-    multidayincidencemodel.h
-    recurrenceexceptionsmodel.cpp
-    recurrenceexceptionsmodel.h
-    remindersmodel.cpp
-    remindersmodel.h
+    models/monthmodel.cpp
+    models/monthmodel.h
+    models/multidayincidencemodel.cpp
+    models/multidayincidencemodel.h
+    models/recurrenceexceptionsmodel.cpp
+    models/recurrenceexceptionsmodel.h
+    models/remindersmodel.cpp
+    models/remindersmodel.h
     tagmanager.cpp
     tagmanager.h
-    timezonelistmodel.cpp
-    timezonelistmodel.h
-    todosortfilterproxymodel.cpp
-    todosortfilterproxymodel.h
+    models/timezonelistmodel.cpp
+    models/timezonelistmodel.h
+    models/todosortfilterproxymodel.cpp
+    models/todosortfilterproxymodel.h
     resources.qrc)
 
 ecm_qt_declare_logging_category(kalendar HEADER kalendar_debug.h IDENTIFIER KALENDAR_LOG CATEGORY_NAME org.kde.kalendar DESCRIPTION "kalendar" EXPORT KALENDAR)
@@ -78,13 +78,11 @@ target_link_libraries(kalendar
     KF5::ItemModels
     KF5::XmlGui
     KF5::EventViews
-
 )
 
 if (COMPILE_WITH_UNITY_CMAKE_SUPPORT)
     set_target_properties(kalendar PROPERTIES UNITY_BUILD ON)
 endif()
-
 
 kconfig_add_kcfg_files(kalendar GENERATE_MOC kalendarconfig.kcfgc)
 install(TARGETS kalendar ${KF5_INSTALL_TARGETS_DEFAULT_ARGS})
