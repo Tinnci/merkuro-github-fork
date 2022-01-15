@@ -3,7 +3,8 @@
 # SPDX-License-Identifier: BSD-2-Clause
 
 add_executable(kalendar)
-target_sources(kalendar PRIVATE
+
+set(kalendar_SRCS
     about.cpp
     about.h
     models/actionsmodel.cpp
@@ -49,11 +50,15 @@ target_sources(kalendar PRIVATE
     models/timezonelistmodel.h
     models/todosortfilterproxymodel.cpp
     models/todosortfilterproxymodel.h
-    resources.qrc)
+    resources.qrc
+)
+
+target_sources(kalendar PRIVATE
+    ${kalendar_SRCS})
 
 ecm_qt_declare_logging_category(kalendar HEADER kalendar_debug.h IDENTIFIER KALENDAR_LOG CATEGORY_NAME org.kde.kalendar DESCRIPTION "kalendar" EXPORT KALENDAR)
 
-target_link_libraries(kalendar
+set(kalendar_LIBS
     Qt5::Core
     Qt5::Gui
     Qt5::Qml
@@ -67,6 +72,7 @@ target_link_libraries(kalendar
     KF5::DBusAddons
     KF5::CalendarCore
     KF5::AkonadiCore
+    KF5::AkonadiCalendar
     KF5::AkonadiContact
     KF5::AkonadiAgentBase
     KF5::AkonadiXml
@@ -78,6 +84,10 @@ target_link_libraries(kalendar
     KF5::ItemModels
     KF5::XmlGui
     KF5::EventViews
+    )
+
+target_link_libraries(kalendar
+    ${kalendar_LIBS}
 )
 
 if (COMPILE_WITH_UNITY_CMAKE_SUPPORT)
