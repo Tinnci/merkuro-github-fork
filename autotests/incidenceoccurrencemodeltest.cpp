@@ -78,8 +78,11 @@ private slots:
         QSignalSpy fetchFinished(&model, &QAbstractItemModel::modelReset);
 
         model.setStart(now.date());
+        QCOMPARE(model.start(), now.date());
         model.setLength(7);
+        QCOMPARE(model.length(), 7);
         model.setCalendar(calendar.data());
+        QCOMPARE(model.calendar()->id(), calendar->id());
         model.updateQuery();
 
         fetchFinished.wait(10000);
@@ -96,9 +99,9 @@ private slots:
 
         // Test that the data function gives us the event info we have in our calendar file
         const auto index = model.index(0, 0);
-        QVERIFY(index.data(IncidenceOccurrenceModel::Summary).toString() == QStringLiteral("Test event"));
-        QVERIFY(index.data(IncidenceOccurrenceModel::Description).toString() == QStringLiteral("Big testing description"));
-        QVERIFY(index.data(IncidenceOccurrenceModel::Location).toString() == QStringLiteral("Testing land"));
+        QCOMPARE(index.data(IncidenceOccurrenceModel::Summary).toString(), QStringLiteral("Test event"));
+        QCOMPARE(index.data(IncidenceOccurrenceModel::Description).toString(), QStringLiteral("Big testing description"));
+        QCOMPARE(index.data(IncidenceOccurrenceModel::Location).toString(), QStringLiteral("Testing land"));
 
         // It's an all day event
         QDateTime eventStartTimeToday(now.date().startOfDay());
@@ -108,7 +111,7 @@ private slots:
         const auto duration = index.data(IncidenceOccurrenceModel::Duration).value<KCalendarCore::Duration>();
         QCOMPARE(duration.asDays(), 1);
         KFormat format;
-        QVERIFY(index.data(IncidenceOccurrenceModel::DurationString).toString() == format.formatSpelloutDuration(duration.asSeconds() * 1000));
+        QCOMPARE(index.data(IncidenceOccurrenceModel::DurationString).toString(), format.formatSpelloutDuration(duration.asSeconds() * 1000));
 
         QVERIFY(index.data(IncidenceOccurrenceModel::Recurs).toBool());
         QVERIFY(index.data(IncidenceOccurrenceModel::HasReminders).toBool());
@@ -125,7 +128,7 @@ private slots:
 
         QVERIFY(!index.data(IncidenceOccurrenceModel::IncidenceId).toString().isNull());
         QCOMPARE(index.data(IncidenceOccurrenceModel::IncidenceType).toInt(), KCalendarCore::Incidence::TypeEvent);
-        QVERIFY(index.data(IncidenceOccurrenceModel::IncidenceTypeStr).toString() == QStringLiteral("Event"));
+        QCOMPARE(index.data(IncidenceOccurrenceModel::IncidenceTypeStr).toString(), QStringLiteral("Event"));
 
         QVERIFY(index.data(IncidenceOccurrenceModel::IncidencePtr).canConvert<KCalendarCore::Incidence::Ptr>());
         QVERIFY(index.data(IncidenceOccurrenceModel::IncidenceOccurrence).canConvert<IncidenceOccurrenceModel::Occurrence>());
