@@ -142,7 +142,7 @@ private slots:
 
         KCalendarCore::Todo::Ptr todo(new KCalendarCore::Todo);
         todo->setSummary(QStringLiteral("Test todo"));
-        todo->setPercentComplete(50);
+        todo->setCompleted(true);
         todo->setDtStart(now.addDays(1));
         todo->setDtDue(now.addDays(1));
         todo->setPriority(1);
@@ -157,6 +157,26 @@ private slots:
         loaded.wait(10000);
 
         QCOMPARE(model.rowCount(), 8);
+    }
+
+    void testTodoData()
+    {
+        QCOMPARE(model.rowCount(), 8);
+
+        QModelIndex todoIndex;
+
+        for (int i = 0; i < model.rowCount(); ++i) {
+            const auto index = model.index(i, 0);
+            if (index.data(IncidenceOccurrenceModel::IncidenceType).toInt() == KCalendarCore::Incidence::TypeTodo) {
+                todoIndex = index;
+            }
+        }
+
+        QVERIFY(todoIndex.data(IncidenceOccurrenceModel::TodoCompleted).toBool());
+
+        bool shouldBeOverDue = todoIndex.data(IncidenceOccurrenceModel::EndTime).toDateTime() > QDateTime::currentDateTime();
+        QCOMPARE(todoIndex.data(IncidenceOccurrenceModel::IsOverdue).toBool(), shouldBeOverDue);
+        QCOMPARE(todoIndex.data(IncidenceOccurrenceModel::Priority).toInt(), 1);
     }
 };
 
