@@ -41,8 +41,7 @@ private:
     IncidenceOccurrenceModel model;
     QAbstractItemModelTester modelTester = QAbstractItemModelTester(&model);
     QTimer loadedCheckTimer;
-    Akonadi::Collection collection;
-    QDateTime now = QDateTime::currentDateTime();
+    QDateTime now = QDate(2022, 01, 10).startOfDay();
 
 private slots:
     void initTestCase()
@@ -52,8 +51,6 @@ private slots:
         calendar.reset(new Akonadi::ETMCalendar);
         QSignalSpy collectionsAdded(calendar.data(), &Akonadi::ETMCalendar::collectionsAdded);
         QVERIFY(collectionsAdded.wait(10000));
-        collection = collectionsAdded.takeFirst().at(0).value<Akonadi::Collection>();
-        qDebug() << QStringLiteral("USING COLLECTION: ") << collection.name() << collection.id();
 
         loadedCheckTimer.setInterval(300);
         loadedCheckTimer.setSingleShot(true);
@@ -120,7 +117,7 @@ private slots:
 
         // CalendarManager generates the colors for different collections so let's skip that check, since it will give invalid
 
-        QCOMPARE(index.data(IncidenceOccurrenceModel::CollectionId).toLongLong(), 2);
+        QVERIFY(index.data(IncidenceOccurrenceModel::CollectionId).canConvert<qlonglong>());
 
         QVERIFY(!index.data(IncidenceOccurrenceModel::TodoCompleted).toBool()); // An event should always return false for this
         QVERIFY(!index.data(IncidenceOccurrenceModel::IsOverdue).toBool());
@@ -132,6 +129,34 @@ private slots:
 
         QVERIFY(index.data(IncidenceOccurrenceModel::IncidencePtr).canConvert<KCalendarCore::Incidence::Ptr>());
         QVERIFY(index.data(IncidenceOccurrenceModel::IncidenceOccurrence).canConvert<IncidenceOccurrenceModel::Occurrence>());
+    }
+
+    void testNewIncidenceAdded()
+    {
+        // Check everything is still there from the previous test
+        QCOMPARE(model.rowCount(), 7);
+
+        const auto collectionId = model.index(0, 0).data(IncidenceOccurrenceModel::CollectionId).toLongLong();
+        const auto collection = calendar->collection(collectionId);
+        QVERIFY(collection.isValid());
+
+        KCalendarCore::Todo::Ptr todo(new KCalendarCore::Todo);
+        todo->setSummary(QStringLiteral("Test todo"));
+        todo->setPercentComplete(50);
+        todo->setDtStart(now.addDays(1));
+        todo->setDtDue(now.addDays(1));
+        todo->setPriority(1);
+        todo->setCategories(QStringLiteral("Tag 2"));
+
+        QSignalSpy createFinished(calendar->incidenceChanger(), &Akonadi::IncidenceChanger::createFinished);
+        QVERIFY(calendar->incidenceChanger()->createIncidence(todo, collection) != -1);
+        QVERIFY(createFinished.wait(5000));
+
+        QSignalSpy loaded(this, &IncidenceOccurrenceModelTest::calendarLoaded);
+        loadedCheckTimer.start();
+        loaded.wait(10000);
+
+        QCOMPARE(model.rowCount(), 8);
     }
 };
 
