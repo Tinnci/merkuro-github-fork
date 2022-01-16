@@ -80,7 +80,6 @@ private slots:
         QCOMPARE(model.length(), 7);
         model.setCalendar(calendar.data());
         QCOMPARE(model.calendar()->id(), calendar->id());
-        model.updateQuery();
 
         fetchFinished.wait(10000);
         // Our test calendar file has an event that recurs every day of the week.
@@ -177,6 +176,23 @@ private slots:
         bool shouldBeOverDue = todoIndex.data(IncidenceOccurrenceModel::EndTime).toDateTime() > QDateTime::currentDateTime();
         QCOMPARE(todoIndex.data(IncidenceOccurrenceModel::IsOverdue).toBool(), shouldBeOverDue);
         QCOMPARE(todoIndex.data(IncidenceOccurrenceModel::Priority).toInt(), 1);
+    }
+
+    void testFilter()
+    {
+        QVariantMap filter;
+        filter[QStringLiteral("tags")] = QStringList(QStringLiteral("Tag 2"));
+
+        QSignalSpy fetchFinished(&model, &QAbstractItemModel::modelReset);
+        model.setFilter(filter);
+        QCOMPARE(model.filter(), filter);
+        fetchFinished.wait(10000);
+
+        QCOMPARE(model.rowCount(), 1);
+
+        model.setFilter({});
+        fetchFinished.wait(10000);
+        QCOMPARE(model.rowCount(), 8);
     }
 };
 
