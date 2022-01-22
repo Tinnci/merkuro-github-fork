@@ -168,16 +168,28 @@ function isDarkColor(background) {
     return temp.a > 0 && getDarkness(background) >= 0.4;
 }
 
-function getIncidenceBackgroundColor(color, darkMode) {
-    let bgColor = getDarkness(color) > 0.9 ? Qt.lighter(color, 1.5) : color;
+function getPastEventsAlphaOffset(modelData) {
+    const now = new Date();
+    let pastEventAlphaOffset = 0;
+    if (modelData.endTime < now) {
+        pastEventAlphaOffset = getDarkness(modelData.color) >= 0.5 ? 0.2 : 0.3;
+    }
+    return pastEventAlphaOffset;
+}
+
+function getIncidenceBackgroundColor(modelData, darkMode, pastEventsLessVisible=false) {
+    let bgColor = getDarkness(modelData.color) > 0.9 ? Qt.lighter(modelData.color, 1.5) : modelData.color;
     if(darkMode) {
-        if(getDarkness(color) >= 0.5) {
+        if(getDarkness(modelData.color) >= 0.5) {
             bgColor.a = 0.6;
         } else {
             bgColor.a = 0.4;
         }
     } else {
         bgColor.a = 0.7;
+    }
+    if (pastEventsLessVisible) {
+        bgColor.a -= getPastEventsAlphaOffset(modelData);
     }
     return bgColor;
 }

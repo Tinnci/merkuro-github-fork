@@ -167,6 +167,10 @@ SPDX-License-Identifier: LGPL-2.0-or-later
             <label>Show all completed subtasks even if the parent task is incomplete</label>
             <default>true</default>
         </entry>
+        <entry name="pastEventsLessVisible" type="Bool">
+            <label>Show events from the past with slightly more transparency so they are easy to distinguish from the upcoming events</label>
+            <default>false</default>
+        </entry>
     </group>
 </kcfg>
 

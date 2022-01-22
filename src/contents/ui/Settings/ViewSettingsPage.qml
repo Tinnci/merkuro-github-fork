@@ -24,6 +24,14 @@ Kirigami.ScrollablePage {
                 Config.save();
             }
         }
+        Controls.CheckBox {
+            text: i18n("Make events from the past less visible")
+            checked: Config.pastEventsLessVisible
+            onClicked: {
+                Config.pastEventsLessVisible = !Config.pastEventsLessVisible;
+                Config.save();
+            }
+        }
         Kirigami.Separator {
             Kirigami.FormData.isSection: true
             Kirigami.FormData.label: i18n("Month View settings")

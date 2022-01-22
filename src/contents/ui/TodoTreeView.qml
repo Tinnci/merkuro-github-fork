@@ -134,7 +134,7 @@ TreeListView {
         objectName: "taskDelegate"
 
         decoration.decorationHighlightColor: model.color
-        activeBackgroundColor: LabelUtils.getIncidenceBackgroundColor(model.color, root.isDark)
+        activeBackgroundColor: LabelUtils.getIncidenceBackgroundColor(model, root.isDark, Kalendar.Config.pastEventsLessVisible)
         onActiveBackgroundColorChanged: activeBackgroundColor.a = 0.15
 
         property alias mouseArea: mouseArea
