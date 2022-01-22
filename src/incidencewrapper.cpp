@@ -354,6 +354,21 @@ QString IncidenceWrapper::incidenceEndTimeDisplay() const
     return QLocale::system().toString(incidenceEnd().time(), QLocale::NarrowFormat);
 }
 
+void IncidenceWrapper::setIncidenceTimeToNearestQuarterHour(bool setStartTime, bool setEndTime)
+{
+    int now = QDateTime::currentSecsSinceEpoch();
+    int quarterHourInSecs = 15 * 60;
+    int secsToSet = now + (quarterHourInSecs - now % quarterHourInSecs);
+    QDateTime startTime = QDateTime::currentDateTime();
+    startTime.setSecsSinceEpoch(secsToSet);
+    if (setStartTime) {
+        setIncidenceStart(startTime, true);
+    }
+    if (setEndTime) {
+        setIncidenceEnd(startTime.addSecs(3600), true);
+    }
+}
+
 QByteArray IncidenceWrapper::timeZone() const
 {
     return incidenceEnd().timeZone().id();
