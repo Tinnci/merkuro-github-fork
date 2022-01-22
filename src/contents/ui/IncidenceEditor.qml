@@ -35,6 +35,13 @@ Kirigami.ScrollablePage {
         }
     }
 
+    function getNearestQuarterHourStart() {
+        let start = new Date();
+        let startInMsecsSinceEpoch = start.getTime();
+        const quarterHourInMsecs = 15 * 60 * 1000;
+        return startInMsecsSinceEpoch + (quarterHourInMsecs - startInMsecsSinceEpoch % quarterHourInMsecs);
+    }
+
     title: if (incidenceWrapper) {
         editMode ? i18nc("%1 is incidence type", "Edit %1", incidenceWrapper.incidenceTypeStr) :
             i18nc("%1 is incidence type", "Add %1", incidenceWrapper.incidenceTypeStr);
@@ -258,7 +265,19 @@ Kirigami.ScrollablePage {
                     enabled: !incidenceForm.isTodo || !isNaN(root.incidenceWrapper.incidenceStart.getTime()) || !isNaN(root.incidenceWrapper.incidenceEnd.getTime())
                     onEnabledChanged: if (!enabled) root.incidenceWrapper.allDay = false
                     checked: root.incidenceWrapper.allDay
-                    onClicked: root.incidenceWrapper.allDay = checked
+                    onClicked: stateChanged()
+
+                    function stateChanged() {
+                        console.log("SK; checked = ", checked);
+                        if (!checked) {
+                            const nearestQuarterHourStart = root.getNearestQuarterHourStart();
+                            const hourInMsecs = 60 * 60 * 1000;
+                            root.incidenceWrapper.incidenceStart = new Date(nearestQuarterHourStart);
+                            root.incidenceWrapper.incidenceEnd = new Date(nearestQuarterHourStart + hourInMsecs);
+                        }
+                        root.incidenceWrapper.allDay = checked;
+
+                    }
                 }
 
                 Connections {
@@ -345,11 +364,7 @@ Kirigami.ScrollablePage {
                             } else if(incidenceForm.isTodo && oldDate) {
                                 root.incidenceWrapper.incidenceEnd = oldDate
                             } else if(incidenceForm.isTodo) {
-                                let start = new Date();
-                                let startInMsecsSinceEpoch = start.getTime();
-                                const quarterHourInMsecs = 15 * 60 * 1000;
-                                const nearestQuarterHourStart = startInMsecsSinceEpoch + (quarterHourInMsecs - startInMsecsSinceEpoch % quarterHourInMsecs);
-                                root.incidenceWrapper.incidenceEnd = new Date(nearestQuarterHourStart);
+                                root.incidenceWrapper.incidenceEnd = new Date(root.getNearestQuarterHourStart());
                             }
                         }
                         visible: incidenceForm.isTodo
