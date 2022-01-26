@@ -16,6 +16,7 @@ Dependencies:
     'pim/kcalutils' : '@same'
     'pim/kmime' : '@same'
     'pim/eventviews' : '@same'
+    'pim/kdepim-runtime' : '@same'
     'frameworks/kirigami' : '@latest'
 
 Options:
