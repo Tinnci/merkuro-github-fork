@@ -323,11 +323,12 @@ QVariantMap TodoSortFilterProxyModel::filter()
 void TodoSortFilterProxyModel::setFilter(const QVariantMap &filter)
 {
     Q_EMIT layoutAboutToBeChanged();
-
-    m_filter = filter;
-
+    // Reset first, prevent crashing
+    m_filter = QVariantMap();
     invalidateFilter();
 
+    m_filter = filter;
+    invalidateFilter();
     Q_EMIT filterChanged();
     Q_EMIT layoutChanged();
 
