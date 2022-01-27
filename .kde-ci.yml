@@ -5,6 +5,7 @@ Dependencies:
 - 'on': ['Linux']
   'require':
     'frameworks/extra-cmake-modules': '@latest'
+    'frameworks/qqc2-desktop-style': '@latest'
     'frameworks/kcalendarcore' : '@latest'
     'frameworks/kconfigwidgets' : '@latest'
     'frameworks/kwindowsystem' : '@latest'
