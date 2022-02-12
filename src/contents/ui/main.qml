@@ -374,6 +374,7 @@ Kirigami.ApplicationWindow {
         }
 
         function onOpenIncidence(incidenceData, occurrenceDate) {
+            Kirigami.Settings.isMobile ? dayViewAction.trigger() : weekViewAction.trigger();
             root.setUpView(incidenceData);
             pageStack.currentItem.setToDate(occurrenceDate);
         }
