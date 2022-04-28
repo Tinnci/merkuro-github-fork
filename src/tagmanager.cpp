@@ -4,11 +4,11 @@
 #include "tagmanager.h"
 #include "kalendar_debug.h"
 
-#include <QObject>
 #include <Akonadi/TagCreateJob>
 #include <Akonadi/TagDeleteJob>
 #include <Akonadi/TagModifyJob>
 #include <KDescendantsProxyModel>
+#include <QObject>
 
 class FlatTagModel : public QSortFilterProxyModel
 {

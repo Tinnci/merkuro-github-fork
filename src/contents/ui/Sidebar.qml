@@ -239,6 +239,14 @@ Kirigami.OverlayDrawer {
                                     todoViewAction.trigger()
                                     if (sidebar.modal) sidebar.close()
                                 }
+                            },
+                            KActionFromAction {
+                                kalendarAction: "open_contact_view"
+                                checkable: false
+                                onTriggered: {
+                                    contactViewAction.trigger()
+                                    if (sidebar.modal) sidebar.close()
+                                }
                             }
                         ]
                         property list<Kirigami.Action> mobileActions: [

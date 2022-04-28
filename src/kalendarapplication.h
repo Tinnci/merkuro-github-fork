@@ -62,6 +62,7 @@ Q_SIGNALS:
     void openDayView();
     void openScheduleView();
     void openTodoView();
+    void openContactView();
     void openAboutPage();
     void moveViewForwards();
     void moveViewBackwards();
