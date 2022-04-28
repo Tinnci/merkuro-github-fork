@@ -46,6 +46,7 @@ Kirigami.ApplicationWindow {
     readonly property var threeDayViewAction: KalendarApplication.action("open_threeday_view")
     readonly property var dayViewAction: KalendarApplication.action("open_day_view")
     readonly property var scheduleViewAction: KalendarApplication.action("open_schedule_view")
+    readonly property var contactViewAction: KalendarApplication.action("open_contact_view")
     readonly property var todoViewAction: KalendarApplication.action("open_todo_view")
     readonly property var moveViewForwardsAction: KalendarApplication.action("move_view_forwards")
     readonly property var moveViewBackwardsAction: KalendarApplication.action("move_view_backwards")
@@ -117,6 +118,9 @@ Kirigami.ApplicationWindow {
             case Config.TodoView:
                 todoViewAction.trigger();
                 break;
+            case Config.ContactView:
+                contactViewAction.trigger();
+                break;
             default:
                 Kirigami.Settings.isMobile ? scheduleViewAction.trigger() : monthViewAction.trigger();
                 break;
@@ -165,7 +169,8 @@ Kirigami.ApplicationWindow {
             }
         }
 
-        if(pageStack.currentItem.objectName !== "todoView") {
+        if(pageStack.currentItem.objectName !== "todoView"
+		    && pageStack.currentItem.objectName !== "contactView") {
             pageStack.currentItem.setToDate(root.selectedDate, true);
         }
     }
@@ -204,6 +209,12 @@ Kirigami.ApplicationWindow {
             if(pageStack.currentItem.objectName !== "scheduleView" || root.ignoreCurrentPage) {
                 monthScaleModelLoader.active = true;
                 root.switchView(scheduleViewComponent);
+            }
+        }
+
+        function onOpenContactView() {
+            if(pageStack.currentItem.objectName !== "contactView" || root.ignoreCurrentPage) {
+                root.switchView("qrc:/ContactView.qml");
             }
         }
 
@@ -440,6 +451,9 @@ Kirigami.ApplicationWindow {
                 return i18n("Schedule View");
                 break;
             case "todoView":
+                return i18n("Tasks View");
+                break;
+            case "contactView":
                 return i18n("Tasks View");
                 break;
             default:
