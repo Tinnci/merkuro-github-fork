@@ -4,11 +4,11 @@
 
 #pragma once
 
-#include <QObject>
 #include <Akonadi/AgentFilterProxyModel>
 #include <Akonadi/CollectionFilterProxyModel>
 #include <Akonadi/ETMViewStateSaver>
 #include <Akonadi/EntityRightsFilterModel>
+#include <QObject>
 
 #include <QObject>
 #include <akonadi-calendar_version.h>

@@ -16,9 +16,9 @@
 #include <Akonadi/ContactsFilterProxyModel>
 #include <Akonadi/ContactsTreeModel>
 #endif
+#include <Akonadi/EntityMimeTypeFilterModel>
 #include <QObject>
 #include <QSortFilterProxyModel>
-#include <Akonadi/EntityMimeTypeFilterModel>
 
 class QSortFilterProxyModel;
 
@@ -34,6 +34,7 @@ public:
     QSortFilterProxyModel *contactsModel();
     Q_INVOKABLE void contactEmails(qint64 itemId);
     Q_INVOKABLE QUrl decorationToUrl(QVariant decoration);
+    Q_INVOKABLE Akonadi::Item getItem(int row);
 
 Q_SIGNALS:
     void emailsFetched(QStringList emails, qint64 itemId);
