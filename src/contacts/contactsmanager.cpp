@@ -16,6 +16,7 @@
 #else
 #include <Akonadi/EmailAddressSelectionModel>
 #endif
+#include "kalendar_debug.h"
 #include <KContacts/Addressee>
 #include <KContacts/ContactGroup>
 #include <KDescendantsProxyModel>
@@ -90,6 +91,12 @@ void ContactsManager::contactEmails(qint64 itemId)
 
         Q_EMIT emailsFetched(payload.emails(), itemId);
     });
+}
+
+Akonadi::Item ContactsManager::getItem(int row)
+{
+    auto item = m_model->data(m_model->index(row, 0), Akonadi::EntityTreeModel::ItemRole).value<Akonadi::Item>();
+    return item;
 }
 
 QUrl ContactsManager::decorationToUrl(QVariant decoration)

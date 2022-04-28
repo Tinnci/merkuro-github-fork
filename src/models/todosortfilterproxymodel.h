@@ -75,7 +75,6 @@ public:
     };
     Q_ENUM(BaseTodoModelColumns);
 
-
     enum ShowComplete {
         ShowAll = 0,
         ShowCompleteOnly,

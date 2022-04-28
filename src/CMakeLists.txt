@@ -19,8 +19,6 @@ set(kalendar_SRCS
     calendarmanager.h
     models/commandbarfiltermodel.cpp
     models/commandbarfiltermodel.h
-    contactsmanager.cpp
-    contactsmanager.h
     models/hourlyincidencemodel.cpp
     models/hourlyincidencemodel.h
     models/incidenceoccurrencemodel.cpp
@@ -48,6 +46,10 @@ set(kalendar_SRCS
     models/timezonelistmodel.h
     models/todosortfilterproxymodel.cpp
     models/todosortfilterproxymodel.h
+    contacts/addresseewrapper.cpp
+    contacts/addresseewrapper.h
+    contacts/contactsmanager.cpp
+    contacts/contactsmanager.h
     resources.qrc
 )
 qt_add_dbus_adaptor(kalendar_SRCS org.kde.calendar.Calendar.xml kalendarapplication.h KalendarApplication)
