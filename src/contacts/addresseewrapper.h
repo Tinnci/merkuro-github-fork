@@ -12,6 +12,7 @@
 #include <KContacts/Addressee>
 #include <QObject>
 #include <qdatetime.h>
+#include "addressmodel.h"
 
 /// This class is a QObject wrapper for a KContact::Adressee
 class AddresseeWrapper : public QObject, public Akonadi::ItemMonitor
@@ -26,6 +27,7 @@ class AddresseeWrapper : public QObject, public Akonadi::ItemMonitor
     Q_PROPERTY(QDateTime birthday READ birthday WRITE setBirthday NOTIFY birthdayChanged)
     Q_PROPERTY(KContacts::PhoneNumber::List phoneNumbers READ phoneNumbers NOTIFY phoneNumbersChanged)
     Q_PROPERTY(KContacts::Picture photo READ photo NOTIFY photoChanged)
+    Q_PROPERTY(AddressModel *addressesModel READ addressesModel CONSTANT)
 
 public:
     AddresseeWrapper(QObject *parent = nullptr);
@@ -36,6 +38,7 @@ public:
     QString uid() const;
 
     KContacts::PhoneNumber::List phoneNumbers() const;
+    AddressModel *addressesModel() const;
 
     qint64 itemId() const;
     void setItemId(qint64 itemId);
@@ -63,4 +66,5 @@ private:
     void itemChanged(const Akonadi::Item &item) override;
     KContacts::Addressee m_addressee;
     qint64 m_collectionId = -1; // For when we want to edit, this is temporary
+    AddressModel *m_addressesModel;
 };

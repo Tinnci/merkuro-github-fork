@@ -160,7 +160,7 @@ void KalendarApplication::setupActions()
     actionName = QLatin1String("open_contact_view");
     if (KAuthorized::authorizeAction(actionName)) {
         auto openContactAction = mCollection.addAction(actionName, this, &KalendarApplication::openContactView);
-        openContactAction->setText(i18n("Contact View"));
+        openContactAction->setText(i18n("Contacts View"));
         openContactAction->setIcon(QIcon::fromTheme(QStringLiteral("view-pim-contacts")));
         openContactAction->setCheckable(true);
         openContactAction->setActionGroup(m_viewGroup);

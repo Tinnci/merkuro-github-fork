@@ -457,7 +457,7 @@ Kirigami.ApplicationWindow {
                 return i18n("Tasks View");
                 break;
             case "contactView":
-                return i18n("Tasks View");
+                return i18n("Contacts View");
                 break;
             default:
                 return i18n("Calendar");

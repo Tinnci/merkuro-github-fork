@@ -12,6 +12,7 @@
 AddresseeWrapper::AddresseeWrapper(QObject *parent)
     : QObject(parent)
     , Akonadi::ItemMonitor()
+    , m_addressesModel(new AddressModel(this))
 {
     Akonadi::ItemFetchScope scope;
     scope.fetchFullPayload();
@@ -36,6 +37,11 @@ void AddresseeWrapper::notifyDataChanged()
 Akonadi::Item AddresseeWrapper::addresseeItem() const
 {
     return item();
+}
+
+AddressModel *AddresseeWrapper::addressesModel() const
+{
+    return m_addressesModel;
 }
 
 qint64 AddresseeWrapper::itemId() const
@@ -76,6 +82,7 @@ void AddresseeWrapper::itemChanged(const Akonadi::Item &item)
 void AddresseeWrapper::setAddressee(const KContacts::Addressee &addressee)
 {
     m_addressee = addressee;
+    m_addressesModel->setAddresses(addressee.addresses());
     notifyDataChanged();
 }
 

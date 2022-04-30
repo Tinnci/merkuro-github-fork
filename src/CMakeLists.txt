@@ -48,6 +48,8 @@ set(kalendar_SRCS
     models/todosortfilterproxymodel.h
     contacts/addresseewrapper.cpp
     contacts/addresseewrapper.h
+    contacts/addressmodel.cpp
+    contacts/addressmodel.h
     contacts/contactsmanager.cpp
     contacts/contactsmanager.h
     resources.qrc

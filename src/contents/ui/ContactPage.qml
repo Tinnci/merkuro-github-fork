@@ -151,7 +151,7 @@ Kirigami.ScrollablePage {
         Kirigami.FormLayout {
             width: parent.width
             Controls.Label {
-                visible: text != ""
+                visible: text !== ""
                 text: {
                     // We do not always have the year
                     if (addressee.birthday.getFullYear() === 0) {
@@ -161,6 +161,45 @@ Kirigami.ScrollablePage {
                     }
                 }
                 Kirigami.FormData.label: i18n("Birthday:")
+            }
+
+            Repeater {
+                model: addressee.addressesModel
+                Controls.Label {
+                    visible: text !== ""
+                    text: model.postOfficeBox
+                    Kirigami.FormData.label: i18n("Post office box:")
+                }
+                Controls.Label {
+                    visible: text !== ""
+                    text: model.street
+                    Kirigami.FormData.label: i18n("Street:")
+                }
+                Controls.Label {
+                    visible: text !== ""
+                    text: model.extended
+                    Kirigami.FormData.label: i18n("Extended Address:")
+                }
+                Controls.Label {
+                    visible: text !== ""
+                    text: model.postalCode
+                    Kirigami.FormData.label: i18n("Postal code:")
+                }
+                Controls.Label {
+                    visible: text !== ""
+                    text: model.locality
+                    Kirigami.FormData.label: i18n("City:")
+                }
+                Controls.Label {
+                    visible: text !== ""
+                    text: model.region
+                    Kirigami.FormData.label: i18n("State or Region:")
+                }
+                Controls.Label {
+                    visible: text !== ""
+                    text: model.country
+                    Kirigami.FormData.label: i18n("Country:")
+                }
             }
         }
     }
