@@ -476,7 +476,7 @@ Kirigami.ApplicationWindow {
 
         sourceComponent: WindowMenu {
             parentWindow: root
-            todoMode: pageStack.currentItem.objectName === "todoView"
+            mode: pageStack.currentItem ? pageStack.currentItem.mode : KalendarApplication.Event
             Kirigami.Theme.colorSet: Kirigami.Theme.Header
         }
     }
@@ -484,7 +484,7 @@ Kirigami.ApplicationWindow {
     footer: Loader {
         id: bottomLoader
         active: Kirigami.Settings.isMobile
-        visible: pageStack.currentItem.objectName !== "settingsPage"
+        visible: pageStack.currentItem && pageStack.currentItem.objectName !== "settingsPage"
 
         source: Qt.resolvedUrl("qrc:/BottomToolBar.qml")
     }
@@ -492,7 +492,7 @@ Kirigami.ApplicationWindow {
     globalDrawer: Sidebar {
         id: sidebar
         bottomPadding: menuLoader.active ? menuLoader.height : 0
-        todoMode: pageStack.currentItem ? pageStack.currentItem.objectName === "todoView" : false
+        mode: pageStack.currentItem ? pageStack.currentItem.mode : KalendarApplication.Event
         activeTags: root.filter && root.filter.tags ?
                     root.filter.tags : []
         onSearchTextChanged: {
@@ -503,7 +503,7 @@ Kirigami.ApplicationWindow {
             }
             root.filterChanged();
         }
-        onCalendarClicked: if(todoMode) {
+        onCalendarClicked: if (mode === KalendarApplication.Todo) {
             root.filter ?
                 root.filter.collectionId = collectionId :
                 root.filter = {"collectionId" : collectionId};
@@ -512,13 +512,13 @@ Kirigami.ApplicationWindow {
         }
         onCalendarCheckChanged: {
             CalendarManager.save();
-            if(todoMode && collectionId === pageStack.currentItem.filterCollectionId) {
+            if(mode === KalendarApplication.Todo && collectionId === pageStack.currentItem.filterCollectionId) {
                 pageStack.currentItem.filterCollectionDetails = CalendarManager.getCollectionDetails(pageStack.currentItem.filterCollectionId);
                 // HACK: The Todo View should be able to detect change in collection filtering independently
             }
         }
         onTagClicked: root.toggleFilterTag(tagName)
-        onViewAllTodosClicked: if(todoMode) {
+        onViewAllTodosClicked: if(mode === KalendarApplication.Todo) {
             root.filter.collectionId = -1;
             root.filter.tags = [];
             root.filter.name = "";
@@ -641,7 +641,7 @@ Kirigami.ApplicationWindow {
         id: globalMenuLoader
         active: !Kirigami.Settings.isMobile
         sourceComponent: GlobalMenu {
-            todoMode: pageStack.currentItem && pageStack.currentItem.objectName === "todoView"
+            mode: pageStack.currentItem ? pageStack.currentItem.mode : KalendarApplication.Event
         }
         onLoaded: item.parentWindow = root;
     }
@@ -691,7 +691,7 @@ Kirigami.ApplicationWindow {
                 right: parent.right
             }
 
-            readonly property bool show: header.todoMode || header.filter.tags.length > 0 || notifyMessage.visible
+            readonly property bool show: header.mode === KalendarApplication.Todo || header.filter.tags.length > 0 || notifyMessage.visible
             readonly property alias messageItem: notifyMessage
 
             height: show ? headerLayout.implicitHeight + headerSeparator.height : 0
@@ -728,11 +728,11 @@ Kirigami.ApplicationWindow {
                     id: header
                     Layout.fillWidth: true
                     Layout.fillHeight: true
-                    todoMode: pageStack.currentItem ? pageStack.currentItem.objectName === "todoView" : false
+                    mode: pageStack.currentItem ? pageStack.currentItem.mode : KalendarApplication.Event
                     filter: root.filter ?
                         root.filter : {"tags": [], "collectionId": -1, "name": ""}
                     isDark: root.isDark
-                    visible: todoMode || filter.tags.length > 0
+                    visible: mode === KalendarApplication.Todo || filter.tags.length > 0
                     clip: true
 
                     onRemoveFilterTag: {
@@ -1256,6 +1256,7 @@ Kirigami.ApplicationWindow {
             selectedDate: root.selectedDate
             currentDate: root.currentDate
             openOccurrence: root.openOccurrence
+            readonly property int mode: KalendarApplication.Event
             model: switch(daysToShow) {
                 case 1:
                     return dayScaleModelLoader.item;

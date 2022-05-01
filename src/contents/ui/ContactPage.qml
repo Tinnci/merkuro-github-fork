@@ -12,6 +12,7 @@ Kirigami.ScrollablePage {
     property var contact
     property int itemId
     title: addressee.name
+    property var mode: KalendarApplication.Contact
 
     leftPadding: 0
     rightPadding: 0
@@ -163,42 +164,20 @@ Kirigami.ScrollablePage {
                 Kirigami.FormData.label: i18n("Birthday:")
             }
 
-            Repeater {
-                model: addressee.addressesModel
-                Controls.Label {
-                    visible: text !== ""
-                    text: model.postOfficeBox
-                    Kirigami.FormData.label: i18n("Post office box:")
+        }
+        Repeater {
+            model: addressee.addressesModel
+            Kirigami.FormLayout {
+                width: parent.width
+                Item {
+                    Kirigami.FormData.isSection: true
+                    Kirigami.FormData.label: model.typeLabel
                 }
                 Controls.Label {
                     visible: text !== ""
-                    text: model.street
-                    Kirigami.FormData.label: i18n("Street:")
-                }
-                Controls.Label {
-                    visible: text !== ""
-                    text: model.extended
-                    Kirigami.FormData.label: i18n("Extended Address:")
-                }
-                Controls.Label {
-                    visible: text !== ""
-                    text: model.postalCode
-                    Kirigami.FormData.label: i18n("Postal code:")
-                }
-                Controls.Label {
-                    visible: text !== ""
-                    text: model.locality
-                    Kirigami.FormData.label: i18n("City:")
-                }
-                Controls.Label {
-                    visible: text !== ""
-                    text: model.region
-                    Kirigami.FormData.label: i18n("State or Region:")
-                }
-                Controls.Label {
-                    visible: text !== ""
-                    text: model.country
-                    Kirigami.FormData.label: i18n("Country:")
+                    text: model.formattedAddress
+                    Kirigami.FormData.label: i18n("Address:")
+                    Kirigami.FormData.labelAlignment: Qt.AlignTop
                 }
             }
         }

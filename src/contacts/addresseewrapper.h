@@ -4,6 +4,7 @@
 
 #pragma once
 
+#include "addressmodel.h"
 #include <Akonadi/CollectionIdentificationAttribute>
 #include <Akonadi/Item>
 #include <Akonadi/ItemFetchJob>
@@ -12,7 +13,6 @@
 #include <KContacts/Addressee>
 #include <QObject>
 #include <qdatetime.h>
-#include "addressmodel.h"
 
 /// This class is a QObject wrapper for a KContact::Adressee
 class AddresseeWrapper : public QObject, public Akonadi::ItemMonitor

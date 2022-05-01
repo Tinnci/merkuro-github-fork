@@ -34,6 +34,13 @@ class KalendarApplication : public QObject
     Q_PROPERTY(QString importErrorMessage READ importErrorMessage NOTIFY importErrorMessageChanged)
 
 public:
+    enum Mode {
+        Event,
+        Todo,
+        Contact,
+    };
+    Q_ENUM(Mode);
+
     explicit KalendarApplication(QObject *parent = nullptr);
     ~KalendarApplication() override;
     Q_INVOKABLE QAction *action(const QString &name);
