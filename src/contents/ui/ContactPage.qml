@@ -12,6 +12,7 @@ Kirigami.ScrollablePage {
     property var contact
     property int itemId
     title: addressee.name
+    property var mode: KalendarApplication.Contact
 
     leftPadding: 0
     rightPadding: 0
@@ -152,53 +153,21 @@ Kirigami.ScrollablePage {
             width: parent.width
             Controls.Label {
                 visible: text !== ""
-                text: {
-                    // We do not always have the year
-                    if (addressee.birthday.getFullYear() === 0) {
-                        return Qt.formatDate(addressee.birthday, "dd.MM.")
-                    } else {
-                        return Qt.formatDate(addressee.birthday)
-                    }
+                // We do not always have the year
+                text: if (addressee.birthday.getFullYear() === 0) {
+                    return Qt.formatDate(addressee.birthday, "dd.MM.")
+                } else {
+                    return Qt.formatDate(addressee.birthday)
                 }
                 Kirigami.FormData.label: i18n("Birthday:")
             }
-
             Repeater {
                 model: addressee.addressesModel
                 Controls.Label {
                     visible: text !== ""
-                    text: model.postOfficeBox
-                    Kirigami.FormData.label: i18n("Post office box:")
-                }
-                Controls.Label {
-                    visible: text !== ""
-                    text: model.street
-                    Kirigami.FormData.label: i18n("Street:")
-                }
-                Controls.Label {
-                    visible: text !== ""
-                    text: model.extended
-                    Kirigami.FormData.label: i18n("Extended Address:")
-                }
-                Controls.Label {
-                    visible: text !== ""
-                    text: model.postalCode
-                    Kirigami.FormData.label: i18n("Postal code:")
-                }
-                Controls.Label {
-                    visible: text !== ""
-                    text: model.locality
-                    Kirigami.FormData.label: i18n("City:")
-                }
-                Controls.Label {
-                    visible: text !== ""
-                    text: model.region
-                    Kirigami.FormData.label: i18n("State or Region:")
-                }
-                Controls.Label {
-                    visible: text !== ""
-                    text: model.country
-                    Kirigami.FormData.label: i18n("Country:")
+                    text: model.formattedAddress
+                    Kirigami.FormData.label: i18nc("%1 is the type of the address, e.g. home, work, ...", "%1:", model.typeLabel)
+                    Kirigami.FormData.labelAlignment: Qt.AlignTop
                 }
             }
         }

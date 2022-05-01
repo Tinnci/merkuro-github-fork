@@ -6,7 +6,7 @@
 #include "calendarmanager.h"
 #include "config-kalendar.h"
 #include "contacts/addresseewrapper.h"
-#include "contacts/contactsmanager.h"
+#include "contacts/contactmanager.h"
 #include "incidencewrapper.h"
 #include "kalendarapplication.h"
 #include "kalendarconfig.h"
@@ -17,6 +17,7 @@
 #include "models/monthmodel.h"
 #include "models/multidayincidencemodel.h"
 #include "models/timezonelistmodel.h"
+#include "models/todosortfilterproxymodel.h"
 #include "tagmanager.h"
 #include <Akonadi/AgentFilterProxyModel>
 #include <KAboutData>
@@ -99,6 +100,7 @@ int main(int argc, char *argv[])
 
     auto config = KalendarConfig::self();
     CalendarManager manager;
+    ContactManager contactManager;
     AgentConfiguration agentConfiguration;
     auto kalendarApplication = new KalendarApplication;
     kalendarApplication->setCalendar(manager.calendar());
@@ -126,12 +128,11 @@ int main(int argc, char *argv[])
     QQmlApplicationEngine engine;
     QQmlDebuggingEnabler enabler;
 
-    auto contactsManager = new ContactsManager(&engine);
     auto tagManager = new TagManager(&engine);
     qmlRegisterSingletonInstance("org.kde.kalendar", 1, 0, "Config", config);
     qmlRegisterSingletonInstance("org.kde.kalendar", 1, 0, "CalendarManager", &manager);
+    qmlRegisterSingletonInstance("org.kde.kalendar", 1, 0, "ContactManager", &contactManager);
     qmlRegisterSingletonInstance("org.kde.kalendar", 1, 0, "AgentConfiguration", &agentConfiguration);
-    qmlRegisterSingletonInstance("org.kde.kalendar", 1, 0, "ContactsManager", contactsManager);
     qmlRegisterSingletonInstance("org.kde.kalendar", 1, 0, "TagManager", tagManager);
     qmlRegisterSingletonInstance("org.kde.kalendar", 1, 0, "AboutType", new AboutType());
     qmlRegisterSingletonInstance("org.kde.kalendar", 1, 0, "KalendarApplication", kalendarApplication);

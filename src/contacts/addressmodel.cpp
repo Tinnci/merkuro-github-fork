@@ -2,14 +2,13 @@
 // SPDX-License-Identifier: LGPL-2.1-or-later
 
 #include "contacts/addressmodel.h"
-#include <qabstractitemmodel.h>
 #include <QDebug>
+#include <qabstractitemmodel.h>
 
 AddressModel::AddressModel(QObject *parent)
     : QAbstractListModel(parent)
 {
 }
-
 
 int AddressModel::rowCount(const QModelIndex &parent) const
 {
@@ -26,7 +25,7 @@ QVariant AddressModel::data(const QModelIndex &idx, int role) const
     case ExtendedRole:
         return address.extended();
     case FormattedAddressRole:
-        return address.formatted(KContacts::AddressFormatStyle::Postal);
+        return address.formatted(KContacts::AddressFormatStyle::MultiLineInternational);
     case HasGeoRole:
         return address.geo().isValid();
     case LongitudeRole:
@@ -58,23 +57,21 @@ QVariant AddressModel::data(const QModelIndex &idx, int role) const
 
 QHash<int, QByteArray> AddressModel::roleNames() const
 {
-    return {
-        { CountryRole, QByteArrayLiteral("country") },
-        { ExtendedRole, QByteArrayLiteral("extended") },
-        { FormattedAddressRole, QByteArrayLiteral("formattedAddress") },
-        { HasGeoRole, QByteArrayLiteral("hasGeo") },
-        { LatitudeRole, QByteArrayLiteral("latitude") },
-        { LongitudeRole, QByteArrayLiteral("longitude") },
-        { IdRole, QByteArrayLiteral("id") },
-        { IsEmptyRole, QByteArrayLiteral("isEmpty") },
-        { LabelRole, QByteArrayLiteral("label") },
-        { PostalCodeRole, QByteArrayLiteral("postalCode") },
-        { PostOfficeBoxRole, QByteArrayLiteral("postOfficeBox") },
-        { RegionRole, QByteArrayLiteral("region") },
-        { StreetRole, QByteArrayLiteral("street") },
-        { TypeRole, QByteArrayLiteral("type") },
-        { TypeLabelRole, QByteArrayLiteral("typeLabel") }
-    };
+    return {{CountryRole, QByteArrayLiteral("country")},
+            {ExtendedRole, QByteArrayLiteral("extended")},
+            {FormattedAddressRole, QByteArrayLiteral("formattedAddress")},
+            {HasGeoRole, QByteArrayLiteral("hasGeo")},
+            {LatitudeRole, QByteArrayLiteral("latitude")},
+            {LongitudeRole, QByteArrayLiteral("longitude")},
+            {IdRole, QByteArrayLiteral("id")},
+            {IsEmptyRole, QByteArrayLiteral("isEmpty")},
+            {LabelRole, QByteArrayLiteral("label")},
+            {PostalCodeRole, QByteArrayLiteral("postalCode")},
+            {PostOfficeBoxRole, QByteArrayLiteral("postOfficeBox")},
+            {RegionRole, QByteArrayLiteral("region")},
+            {StreetRole, QByteArrayLiteral("street")},
+            {TypeRole, QByteArrayLiteral("type")},
+            {TypeLabelRole, QByteArrayLiteral("typeLabel")}};
 }
 
 void AddressModel::setAddresses(const KContacts::Address::List &addresses)

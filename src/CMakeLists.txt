@@ -46,12 +46,16 @@ set(kalendar_SRCS
     models/timezonelistmodel.h
     models/todosortfilterproxymodel.cpp
     models/todosortfilterproxymodel.h
+    models/colorproxymodel.h
+    models/colorproxymodel.cpp
     contacts/addresseewrapper.cpp
     contacts/addresseewrapper.h
     contacts/addressmodel.cpp
     contacts/addressmodel.h
-    contacts/contactsmanager.cpp
-    contacts/contactsmanager.h
+    contacts/globalcontactmodel.cpp
+    contacts/globalcontactmodel.h
+    contacts/contactmanager.h
+    contacts/contactmanager.cpp
     resources.qrc
 )
 qt_add_dbus_adaptor(kalendar_SRCS org.kde.calendar.Calendar.xml kalendarapplication.h KalendarApplication)
