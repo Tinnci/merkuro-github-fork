@@ -496,6 +496,10 @@ Kirigami.ApplicationWindow {
         activeTags: root.filter && root.filter.tags ?
                     root.filter.tags : []
         onSearchTextChanged: {
+            if (mode === KalendarApplication.Contact) {
+                ContactManager.filteredContacts.setFilterFixedString(searchText)
+                return;
+            }
             if(root.filter) {
                 root.filter.name = searchText;
             } else {

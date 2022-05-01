@@ -88,17 +88,11 @@ public:
 class ContactsModel : public QSortFilterProxyModel
 {
 public:
-    explicit ContactsModel(QObject *parent = nullptr)
+    explicit ContactsModel(QAbstractItemModel *model, QObject *parent = nullptr)
         : QSortFilterProxyModel(parent)
     {
-        auto sourceModel = new Akonadi::EmailAddressSelectionModel(this);
-
-        auto filterModel = new Akonadi::ContactsFilterProxyModel(this);
-        filterModel->setSourceModel(sourceModel->model());
-        filterModel->setFilterFlags(Akonadi::ContactsFilterProxyModel::HasEmail);
-
         auto flatModel = new KDescendantsProxyModel(this);
-        flatModel->setSourceModel(filterModel);
+        flatModel->setSourceModel(model);
 
         auto addresseeOnlyModel = new Akonadi::EntityMimeTypeFilterModel(this);
         addresseeOnlyModel->setSourceModel(flatModel);
@@ -184,7 +178,13 @@ ContactManager::ContactManager(QObject *parent)
     m_selectableContactCollectionsModel->setSortCaseSensitivity(Qt::CaseInsensitive);
     m_selectableContactCollectionsModel->sort(0, Qt::AscendingOrder);
 
-    auto model = new ContactsModel(this);
+    auto sourceModel = new Akonadi::EmailAddressSelectionModel(this);
+
+    auto filterModel = new Akonadi::ContactsFilterProxyModel(this);
+    filterModel->setSourceModel(sourceModel->model());
+    filterModel->setFilterFlags(Akonadi::ContactsFilterProxyModel::HasEmail);
+
+    auto model = new ContactsModel(filterModel, this);
     m_model = new QSortFilterProxyModel(this);
     m_model->setSourceModel(model);
     m_model->setDynamicSortFilter(true);
@@ -201,13 +201,14 @@ ContactManager::ContactManager(QObject *parent)
     itemTree->addMimeTypeExclusionFilter(Akonadi::Collection::mimeType());
     itemTree->addMimeTypeInclusionFilter(KContacts::Addressee::mimeType());
     itemTree->setHeaderGroup(Akonadi::EntityTreeModel::ItemListHeaders);
-    itemTree->setDynamicSortFilter(true);
-    itemTree->sort(0);
 
-    auto flatModel = new KDescendantsProxyModel(this);
-    flatModel->setSourceModel(itemTree);
-
-    m_filteredContacts = flatModel;
+    auto filteredContacts = new QSortFilterProxyModel(this);
+    filteredContacts->setSourceModel(new ContactsModel(itemTree, this));
+    filteredContacts->setDynamicSortFilter(true);
+    filteredContacts->setSortCaseSensitivity(Qt::CaseInsensitive);
+    filteredContacts->setFilterCaseSensitivity(Qt::CaseInsensitive);
+    filteredContacts->sort(0);
+    m_filteredContacts = filteredContacts;
 }
 
 ContactManager::~ContactManager()

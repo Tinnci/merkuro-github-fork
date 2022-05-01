@@ -26,7 +26,7 @@ Kirigami.ScrollablePage {
     header: Controls.Control {
         contentItem: Kirigami.SearchField {
             id: searchField
-            onTextChanged: ContactManager.contactsModel.setFilterFixedString(text)
+            onTextChanged: root.model.setFilterFixedString(text)
         }
     }
     property alias model: contactsList.model
