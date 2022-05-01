@@ -12,6 +12,7 @@ Kirigami.ScrollablePage {
     property var contact
     property int itemId
     title: addressee.name
+    property var mode: KalendarApplication.Contact
 
     leftPadding: 0
     rightPadding: 0
@@ -163,8 +164,15 @@ Kirigami.ScrollablePage {
                 Kirigami.FormData.label: i18n("Birthday:")
             }
 
-            Repeater {
-                model: addressee.addressesModel
+        }
+        Repeater {
+            model: addressee.addressesModel
+            Kirigami.FormLayout {
+                width: parent.width
+                Item {
+                    Kirigami.FormData.isSection: true
+                    Kirigami.FormData.label: model.typeLabel
+                }
                 Controls.Label {
                     visible: text !== ""
                     text: model.postOfficeBox

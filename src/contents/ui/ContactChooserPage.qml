@@ -22,11 +22,11 @@ ContactsPage {
         avatarIcon: model && model.decoration
         added: root.attendeeAkonadiIds.includes(model.itemId)
 
-        onClicked: added ? removeAttendee(itemId) : ContactsManager.contactEmails(model.itemId);
+        onClicked: added ? removeAttendee(itemId) : ContactManager.contactEmails(model.itemId);
     }
 
     Connections {
-        target: ContactsManager
+        target: ContactManager
         function onEmailsFetched(emails, itemId) {
             if(emails.length > 1) {
                 emailsView.itemId = itemId;

@@ -20,14 +20,16 @@ Kirigami.ScrollablePage {
     title: i18n("Contacts")
 
     property var attendeeAkonadiIds
-	property alias contactDelegate: contactsList.delegate
+    property alias contactDelegate: contactsList.delegate
+    property var mode: KalendarApplication.Contact
 
     header: Controls.Control {
         contentItem: Kirigami.SearchField {
             id: searchField
-            onTextChanged: ContactsManager.contactsModel.setFilterFixedString(text)
+            onTextChanged: ContactManager.contactsModel.setFilterFixedString(text)
         }
     }
+    property alias model: contactsList.model
 
     ListView {
         id: contactsList
@@ -38,7 +40,7 @@ Kirigami.ScrollablePage {
         section.criteria: ViewSection.FirstCharacter
         section.delegate: Kirigami.ListSectionHeader {text: section}
         clip: true
-        model: ContactsManager.contactsModel
+        model: ContactManager.contactsModel
 
         Kirigami.PlaceholderMessage {
             anchors.centerIn: parent
