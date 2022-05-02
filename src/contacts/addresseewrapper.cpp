@@ -32,6 +32,8 @@ void AddresseeWrapper::notifyDataChanged()
     Q_EMIT photoChanged();
     Q_EMIT phoneNumbersChanged();
     Q_EMIT preferredEmailChanged();
+    Q_EMIT uidChanged();
+    Q_EMIT wrappedItemIdChanged();
 }
 
 Akonadi::Item AddresseeWrapper::addresseeItem() const
@@ -44,12 +46,12 @@ AddressModel *AddresseeWrapper::addressesModel() const
     return m_addressesModel;
 }
 
-qint64 AddresseeWrapper::itemId() const
+qint64 AddresseeWrapper::wrappedItemId() const
 {
     return item().id();
 }
 
-void AddresseeWrapper::setItemId(qint64 itemId)
+void AddresseeWrapper::setWrappedItemId(qint64 itemId)
 {
     Akonadi::Item item(itemId);
 
@@ -70,7 +72,7 @@ void AddresseeWrapper::setAddresseeItem(const Akonadi::Item &addresseeItem)
         Q_EMIT addresseeItemChanged();
         Q_EMIT collectionIdChanged();
     } else {
-        qCWarning(KALENDAR_LOG) << "This is not an incidence item.";
+        qCWarning(KALENDAR_LOG) << "This is not an addressee item.";
     }
 }
 
