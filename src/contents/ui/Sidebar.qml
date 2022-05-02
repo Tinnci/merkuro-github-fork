@@ -81,7 +81,7 @@ Kirigami.OverlayDrawer {
                     Layout.leftMargin: Kirigami.Units.smallSpacing + Kirigami.Units.largeSpacing
                     text: i18n("Kalendar")
 
-                    visible: sidebar.mode === KalendarApplication.Todo
+                    visible: !searchField.visible
                     opacity: sidebar.collapsed ? 0 : 1
                     Behavior on opacity {
                         OpacityAnimator {
@@ -95,7 +95,7 @@ Kirigami.OverlayDrawer {
                     id: searchField
                     Layout.fillWidth: true
 
-                    visible: sidebar.mode !== KalendarApplication.Todo
+                    visible: sidebar.mode !== KalendarApplication.Event
                     opacity: sidebar.collapsed ? 0 : 1
                     Behavior on opacity {
                         OpacityAnimator {
