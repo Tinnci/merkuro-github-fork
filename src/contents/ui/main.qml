@@ -172,8 +172,7 @@ Kirigami.ApplicationWindow {
             }
         }
 
-        if (pageStack.currentItem.objectName !== "todoView" 
-            && pageStack.currentItem.objectName !== "contactView") {
+        if (pageStack.currentItem.mode === KalendarApplication.Event) {
             pageStack.currentItem.setToDate(root.selectedDate, true);
         }
     }

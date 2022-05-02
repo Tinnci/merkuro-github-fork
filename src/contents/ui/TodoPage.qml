@@ -166,7 +166,7 @@ Kirigami.ScrollablePage {
             id: collectionPickerSheet
             property var incidenceWrapper
 
-            mode: KalendarApplication.Todo
+            mode: Kalendar.KalendarApplication.Todo
             onCollectionPicked: {
                 collectionPickerSheet.incidenceWrapper.collectionId = collectionId;
                 Kalendar.CalendarManager.addIncidence(collectionPickerSheet.incidenceWrapper);

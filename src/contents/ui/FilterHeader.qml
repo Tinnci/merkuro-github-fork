@@ -104,13 +104,13 @@ RowLayout {
         horizontalAlignment: Text.AlignRight
 
         function updateTasksCount() {
-            if (headerLayout.mode === Kalendar.KalendarApplication.Todo ) {
+            if (headerLayout.mode === Kalendar.KalendarApplication.Todo) {
                 text = applicationWindow().pageStack.currentItem.incompleteView.model.rowCount();
             }
         }
 
         Connections {
-            target: applicationWindow().pageStack.currentItem.incompleteView.model
+            target: headerLayout.mode === Kalendar.KalendarApplication.Todo ? applicationWindow().pageStack.currentItem.incompleteView.model : null
             function onRowsInserted() {
                 numTasksHeading.updateTasksCount();
             }
