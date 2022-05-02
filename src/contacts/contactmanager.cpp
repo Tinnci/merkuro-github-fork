@@ -30,6 +30,7 @@
 #include <Akonadi/ContactsTreeModel>
 #include <Akonadi/EmailAddressSelectionModel>
 #endif
+#include "collectionmodel.h"
 #include "globalcontactmodel.h"
 #include "models/colorproxymodel.h"
 #include <Akonadi/CollectionFilterProxyModel>
@@ -46,44 +47,6 @@
 #include <QItemSelectionModel>
 #include <QSortFilterProxyModel>
 
-namespace
-{
-static bool isStructuralCollection(const Akonadi::Collection &collection)
-{
-    const QStringList mimeTypes = {KContacts::Addressee::mimeType(), KContacts::ContactGroup::mimeType()};
-    const QStringList collectionMimeTypes = collection.contentMimeTypes();
-    for (const QString &mimeType : mimeTypes) {
-        if (collectionMimeTypes.contains(mimeType)) {
-            return false;
-        }
-    }
-    return true;
-}
-
-class StructuralCollectionsNotCheckableProxy : public KCheckableProxyModel
-{
-public:
-    explicit StructuralCollectionsNotCheckableProxy(QObject *parent)
-        : KCheckableProxyModel(parent)
-    {
-    }
-
-    Q_REQUIRED_RESULT QVariant data(const QModelIndex &index, int role) const override
-    {
-        if (!index.isValid()) {
-            return {};
-        }
-
-        if (role == Qt::CheckStateRole) {
-            // Don't show the checkbox if the collection can't contain incidences
-            const auto collection = index.data(Akonadi::EntityTreeModel::CollectionRole).value<Akonadi::Collection>();
-            if (collection.isValid() && isStructuralCollection(collection)) {
-                return {};
-            }
-        }
-        return KCheckableProxyModel::data(index, role);
-    }
-};
 
 class ContactsModel : public QSortFilterProxyModel
 {

@@ -70,7 +70,7 @@ void AddresseeWrapper::setAddresseeItem(const Akonadi::Item &addresseeItem)
         Q_EMIT addresseeItemChanged();
         Q_EMIT collectionIdChanged();
     } else {
-        qCWarning(KALENDAR_LOG) << "This is not an incidence item.";
+        qCWarning(KALENDAR_LOG) << "This is not an addressee item.";
     }
 }
 

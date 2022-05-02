@@ -19,9 +19,9 @@ class AddresseeWrapper : public QObject, public Akonadi::ItemMonitor
 {
     Q_OBJECT
     Q_PROPERTY(Akonadi::Item addresseeItem READ addresseeItem WRITE setAddresseeItem NOTIFY addresseeItemChanged)
-    Q_PROPERTY(QString uid READ uid NOTIFY addresseeItemChanged)
+    Q_PROPERTY(QString uid READ uid NOTIFY uidChanged)
     Q_PROPERTY(qint64 collectionId READ collectionId WRITE setCollectionId NOTIFY collectionIdChanged)
-    Q_PROPERTY(qint64 itemId READ itemId WRITE setItemId NOTIFY addresseeItemChanged)
+    Q_PROPERTY(qint64 itemId READ itemId WRITE setItemId NOTIFY itemIdChanged)
     Q_PROPERTY(QString name READ name WRITE setName NOTIFY nameChanged)
     Q_PROPERTY(QString preferredEmail READ preferredEmail NOTIFY preferredEmailChanged)
     Q_PROPERTY(QDateTime birthday READ birthday WRITE setBirthday NOTIFY birthdayChanged)

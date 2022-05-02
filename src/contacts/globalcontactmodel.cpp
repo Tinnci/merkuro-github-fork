@@ -9,7 +9,11 @@
 #include "globalcontactmodel.h"
 
 #include <Akonadi/ChangeRecorder>
+#if AKONADICALENDAR_VERSION > QT_VERSION_CHECK(5, 19, 41)
 #include <Akonadi/ContactsTreeModel>
+#else
+#include <Akonadi/Contact/ContactsTreeModel>
+#endif
 #include <Akonadi/EntityDisplayAttribute>
 #include <Akonadi/ItemFetchScope>
 #include <Akonadi/Session>

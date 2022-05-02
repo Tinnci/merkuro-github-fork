@@ -104,7 +104,7 @@ RowLayout {
         horizontalAlignment: Text.AlignRight
 
         function updateTasksCount() {
-            if (headerLayout.mode === Kalendar.KalendarApplication.Todo ) {
+            if (headerLayout.mode === Kalendar.KalendarApplication.Todo) {
                 text = applicationWindow().pageStack.currentItem.incompleteView.model.rowCount();
             }
         }
