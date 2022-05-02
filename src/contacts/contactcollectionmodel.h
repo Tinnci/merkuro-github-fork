@@ -6,10 +6,10 @@
 #include <Akonadi/EntityTreeModel>
 #include <KCheckableProxyModel>
 
-class StructuralCollectionsNotCheckableProxy : public KCheckableProxyModel
+class ContactCollectionModel : public KCheckableProxyModel
 {
 public:
-    explicit StructuralCollectionsNotCheckableProxy(QObject *parent);
+    explicit ContactCollectionModel(QObject *parent);
 
     Q_REQUIRED_RESULT QVariant data(const QModelIndex &index, int role) const override;
 };

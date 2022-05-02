@@ -32,6 +32,7 @@ void AddresseeWrapper::notifyDataChanged()
     Q_EMIT photoChanged();
     Q_EMIT phoneNumbersChanged();
     Q_EMIT preferredEmailChanged();
+    Q_EMIT uidChanged();
 }
 
 Akonadi::Item AddresseeWrapper::addresseeItem() const
@@ -44,24 +45,6 @@ AddressModel *AddresseeWrapper::addressesModel() const
     return m_addressesModel;
 }
 
-qint64 AddresseeWrapper::itemId() const
-{
-    return item().id();
-}
-
-void AddresseeWrapper::setItemId(qint64 itemId)
-{
-    Akonadi::Item item(itemId);
-
-    auto job = new Akonadi::ItemFetchJob(item);
-    job->fetchScope().fetchFullPayload();
-
-    connect(job, &Akonadi::ItemFetchJob::result, this, [this](KJob *job) {
-        auto fetchJob = qobject_cast<Akonadi::ItemFetchJob *>(job);
-        setAddresseeItem(fetchJob->items().at(0));
-    });
-}
-
 void AddresseeWrapper::setAddresseeItem(const Akonadi::Item &addresseeItem)
 {
     if (addresseeItem.hasPayload<KContacts::Addressee>()) {
@@ -70,7 +53,21 @@ void AddresseeWrapper::setAddresseeItem(const Akonadi::Item &addresseeItem)
         Q_EMIT addresseeItemChanged();
         Q_EMIT collectionIdChanged();
     } else {
-        qCWarning(KALENDAR_LOG) << "This is not an incidence item.";
+        // Payload not found, try to fetch it
+        auto job = new Akonadi::ItemFetchJob(addresseeItem);
+        job->fetchScope().fetchFullPayload();
+        connect(job, &Akonadi::ItemFetchJob::result, this, [this](KJob *job) {
+            auto fetchJob = qobject_cast<Akonadi::ItemFetchJob *>(job);
+            auto item = fetchJob->items().at(0);
+            if (item.hasPayload<KContacts::Addressee>()) {
+                setItem(item);
+                setAddressee(item.payload<KContacts::Addressee>());
+                Q_EMIT addresseeItemChanged();
+                Q_EMIT collectionIdChanged();
+            } else {
+                qCWarning(KALENDAR_LOG) << "This is not an addressee item.";
+            }
+        });
     }
 }
 

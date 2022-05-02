@@ -30,6 +30,7 @@
 #include <Akonadi/ContactsTreeModel>
 #include <Akonadi/EmailAddressSelectionModel>
 #endif
+#include "contactcollectionmodel.h"
 #include "globalcontactmodel.h"
 #include "models/colorproxymodel.h"
 #include <Akonadi/CollectionFilterProxyModel>
@@ -46,45 +47,7 @@
 #include <QItemSelectionModel>
 #include <QSortFilterProxyModel>
 
-namespace
-{
-static bool isStructuralCollection(const Akonadi::Collection &collection)
-{
-    const QStringList mimeTypes = {KContacts::Addressee::mimeType(), KContacts::ContactGroup::mimeType()};
-    const QStringList collectionMimeTypes = collection.contentMimeTypes();
-    for (const QString &mimeType : mimeTypes) {
-        if (collectionMimeTypes.contains(mimeType)) {
-            return false;
-        }
-    }
-    return true;
-}
-
-class StructuralCollectionsNotCheckableProxy : public KCheckableProxyModel
-{
-public:
-    explicit StructuralCollectionsNotCheckableProxy(QObject *parent)
-        : KCheckableProxyModel(parent)
-    {
-    }
-
-    Q_REQUIRED_RESULT QVariant data(const QModelIndex &index, int role) const override
-    {
-        if (!index.isValid()) {
-            return {};
-        }
-
-        if (role == Qt::CheckStateRole) {
-            // Don't show the checkbox if the collection can't contain incidences
-            const auto collection = index.data(Akonadi::EntityTreeModel::CollectionRole).value<Akonadi::Collection>();
-            if (collection.isValid() && isStructuralCollection(collection)) {
-                return {};
-            }
-        }
-        return KCheckableProxyModel::data(index, role);
-    }
-};
-
+namespace {
 class ContactsModel : public QSortFilterProxyModel
 {
 public:
@@ -153,7 +116,7 @@ ContactManager::ContactManager(QObject *parent)
     m_collectionTree->setHeaderGroup(Akonadi::EntityTreeModel::CollectionTreeHeaders);
 
     m_collectionSelectionModel = new QItemSelectionModel(m_collectionTree);
-    m_checkableProxyModel = new StructuralCollectionsNotCheckableProxy(this);
+    m_checkableProxyModel = new ContactCollectionModel(this);
     m_checkableProxyModel->setSelectionModel(m_collectionSelectionModel);
     m_checkableProxyModel->setSourceModel(m_collectionTree);
 
@@ -257,9 +220,10 @@ void ContactManager::contactEmails(qint64 itemId)
     });
 }
 
-Akonadi::Item ContactManager::getItem(int row)
+Akonadi::Item ContactManager::getItem(qint64 itemId)
 {
-    auto item = m_model->data(m_model->index(row, 0), Akonadi::EntityTreeModel::ItemRole).value<Akonadi::Item>();
+    Akonadi::Item item(itemId);
+
     return item;
 }
 

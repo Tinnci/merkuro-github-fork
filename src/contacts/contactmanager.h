@@ -46,7 +46,7 @@ public:
     QSortFilterProxyModel *contactsModel();
     Q_INVOKABLE void contactEmails(qint64 itemId);
     Q_INVOKABLE QUrl decorationToUrl(QVariant decoration);
-    Q_INVOKABLE Akonadi::Item getItem(int row);
+    Q_INVOKABLE Akonadi::Item getItem(qint64 itemId);
 
 Q_SIGNALS:
     void emailsFetched(QStringList emails, qint64 itemId);

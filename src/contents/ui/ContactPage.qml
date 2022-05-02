@@ -12,14 +12,14 @@ Kirigami.ScrollablePage {
     property var contact
     property int itemId
     title: addressee.name
-    property var mode: KalendarApplication.Contact
+    property int mode: KalendarApplication.Contact
 
     leftPadding: 0
     rightPadding: 0
     topPadding: 0
 
     property AddresseeWrapper addressee: AddresseeWrapper {
-        itemId: page.itemId
+        addresseeItem: ContactManager.getItem(page.itemId)
     }
 
     //actions {
@@ -65,26 +65,23 @@ Kirigami.ScrollablePage {
         Qt.openUrlExternally("sms:" + number)
     }
 
-    Column {
+    ColumnLayout {
+        spacing: 0
         Header {
             id: header
-            width: parent.width
-            height: Kirigami.Units.gridUnit * 8
-
-            content.anchors.leftMargin: page.width > 400 ? 100 : Kirigami.Units.largeSpacing
-            content.anchors.topMargin: Kirigami.Units.largeSpacing
-            content.anchors.bottomMargin: Kirigami.Units.largeSpacing
+            Layout.fillWidth: true
+            Layout.preferredHeight: Kirigami.Units.gridUnit * 8
 
             source: addressee.photo.isIntern ? addressee.photo.data : addressee.photo.url
 
             backgroundSource: "qrc:/fallbackBackground.png"
 
-            ColumnLayout {
+            contentItems: [
                 Kirigami.Heading {
                     text: addressee.name
                     color: "#fcfcfc"
                     level: 2
-                }
+                },
                 Repeater {
                     model: addressee.phoneNumbers
                     Kirigami.Heading {
@@ -93,15 +90,13 @@ Kirigami.ScrollablePage {
                         level: 3
                     }
                 }
-            }
+            ]
         }
 
         Controls.ToolBar {
-            width: parent.width
-
-            Kirigami.ActionToolBar {
+            Layout.fillWidth: true
+            contentItem: Kirigami.ActionToolBar {
                 id: toolbar
-                width: parent.width
 
                 actions: [
                     Kirigami.Action {
@@ -109,15 +104,16 @@ Kirigami.ScrollablePage {
                         iconName: "call-start"
                         visible: addressee.phoneNumbers.length > 0
                         onTriggered: {
-                            var model = addressee.phoneNumbers
+                            applicationWindow().showPassiveNotification(i18n("Call support is not implemented yet"));
+                            //const model = addressee.phoneNumbers
 
-                            if (addressee.phoneNumbers.length === 1) {
-                                page.callNumber(model[0].normalizedNumber)
-                            } else {
-                                var pop = callPopup.createObject(page, {numbers: addressee.phoneNumbers, title: i18n("Select number to call")})
-                                pop.onNumberSelected.connect(number => callNumber(number))
-                                pop.open()
-                            }
+                            //if (addressee.phoneNumbers.length === 1) {
+                            //    page.callNumber(model[0].normalizedNumber)
+                            //} else {
+                            //    var pop = callPopup.createObject(page, {numbers: addressee.phoneNumbers, title: i18n("Select number to call")})
+                            //    pop.onNumberSelected.connect(number => callNumber(number))
+                            //    pop.open()
+                            //}
                         }
                     },
                     Kirigami.Action {
@@ -125,18 +121,19 @@ Kirigami.ScrollablePage {
                         iconName: "mail-message"
                         visible: addressee.phoneNumbers.length > 0
                         onTriggered: {
-                            var model = addressee.phoneNumbers
+                            applicationWindow().showPassiveNotification(i18n("SMS support is not implemented yet"));
+                            //var model = addressee.phoneNumbers
 
-                            if (addressee.phoneNumbers.length === 1) {
-                                page.sendSms(model[0].normalizedNumber)
-                            } else {
-                                var pop = callPopup.createObject(page, {
-                                    numbers: addressee.phoneNumbers,
-                                    title: i18n("Select number to send message to"),
-                                })
-                                pop.onNumberSelected.connect(number => sendSms(number))
-                                pop.open()
-                            }
+                            //if (addressee.phoneNumbers.length === 1) {
+                            //    page.sendSms(model[0].normalizedNumber)
+                            //} else {
+                            //    var pop = callPopup.createObject(page, {
+                            //        numbers: addressee.phoneNumbers,
+                            //        title: i18n("Select number to send message to"),
+                            //    })
+                            //    pop.onNumberSelected.connect(number => sendSms(number))
+                            //    pop.open()
+                            //}
                         }
                     },
                     Kirigami.Action {

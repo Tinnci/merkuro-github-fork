@@ -4,75 +4,76 @@
  * SPDX-License-Identifier: GPL-2.0-only OR GPL-3.0-only OR LicenseRef-KDE-Accepted-GPL
  */
 
-import QtQuick 2.6
-import QtQuick.Controls 2.2
-import QtQuick.Layouts 1.2
-import org.kde.kirigami 2.4 as Kirigami
+import QtQuick 2.15
+import QtQuick.Controls 2.15
+import QtQuick.Layouts 1.15
+import org.kde.kirigami 2.19 as Kirigami
 import QtGraphicalEffects 1.0
 
-Rectangle {
+Control {
     id: root
     clip: true
-    default property alias contents: content.data
-    property alias content: contentContainer
-    property alias stripContent: strip.data
+    default property alias contentItems: content.children
+    //property alias stripContent: strip.data
 
     property var source
     property var backgroundSource
 
-    // Background image
-    Image {
-        id: bg
-        anchors.fill: parent
-        source: root.backgroundSource
-    }
+    background: Item {
+        // Background image
+        Image {
+            id: bg
+            width: root.width
+            height: root.height
+            source: root.backgroundSource
+        }
 
-    FastBlur {
-        anchors.fill: bg
-        source: bg
-        radius: 48
-
+        FastBlur {
+            id: blur
+            source: bg
+            radius: 48
+            width: root.width
+            height: root.height
+        }
         ColorOverlay {
-            anchors.fill: parent
-            source: parent
+            width: root.width
+            height: root.height
+            source: blur
             color: "#66808080"
         }
+        Rectangle {
+            id: strip
+            color: "#66F0F0F0"
+            anchors.bottom: parent.bottom;
+            height: 2 * Kirigami.Units.gridUnit
+            width: parent.width
+            visible: children.length > 0
+        }
     }
-
+    bottomPadding: strip.children.length > 0 ? strip.height : 0
 
     // Container for the content of the header
-    Item {
-        anchors.fill: parent
-        anchors.bottomMargin: strip.children.length > 0 ? strip.height : 0
+    contentItem: Kirigami.FlexColumn {
+        id: contentContainer
 
-        Item {
-            id: contentContainer
-            anchors.fill: parent
-            anchors.margins: Kirigami.Units.gridUnit
-            anchors.leftMargin: 200
+        maximumWidth: Kirigami.Units.gridUnit * 30
+
+        RowLayout {
+            Layout.fillHeight: true
+            Layout.topMargin: Kirigami.Units.gridUnit
+            Layout.bottomMargin: Kirigami.Units.gridUnit
 
             Kirigami.Icon {
                 id: img
                 source: root.source
-                height: contentContainer.height
-                width: contentContainer.height
+                Layout.fillHeight: true
+                Layout.preferredWidth: height
             }
-            Item {
+            ColumnLayout {
                 id: content
-                height: childrenRect.height
-                anchors.left: img.right
-                anchors.leftMargin: Kirigami.Units.gridUnit
-                anchors.bottom: img.bottom
+                Layout.alignment: Qt.AlignBottom
+                Layout.leftMargin: Kirigami.Units.largeSpacing
             }
         }
-    }
-
-    Rectangle {
-        id: strip
-        color: "#66F0F0F0"
-        anchors.bottom: parent.bottom;
-        height: 2 * Kirigami.Units.gridUnit
-        width: parent.width
-        visible: children.length > 0
     }
 }
