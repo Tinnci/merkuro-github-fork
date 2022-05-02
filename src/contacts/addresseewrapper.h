@@ -19,9 +19,8 @@ class AddresseeWrapper : public QObject, public Akonadi::ItemMonitor
 {
     Q_OBJECT
     Q_PROPERTY(Akonadi::Item addresseeItem READ addresseeItem WRITE setAddresseeItem NOTIFY addresseeItemChanged)
-    Q_PROPERTY(QString uid READ uid NOTIFY addresseeItemChanged)
+    Q_PROPERTY(QString uid READ uid NOTIFY uidChanged)
     Q_PROPERTY(qint64 collectionId READ collectionId WRITE setCollectionId NOTIFY collectionIdChanged)
-    Q_PROPERTY(qint64 itemId READ itemId WRITE setItemId NOTIFY addresseeItemChanged)
     Q_PROPERTY(QString name READ name WRITE setName NOTIFY nameChanged)
     Q_PROPERTY(QString preferredEmail READ preferredEmail NOTIFY preferredEmailChanged)
     Q_PROPERTY(QDateTime birthday READ birthday WRITE setBirthday NOTIFY birthdayChanged)
@@ -40,8 +39,6 @@ public:
     KContacts::PhoneNumber::List phoneNumbers() const;
     AddressModel *addressesModel() const;
 
-    qint64 itemId() const;
-    void setItemId(qint64 itemId);
     qint64 collectionId() const;
     void setCollectionId(qint64 collectionId);
     QString name() const;
@@ -61,6 +58,7 @@ Q_SIGNALS:
     void photoChanged();
     void phoneNumbersChanged();
     void preferredEmailChanged();
+    void uidChanged();
 
 private:
     void itemChanged(const Akonadi::Item &item) override;

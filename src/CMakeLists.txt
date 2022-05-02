@@ -56,6 +56,8 @@ set(kalendar_SRCS
     contacts/globalcontactmodel.h
     contacts/contactmanager.h
     contacts/contactmanager.cpp
+    contacts/contactcollectionmodel.cpp
+    contacts/contactcollectionmodel.h
     resources.qrc
 )
 qt_add_dbus_adaptor(kalendar_SRCS org.kde.calendar.Calendar.xml kalendarapplication.h KalendarApplication)

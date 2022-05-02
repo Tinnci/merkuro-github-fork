@@ -172,8 +172,7 @@ Kirigami.ApplicationWindow {
             }
         }
 
-        if (pageStack.currentItem.objectName !== "todoView" 
-            && pageStack.currentItem.objectName !== "contactView") {
+        if (pageStack.currentItem.mode === KalendarApplication.Event) {
             pageStack.currentItem.setToDate(root.selectedDate, true);
         }
     }
@@ -1260,7 +1259,6 @@ Kirigami.ApplicationWindow {
             selectedDate: root.selectedDate
             currentDate: root.currentDate
             openOccurrence: root.openOccurrence
-            readonly property int mode: KalendarApplication.Event
             model: switch(daysToShow) {
                 case 1:
                     return dayScaleModelLoader.item;

@@ -35,12 +35,9 @@
 #include <akonadi-calendar_version.h>
 #if AKONADICALENDAR_VERSION > QT_VERSION_CHECK(5, 19, 41)
 #include <Akonadi/IncidenceChanger>
-#else
-#include <Akonadi/Calendar/IncidenceChanger>
-#endif
-#if AKONADICALENDAR_VERSION > QT_VERSION_CHECK(5, 19, 41)
 #include <Akonadi/History>
 #else
+#include <Akonadi/Calendar/IncidenceChanger>
 #include <Akonadi/Calendar/History>
 #endif
 #include <CalendarSupport/KCalPrefs>
