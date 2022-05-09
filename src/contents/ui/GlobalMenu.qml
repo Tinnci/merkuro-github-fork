@@ -8,6 +8,7 @@ import QtQuick.Controls 2.12 as QQC2
 import QtQuick.Layouts 1.10
 import org.kde.kirigami 2.15 as Kirigami
 import QtQuick.Window 2.15
+import org.kde.kalendar 1.0
 
 Labs.MenuBar {
     id: bar
@@ -81,7 +82,7 @@ Labs.MenuBar {
 
         Labs.Menu {
             title: i18nc("@action:menu", "Sort Tasks")
-            enabled: mode === KalendarApplication.Task
+            enabled: mode === KalendarApplication.Todo
 
             NativeMenuItemFromAction {
                 kalendarAction: 'todoview_sort_by_due_date'
@@ -109,7 +110,7 @@ Labs.MenuBar {
 
         NativeMenuItemFromAction {
             kalendarAction: 'todoview_show_completed'
-            enabled: mode === KalendarApplication.Task
+            enabled: mode === KalendarApplication.Todo
         }
 
         Labs.MenuSeparator {

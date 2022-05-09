@@ -156,7 +156,7 @@ QQC2.MenuBar {
 
         QQC2.Menu {
             title: i18n("Sort Tasks")
-            enabled: mode === KalendarApplication.Task
+            enabled: mode === KalendarApplication.Todo
 
             KActionFromAction {
                 kalendarAction: "todoview_sort_by_due_date"
@@ -181,7 +181,7 @@ QQC2.MenuBar {
 
         KActionFromAction {
             kalendarAction: "todoview_show_completed"
-            enabled: mode === KalendarApplication.Task
+            enabled: mode === KalendarApplication.Todo
         }
 
         QQC2.MenuSeparator {
