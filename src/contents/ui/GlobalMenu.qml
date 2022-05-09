@@ -8,6 +8,7 @@ import QtQuick.Controls 2.12 as QQC2
 import QtQuick.Layouts 1.10
 import org.kde.kirigami 2.15 as Kirigami
 import QtQuick.Window 2.15
+import org.kde.kalendar 1.0
 
 Labs.MenuBar {
     id: bar
