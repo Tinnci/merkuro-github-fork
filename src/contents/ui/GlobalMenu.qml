@@ -69,6 +69,10 @@ Labs.MenuBar {
         }
 
         NativeMenuItemFromAction {
+            kalendarAction: 'open_contact_view'
+        }
+
+        NativeMenuItemFromAction {
             kalendarAction: 'open_kcommand_bar'
         }
 
@@ -77,6 +81,7 @@ Labs.MenuBar {
 
         Labs.Menu {
             title: i18nc("@action:menu", "Sort Tasks")
+            enabled: mode === KalendarApplication.Task
 
             NativeMenuItemFromAction {
                 kalendarAction: 'todoview_sort_by_due_date'
@@ -104,13 +109,20 @@ Labs.MenuBar {
 
         NativeMenuItemFromAction {
             kalendarAction: 'todoview_show_completed'
+            enabled: mode === KalendarApplication.Task
         }
 
         Labs.MenuSeparator {
         }
 
         NativeMenuItemFromAction {
-            kalendarAction: "refresh_all_calendars"
+            text: switch(mode) {
+            case KalendarApplication.Contact:
+                return i18n('Refresh All Address Books')
+            default:
+                return i18n('Refresh All Calendars')
+            }
+            kalendarAction: "refresh_all"
         }
     }
 
@@ -119,18 +131,22 @@ Labs.MenuBar {
 
         NativeMenuItemFromAction {
             kalendarAction: "move_view_backwards"
+            enabled: mode === KalendarApplication.Task
         }
         NativeMenuItemFromAction {
             kalendarAction: "move_view_forwards"
+            enabled: mode === KalendarApplication.Task
         }
 
         Labs.MenuSeparator {}
 
         NativeMenuItemFromAction {
             kalendarAction: "move_view_to_today"
+            enabled: mode === KalendarApplication.Task
         }
         NativeMenuItemFromAction {
             kalendarAction: "open_date_changer"
+            enabled: mode === KalendarApplication.Task
         }
     }
 

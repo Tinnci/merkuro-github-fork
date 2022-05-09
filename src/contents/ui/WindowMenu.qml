@@ -145,6 +145,9 @@ QQC2.MenuBar {
             kalendarAction: "open_todo_view"
         }
         KActionFromAction {
+            kalendarAction: "open_contact_view"
+        }
+        KActionFromAction {
             kalendarAction: 'open_kcommand_bar'
         }
 
@@ -153,6 +156,7 @@ QQC2.MenuBar {
 
         QQC2.Menu {
             title: i18n("Sort Tasks")
+            enabled: mode === KalendarApplication.Task
 
             KActionFromAction {
                 kalendarAction: "todoview_sort_by_due_date"
@@ -177,15 +181,21 @@ QQC2.MenuBar {
 
         KActionFromAction {
             kalendarAction: "todoview_show_completed"
+            enabled: mode === KalendarApplication.Task
         }
 
         QQC2.MenuSeparator {
         }
 
         KActionFromAction {
-            kalendarAction: "refresh_all_calendars"
+            text: switch(mode) {
+            case KalendarApplication.Contact:
+                return i18n('Refresh All Address Books')
+            default:
+                return i18n('Refresh All Calendars')
+            }
+            kalendarAction: "refresh_all"
         }
-
     }
 
     QQC2.Menu {
@@ -193,18 +203,22 @@ QQC2.MenuBar {
 
         KActionFromAction {
             kalendarAction: "move_view_backwards"
+            enabled: mode !== KalendarApplication.Contact
         }
         KActionFromAction {
             kalendarAction: "move_view_forwards"
+            enabled: mode !== KalendarApplication.Contact
         }
 
         QQC2.MenuSeparator {}
 
         KActionFromAction {
             kalendarAction: "move_view_to_today"
+            enabled: mode !== KalendarApplication.Contact
         }
         KActionFromAction {
             kalendarAction: "open_date_changer"
+            enabled: mode !== KalendarApplication.Contact
         }
     }
 
