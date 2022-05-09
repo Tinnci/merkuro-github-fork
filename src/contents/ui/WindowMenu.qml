@@ -207,18 +207,18 @@ QQC2.MenuBar {
         }
         KActionFromAction {
             kalendarAction: "move_view_forwards"
-            enabled: mode !== KalendarApplication.Contact
+            enabled: mode === KalendarApplication.Event
         }
 
         QQC2.MenuSeparator {}
 
         KActionFromAction {
             kalendarAction: "move_view_to_today"
-            enabled: mode !== KalendarApplication.Contact
+            enabled: mode === KalendarApplication.Event
         }
         KActionFromAction {
             kalendarAction: "open_date_changer"
-            enabled: mode !== KalendarApplication.Contact
+            enabled: mode === KalendarApplication.Event
         }
     }
 
