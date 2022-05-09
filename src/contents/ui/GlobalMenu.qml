@@ -131,22 +131,22 @@ Labs.MenuBar {
 
         NativeMenuItemFromAction {
             kalendarAction: "move_view_backwards"
-            enabled: mode === KalendarApplication.Task
+            enabled: mode === KalendarApplication.Event
         }
         NativeMenuItemFromAction {
             kalendarAction: "move_view_forwards"
-            enabled: mode === KalendarApplication.Task
+            enabled: mode === KalendarApplication.Event
         }
 
         Labs.MenuSeparator {}
 
         NativeMenuItemFromAction {
             kalendarAction: "move_view_to_today"
-            enabled: mode === KalendarApplication.Task
+            enabled: mode === KalendarApplication.Event
         }
         NativeMenuItemFromAction {
             kalendarAction: "open_date_changer"
-            enabled: mode === KalendarApplication.Task
+            enabled: mode === KalendarApplication.Event
         }
     }
 

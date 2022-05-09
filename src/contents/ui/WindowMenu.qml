@@ -203,7 +203,7 @@ QQC2.MenuBar {
 
         KActionFromAction {
             kalendarAction: "move_view_backwards"
-            enabled: mode !== KalendarApplication.Contact
+            enabled: mode === KalendarApplication.Event
         }
         KActionFromAction {
             kalendarAction: "move_view_forwards"
