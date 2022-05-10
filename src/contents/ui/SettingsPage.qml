@@ -29,7 +29,7 @@ Kirigami.CategorizedSettings {
         Kirigami.SettingAction {
             text: i18n("Address Book Sources")
             icon.name: "preferences-system-users"
-            page: Qt.resolvedUrl("SourceSettingsPage.qml?contact")
+            page: Qt.resolvedUrl("SourceSettingsPage.qml")
             onTriggered: AgentConfiguration.mode = KalendarApplication.Contact
         },
         Kirigami.SettingAction {
