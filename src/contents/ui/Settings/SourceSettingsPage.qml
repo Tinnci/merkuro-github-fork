@@ -135,7 +135,7 @@ Kirigami.Page {
             id: addCalendarPage
             Kirigami.ScrollablePage {
                 id: overlay
-                title: mode ? i18n("Add New Calendar Source") : i18n("Add New Address book Source…")
+                title: mode === KalendarApplication.Contact ? i18n("Add New Address Book Source…" : i18n("Add New Calendar Source")
 
                 footer: Controls.DialogButtonBox {
                     Kirigami.Theme.inherit: false
@@ -170,7 +170,7 @@ Kirigami.Page {
             Layout.fillWidth: true
             Controls.Button {
                 Layout.alignment: Qt.AlignRight
-                text: mode === KalendarApplication.Event ? i18n("Add New Calendar Source…") : i18n("Add New Address book Source…")
+                text: mode === KalendarApplication.Contact ? i18n("Add New Address Book Source…" : i18n("Add New Calendar Source")
 
                 icon.name: "list-add"
                 onClicked: pageStack.pushDialogLayer(addCalendarPage)
