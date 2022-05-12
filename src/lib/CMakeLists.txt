@@ -4,7 +4,6 @@
 
 set(kalendar_lib_SRCS
     colorproxymodel.cpp
-    colorproxymodel.h
 )
 
 add_library(kalendar_lib STATIC)
