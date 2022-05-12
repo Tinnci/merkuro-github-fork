@@ -56,7 +56,7 @@
 #else
 #include <etmcalendar.h>
 #endif
-#include "models/colorproxymodel.h"
+#include <colorproxymodel.h>
 
 using namespace Akonadi;
 
