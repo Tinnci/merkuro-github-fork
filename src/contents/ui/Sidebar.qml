@@ -450,18 +450,20 @@ Kirigami.OverlayDrawer {
                     id: calendarList
 
                     property var calendarModel: KDescendantsProxyModel {
-                        model: switch(sidebar.mode) {
-                        case KalendarApplication.Todo:
-                            return CalendarManager.todoCollections;
-                        case KalendarApplication.Event:
-                            return CalendarManager.viewCollections;
-                        case KalendarApplication.Contact:
-                            return ContactManager.contactCollections;
-                        default:
-                            console.log('Should not happen', sidebar.mode)
+                        model: {
+                            ContactManager.contactCollections;
+                            switch(sidebar.mode) {
+                            case KalendarApplication.Todo:
+                                return CalendarManager.todoCollections;
+                            case KalendarApplication.Event:
+                                return CalendarManager.viewCollections;
+                            case KalendarApplication.Contact:
+                                return ContactManager.contactCollections;
+                            default:
+                                console.log('Should not happen', sidebar.mode)
+                            }
                         }
                     }
-
 
                     model: calendarHeadingItem.expanded ? calendarModel : []
 
