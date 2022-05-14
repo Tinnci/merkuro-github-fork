@@ -10,7 +10,6 @@ import org.kde.kalendar.contact 1.0
 
 Kirigami.ScrollablePage {
     id: page
-    property var contact
     property int itemId
     title: addressee.name
     property int mode: KalendarApplication.Contact
