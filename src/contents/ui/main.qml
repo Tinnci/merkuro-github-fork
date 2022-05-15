@@ -1252,10 +1252,40 @@ Kirigami.ApplicationWindow {
             }
 
             titleDelegate: ViewTitleDelegate {
+                Layout.fillWidth: true
+                Layout.fillHeight: true
                 titleDateButton.range: true
                 titleDateButton.date: hourlyView.startDate
                 titleDateButton.lastDate: DateUtils.addDaysToDate(hourlyView.startDate, hourlyView.daysToShow - 1)
                 titleDateButton.onClicked: dateChangeDrawer.active = !dateChangeDrawer.active
+
+                Kirigami.ActionToolBar {
+                    Layout.fillWidth: true
+                    Layout.fillHeight: true
+                    Layout.leftMargin: Kirigami.Units.largeSpacing
+                    visible: !Kirigami.Settings.isMobile
+
+                    actions: [
+                        Kirigami.Action {
+                            text: "Week"
+                            checkable: true
+                            checked: pageStack.currentItem.objectName == "weekView"
+                            onTriggered: weekViewAction.trigger()
+                        },
+                        Kirigami.Action {
+                            text: "3 Days"
+                            checkable: true
+                            checked: pageStack.currentItem.objectName == "threeDayView"
+                            onTriggered: threeDayViewAction.trigger()
+                        },
+                        Kirigami.Action {
+                            text: "Day"
+                            checkable: true
+                            checked: pageStack.currentItem.objectName == "dayView"
+                            onTriggered: dayViewAction.trigger()
+                        }
+                    ]
+                }
             }
             selectedDate: root.selectedDate
             currentDate: root.currentDate
