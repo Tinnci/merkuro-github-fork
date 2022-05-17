@@ -158,3 +158,172 @@ QString AddresseeWrapper::qrCodeData() const
     addr.setLogo(KContacts::Picture());
     return QString::fromUtf8(converter.createVCard(addr));
 }
+
+QString AddresseeWrapper::note() const
+{
+    return m_addressee.note();
+}
+
+QDate AddresseeWrapper::anniversary() const
+{
+    return m_addressee.anniversary();
+}
+
+QString AddresseeWrapper::spousesName() const
+{
+    return m_addressee.spousesName();
+}
+
+QString AddresseeWrapper::organization() const
+{
+    return m_addressee.organization();
+}
+
+QString AddresseeWrapper::profession() const
+{
+    return m_addressee.profession();
+}
+
+QString AddresseeWrapper::title() const
+{
+    return m_addressee.title();
+}
+
+QString AddresseeWrapper::department() const
+{
+    return m_addressee.department();
+}
+
+QString AddresseeWrapper::office() const
+{
+    return m_addressee.office();
+}
+
+QString AddresseeWrapper::managersName() const
+{
+    return m_addressee.managersName();
+}
+
+QString AddresseeWrapper::assistantsName() const
+{
+    return m_addressee.assistantsName();
+}
+
+void AddresseeWrapper::setNote(const QString &note)
+{
+    if (note == m_addressee.note()) {
+        return;
+    }
+    m_addressee.setNote(note);
+    Q_EMIT noteChanged();
+}
+
+void AddresseeWrapper::setAnniversary(const QDate &anniversary)
+{
+    if (anniversary == m_addressee.anniversary()) {
+        return;
+    }
+    m_addressee.setAnniversary(anniversary);
+    Q_EMIT anniversaryChanged();
+}
+
+void AddresseeWrapper::setSpousesName(const QString &spousesName)
+{
+    if (spousesName == m_addressee.spousesName()) {
+        return;
+    }
+    m_addressee.setSpousesName(spousesName);
+    Q_EMIT spousesNameChanged();
+}
+
+void AddresseeWrapper::setOrganization(const QString &organization)
+{
+    if (organization == m_addressee.organization()) {
+        return;
+    }
+    m_addressee.setOrganization(organization);
+    Q_EMIT organizationChanged();
+}
+
+void AddresseeWrapper::setProfession(const QString &profession)
+{
+    if (profession == m_addressee.profession()) {
+        return;
+    }
+    m_addressee.setProfession(profession);
+    Q_EMIT professionChanged();
+}
+
+void AddresseeWrapper::setTitle(const QString &title)
+{
+    if (title == m_addressee.title()) {
+        return;
+    }
+    m_addressee.setTitle(title);
+    Q_EMIT titleChanged();
+}
+
+void AddresseeWrapper::setDepartment(const QString &department)
+{
+    if (department == m_addressee.department()) {
+        return;
+    }
+    m_addressee.setDepartment(department);
+    Q_EMIT departmentChanged();
+}
+
+void AddresseeWrapper::setOffice(const QString &office)
+{
+    if (office == m_addressee.office()) {
+        return;
+    }
+    m_addressee.setOffice(office);
+    Q_EMIT officeChanged();
+}
+
+void AddresseeWrapper::setManagersName(const QString &managersName)
+{
+    if (managersName == m_addressee.managersName()) {
+        return;
+    }
+    m_addressee.setManagersName(managersName);
+    Q_EMIT managersNameChanged();
+}
+
+void AddresseeWrapper::setAssistantsName(const QString &assistantsName)
+{
+    if (assistantsName == m_addressee.assistantsName()) {
+        return;
+    }
+    m_addressee.setAssistantsName(assistantsName);
+    Q_EMIT assistantsNameChanged();
+}
+
+QString AddresseeWrapper::nickName() const
+{
+    return m_addressee.nickName();
+}
+
+void AddresseeWrapper::setNickName(const QString &nickName)
+{
+    if (nickName == m_addressee.nickName()) {
+        return;
+    }
+    m_addressee.setNickName(nickName);
+    Q_EMIT nickNameChanged();
+}
+
+QUrl AddresseeWrapper::blogFeed() const
+{
+    return m_addressee.blogFeed();
+}
+
+void AddresseeWrapper::setBlogFeed(const QUrl &blogFeed)
+{
+    if (blogFeed == m_addressee.blogFeed()) {
+        return;
+    }
+    m_addressee.setBlogFeed(blogFeed);
+    Q_EMIT blogFeedChanged();
+}
+
