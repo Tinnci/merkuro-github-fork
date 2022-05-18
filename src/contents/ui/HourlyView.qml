@@ -635,7 +635,7 @@ Kirigami.Page {
                             // Since we position with anchors, height is 0 -- must calc manually
 
                             const timeMarkerY = (root.currentDate.getHours() * root.gridLineWidth) + (hourlyView.minuteHeight * root.minutesFromStartOfDay) - (height / 2) - (root.gridLineWidth / 2)
-                            let yPos = Math.max(0.0, (timeMarkerY / dayHeight))
+                            const yPos = Math.max(0.0, (timeMarkerY / dayHeight))
                             setPosition(yPos, animate);
                         }
                     }
@@ -654,9 +654,9 @@ Kirigami.Page {
                             // Lets set position to the bottom of the vScrollBar then
                             yPos = 1 - vScrollBar.visualSize;
                         }
-                        if(animate) {
+                        if (animate) {
                             scrollAnimation.to = yPos;
-                            if(scrollAnimation.running) {
+                            if (scrollAnimation.running) {
                                 scrollAnimation.stop();
                             }
                             scrollAnimation.start();
