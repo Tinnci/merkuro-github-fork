@@ -159,6 +159,30 @@ Kirigami.ApplicationWindow {
         }
     }
 
+    Keys.onRightPressed: if(Qt.application.layoutDirection === Qt.LeftToRight) {
+        moveViewForwardsAction.trigger()
+    } else {
+        moveViewBackwardsAction.trigger()
+    }
+
+    Keys.onLeftPressed: if(Qt.application.layoutDirection === Qt.LeftToRight) {
+        moveViewBackwardsAction.trigger();
+    } else {
+        moveViewForwardsAction.trigger();
+    }
+
+    MouseArea {
+        anchors.fill: parent
+        propagateComposedEvents: true
+        acceptedButtons: Qt.BackButton | Qt.ForwardButton
+
+        onClicked: if(mouse.button === Qt.ForwardButton) {
+            moveViewForwardsAction.trigger();
+        } else {
+            moveViewBackwardsAction.trigger();
+        }
+    }
+
     Connections {
         target: KalendarApplication
         function onOpenMonthView() {
