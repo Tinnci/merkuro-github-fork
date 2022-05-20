@@ -159,6 +159,18 @@ Kirigami.ApplicationWindow {
         }
     }
 
+    Keys.onRightPressed: if(Qt.application.layoutDirection === Qt.LeftToRight) {
+        moveViewForwardsAction.trigger()
+    } else {
+        moveViewBackwardsAction.trigger()
+    }
+
+    Keys.onLeftPressed: if(Qt.application.layoutDirection === Qt.LeftToRight) {
+        moveViewBackwardsAction.trigger()
+    } else {
+        moveViewForwardsAction.trigger()
+    }
+
     Connections {
         target: KalendarApplication
         function onOpenMonthView() {
