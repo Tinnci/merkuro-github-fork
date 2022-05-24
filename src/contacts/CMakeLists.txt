@@ -30,6 +30,8 @@ target_sources(kalendar_contact_plugin PRIVATE
     resources.qrc
 )
 
+kconfig_add_kcfg_files(kalendar_contact_plugin GENERATE_MOC contactconfig.kcfgc)
+
 ecm_target_qml_sources(kalendar_contact_plugin SOURCES
     qml/ContactChooserPage.qml
     qml/ContactView.qml

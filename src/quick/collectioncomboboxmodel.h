@@ -45,6 +45,7 @@ class CollectionComboBoxModel : public QSortFilterProxyModel
     Q_PROPERTY(QStringList mimeTypeFilter READ mimeTypeFilter WRITE setMimeTypeFilter NOTIFY mimeTypeFilterChanged)
     Q_PROPERTY(Akonadi::Collection::Right accessRightsFilter READ accessRightsFilter WRITE setAccessRightsFilter NOTIFY accessRightsFilterChanged)
     Q_PROPERTY(Akonadi::Collection currentCollection READ currentCollection NOTIFY currentCollectionChanged)
+    Q_PROPERTY(qint64 defaultCollectionId READ defaultCollectionId WRITE setDefaultCollectionId NOTIFY currentCollection)
     Q_PROPERTY(int currentIndex READ currentIndex WRITE setCurrentIndex NOTIFY currentIndexChanged)
 
 public:
@@ -71,6 +72,16 @@ public:
      * Returns the access rights the collections are filtered by.
      */
     Q_REQUIRED_RESULT Akonadi::Collection::Right accessRightsFilter() const;
+
+    /**
+     * Return the default collection id.
+     */
+    qint64 defaultCollectionId() const;
+
+    /**
+     * Sets the @p collection that shall be selected by default.
+     */
+    void setDefaultCollectionId(qint64 collectionId);
 
     /**
      * Sets the @p collection that shall be selected by default.
@@ -109,9 +120,6 @@ Q_SIGNALS:
 
 private:
     std::unique_ptr<CollectionComboBoxModelPrivate> const d;
-
-    Q_PRIVATE_SLOT(d, void activated(int))
-    Q_PRIVATE_SLOT(d, void activated(const QModelIndex &))
 };
 
 }

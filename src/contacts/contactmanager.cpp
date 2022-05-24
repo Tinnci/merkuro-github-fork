@@ -99,11 +99,8 @@ ContactManager::ContactManager(QObject *parent)
     m_checkableProxyModel->setSelectionModel(m_collectionSelectionModel);
     m_checkableProxyModel->setSourceModel(m_collectionTree);
 
-    auto sortedProxyModel = new SortedCollectionProxModel(this);
-    sortedProxyModel->setSourceModel(m_checkableProxyModel);
-
     m_colorProxy = new ColorProxyModel(this);
-    m_colorProxy->setSourceModel(sortedProxyModel);
+    m_colorProxy->setSourceModel(m_checkableProxyModel);
     m_colorProxy->setObjectName(QStringLiteral("Show contact colors"));
     m_colorProxy->setDynamicSortFilter(true);
 

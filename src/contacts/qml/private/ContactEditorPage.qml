@@ -21,6 +21,7 @@ Kirigami.ScrollablePage {
     property ContactEditor contactEditor: ContactEditor {
         id: contactEditor
         mode: ContactEditor.CreateMode
+        onFinished: root.closeDialog()
     }
 
     title: if (mode === ContactEditor.CreateMode) {
@@ -50,24 +51,31 @@ Kirigami.ScrollablePage {
             Layout.fillWidth: true
 
             textRole: "display"
-            valueRole: "collectionId"
+            valueRole: "collectionColor"
 
-            // indicator: Rectangle {
-            //     id: indicatorDot
-            //     implicitHeight: calendarCombo.implicitHeight * 0.4
-            //     implicitWidth: implicitHeight
-            //     x: calendarCombo.mirrored ? calendarCombo.leftPadding : calendarCombo.width - (calendarCombo.leftPadding * 3) - Kirigami.Units.iconSizes.smallMedium
-            //     y: calendarCombo.topPadding + (calendarCombo.availableHeight - height) / 2
-            //     radius: width * 0.5
-            //     // color: CalendarManager.getCollectionDetails(calendarCombo.currentValue).color
-            // }
+            indicator: Rectangle {
+                id: indicatorDot
+                implicitHeight: addressBookComboBox.implicitHeight * 0.4
+                implicitWidth: implicitHeight
+                x: addressBookComboBox.mirrored ? addressBookComboBox.leftPadding : addressBookComboBox.width - (addressBookComboBox.leftPadding * 3) - Kirigami.Units.iconSizes.smallMedium
+                y: addressBookComboBox.topPadding + (addressBookComboBox.availableHeight - height) / 2
+                radius: width * 0.5
+                color: parent.currentValue
+            }
 
             model: Akonadi.CollectionComboBoxModel {
                 id: collectionComboBoxModel
                 mimeTypeFilter: [Akonadi.MimeTypes.address, Akonadi.MimeTypes.contactGroup]
                 accessRightsFilter: Akonadi.Collection.CanCreateItem
+                defaultCollectionId: if (mode === ContactEditor.CreateMode) {
+                    return ContactConfig.lastUsedAddressBookCollection;
+                } else {
+                    return contactEditor.contact.collectionId;
+                }
                 onCurrentIndexChanged: addressBookComboBox.currentIndex = currentIndex
-                onCurrentCollectionChanged: contactEditor.setDefaultAddressBook(currentCollection)
+                onCurrentCollectionChanged: {
+                    contactEditor.setDefaultAddressBook(currentCollection);
+                }
             }
             delegate: Kirigami.BasicListItem {
                 label: display
@@ -417,4 +425,23 @@ Kirigami.ScrollablePage {
     //        }
     //    }
     //}
+
+    footer: QQC2.DialogButtonBox {
+        standardButtons: QQC2.DialogButtonBox.Cancel
+
+        QQC2.Button {
+            icon.name: mode === ContactEditor.EditMode ? "document-save" : "list-add"
+            text: ContactEditor.CreateMode ? i18n("Save") : i18n("Add")
+            enabled: root.validDates && incidenceWrapper.summary && incidenceWrapper.collectionId
+            QQC2.DialogButtonBox.buttonRole: QQC2.DialogButtonBox.AcceptRole
+        }
+
+        onRejected: cancel()
+        onAccepted: {
+            contactEditor.saveContactInAddressBook()
+            ContactConfig.lastUsedAddressBookCollection = collectionComboBoxModel.defaultCollectionId;
+            ContactConfig.save();
+        }
+    }
+
 }

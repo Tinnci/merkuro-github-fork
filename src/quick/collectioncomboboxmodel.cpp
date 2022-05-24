@@ -78,9 +78,6 @@ public:
 
     bool scanSubTree(const QModelIndex &index);
 
-    void activated(int index);
-    void activated(const QModelIndex &index);
-
     CollectionComboBoxModel *const mParent;
 
     Akonadi::Monitor *mMonitor = nullptr;
@@ -89,6 +86,7 @@ public:
     Akonadi::CollectionFilterProxyModel *mMimeTypeFilterModel = nullptr;
     Akonadi::EntityRightsFilterModel *mRightsFilterModel = nullptr;
     Akonadi::Collection mDefaultCollection;
+    qint64 mDefaultCollectionId = -1;
     int mCurrentIndex;
 };
 
@@ -96,8 +94,8 @@ bool CollectionComboBoxModelPrivate::scanSubTree(const QModelIndex &index)
 {
     const Akonadi::Collection::Id id = index.data(EntityTreeModel::CollectionIdRole).toLongLong();
 
-    if (mDefaultCollection.id() == id) {
-        Q_EMIT activated(index);
+    if (mDefaultCollectionId == id) {
+        mParent->setCurrentIndex(index.row());
         return true;
     }
 
@@ -115,19 +113,6 @@ bool CollectionComboBoxModelPrivate::scanSubTree(const QModelIndex &index)
     }
 
     return false;
-}
-
-void CollectionComboBoxModelPrivate::activated(int index)
-{
-    const QModelIndex modelIndex = mParent->index(index, 0);
-    if (modelIndex.isValid()) {
-        Q_EMIT mParent->currentCollectionChanged();
-    }
-}
-
-void CollectionComboBoxModelPrivate::activated(const QModelIndex &index)
-{
-    mCurrentIndex = index.row();
 }
 
 CollectionComboBoxModel::CollectionComboBoxModel(QObject *parent)
@@ -172,9 +157,26 @@ Akonadi::Collection::Right CollectionComboBoxModel::accessRightsFilter() const
     return (Akonadi::Collection::Right)(int)d->mRightsFilterModel->accessRights();
 }
 
+qint64 CollectionComboBoxModel::defaultCollectionId() const
+{
+    auto collection = currentCollection();
+    if (collection.isValid()) {
+        return collection.id();
+    } else {
+        return d->mDefaultCollectionId;
+    }
+}
+
+void CollectionComboBoxModel::setDefaultCollectionId(qint64 collectionId)
+{
+    d->mDefaultCollectionId = collectionId;
+    d->scanSubTree({});
+}
+
 void CollectionComboBoxModel::setDefaultCollection(const Collection &collection)
 {
     d->mDefaultCollection = collection;
+    d->mDefaultCollectionId = collection.id();
     d->scanSubTree({});
 }
 

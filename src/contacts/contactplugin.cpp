@@ -9,6 +9,7 @@
 #include "contactmanager.h"
 #include "emailmodel.h"
 #include "globalcontactmodel.h"
+#include "contactconfig.h"
 
 #include <QAbstractListModel>
 #include <QQmlEngine>
@@ -17,6 +18,12 @@
 void CalendarPlugin::registerTypes(const char *uri)
 {
     Q_ASSERT(uri == QByteArray("org.kde.kalendar.contact"));
+
+    qmlRegisterSingletonType<ContactConfig>("org.kde.kalendar.contact", 1, 0, "ContactConfig", [](QQmlEngine *engine, QJSEngine *scriptEngine) {
+        Q_UNUSED(engine)
+        Q_UNUSED(scriptEngine)
+        return new ContactConfig;
+    });
 
     qmlRegisterSingletonType<ContactManager>("org.kde.kalendar.contact", 1, 0, "ContactManager", [](QQmlEngine *engine, QJSEngine *scriptEngine) {
         Q_UNUSED(engine)
