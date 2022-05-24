@@ -32,13 +32,8 @@ AddresseeWrapper *ContactEditorBackend::contact()
         return m_addressee;
     }
 
-    // Only create
-    if (m_mode == ContactEditorBackend::CreateMode) {
-        m_addressee = new AddresseeWrapper(this);
-        Q_EMIT addresseeChanged();
-        return m_addressee;
-    }
-
+    m_addressee = new AddresseeWrapper(this);
+    Q_EMIT contactChanged();
     return m_addressee;
 }
 
@@ -56,7 +51,12 @@ void ContactEditorBackend::setMode(ContactEditorBackend::Mode mode)
     Q_EMIT modeChanged();
 }
 
-void ContactEditorBackend::loadContact(const Akonadi::Item &item)
+Akonadi::Item ContactEditorBackend::item() const
+{
+    return m_item;
+}
+
+void ContactEditorBackend::setItem(const Akonadi::Item &item)
 {
     if (m_mode == CreateMode) {
         Q_ASSERT_X(false, "ContactEditorBackend::loadContact", "You are calling loadContact in CreateMode!");
@@ -83,11 +83,11 @@ void ContactEditorBackend::setupMonitor()
     m_monitor->ignoreSession(Akonadi::Session::defaultSession());
 
     connect(m_monitor, &Akonadi::Monitor::itemChanged, this, [this](const Akonadi::Item &item, const QSet<QByteArray> &set) {
-        itemChanged(item, set);
+        itemChangedExternally(item, set);
     });
 }
 
-void ContactEditorBackend::itemChanged(const Akonadi::Item &item, const QSet<QByteArray> &)
+void ContactEditorBackend::itemChangedExternally(const Akonadi::Item &item, const QSet<QByteArray> &)
 {
     Q_UNUSED(item)
     // TODO port to QML
@@ -129,6 +129,7 @@ void ContactEditorBackend::itemFetchDone(KJob *job)
     }
 
     m_item = fetchJob->items().at(0);
+    Q_EMIT itemChanged();
 
     setReadOnly(false);
     if (m_mode == ContactEditorBackend::EditMode) {
@@ -142,9 +143,11 @@ void ContactEditorBackend::itemFetchDone(KJob *job)
     } else {
         const auto addr = m_item.payload<KContacts::Addressee>();
         m_contactMetaData.load(m_item);
-        m_addressee->setDisplayType((AddresseeWrapper::DisplayType)m_contactMetaData.displayNameMode());
-        m_addressee->setAddressee(m_item.payload<KContacts::Addressee>());
+        contact()->setDisplayType((AddresseeWrapper::DisplayType)m_contactMetaData.displayNameMode());
+        contact()->setAddressee(m_item.payload<KContacts::Addressee>());
     }
+    Q_EMIT itemChanged();
+    Q_EMIT contactChanged();
 }
 
 void ContactEditorBackend::parentCollectionFetchDone(KJob *job)
@@ -163,11 +166,18 @@ void ContactEditorBackend::parentCollectionFetchDone(KJob *job)
     const Akonadi::Collection parentCollection = fetchJob->collections().at(0);
     if (parentCollection.isValid()) {
         setReadOnly(!(parentCollection.rights() & Akonadi::Collection::CanChangeItem));
+        m_defaltAddressBook = parentCollection;
+        Q_EMIT collectionChanged();
     }
 
     m_contactMetaData.load(m_item);
-    m_addressee->setDisplayType((AddresseeWrapper::DisplayType)m_contactMetaData.displayNameMode());
-    m_addressee->setAddressee(m_item.payload<KContacts::Addressee>());
+    contact()->setDisplayType((AddresseeWrapper::DisplayType)m_contactMetaData.displayNameMode());
+    contact()->setAddressee(m_item.payload<KContacts::Addressee>());
+}
+
+qint64 ContactEditorBackend::collectionId() const
+{
+    return m_defaltAddressBook.id();
 }
 
 void ContactEditorBackend::saveContactInAddressBook()
@@ -178,13 +188,13 @@ void ContactEditorBackend::saveContactInAddressBook()
             return;
         }
 
-        auto addr = m_item.payload<KContacts::Addressee>();
+        auto addressee = m_addressee->addressee();
 
-        storeContact(addr, m_contactMetaData);
+        storeContact(addressee, m_contactMetaData);
 
         m_contactMetaData.store(m_item);
 
-        m_item.setPayload<KContacts::Addressee>(addr);
+        m_item.setPayload<KContacts::Addressee>(addressee);
 
         auto job = new Akonadi::ItemModifyJob(m_item);
         connect(job, &Akonadi::ItemModifyJob::result, this, [this](KJob *job) {

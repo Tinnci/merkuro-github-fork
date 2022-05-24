@@ -22,18 +22,18 @@ Kirigami.ScrollablePage {
         addresseeItem: ContactManager.getItem(page.itemId)
     }
 
-    //actions {
-    //    main: Kirigami.Action {
-    //        iconName: "document-edit"
-    //        text: i18n("Edit")
-    //        onTriggered: {
-    //            pageStack.pushDialogLayer(Qt.resolvedUrl("AddContactPage.qml"), {
-    //                state: "update",
-    //                person: personData.person,
-    //                addressee: page.addressee
-    //            })
-    //        }
-    //    }
+    actions {
+        main: Kirigami.Action {
+            iconName: "document-edit"
+            text: i18n("Edit")
+            onTriggered: {
+                pageStack.pushDialogLayer(Qt.resolvedUrl("ContactEditorPage.qml"), {
+                    mode: ContactEditor.EditMode,
+                    item: page.addressee.addresseeItem,
+                })
+            }
+        }
+    }
     //    contextualActions: [
     //        Kirigami.Action {
     //            iconName: "delete"

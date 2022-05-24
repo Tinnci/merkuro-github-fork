@@ -87,7 +87,7 @@ public:
     Akonadi::EntityRightsFilterModel *mRightsFilterModel = nullptr;
     Akonadi::Collection mDefaultCollection;
     qint64 mDefaultCollectionId = -1;
-    int mCurrentIndex;
+    int mCurrentIndex = -1;
 };
 
 bool CollectionComboBoxModelPrivate::scanSubTree(const QModelIndex &index)
@@ -99,8 +99,8 @@ bool CollectionComboBoxModelPrivate::scanSubTree(const QModelIndex &index)
         return true;
     }
 
-    for (int row = 0; row < mModel->rowCount(index); ++row) {
-        const QModelIndex childIndex = mModel->index(row, 0, index);
+    for (int row = 0; row < mRightsFilterModel->rowCount(index); ++row) {
+        const QModelIndex childIndex = mRightsFilterModel->index(row, 0, index);
         // This should not normally happen, but if it does we end up in an endless loop
         if (!childIndex.isValid()) {
             qWarning() << "Invalid child detected: " << index.data().toString();
@@ -169,6 +169,9 @@ qint64 CollectionComboBoxModel::defaultCollectionId() const
 
 void CollectionComboBoxModel::setDefaultCollectionId(qint64 collectionId)
 {
+    if (d->mDefaultCollectionId == collectionId || collectionId < -1) {
+        return;
+    }
     d->mDefaultCollectionId = collectionId;
     d->scanSubTree({});
 }

@@ -26,6 +26,7 @@ class AddresseeWrapper : public QObject, public Akonadi::ItemMonitor
     // Akonadi properties
     Q_PROPERTY(Akonadi::Item addresseeItem READ addresseeItem WRITE setAddresseeItem NOTIFY addresseeItemChanged)
     Q_PROPERTY(Akonadi::Collection collection READ collection WRITE setCollection NOTIFY collectionChanged)
+    Q_PROPERTY(qint64 collectionId READ collectionId NOTIFY collectionChanged)
 
     Q_PROPERTY(QString uid READ uid NOTIFY uidChanged)
 
@@ -86,6 +87,7 @@ public:
     QString uid() const;
 
     Akonadi::Collection collection() const;
+    qint64 collectionId() const;
     void setCollection(Akonadi::Collection collection);
 
     DisplayType displayType() const;

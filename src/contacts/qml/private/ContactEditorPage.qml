@@ -17,11 +17,13 @@ Kirigami.ScrollablePage {
     id: root
 
     property alias mode: contactEditor.mode
+    property alias item: contactEditor.item
 
     property ContactEditor contactEditor: ContactEditor {
         id: contactEditor
         mode: ContactEditor.CreateMode
         onFinished: root.closeDialog()
+        onError: console.log(error)
     }
 
     title: if (mode === ContactEditor.CreateMode) {
@@ -70,7 +72,7 @@ Kirigami.ScrollablePage {
                 defaultCollectionId: if (mode === ContactEditor.CreateMode) {
                     return ContactConfig.lastUsedAddressBookCollection;
                 } else {
-                    return contactEditor.contact.collectionId;
+                    return contactEditor.collectionId;
                 }
                 onCurrentIndexChanged: addressBookComboBox.currentIndex = currentIndex
                 onCurrentCollectionChanged: {
@@ -370,78 +372,25 @@ Kirigami.ScrollablePage {
         //}
     }
 
-    //footer: T.Control {
-    //    id: footerToolBar
-
-    //    implicitWidth: Math.max(implicitBackgroundWidth + leftInset + rightInset,
-    //                            implicitContentWidth + leftPadding + rightPadding)
-    //    implicitHeight: Math.max(implicitBackgroundHeight + topInset + bottomInset,
-    //                            implicitContentHeight + topPadding + bottomPadding)
-
-    //    leftPadding: Kirigami.Units.smallSpacing
-    //    rightPadding: Kirigami.Units.smallSpacing
-    //    bottomPadding: Kirigami.Units.smallSpacing
-    //    topPadding: Kirigami.Units.smallSpacing + footerSeparator.implicitHeight
-
-    //    contentItem: RowLayout {
-    //        spacing: parent.spacing
-
-    //        // footer buttons
-    //        Controls.DialogButtonBox {
-    //            // we don't explicitly set padding, to let the style choose the padding
-    //            id: dialogButtonBox
-    //            standardButtons: Controls.DialogButtonBox.Close | Controls.DialogButtonBox.Save
-
-    //            Layout.fillWidth: true
-    //            Layout.alignment: dialogButtonBox.alignment
-
-    //            position: Controls.DialogButtonBox.Footer
-
-    //            onAccepted: {
-    //                root.save();
-    //                switch(root.state) {
-    //                    case "create":
-    //                        if (!KPeople.PersonPluginManager.addContact({ "vcard": ContactController.addresseeToVCard(addressee) }))
-    //                            console.warn("could not create contact")
-    //                        break;
-    //                    case "update":
-    //                        if (!root.person.setContactCustomProperty("vcard", ContactController.addresseeToVCard(addressee)))
-    //                            console.warn("Could not save", addressee.url)
-    //                        break;
-    //                }
-    //                root.closeDialog()
-    //            }
-    //            onRejected: root.closeDialog()
-    //        }
-    //    }
-
-    //    background: Item {
-    //        // separator above footer
-    //        Kirigami.Separator {
-    //            id: footerSeparator
-    //            visible: root.contentItem.height < root.contentItem.flickableItem.contentHeight
-    //            width: parent.width
-    //            anchors.top: parent.top
-    //        }
-    //    }
-    //}
-
     footer: QQC2.DialogButtonBox {
         standardButtons: QQC2.DialogButtonBox.Cancel
 
         QQC2.Button {
             icon.name: mode === ContactEditor.EditMode ? "document-save" : "list-add"
-            text: ContactEditor.CreateMode ? i18n("Save") : i18n("Add")
+            text: mode === ContactEditor.EditMode ? i18n("Save") : i18n("Add")
             enabled: root.validDates && incidenceWrapper.summary && incidenceWrapper.collectionId
             QQC2.DialogButtonBox.buttonRole: QQC2.DialogButtonBox.AcceptRole
         }
 
-        onRejected: cancel()
+        onRejected: {
+            ContactConfig.lastUsedAddressBookCollection = collectionComboBoxModel.defaultCollectionId;
+            ContactConfig.save();
+            root.closeDialog();
+        }
         onAccepted: {
             contactEditor.saveContactInAddressBook()
             ContactConfig.lastUsedAddressBookCollection = collectionComboBoxModel.defaultCollectionId;
             ContactConfig.save();
         }
     }
-
 }

@@ -73,7 +73,9 @@ class ContactEditorBackend : public QObject
 {
     Q_OBJECT
     Q_PROPERTY(Mode mode READ mode WRITE setMode NOTIFY modeChanged)
-    Q_PROPERTY(AddresseeWrapper *contact READ contact NOTIFY addresseeChanged NOTIFY modeChanged)
+    Q_PROPERTY(AddresseeWrapper *contact READ contact NOTIFY contactChanged NOTIFY modeChanged)
+    Q_PROPERTY(Akonadi::Item item READ item WRITE setItem NOTIFY itemChanged)
+    Q_PROPERTY(qint64 collectionId READ collectionId NOTIFY collectionChanged)
     Q_PROPERTY(bool isReadOnly READ isReadOnly NOTIFY addresseeChanged NOTIFY modeChanged)
 
 public:
@@ -107,6 +109,7 @@ public:
     [[nodiscard]] bool hasNoSavedData() const;
 
     [[nodiscard]] AddresseeWrapper *contact();
+    [[nodiscard]] qint64 collectionId() const;
     [[nodiscard]] Mode mode() const;
     void setMode(Mode mode);
     [[nodiscard]] bool isReadOnly() const;
@@ -115,7 +118,8 @@ public:
     /**
      * Loads the @p contact into the editor.
      */
-    Q_INVOKABLE void loadContact(const Akonadi::Item &contact);
+    Q_INVOKABLE void setItem(const Akonadi::Item &contact);
+    Akonadi::Item item() const;
 
     /**
      * Save the contact from the editor back to the storage. And return error.
@@ -143,9 +147,11 @@ Q_SIGNALS:
      */
     void finished();
 
-    void addresseeChanged();
+    void contactChanged();
     void modeChanged();
     void isReadOnlyChanged();
+    void itemChanged();
+    void collectionChanged();
 
 private:
     void itemFetchDone(KJob *job);
@@ -153,7 +159,7 @@ private:
     void storeDone(KJob *job);
     void loadContact(const KContacts::Addressee &contact, const ContactMetaData &metaData);
     void setupMonitor();
-    void itemChanged(const Akonadi::Item &item, const QSet<QByteArray> &);
+    void itemChangedExternally(const Akonadi::Item &item, const QSet<QByteArray> &);
     void storeContact(KContacts::Addressee &contact, ContactMetaData &metaData) const;
 
     Akonadi::Item m_item;

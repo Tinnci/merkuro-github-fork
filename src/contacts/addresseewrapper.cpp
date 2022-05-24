@@ -117,6 +117,11 @@ Akonadi::Collection AddresseeWrapper::collection() const
     return m_collection.isValid() ? m_collection : item().parentCollection();
 }
 
+qint64 AddresseeWrapper::collectionId() const
+{
+    return collection().id();
+}
+
 void AddresseeWrapper::setCollection(Akonadi::Collection collection)
 {
     m_collection = collection;
