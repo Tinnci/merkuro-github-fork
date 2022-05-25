@@ -133,54 +133,30 @@ Kirigami.ScrollablePage {
                 property bool isTodo: root.incidenceWrapper.incidenceType === IncidenceWrapper.TypeTodo
                 property bool isJournal: root.incidenceWrapper.incidenceType === IncidenceWrapper.TypeJournal
 
-                QQC2.ComboBox {
+                Akonadi.CollectionComboBox {
                     id: calendarCombo
 
                     Kirigami.FormData.label: i18n("Calendar:")
                     Layout.fillWidth: true
 
-                    // Not using a property from the incidenceWrapper object makes currentIndex send old incidenceWrapper to function
-                    property int collectionId: root.incidenceWrapper.collectionId
-
-                    textRole: "display"
-                    valueRole: "collectionId"
-                    currentIndex: model && collectionId !== -1 ? CalendarManager.getCalendarSelectableIndex(root.incidenceWrapper) : -1
-
-                    indicator: Rectangle {
-                        id: indicatorDot
-                        implicitHeight: calendarCombo.implicitHeight * 0.4
-                        implicitWidth: implicitHeight
-                        x: calendarCombo.mirrored ? calendarCombo.leftPadding : calendarCombo.width - (calendarCombo.leftPadding * 3) - Kirigami.Units.iconSizes.smallMedium
-                        y: calendarCombo.topPadding + (calendarCombo.availableHeight - height) / 2
-                        radius: width * 0.5
-                        color: CalendarManager.getCollectionDetails(calendarCombo.currentValue).color
+                    defaultCollectionId: if (root.incidenceWrapper.collectionId === -1) {
+                        return incidenceForm.isTodo ? Config.lastUsedTodoCollection : Config.lastUsedEventCollection;
+                    } else {
+                        return root.incidenceWrapper.collectionId;
                     }
 
-                    model: Akonadi.CollectionComboBoxModel {
-                        id: collectionComboBoxModel
-                        mimeTypeFilter: if (root.incidenceWrapper.incidenceType === IncidenceWrapper.TypeEvent) {
-                            return [Akonadi.MimeTypes.calendar]
-                        } else if (root.incidenceWrapper.incidenceType === IncidenceWrapper.TypeTodo) {
-                            return [Akonadi.MimeTypes.todo]
-                        }
-                        accessRightsFilter: Akonadi.Collection.CanCreateItem
-                        onCurrentIndexChanged: addressBookComboBox.currentIndex = currentIndex
-                        onCurrentCollectionChanged: contactEditor.setDefaultAddressBook(currentCollection)
+                    mimeTypeFilter: if (root.incidenceWrapper.incidenceType === IncidenceWrapper.TypeEvent) {
+                        return [Akonadi.MimeTypes.calendar]
+                    } else if (root.incidenceWrapper.incidenceType === IncidenceWrapper.TypeTodo) {
+                        return [Akonadi.MimeTypes.todo]
                     }
-                    delegate: Kirigami.BasicListItem {
-                        label: display
-                        icon: decoration
-                        trailing: Rectangle {
-                            anchors.margins: Kirigami.Units.smallSpacing
-                            width: height
-                            radius: width * 0.5
-                            color: collectionColor
-                        }
-                        onClicked: root.incidenceWrapper.collectionId = collectionId
+                    accessRightsFilter: Akonadi.Collection.CanCreateItem
+                    onSelectedCollectionChanged: {
+                        console.log('hello', collection);
+                        root.incidenceWrapper.setCollection(collection)
                     }
-
-                    popup.z: 1000
                 }
+
                 QQC2.TextField {
                     id: summaryField
 

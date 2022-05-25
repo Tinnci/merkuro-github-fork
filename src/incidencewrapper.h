@@ -29,7 +29,12 @@
 class IncidenceWrapper : public QObject, public Akonadi::ItemMonitor
 {
     Q_OBJECT
+
+    // Akonadi properties
     Q_PROPERTY(Akonadi::Item incidenceItem READ incidenceItem WRITE setIncidenceItem NOTIFY incidenceItemChanged)
+    Q_PROPERTY(qint64 collectionId READ collectionId WRITE setCollectionId NOTIFY collectionIdChanged)
+
+    // Incidence properties
     Q_PROPERTY(KCalendarCore::Incidence::Ptr incidencePtr READ incidencePtr WRITE setIncidencePtr NOTIFY incidencePtrChanged)
     Q_PROPERTY(KCalendarCore::Incidence::Ptr originalIncidencePtr READ originalIncidencePtr NOTIFY originalIncidencePtrChanged)
     Q_PROPERTY(int incidenceType READ incidenceType NOTIFY incidenceTypeChanged)
@@ -37,7 +42,6 @@ class IncidenceWrapper : public QObject, public Akonadi::ItemMonitor
     Q_PROPERTY(QString incidenceIconName READ incidenceIconName NOTIFY incidenceIconNameChanged)
     Q_PROPERTY(QString uid READ uid CONSTANT)
 
-    Q_PROPERTY(qint64 collectionId READ collectionId WRITE setCollectionId NOTIFY collectionIdChanged)
     Q_PROPERTY(QString parent READ parent WRITE setParent NOTIFY parentChanged)
     Q_PROPERTY(QString summary READ summary WRITE setSummary NOTIFY summaryChanged)
     Q_PROPERTY(QStringList categories READ categories WRITE setCategories NOTIFY categoriesChanged)
@@ -176,6 +180,7 @@ public:
     Q_INVOKABLE void setRecurrenceOccurrences(int occurrences);
     Q_INVOKABLE void clearRecurrences();
 
+    Q_INVOKABLE void setCollection(const Akonadi::Collection &collection);
 Q_SIGNALS:
     void incidenceItemChanged();
     void incidencePtrChanged(KCalendarCore::Incidence::Ptr incidencePtr);

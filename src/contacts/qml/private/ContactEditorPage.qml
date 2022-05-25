@@ -46,55 +46,22 @@ Kirigami.ScrollablePage {
         id: form
         Layout.fillWidth: true
 
-        QQC2.ComboBox {
+        Akonadi.CollectionComboBox {
             id: addressBookComboBox
 
             Kirigami.FormData.label: i18n("Address Book:")
             Layout.fillWidth: true
+            enabled: mode === ContactEditor.CreateMode
 
-            textRole: "display"
-            valueRole: "collectionColor"
-
-            indicator: Rectangle {
-                id: indicatorDot
-                implicitHeight: addressBookComboBox.implicitHeight * 0.4
-                implicitWidth: implicitHeight
-                x: addressBookComboBox.mirrored ? addressBookComboBox.leftPadding : addressBookComboBox.width - (addressBookComboBox.leftPadding * 3) - Kirigami.Units.iconSizes.smallMedium
-                y: addressBookComboBox.topPadding + (addressBookComboBox.availableHeight - height) / 2
-                radius: width * 0.5
-                color: parent.currentValue
+            defaultCollectionId: if (mode === ContactEditor.CreateMode) {
+                return ContactConfig.lastUsedAddressBookCollection;
+            } else {
+                return contactEditor.collectionId;
             }
 
-            model: Akonadi.CollectionComboBoxModel {
-                id: collectionComboBoxModel
-                mimeTypeFilter: [Akonadi.MimeTypes.address, Akonadi.MimeTypes.contactGroup]
-                accessRightsFilter: Akonadi.Collection.CanCreateItem
-                defaultCollectionId: if (mode === ContactEditor.CreateMode) {
-                    return ContactConfig.lastUsedAddressBookCollection;
-                } else {
-                    return contactEditor.collectionId;
-                }
-                onCurrentIndexChanged: addressBookComboBox.currentIndex = currentIndex
-                onCurrentCollectionChanged: {
-                    contactEditor.setDefaultAddressBook(currentCollection);
-                }
-            }
-            delegate: Kirigami.BasicListItem {
-                label: display
-                icon: decoration
-                trailing: Rectangle {
-                    anchors.margins: Kirigami.Units.smallSpacing
-                    width: height
-                    radius: width * 0.5
-                    color: collectionColor
-                }
-            }
-            currentIndex: -1
-            onCurrentIndexChanged: if (currentIndex !== -1) {
-                collectionComboBoxModel.currentIndex = currentIndex;
-            }
-
-            popup.z: 1000
+            mimeTypeFilter: [Akonadi.MimeTypes.address, Akonadi.MimeTypes.contactGroup]
+            accessRightsFilter: Akonadi.Collection.CanCreateItem
+            onSelectedCollectionChanged: contactEditor.setDefaultAddressBook(collection)
         }
 
         //Controls.Button {
