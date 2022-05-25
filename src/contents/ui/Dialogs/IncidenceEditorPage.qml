@@ -151,10 +151,7 @@ Kirigami.ScrollablePage {
                         return [Akonadi.MimeTypes.todo]
                     }
                     accessRightsFilter: Akonadi.Collection.CanCreateItem
-                    onSelectedCollectionChanged: {
-                        console.log('hello', collection);
-                        root.incidenceWrapper.setCollection(collection)
-                    }
+                    onSelectedCollectionChanged: root.incidenceWrapper.setCollection(collection)
                 }
 
                 QQC2.TextField {

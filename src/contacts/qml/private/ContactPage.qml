@@ -83,7 +83,7 @@ Kirigami.ScrollablePage {
             backgroundSource: "qrc:/fallbackBackground.png"
 
             contentItems: Kirigami.Heading {
-                text: addressee.name
+                text: addressee.formattedName
                 color: "#fcfcfc"
             }
         }

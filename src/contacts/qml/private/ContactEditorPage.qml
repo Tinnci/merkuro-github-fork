@@ -19,6 +19,8 @@ Kirigami.ScrollablePage {
     property alias mode: contactEditor.mode
     property alias item: contactEditor.item
 
+    property bool displayAdvancedNameFields: false
+
     property ContactEditor contactEditor: ContactEditor {
         id: contactEditor
         mode: ContactEditor.CreateMode
@@ -99,12 +101,62 @@ Kirigami.ScrollablePage {
         //    onClicked: fileDialog.open()
         //}
 
-        QQC2.TextField {
-            id: name
+        RowLayout {
             Kirigami.FormData.label: i18n("Name:")
             Layout.fillWidth: true
-            text: contactEditor.contact.name
-            onTextChanged: contactEditor.contact.name = text
+            QQC2.TextField {
+                id: name
+                Layout.fillWidth: true
+                text: contactEditor.contact.formattedName
+                onTextChanged: contactEditor.contact.formattedName = text
+            }
+            QQC2.Button {
+                icon.name: 'settings-configure'
+                onClicked: displayAdvancedNameFields = !displayAdvancedNameFields
+                QQC2.ToolTip {
+                    text: i18n('Advanced')
+                }
+            }
+        }
+        QQC2.ComboBox {
+            visible: displayAdvancedNameFields
+            Kirigami.FormData.label: i18n("Honorific prefixes:")
+            editable: true
+            model: [i18n('Dr.'), i18n("Miss"), i18n("Mr."), i18n("Mrs."), i18n("Ms."), i18n("Prof.")]
+            currentIndex: -1
+            editText: contactEditor.contact.prefix
+            onCurrentValueChanged: contactEditor.contact.prefix = currentValue
+        }
+
+        QQC2.TextField {
+            visible: displayAdvancedNameFields
+            Kirigami.FormData.label: i18n("Given names:")
+            onTextChanged: contactEditor.contact.givenName = text
+            text: contactEditor.contact.givenName
+        }
+
+        QQC2.TextField {
+            visible: displayAdvancedNameFields
+            Kirigami.FormData.label: i18n("Additional names:")
+            onTextChanged: contactEditor.contact.additionalName = text
+            text: contactEditor.contact.additionalName
+        }
+
+        QQC2.TextField {
+            visible: displayAdvancedNameFields
+            Kirigami.FormData.label: i18n("Family names:")
+            onTextChanged: contactEditor.contact.familyName = text
+            text: contactEditor.contact.familyName
+        }
+
+        QQC2.ComboBox {
+            visible: displayAdvancedNameFields
+            Kirigami.FormData.label: i18n("Honorific sufixes:")
+            onCurrentValueChanged: contactEditor.contact.suffix = currentValue
+            editable: true
+            editText: contactEditor.contact.suffix
+            model: [i18n('I'), i18n("II"), i18n("III"), i18n("Jr."), i18n("Sr.")]
+            currentIndex: -1
         }
 
         //ColumnLayout {

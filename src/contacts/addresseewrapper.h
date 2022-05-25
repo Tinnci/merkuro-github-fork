@@ -31,7 +31,12 @@ class AddresseeWrapper : public QObject, public Akonadi::ItemMonitor
     Q_PROPERTY(QString uid READ uid NOTIFY uidChanged)
 
     // Contact information
-    Q_PROPERTY(QString name READ name WRITE setName NOTIFY nameChanged)
+    Q_PROPERTY(QString formattedName READ formattedName WRITE setFormattedName NOTIFY formattedNameChanged)
+    Q_PROPERTY(QString additionalName READ additionalName WRITE setAdditionalName NOTIFY additionalNameChanged)
+    Q_PROPERTY(QString familyName READ familyName WRITE setFamilyName NOTIFY familyNameChanged)
+    Q_PROPERTY(QString givenName READ givenName WRITE setGivenName NOTIFY givenNameChanged)
+    Q_PROPERTY(QString prefix READ prefix WRITE setPrefix NOTIFY prefixChanged)
+    Q_PROPERTY(QString suffix READ suffix WRITE setSuffix NOTIFY suffixChanged)
     Q_PROPERTY(QString nickName READ nickName WRITE setNickName NOTIFY nickNameChanged)
     Q_PROPERTY(QUrl blogFeed READ blogFeed WRITE setBlogFeed NOTIFY blogFeedChanged)
     Q_PROPERTY(QString preferredEmail READ preferredEmail NOTIFY preferredEmailChanged)
@@ -93,8 +98,8 @@ public:
     DisplayType displayType() const;
     void setDisplayType(DisplayType displayType);
 
-    QString name() const;
-    void setName(const QString &name);
+    QString formattedName() const;
+    void setFormattedName(const QString &formattedName);
 
     QString nickName() const;
     void setNickName(const QString &nickName);
@@ -144,6 +149,21 @@ public:
     void setSpousesName(const QString &spousesName);
     QString spousesName() const;
 
+    QString additionalName() const;
+    void setAdditionalName(const QString &additionalName);
+
+    QString familyName() const;
+    void setFamilyName(const QString &familyName);
+
+    QString givenName() const;
+    void setGivenName(const QString &givenName);
+
+    QString prefix() const;
+    void setPrefix(const QString &prefix);
+
+    QString suffix() const;
+    void setSuffix(const QString &suffix);
+
     // Invokable since we don't want expensive data bindings when any of the
     // fields change, instead generate it on demand
     Q_INVOKABLE QString qrCodeData() const;
@@ -152,7 +172,7 @@ public:
 Q_SIGNALS:
     void addresseeItemChanged();
     void collectionChanged();
-    void nameChanged();
+    void formattedNameChanged();
     void birthdayChanged();
     void photoChanged();
     void phoneNumbersChanged();
@@ -161,6 +181,11 @@ Q_SIGNALS:
     void noteChanged();
     void nickNameChanged();
     void blogFeedChanged();
+    void additionalNameChanged();
+    void familyNameChanged();
+    void givenNameChanged();
+    void prefixChanged();
+    void suffixChanged();
 
     void anniversaryChanged();
     void spousesNameChanged();

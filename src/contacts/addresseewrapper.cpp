@@ -32,7 +32,12 @@ AddresseeWrapper::~AddresseeWrapper() = default;
 void AddresseeWrapper::notifyDataChanged()
 {
     Q_EMIT collectionChanged();
-    Q_EMIT nameChanged();
+    Q_EMIT formattedNameChanged();
+    Q_EMIT additionalNameChanged();
+    Q_EMIT familyNameChanged();
+    Q_EMIT givenNameChanged();
+    Q_EMIT prefixChanged();
+    Q_EMIT suffixChanged();
     Q_EMIT birthdayChanged();
     Q_EMIT photoChanged();
     Q_EMIT phoneNumbersChanged();
@@ -128,18 +133,23 @@ void AddresseeWrapper::setCollection(Akonadi::Collection collection)
     Q_EMIT collectionChanged();
 }
 
-QString AddresseeWrapper::name() const
+QString AddresseeWrapper::formattedName() const
 {
     return m_addressee.formattedName();
 }
 
-void AddresseeWrapper::setName(const QString &name)
+void AddresseeWrapper::setFormattedName(const QString &name)
 {
     if (name == m_addressee.formattedName()) {
         return;
     }
-    m_addressee.setFormattedName(name);
-    Q_EMIT nameChanged();
+    m_addressee.setNameFromString(name);
+    Q_EMIT formattedNameChanged();
+    Q_EMIT givenNameChanged();
+    Q_EMIT familyNameChanged();
+    Q_EMIT suffixChanged();
+    Q_EMIT prefixChanged();
+    Q_EMIT additionalNameChanged();
 }
 
 QDateTime AddresseeWrapper::birthday() const
@@ -370,4 +380,79 @@ void AddresseeWrapper::setDisplayType(AddresseeWrapper::DisplayType displayType)
     }
     m_displayType = displayType;
     Q_EMIT displayTypeChanged();
+}
+
+QString AddresseeWrapper::additionalName() const
+{
+    return m_addressee.additionalName();
+}
+
+void AddresseeWrapper::setAdditionalName(const QString &name)
+{
+    if (name == m_addressee.additionalName()) {
+        return;
+    }
+    m_addressee.setAdditionalName(name);
+    setFormattedName(m_addressee.assembledName());
+    Q_EMIT additionalNameChanged();
+}
+
+QString AddresseeWrapper::givenName() const
+{
+    return m_addressee.givenName();
+}
+
+void AddresseeWrapper::setGivenName(const QString &name)
+{
+    if (name == m_addressee.givenName()) {
+        return;
+    }
+    m_addressee.setGivenName(name);
+    setFormattedName(m_addressee.assembledName());
+    Q_EMIT givenNameChanged();
+}
+
+QString AddresseeWrapper::familyName() const
+{
+    return m_addressee.familyName();
+}
+
+void AddresseeWrapper::setFamilyName(const QString &name)
+{
+    if (name == m_addressee.familyName()) {
+        return;
+    }
+    m_addressee.setFamilyName(name);
+    setFormattedName(m_addressee.assembledName());
+    Q_EMIT familyNameChanged();
+}
+
+QString AddresseeWrapper::prefix() const
+{
+    return m_addressee.prefix();
+}
+
+void AddresseeWrapper::setPrefix(const QString &name)
+{
+    if (name == m_addressee.prefix()) {
+        return;
+    }
+    m_addressee.setPrefix(name);
+    setFormattedName(m_addressee.assembledName());
+    Q_EMIT prefixChanged();
+}
+
+QString AddresseeWrapper::suffix() const
+{
+    return m_addressee.suffix();
+}
+
+void AddresseeWrapper::setSuffix(const QString &name)
+{
+    if (name == m_addressee.suffix()) {
+        return;
+    }
+    m_addressee.setSuffix(name);
+    setFormattedName(m_addressee.assembledName());
+    Q_EMIT suffixChanged();
 }
