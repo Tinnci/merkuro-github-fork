@@ -127,6 +127,8 @@ public:
      */
     Q_INVOKABLE void saveContactInAddressBook();
 
+    Q_INVOKABLE void fetchItem();
+
 Q_SIGNALS:
     /**
      * This signal is emitted when the @p contact has been saved back
@@ -152,6 +154,7 @@ Q_SIGNALS:
     void isReadOnlyChanged();
     void itemChanged();
     void collectionChanged();
+    void itemChangedExternally();
 
 private:
     void itemFetchDone(KJob *job);

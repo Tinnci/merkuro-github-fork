@@ -29,6 +29,7 @@ Kirigami.ScrollablePage {
             errorContainer.errorMessage = error;
             errorContainer.visible = tre;
         }
+        onItemChangedExternally: itemChangedExternallySheet.open()
     }
 
     title: if (mode === ContactEditor.CreateMode) {
@@ -463,6 +464,39 @@ Kirigami.ScrollablePage {
             contactEditor.saveContactInAddressBook()
             ContactConfig.lastUsedAddressBookCollection = addressBookComboBox.defaultCollectionId;
             ContactConfig.save();
+        }
+    }
+
+    QQC2.Dialog {
+        id: itemChangedExternallySheet
+        visible: false
+        title: i18n('The contact has been changed by someone else')
+        modal: true
+        focus: true
+        x: (parent.width - width) / 2
+        y: parent.height / 3
+        width: Math.min(parent.width - Kirigami.Units.gridUnit * 4, Kirigami.Units.gridUnit * 20)
+
+        contentItem: QQC2.Label {
+            text: i18n('What should be done?')
+        }
+        onRejected: itemChangedExternallySheet.close()
+        onAccepted: {
+            contactEditor.fetchItem();
+            itemChangedExternallySheet.close();
+        }
+
+        footer: QQC2.DialogButtonBox {
+            QQC2.Button {
+                text: i18n("Take over changes")
+                QQC2.DialogButtonBox.buttonRole: QQC2.DialogButtonBox.AcceptRole
+            }
+
+            QQC2.Button {
+                text: i18n("Ignore and Overwrite changes")
+                QQC2.DialogButtonBox.buttonRole: QQC2.DialogButtonBox.RejectRole
+            }
+
         }
     }
 }

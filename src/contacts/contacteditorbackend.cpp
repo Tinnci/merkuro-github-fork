@@ -82,33 +82,21 @@ void ContactEditorBackend::setupMonitor()
     m_monitor->setObjectName(QStringLiteral("ContactEditorMonitor"));
     m_monitor->ignoreSession(Akonadi::Session::defaultSession());
 
-    connect(m_monitor, &Akonadi::Monitor::itemChanged, this, [this](const Akonadi::Item &item, const QSet<QByteArray> &set) {
-        itemChangedExternally(item, set);
+    connect(m_monitor, &Akonadi::Monitor::itemChanged, this, [this](const Akonadi::Item &, const QSet<QByteArray> &) {
+        Q_EMIT itemChangedExternally();
     });
 }
 
-void ContactEditorBackend::itemChangedExternally(const Akonadi::Item &item, const QSet<QByteArray> &)
+void ContactEditorBackend::fetchItem()
 {
-    Q_UNUSED(item)
-    // TODO port to QML
-    // QPointer<QMessageBox> dlg = new QMessageBox(mParent); // krazy:exclude=qclasses
+     auto job = new Akonadi::ItemFetchJob(m_item);
+     job->fetchScope().fetchFullPayload();
+     job->fetchScope().fetchAttribute<ContactMetaDataAttribute>();
+     job->fetchScope().setAncestorRetrieval(Akonadi::ItemFetchScope::Parent);
 
-    // dlg->setInformativeText(i18n("The contact has been changed by someone else.\nWhat should be done?"));
-    // dlg->addButton(i18n("Take over changes"), QMessageBox::AcceptRole);
-    // dlg->addButton(i18n("Ignore and Overwrite changes"), QMessageBox::RejectRole);
-
-    // if (dlg->exec() == QMessageBox::AcceptRole) {
-    //     auto job = new Akonadi::ItemFetchJob(mItem);
-    //     job->fetchScope().fetchFullPayload();
-    //     job->fetchScope().fetchAttribute<ContactMetaDataAttribute>();
-    //     job->fetchScope().setAncestorRetrieval(Akonadi::ItemFetchScope::Parent);
-
-    //    mParent->connect(job, &ItemFetchJob::result, mParent, [this](KJob *job) {
-    //        itemFetchDone(job);
-    //    });
-    //}
-
-    // delete dlg;
+    connect(job, &Akonadi::ItemFetchJob::result, this, [this](KJob *job) {
+        itemFetchDone(job);
+    });
 }
 
 void ContactEditorBackend::itemFetchDone(KJob *job)

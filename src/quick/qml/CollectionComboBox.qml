@@ -15,8 +15,8 @@ QQC2.ComboBox {
     id: comboBox
 
     /**
-     * This property holds the id of the default collection, that is by
-     * selected by default.
+     * This property holds the id of the default collection, that is the
+     * collection that will be selected by default.
      * @property int defaultCollectionId
      */
     property alias defaultCollectionId: collectionComboBoxModel.defaultCollectionId

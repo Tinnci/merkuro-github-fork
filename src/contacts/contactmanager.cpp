@@ -80,8 +80,6 @@ protected:
         return matches.length() < 1;
     }
 };
-
-// TODO move to seperate file
 }
 
 ContactManager::ContactManager(QObject *parent)
