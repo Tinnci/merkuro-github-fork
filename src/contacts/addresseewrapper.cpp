@@ -25,6 +25,14 @@ AddresseeWrapper::AddresseeWrapper(QObject *parent)
     scope.setFetchRelations(true);
     scope.setAncestorRetrieval(Akonadi::ItemFetchScope::Parent);
     setFetchScope(scope);
+
+    connect(m_emailModel, &EmailModel::changed, this, [this](const KContacts::Email::List &emails) {
+        m_addressee.setEmailList(emails);
+    });
+
+    connect(m_phoneModel, &PhoneModel::changed, this, [this](const KContacts::PhoneNumber::List &phoneNumbers) {
+        m_addressee.setPhoneNumbers(phoneNumbers);
+    });
 }
 
 AddresseeWrapper::~AddresseeWrapper() = default;
@@ -107,8 +115,8 @@ void AddresseeWrapper::setAddressee(const KContacts::Addressee &addressee)
 {
     m_addressee = addressee;
     m_addressesModel->setAddresses(addressee.addresses());
-    m_emailModel->setEmails(addressee.emailList());
-    m_phoneModel->setPhoneNumbers(addressee.phoneNumbers());
+    m_emailModel->loadContact(addressee);
+    m_phoneModel->loadContact(addressee);
     notifyDataChanged();
 }
 

@@ -31,6 +31,8 @@ void CalendarPlugin::registerTypes(const char *uri)
         return new ContactManager;
     });
 
+    qmlRegisterUncreatableType<EmailModel>("org.kde.kalendar.contact", 1, 0, "EmailModel", QStringLiteral("Enum"));
+    qmlRegisterUncreatableType<PhoneModel>("org.kde.kalendar.contact", 1, 0, "PhoneModel", QStringLiteral("Enum"));
     qmlRegisterType<AddresseeWrapper>("org.kde.kalendar.contact", 1, 0, "AddresseeWrapper");
     qmlRegisterType<ContactEditorBackend>("org.kde.kalendar.contact", 1, 0, "ContactEditor");
     qRegisterMetaType<KContacts::Picture>("KContacts::Picture");

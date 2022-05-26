@@ -115,7 +115,6 @@ void ContactEditorBackend::itemFetchDone(KJob *job)
 {
     if (job->error() != KJob::NoError) {
         Q_EMIT error(job->errorString());
-        Q_EMIT finished();
         return;
     }
 
@@ -154,7 +153,6 @@ void ContactEditorBackend::parentCollectionFetchDone(KJob *job)
 {
     if (job->error()) {
         Q_EMIT error(job->errorString());
-        Q_EMIT finished();
         return;
     }
 
@@ -184,7 +182,6 @@ void ContactEditorBackend::saveContactInAddressBook()
 {
     if (m_mode == EditMode) {
         if (!m_item.isValid() || m_readOnly) {
-            Q_EMIT finished();
             return;
         }
 
@@ -239,7 +236,6 @@ void ContactEditorBackend::storeDone(KJob *job)
 {
     if (job->error() != KJob::NoError) {
         Q_EMIT error(job->errorString());
-        Q_EMIT finished();
         return;
     }
 

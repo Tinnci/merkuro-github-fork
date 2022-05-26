@@ -25,7 +25,10 @@ Kirigami.ScrollablePage {
         id: contactEditor
         mode: ContactEditor.CreateMode
         onFinished: root.closeDialog()
-        onError: console.log(error)
+        onError: {
+            errorContainer.errorMessage = error;
+            errorContainer.visible = tre;
+        }
     }
 
     title: if (mode === ContactEditor.CreateMode) {
@@ -41,6 +44,18 @@ Kirigami.ScrollablePage {
 
         onAccepted: {
             root.pendingPhoto = ContactController.preparePhoto(currentFile)
+        }
+    }
+
+    header: QQC2.Control {
+        id: errorContainer
+        property bool displayError: false
+        property string errorMessage: ''
+        contentItem: Kirigami.InlineMessage {
+            type: Kirigami.MessageType.Error
+            visible: errorContainer.displayError
+            text: errorContainer.errorMessage
+            showCloseButton: true
         }
     }
 
@@ -159,150 +174,188 @@ Kirigami.ScrollablePage {
             currentIndex: -1
         }
 
-        //ColumnLayout {
-        //    id: phoneNumber
-        //    Layout.fillWidth: true
-        //    Kirigami.FormData.label: i18n("Phone:")
-        //    Repeater {
-        //        model: pendingPhoneNumbers
+        ColumnLayout {
+            id: phoneNumber
+            Layout.fillWidth: true
+            Kirigami.FormData.label: i18n("Phone:")
+            Kirigami.FormData.labelAlignment: phoneRepeater.count > 0 ? Qt.AlignTop : Qt.AlignVCenter
+            Repeater {
+                id: phoneRepeater
+                model: contactEditor.contact.phoneModel
 
-        //        delegate: RowLayout {
-        //            Controls.TextField {
-        //                id: phoneField
-        //                text: modelData.number
-        //                inputMethodHints: Qt.ImhDialableCharactersOnly
-        //                Layout.fillWidth: true
-        //                onAccepted: {
-        //                    root.pendingPhoneNumbers[index].number = text
-        //                }
+                delegate: RowLayout {
+                    QQC2.ComboBox {
+                        model: ListModel {id: phoneTypeModel; dynamicRoles: true }
+                        Component.onCompleted: {
+                            [
+                                { value: PhoneModel.Home, text: i18n("Home") },
+                                { value: PhoneModel.Work, text: i18n("Work") },
+                                { value: PhoneModel.Msg, text: i18n("Messaging") },
+                                { value: PhoneModel.Voice, text: i18n("Voice") },
+                                { value: PhoneModel.Fax, text: i18n("Fax") },
+                                { value: PhoneModel.Cell, text: i18n("Cell") },
+                                { value: PhoneModel.Video, text: i18n("Video") },
+                                { value: PhoneModel.Bbs, text: i18n("Mailbox") },
+                                { value: PhoneModel.Modem, text: i18n("Modem") },
+                                { value: PhoneModel.Car, text: i18n("Car") },
+                                { value: PhoneModel.Isdn, text: i18n("ISDN") },
+                                { value: PhoneModel.Psc, text: i18n("PCS") },
+                                { value: PhoneModel.Pager, text: i18n("Pager") },
+                                { value: PhoneModel.Undefined, text: i18n("Undefined") },
+                            ].forEach((type) => {
+                                phoneTypeModel.append(type);
+                            });
+                            currentIndex = indexOfValue(typeValue)
+                        }
+                        textRole: "text"
+                        valueRole: "value"
+                        onCurrentValueChanged: type = currentValue
+                    }
+                    QQC2.TextField {
+                        id: phoneField
+                        text: model.display 
+                        inputMethodHints: Qt.ImhDialableCharactersOnly
+                        Layout.fillWidth: true
+                        onTextChanged: model.display = text
+                    }
+                    QQC2.Button {
+                        icon.name: "list-remove"
+                        implicitWidth: implicitHeight
+                        onClicked: contactEditor.contact.phoneModel.deletePhoneNumber(index)
+                    }
+                }
+            }
+            RowLayout {
+                QQC2.ComboBox {
+                    id: newPhoneTypeCombo
+                    model: ListModel {id: phoneTypeModel; dynamicRoles: true }
+                    Component.onCompleted: {
+                        [
+                            { value: PhoneModel.Home, text: i18n("Home") },
+                            { value: PhoneModel.Work, text: i18n("Work") },
+                            { value: PhoneModel.Msg, text: i18n("Messaging") },
+                            { value: PhoneModel.Voice, text: i18n("Voice") },
+                            { value: PhoneModel.Fax, text: i18n("Fax") },
+                            { value: PhoneModel.Cell, text: i18n("Cell") },
+                            { value: PhoneModel.Video, text: i18n("Video") },
+                            { value: PhoneModel.Bbs, text: i18n("Mailbox") },
+                            { value: PhoneModel.Modem, text: i18n("Modem") },
+                            { value: PhoneModel.Car, text: i18n("Car") },
+                            { value: PhoneModel.Isdn, text: i18n("ISDN") },
+                            { value: PhoneModel.Psc, text: i18n("PCS") },
+                            { value: PhoneModel.Pager, text: i18n("Pager") }
+                        ].forEach((type) => {
+                            phoneTypeModel.append(type);
+                        });
+                    }
+                    textRole: "text"
+                    valueRole: "value"
+                    currentIndex: 0
+                }
+                QQC2.TextField {
+                    id: toAddPhone
+                    Layout.fillWidth: true
+                    placeholderText: i18n("+33 7 55 23 68 67")
+                    inputMethodHints: Qt.ImhDialableCharactersOnly
+                }
 
-        //                Connections {
-        //                    target: root
-        //                    function onSave() {
-        //                        phoneField.accepted()
-        //                        addressee.phoneNumbers = root.pendingPhoneNumbers
-        //                    }
-        //                }
-        //            }
-        //            Controls.Button {
-        //                icon.name: "list-remove"
-        //                implicitWidth: implicitHeight
-        //                onClicked: {
-        //                    var newList = root.pendingPhoneNumbers.filter((value, index) => index != model.index)
-        //                    root.pendingPhoneNumbers = newList
-        //                }
-        //            }
-        //        }
-        //    }
-        //    RowLayout {
-        //        Controls.TextField {
-        //            id: toAddPhone
-        //            Layout.fillWidth: true
-        //            placeholderText: i18n("+1 555 2368")
-        //            inputMethodHints: Qt.ImhDialableCharactersOnly
-        //        }
+                // button to add additional text field
+                QQC2.Button {
+                    icon.name: "list-add"
+                    implicitWidth: implicitHeight
+                    enabled: toAddPhone.text.length > 0
+                    onClicked: {
+                        contactEditor.contact.phoneModel.addPhoneNumber(toAddPhone.text, newPhoneTypeCombo.currentValue)
+                        toAddPhone.text = '';
+                        newPhoneTypeCombo.currentIndex = 0;
+                    }
+                }
+            }
+        }
 
-        //        // add last text field on save()
-        //        Connections {
-        //            target: root;
-        //            function onSave() {
-        //                if (toAddPhone.text !== "") {
-        //                    var numbers = pendingPhoneNumbers
-        //                    numbers.push(ContactController.createPhoneNumber(toAddPhone.text))
-        //                    pendingPhoneNumbers = numbers
-        //                }
+        ColumnLayout {
+            id: email
+            Layout.fillWidth: true
+            Kirigami.FormData.label: i18n("E-mail:")
+            Kirigami.FormData.labelAlignment: emailRepeater.count > 0 ? Qt.AlignTop : Qt.AlignVCenter
 
-        //                addressee.phoneNumbers = root.pendingPhoneNumbers
-        //            }
-        //        }
+            Repeater {
+                id: emailRepeater
+                model: contactEditor.contact.emailModel
 
-        //        // button to add additional text field
-        //        Controls.Button {
-        //            icon.name: "list-add"
-        //            implicitWidth: implicitHeight
-        //            enabled: toAddPhone.text.length > 0
-        //            onClicked: {
-        //                var numbers = pendingPhoneNumbers
-        //                numbers.push(ContactController.createPhoneNumber(toAddPhone.text))
-        //                pendingPhoneNumbers = numbers
-        //                toAddPhone.text = ""
-        //            }
-        //        }
-        //    }
-        //}
+                delegate: RowLayout {
+                    id: emailRow
 
-        //ColumnLayout {
-        //    id: email
-        //    Layout.fillWidth: true
-        //    Kirigami.FormData.label: i18n("E-mail:")
+                    QQC2.ComboBox {
+                        id: emailTypeBox
+                        model: ListModel {id: emailTypeModel; dynamicRoles: true }
+                        Component.onCompleted: {
+                            [
+                                { value: EmailModel.Unknown, text: "Unknow" },
+                                { value: EmailModel.Home, text: i18n("Home") },
+                                { value: EmailModel.Work, text: i18n("Work") },
+                                { value: EmailModel.Both, text: i18n("Both") },
+                                { value: EmailModel.Other, text: i18n("Other…") }
+                            ].forEach((type) => {
+                                emailTypeModel.append(type);
+                            });
+                        }
+                        textRole: "text"
+                        valueRole: "value"
+                        currentIndex: typeValue
+                        onCurrentValueChanged: type = currentValue
+                    }
+                    QQC2.TextField {
+                        id: textField
+                        Layout.fillWidth: true
+                        text: model.display
+                        inputMethodHints: Qt.ImhEmailCharactersOnly
+                        onTextChanged: model.display = text;
+                    }
+                    QQC2.Button {
+                        icon.name: "list-remove"
+                        implicitWidth: implicitHeight
+                        onClicked: contactEditor.contact.emailModel.deleteEmail(index)
+                    }
+                }
+            }
+            RowLayout {  
+                QQC2.ComboBox {
+                    id: newEmailType
+                    model: ListModel {id: newEmailTypeModel; dynamicRoles: true }
+                    textRole: "text"
+                    valueRole: "value"
+                    currentIndex: 0
+                    Component.onCompleted: {
+                        [
+                            { value: EmailModel.Home, text: i18n("Home") },
+                            { value: EmailModel.Work, text: i18n("Work") },
+                            { value: EmailModel.Both, text: i18n("Both") },
+                            { value: EmailModel.Other, text: i18n("Other…") }
+                        ].forEach((type) => {
+                            newEmailTypeModel.append(type);
+                        });
+                    }
+                }
+                QQC2.TextField {
+                    id: toAddEmail
+                    Layout.fillWidth: true
+                    placeholderText: i18n("user@example.org")
+                    inputMethodHints: Qt.ImhEmailCharactersOnly
+                }
 
-        //    Repeater {
-        //        model: root.pendingEmails
-
-        //        delegate: RowLayout {
-        //            Controls.TextField {
-        //                id: textField
-        //                Layout.fillWidth: true
-        //                text: modelData.email
-        //                inputMethodHints: Qt.ImhEmailCharactersOnly
-
-        //                onAccepted: {
-        //                    root.pendingEmails[index].email = text
-        //                }
-
-        //                Connections {
-        //                    target: root
-        //                    function onSave() {
-        //                        textField.accepted()
-        //                        addressee.emails = root.pendingEmails
-        //                    }
-        //                }
-        //            }
-        //            Controls.Button {
-        //                icon.name: "list-remove"
-        //                implicitWidth: implicitHeight
-        //                onClicked: {
-        //                    root.pendingEmails = root.pendingEmails.filter((value, index) => index != model.index)
-        //                }
-        //            }
-        //        }
-        //    }
-        //    RowLayout {
-        //        Controls.TextField {
-        //            id: toAddEmail
-        //            Layout.fillWidth: true
-        //            placeholderText: i18n("user@example.org")
-        //            inputMethodHints: Qt.ImhEmailCharactersOnly
-        //        }
-
-        //        // add last text field on save()
-        //        Connections {
-        //            target: root;
-        //            function onSave() {
-        //                if (toAddEmail.text !== "") {
-        //                    var emails = root.pendingEmails
-        //                    emails.push(ContactController.createEmail(toAddEmail.text))
-        //                    root.pendingEmails = emails
-        //                }
-
-        //                addressee.emails = root.pendingEmails
-        //            }
-        //        }
-
-        //        // button to add additional text field
-        //        Controls.Button {
-        //            icon.name: "list-add"
-        //            implicitWidth: implicitHeight
-        //            enabled: toAddEmail.text.length > 0
-        //            onClicked: {
-        //                var emails = root.pendingEmails
-        //                emails.push(ContactController.createEmail(toAddEmail.text))
-        //                root.pendingEmails = emails
-        //                toAddEmail.text = ""
-        //            }
-        //        }
-        //    }
-        //}
+                QQC2.Button {
+                    icon.name: "list-add"
+                    implicitWidth: implicitHeight
+                    enabled: toAddEmail.text.length > 0
+                    onClicked: {
+                        contactEditor.contact.emailModel.addEmail(toAddEmail.text, newEmailType.currentValue);
+                        toAddEmail.text = '';
+                        newEmailType.currentIndex = 0;
+                    }
+                }
+            }
+        }
 
         //ColumnLayout {
         //    id: impp
@@ -397,18 +450,18 @@ Kirigami.ScrollablePage {
         QQC2.Button {
             icon.name: mode === ContactEditor.EditMode ? "document-save" : "list-add"
             text: mode === ContactEditor.EditMode ? i18n("Save") : i18n("Add")
-            enabled: root.validDates && incidenceWrapper.summary && incidenceWrapper.collectionId
+            enabled: contactEditor.contact.formattedName.length > 0
             QQC2.DialogButtonBox.buttonRole: QQC2.DialogButtonBox.AcceptRole
         }
 
         onRejected: {
-            ContactConfig.lastUsedAddressBookCollection = collectionComboBoxModel.defaultCollectionId;
+            ContactConfig.lastUsedAddressBookCollection = addressBookComboBox.defaultCollectionId;
             ContactConfig.save();
             root.closeDialog();
         }
         onAccepted: {
             contactEditor.saveContactInAddressBook()
-            ContactConfig.lastUsedAddressBookCollection = collectionComboBoxModel.defaultCollectionId;
+            ContactConfig.lastUsedAddressBookCollection = addressBookComboBox.defaultCollectionId;
             ContactConfig.save();
         }
     }
