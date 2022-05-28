@@ -14,6 +14,7 @@
 #include <Akonadi/ItemFetchJob>
 #include <Akonadi/ItemFetchScope>
 #include <Akonadi/Monitor>
+#include <Akonadi/SelectionProxyModel>
 #include <kdescendantsproxymodel.h>
 #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
 #include <akonadi_version.h>
@@ -61,9 +62,11 @@ public:
         auto addresseeOnlyModel = new Akonadi::EntityMimeTypeFilterModel(this);
         addresseeOnlyModel->setSourceModel(flatModel);
         addresseeOnlyModel->addMimeTypeInclusionFilter(KContacts::Addressee::mimeType());
+        addresseeOnlyModel->addMimeTypeInclusionFilter(KContacts::ContactGroup::mimeType());
 
         setSourceModel(addresseeOnlyModel);
         setDynamicSortFilter(true);
+        setFilterCaseSensitivity(Qt::CaseInsensitive);
         sort(0);
     }
 
@@ -85,6 +88,7 @@ protected:
 ContactManager::ContactManager(QObject *parent)
     : QObject(parent)
 {
+    // Sidebar collection model
     m_collectionTree = new Akonadi::EntityMimeTypeFilterModel(this);
     m_collectionTree->setDynamicSortFilter(true);
     m_collectionTree->setSortCaseSensitivity(Qt::CaseInsensitive);
@@ -109,37 +113,28 @@ ContactManager::ContactManager(QObject *parent)
     m_collectionSelectionModelStateSaver->setSelectionModel(m_checkableProxyModel->selectionModel());
     m_collectionSelectionModelStateSaver->restoreState(selectionGroup);
 
-    auto sourceModel = new Akonadi::EmailAddressSelectionModel(this);
 
+    // List of contacts with an email address
+    auto sourceModel = new Akonadi::EmailAddressSelectionModel(this);
     auto filterModel = new Akonadi::ContactsFilterProxyModel(this);
     filterModel->setSourceModel(sourceModel->model());
     filterModel->setFilterFlags(Akonadi::ContactsFilterProxyModel::HasEmail);
 
-    auto model = new ContactsModel(filterModel, this);
-    m_model = new QSortFilterProxyModel(this);
-    m_model->setSourceModel(model);
-    m_model->setDynamicSortFilter(true);
-    m_model->setSortCaseSensitivity(Qt::CaseInsensitive);
-    m_model->setFilterCaseSensitivity(Qt::CaseInsensitive);
-    m_model->sort(0);
+    m_model = new ContactsModel(filterModel, this);
 
-    auto selectionProxyModel = new KSelectionProxyModel(m_checkableProxyModel->selectionModel(), this);
+
+    // List of contacts for the main contact view
+    auto selectionProxyModel = new Akonadi::SelectionProxyModel(m_checkableProxyModel->selectionModel(), this);
     selectionProxyModel->setSourceModel(GlobalContactModel::instance()->model());
     selectionProxyModel->setFilterBehavior(KSelectionProxyModel::ChildrenOfExactSelection);
 
-    auto itemTree = new Akonadi::EntityMimeTypeFilterModel(this);
-    itemTree->setSourceModel(selectionProxyModel);
-    itemTree->addMimeTypeExclusionFilter(Akonadi::Collection::mimeType());
-    itemTree->addMimeTypeInclusionFilter(KContacts::Addressee::mimeType());
-    itemTree->setHeaderGroup(Akonadi::EntityTreeModel::ItemListHeaders);
+    KDescendantsProxyModel *flatModel = new KDescendantsProxyModel( this );
+    flatModel->setSourceModel(selectionProxyModel);
 
-    auto filteredContacts = new QSortFilterProxyModel(this);
-    filteredContacts->setSourceModel(new ContactsModel(itemTree, this));
-    filteredContacts->setDynamicSortFilter(true);
-    filteredContacts->setSortCaseSensitivity(Qt::CaseInsensitive);
-    filteredContacts->setFilterCaseSensitivity(Qt::CaseInsensitive);
-    filteredContacts->sort(0);
-    m_filteredContacts = filteredContacts;
+    m_filteredContacts = new Akonadi::EntityMimeTypeFilterModel(this);
+    m_filteredContacts->setSourceModel(flatModel);
+    m_filteredContacts->addMimeTypeExclusionFilter(Akonadi::Collection::mimeType());
+    m_filteredContacts->setHeaderGroup(Akonadi::EntityTreeModel::ItemListHeaders);
 }
 
 ContactManager::~ContactManager()

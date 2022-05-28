@@ -6,6 +6,8 @@
 #include "addressmodel.h"
 #include "contactcollectionmodel.h"
 #include "contacteditorbackend.h"
+#include "contactgroupeditor.h"
+#include "contactgroupwrapper.h"
 #include "contactmanager.h"
 #include "emailmodel.h"
 #include "globalcontactmodel.h"
@@ -35,6 +37,8 @@ void CalendarPlugin::registerTypes(const char *uri)
     qmlRegisterUncreatableType<PhoneModel>("org.kde.kalendar.contact", 1, 0, "PhoneModel", QStringLiteral("Enum"));
     qmlRegisterType<AddresseeWrapper>("org.kde.kalendar.contact", 1, 0, "AddresseeWrapper");
     qmlRegisterType<ContactEditorBackend>("org.kde.kalendar.contact", 1, 0, "ContactEditor");
+    qmlRegisterType<ContactGroupWrapper>("org.kde.kalendar.contact", 1, 0, "ContactGroupWrapper");
+    qmlRegisterType<ContactGroupEditor>("org.kde.kalendar.contact", 1, 0, "ContactGroupEditor");
     qRegisterMetaType<KContacts::Picture>("KContacts::Picture");
     qRegisterMetaType<KContacts::PhoneNumber::List>("KContacts::PhoneNumber::List");
     qRegisterMetaType<KContacts::PhoneNumber>("KContacts::PhoneNumber");

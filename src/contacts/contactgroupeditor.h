@@ -20,19 +20,21 @@ class Monitor;
 }
 
 class AddresseeWrapper;
+class ContactGroupEditorPrivate;
+class QAbstractItemModel;
 
 /**
- * @short An object to edit contacts in Akonadi.
+ * @short An object to edit contact groups in Akonadi.
  *
- * This object provides a way to create a new contact or edit
- * an existing contact in Akonadi from QML.
+ * This object provides a way to create a new contact group or edit
+ * an existing contact group in Akonadi from QML.
  *
  * Example for creating a new contact:
  *
  * @code{.qml}
- * ContactEditor {
- *     id: contactEditor
- *     mode: ContactEditor.CreateMode
+ * ContactGroupEditor {
+ *     id: contactGroupEditor
+ *     mode: ContactGroupEditor.CreateMode
  * }
  *
  * TextField {
@@ -41,7 +43,7 @@ class AddresseeWrapper;
  * }
  *
  * Button {
- *     onClicked: contactEditor.saveContactInAddressBook()
+ *     onClicked: contactEditor.saveContactGroup()
  * }
  * @endcode
  *
@@ -69,15 +71,14 @@ class AddresseeWrapper;
  * @author Tobias Koenig <tokoe@kde.org>
  * @author Carl Schwan <carl@carlschwan.eu>
  */
-class ContactEditorBackend : public QObject
+class ContactGroupEditor : public QObject
 {
     Q_OBJECT
     Q_PROPERTY(Mode mode READ mode WRITE setMode NOTIFY modeChanged)
-    Q_PROPERTY(AddresseeWrapper *contact READ contact NOTIFY contactChanged NOTIFY modeChanged)
-    Q_PROPERTY(Akonadi::Item item READ item WRITE setItem NOTIFY itemChanged)
+    Q_PROPERTY(QString name READ name WRITE setName NOTIFY nameChanged)
     Q_PROPERTY(qint64 collectionId READ collectionId NOTIFY collectionChanged)
-    Q_PROPERTY(bool isReadOnly READ isReadOnly NOTIFY addresseeChanged NOTIFY modeChanged)
-
+    Q_PROPERTY(bool isReadOnly READ isReadOnly NOTIFY isReadOnlyChanged)
+    Q_PROPERTY(QAbstractItemModel *groupModel READ groupModel CONSTANT)
 public:
     /**
      * Describes the mode of the editor.
@@ -89,16 +90,16 @@ public:
     Q_ENUM(Mode);
 
     /**
-     * Creates a new contact editor backend.
+     * Creates a new contact group editor backend.
      *
      * @param parent The parent object of the editor.
      */
-    explicit ContactEditorBackend(QObject *parent = nullptr);
+    explicit ContactGroupEditor(QObject *parent = nullptr);
 
     /**
      * Destroys the contact editor.
      */
-    ~ContactEditorBackend() override;
+    ~ContactGroupEditor() override;
 
     /**
      * Sets the @p addressbook which shall be used to store new
@@ -106,26 +107,24 @@ public:
      */
     Q_INVOKABLE void setDefaultAddressBook(const Akonadi::Collection &addressbook);
 
+    Q_INVOKABLE void loadContactGroup(const Akonadi::Item &item);
+    /**
+     * Save the contact group from the editor back to the storage. And return error.
+     * Need to connect to finished() signal, to keep time to Q_EMIT signal.
+     */
+    Q_INVOKABLE bool saveContactGroup();
+
     [[nodiscard]] bool hasNoSavedData() const;
 
-    [[nodiscard]] AddresseeWrapper *contact();
     [[nodiscard]] qint64 collectionId() const;
     [[nodiscard]] Mode mode() const;
     void setMode(Mode mode);
     [[nodiscard]] bool isReadOnly() const;
     void setReadOnly(bool isReadOnly);
 
-    /**
-     * Loads the @p contact into the editor.
-     */
-    Q_INVOKABLE void setItem(const Akonadi::Item &contact);
-    Akonadi::Item item() const;
-
-    /**
-     * Save the contact from the editor back to the storage. And return error.
-     * Need to connect to finished() signal, to keep time to Q_EMIT signal.
-     */
-    Q_INVOKABLE void saveContactInAddressBook();
+    QString name() const;
+    void setName(const QString &name);
+    QAbstractItemModel *groupModel() const;
 
     Q_INVOKABLE void fetchItem();
 
@@ -134,41 +133,26 @@ Q_SIGNALS:
      * This signal is emitted when the @p contact has been saved back
      * to the storage.
      */
-    void contactStored(const Akonadi::Item &contact);
+    void contactGroupStored(const Akonadi::Item &contact);
 
     /**
      * This signal is emitted when an error occurred during the save.
      * @param errorMsg The error message.
-     * @since 4.11
      */
-    void error(const QString &errorMsg);
+    void errorOccured(const QString &errorMsg);
 
     /**
      * @brief finished
-     * @since 4.11
      */
     void finished();
 
-    void contactChanged();
     void modeChanged();
     void isReadOnlyChanged();
+    void nameChanged();
     void itemChanged();
     void collectionChanged();
     void itemChangedExternally();
 
 private:
-    void itemFetchDone(KJob *job);
-    void parentCollectionFetchDone(KJob *job);
-    void storeDone(KJob *job);
-    void loadContact(const KContacts::Addressee &contact, const ContactMetaData &metaData);
-    void setupMonitor();
-    void storeContact(KContacts::Addressee &contact, ContactMetaData &metaData) const;
-
-    Akonadi::Item m_item;
-    Akonadi::Collection m_defaltAddressBook;
-    AddresseeWrapper *m_addressee = nullptr;
-    Mode m_mode;
-    bool m_readOnly = false;
-    ContactMetaData m_contactMetaData;
-    Akonadi::Monitor *m_monitor = nullptr;
+    std::unique_ptr<ContactGroupEditorPrivate> d;
 };

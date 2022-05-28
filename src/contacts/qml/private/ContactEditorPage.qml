@@ -6,10 +6,8 @@ import QtQuick 2.15
 import QtQuick.Controls 2.15 as QQC2
 import QtQuick.Layouts 1.15
 import Qt.labs.platform 1.1
+
 import org.kde.kirigami 2.19 as Kirigami
-
-import QtQuick.Templates 2.15 as T
-
 import org.kde.kalendar.contact 1.0
 import org.kde.akonadi 1.0 as Akonadi
 
@@ -27,7 +25,7 @@ Kirigami.ScrollablePage {
         onFinished: root.closeDialog()
         onError: {
             errorContainer.errorMessage = error;
-            errorContainer.visible = tre;
+            errorContainer.visible = true;
         }
         onItemChangedExternally: itemChangedExternallySheet.open()
     }
@@ -52,6 +50,7 @@ Kirigami.ScrollablePage {
         id: errorContainer
         property bool displayError: false
         property string errorMessage: ''
+        padding: Kirigami.Units.smallSpacing
         contentItem: Kirigami.InlineMessage {
             type: Kirigami.MessageType.Error
             visible: errorContainer.displayError

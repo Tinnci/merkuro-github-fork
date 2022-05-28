@@ -22,6 +22,12 @@ target_sources(kalendar_contact_plugin PRIVATE
     contactcollectionmodel.h
     contacteditorbackend.h
     contacteditorbackend.cpp
+    contactgroupeditor.h
+    contactgroupeditor.cpp
+    contactgroupwrapper.h
+    contactgroupwrapper.cpp
+    contactgroupmodel.h
+    contactgroupmodel.cpp
     contactmetadata.cpp
     contactmetadata.h
     attributes/contactmetadataattribute_p.h
@@ -39,12 +45,14 @@ ecm_target_qml_sources(kalendar_contact_plugin SOURCES
 
 ecm_target_qml_sources(kalendar_contact_plugin
     PRIVATE PATH private SOURCES
-    qml/private/ContactListItem.qml
     qml/private/ContactPage.qml
+    qml/private/ContactEditorPage.qml
+    qml/private/ContactGroupPage.qml
+    qml/private/ContactGroupEditorPage.qml
     qml/private/ContactsPage.qml
+    qml/private/ContactListItem.qml
     qml/private/Header.qml
     qml/private/PhoneNumberDialog.qml
-    qml/private/ContactEditorPage.qml
     qml/private/QrCodePage.qml
 )
 

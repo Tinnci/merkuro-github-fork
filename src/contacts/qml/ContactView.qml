@@ -36,9 +36,15 @@ Kirigami.ScrollablePage {
             name: model && model.display
             avatarIcon: model && model.decoration
 
-            onClicked: applicationWindow().pageStack.push(Qt.resolvedUrl('./private/ContactPage.qml'), {
-                itemId: model.itemId,
-            })
+            onClicked: if (model.mimeType === 'application/x-vnd.kde.contactgroup') {
+                applicationWindow().pageStack.push(Qt.resolvedUrl('./private/ContactGroupPage.qml'), {
+                    itemId: model.itemId,
+                })
+            } else {
+                applicationWindow().pageStack.push(Qt.resolvedUrl('./private/ContactPage.qml'), {
+                    itemId: model.itemId,
+                })
+            }
         }
         Kirigami.PlaceholderMessage {
             anchors.centerIn: parent
