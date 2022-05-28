@@ -19,6 +19,7 @@ Kirigami.ScrollablePage {
     topPadding: 0
 
     property ContactGroupWrapper contactGroup: ContactGroupWrapper {
+        id: contactGroup
         item: ContactManager.getItem(page.itemId)
     }
 
@@ -28,7 +29,7 @@ Kirigami.ScrollablePage {
             text: i18n("Edit")
             onTriggered: {
                 pageStack.pushDialogLayer(Qt.resolvedUrl("ContactGroupEditorPage.qml"), {
-                    mode: ContactEditor.EditMode,
+                    mode: ContactGroupEditor.EditMode,
                     item: page.contactGroup.item
                 })
             }
@@ -38,7 +39,9 @@ Kirigami.ScrollablePage {
     ListView {
         model: contactGroup.model
         delegate: Kirigami.BasicListItem {
-            text: model.display
+            icon: model.iconName
+            label: model.display
+            subtitle: model.email
         }
     }
 }

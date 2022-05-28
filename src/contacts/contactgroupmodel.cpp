@@ -102,11 +102,13 @@ public:
         bool foundEmpty = false;
 
         // add an empty line at the end
-        mParent->beginInsertRows(QModelIndex(), mMembers.count(), mMembers.count());
-        GroupMember member;
-        member.isReference = false;
-        mMembers.append(member);
-        mParent->endInsertRows();
+        // if (mIsEditing) {
+        //     mParent->beginInsertRows(QModelIndex(), mMembers.count(), mMembers.count());
+        //     GroupMember member;
+        //     member.isReference = false;
+        //     mMembers.append(member);
+        //     mParent->endInsertRows();
+        // }
 
         // remove all empty lines first except the last line
         do {
@@ -130,19 +132,21 @@ public:
     QVector<GroupMember> mMembers;
     KContacts::ContactGroup mGroup;
     QString mLastErrorMessage;
+    bool mIsEditing;
 };
 
-ContactGroupModel::ContactGroupModel(QObject *parent)
+ContactGroupModel::ContactGroupModel(bool isEditing, QObject *parent)
     : QAbstractListModel(parent)
     , d(new ContactGroupModelPrivate(this))
 {
+    d->mIsEditing = isEditing;
 }
 
 ContactGroupModel::~ContactGroupModel() = default;
 
 void ContactGroupModel::loadContactGroup(const KContacts::ContactGroup &contactGroup)
 {
-    Q_EMIT layoutAboutToBeChanged();
+    Q_EMIT beginResetModel();
 
     d->mMembers.clear();
     d->mGroup = contactGroup;
@@ -169,7 +173,7 @@ void ContactGroupModel::loadContactGroup(const KContacts::ContactGroup &contactG
 
     d->normalizeMemberList();
 
-    Q_EMIT layoutChanged();
+    Q_EMIT endResetModel();
 }
 
 bool ContactGroupModel::storeContactGroup(KContacts::ContactGroup &group) const
@@ -252,16 +256,7 @@ QVariant ContactGroupModel::data(const QModelIndex &index, int role) const
         if (member.loadingError) {
             return QStringLiteral("emblem-important");
         }
-
-        if (index.row() == (d->mMembers.count() - 1)) {
-            return QStringLiteral("contact-new");
-        }
-
-        if (member.isReference) {
-            return QStringLiteral("x-office-contact");
-        } else {
-            return QStringLiteral("x-office-contact");
-        }
+        return {};
     case IsReferenceRole:
         return member.isReference;
 
@@ -274,6 +269,15 @@ QVariant ContactGroupModel::data(const QModelIndex &index, int role) const
     }
 
     return {};
+}
+
+QHash<int, QByteArray> ContactGroupModel::roleNames() const
+{
+    return {
+        { Qt::DisplayRole, QByteArray("display") },
+        { EmailRole,QByteArray("email") },
+        { IconNameRole, QByteArray("iconName") },
+    };
 }
 
 bool ContactGroupModel::setData(const QModelIndex &index, const QVariant &value, int role)

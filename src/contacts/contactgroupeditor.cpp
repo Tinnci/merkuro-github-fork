@@ -47,6 +47,7 @@ public:
 
     ContactGroupEditor::Mode mMode = ContactGroupEditor::Mode::CreateMode;
     Item mItem;
+    Collection mCollection;
     Collection mDefaultCollection;
     ContactGroupEditor *mParent = nullptr;
     ContactGroupModel *mGroupModel = nullptr;
@@ -113,6 +114,8 @@ void ContactGroupEditorPrivate::parentCollectionFetchDone(KJob *job)
     if (parentCollection.isValid()) {
         mReadOnly = !(parentCollection.rights() & Collection::CanChangeItem);
     }
+    mCollection = parentCollection;
+    Q_EMIT mParent->collectionChanged();
 
     const auto group = mItem.payload<KContacts::ContactGroup>();
     loadContactGroup(group);
@@ -182,7 +185,7 @@ ContactGroupEditor::ContactGroupEditor(QObject *parent)
     , d(new ContactGroupEditorPrivate(this))
 {
     d->mMode = ContactGroupEditor::CreateMode;
-    d->mGroupModel = new ContactGroupModel(this);
+    d->mGroupModel = new ContactGroupModel(true, this);
     auto proxyModel = new GroupFilterModel(this);
     proxyModel->setSourceModel(d->mGroupModel);
 
@@ -197,6 +200,7 @@ void ContactGroupEditor::loadContactGroup(const Akonadi::Item &item)
     if (d->mMode == CreateMode) {
         Q_ASSERT_X(false, "ContactGroupEditor::loadContactGroup", "You are calling loadContactGroup in CreateMode!");
     }
+
 
     auto job = new ItemFetchJob(item);
     job->fetchScope().fetchFullPayload();
@@ -293,7 +297,7 @@ void ContactGroupEditor::setName(const QString &name)
 
 qint64 ContactGroupEditor::collectionId() const
 {
-    return d->mDefaultCollection.id();
+    return d->mCollection.isValid() ? d->mCollection.id() : d->mDefaultCollection.id();
 }
 
 ContactGroupEditor::Mode ContactGroupEditor::mode() const
@@ -326,7 +330,7 @@ void ContactGroupEditor::setReadOnly(bool isReadOnly)
 
 QAbstractItemModel *ContactGroupEditor::groupModel() const
 {
-    return d->mFilterModel;
+    return d->mGroupModel;
 }
 
 #include "moc_contactgroupeditor.cpp"

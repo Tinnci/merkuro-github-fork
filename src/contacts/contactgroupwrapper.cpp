@@ -14,7 +14,7 @@ using namespace Akonadi;
 
 ContactGroupWrapper::ContactGroupWrapper(QObject *parent)
     : QObject(parent)
-    , m_model(new ContactGroupModel(this))
+    , m_model(new ContactGroupModel(false, this))
 {
     KContacts::ContactGroup dummyGroup;
     m_model->loadContactGroup(dummyGroup);

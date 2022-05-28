@@ -23,8 +23,8 @@ Kirigami.ScrollablePage {
         id: contactEditor
         mode: ContactEditor.CreateMode
         onFinished: root.closeDialog()
-        onError: {
-            errorContainer.errorMessage = error;
+        onErrorOccured: {
+            errorContainer.errorMessage = errorMsg;
             errorContainer.visible = true;
         }
         onItemChangedExternally: itemChangedExternallySheet.open()

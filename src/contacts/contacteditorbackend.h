@@ -141,7 +141,7 @@ Q_SIGNALS:
      * @param errorMsg The error message.
      * @since 4.11
      */
-    void error(const QString &errorMsg);
+    void errorOccured(const QString &errorMsg);
 
     /**
      * @brief finished

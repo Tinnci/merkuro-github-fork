@@ -85,7 +85,7 @@ QQC2.ComboBox {
             color: collectionColor
         }
     }
-    currentIndex: -1
+    currentIndex: 0
     onCurrentIndexChanged: if (currentIndex !== -1) {
         collectionComboBoxModel.currentIndex = currentIndex;
     }

@@ -102,7 +102,7 @@ void ContactEditorBackend::fetchItem()
 void ContactEditorBackend::itemFetchDone(KJob *job)
 {
     if (job->error() != KJob::NoError) {
-        Q_EMIT error(job->errorString());
+        Q_EMIT errorOccured(job->errorString());
         return;
     }
 
@@ -140,7 +140,7 @@ void ContactEditorBackend::itemFetchDone(KJob *job)
 void ContactEditorBackend::parentCollectionFetchDone(KJob *job)
 {
     if (job->error()) {
-        Q_EMIT error(job->errorString());
+        Q_EMIT errorOccured(job->errorString());
         return;
     }
 
@@ -223,7 +223,7 @@ void ContactEditorBackend::saveContactInAddressBook()
 void ContactEditorBackend::storeDone(KJob *job)
 {
     if (job->error() != KJob::NoError) {
-        Q_EMIT error(job->errorString());
+        Q_EMIT errorOccured(job->errorString());
         return;
     }
 

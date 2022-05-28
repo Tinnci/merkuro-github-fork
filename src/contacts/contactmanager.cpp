@@ -128,7 +128,7 @@ ContactManager::ContactManager(QObject *parent)
     selectionProxyModel->setSourceModel(GlobalContactModel::instance()->model());
     selectionProxyModel->setFilterBehavior(KSelectionProxyModel::ChildrenOfExactSelection);
 
-    KDescendantsProxyModel *flatModel = new KDescendantsProxyModel( this );
+    auto flatModel = new KDescendantsProxyModel(this);
     flatModel->setSourceModel(selectionProxyModel);
 
     m_filteredContacts = new Akonadi::EntityMimeTypeFilterModel(this);
