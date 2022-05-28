@@ -31,9 +31,9 @@ Kirigami.ScrollablePage {
                 stepSize: 1.0
                 from: 0.0
                 to: 100.0
-                value: Config.pastEventsTransparencyLevel * 100
+                value: Config.pastEventsOpacityLevel * 100
                 onMoved: {
-                    Config.pastEventsTransparencyLevel = value / 100;
+                    Config.pastEventsOpacityLevel = value / 100;
                     Config.save();
                 }
             }
