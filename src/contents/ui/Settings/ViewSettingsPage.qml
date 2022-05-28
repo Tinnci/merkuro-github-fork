@@ -25,7 +25,7 @@ Kirigami.ScrollablePage {
             }
         }
         RowLayout {
-            Kirigami.FormData.label: i18n("Level of transparency for events from the past")
+            Kirigami.FormData.label: i18n("Past event transparency:")
             Layout.fillWidth: true
             Controls.Slider {
                 stepSize: 1.0
