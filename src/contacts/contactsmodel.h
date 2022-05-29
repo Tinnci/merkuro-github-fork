@@ -9,6 +9,7 @@
 /// Contacts model with an email addreess
 class ContactsModel : public QSortFilterProxyModel
 {
+    Q_OBJECT
 public:
     enum ExtraRoles {
         EmailRole = Akonadi::EntityTreeModel::UserRole + 1,

@@ -221,7 +221,6 @@ QVariant ContactGroupModel::data(const QModelIndex &index, int role) const
 
     switch (role) {
     case Qt::DisplayRole:
-        qDebug() << "requested name" << index.row() << member.referencedContact.realName();
         if (member.loadingError) {
             return i18n("Contact does not exist any more");
         }

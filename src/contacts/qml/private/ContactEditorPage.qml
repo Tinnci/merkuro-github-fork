@@ -31,9 +31,9 @@ Kirigami.ScrollablePage {
     }
 
     title: if (mode === ContactEditor.CreateMode) {
-        return i18n("Adding contact");
+        return i18n("Add contact");
     } else {
-        return i18n("Adding contact");
+        return i18n("Edit contact");
     }
 
     enabled: !contactEditor.isReadOnly
