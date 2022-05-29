@@ -78,12 +78,12 @@ Kirigami.ScrollablePage {
                     RowLayout {
                         QQC2.TextField {
                             text: model.display
-                            readOnly: true
+                            enabled: false
                             implicitWidth: Kirigami.Units.gridUnit * 10
                         }
                         QQC2.TextField {
                             text: model.email
-                            readOnly: true
+                            enabled: false
                             implicitWidth: Kirigami.Units.gridUnit * 10
                         }
                         QQC2.Button {
@@ -99,31 +99,29 @@ Kirigami.ScrollablePage {
                 QQC2.ComboBox {
                     id: nameSearch
                     textRole: 'display'
-                    valueRole: 'itemId'
-                    model: ContactsModel {}
-                    editable: true
-                    implicitWidth: Kirigami.Units.gridUnit * 10
-                    onCurrentIndexChanged: emailSearch.currentIndex = currentIndex
-                }
-                QQC2.ComboBox {
-                    id: emailSearch
-                    textRole: 'email'
                     valueRole: 'gid'
                     model: ContactsModel {}
                     editable: true
                     implicitWidth: Kirigami.Units.gridUnit * 10
-                    onCurrentIndexChanged: nameSearch.currentIndex = currentIndex
+                    onCurrentIndexChanged: {
+                        const allEmail = nameSearch.model.data(nameSearch.model.index(currentIndex, 0), ContactsModel.AllEmailsRole);
+                        const preferredEmail = nameSearch.model.data(nameSearch.model.index(currentIndex, 0), ContactsModel.EmailRole);
+                        emailSearch.currentIndex = emailSearch.indexOfValue(preferredEmail);
+                        emailSearch.model = allEmail;
+                    }
+                }
+                QQC2.ComboBox {
+                    id: emailSearch
+                    enabled: model.length !== 0
+                    model: []
+                    implicitWidth: Kirigami.Units.gridUnit * 10
                 }
                 // TODO use item role instead of itemId after 22.08
                 QQC2.Button {
                     icon.name: 'list-add'
                     enabled: emailSearch.currentIndex > 0 || (emailSearch.editText.length > 0 && nameSearch.editText.length > 0)
                     onClicked: {
-                        if (emailSearch.editText !== emailSearch.currentText && nameSearch.editText !== nameSearch.currentText) {
-                            contactGroupEditor.groupModel.addContactFromData(nameSearch.editText, emailSearch.editText)
-                        } else {
-                            contactGroupEditor.groupModel.addContactFromReference(emailSearch.currentValue)
-                        }
+                        contactGroupEditor.groupModel.addContactFromReference(nameSearch.currentValue, emailSearch.currentValue)
                         emailSearch.editText = '';
                         nameSearch.editText = '';
                         emailSearch.currentIndex = -1;

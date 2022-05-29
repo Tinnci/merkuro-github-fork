@@ -61,6 +61,17 @@ bool ContactsModel::filterAcceptsRow(int row, const QModelIndex &sourceParent) c
 
 QVariant ContactsModel::data(const QModelIndex &idx, int role) const
 {
+    if (role == AllEmailsRole) {
+        const auto item = QSortFilterProxyModel::data(idx, Akonadi::EntityTreeModel::ItemRole).value<Akonadi::Item>();
+        if (item.mimeType() == KContacts::Addressee::mimeType()) {
+            if (!item.hasPayload<KContacts::Addressee>()) {
+                return {};
+            }
+            const auto contact = item.payload<KContacts::Addressee>();
+            return contact.emails();
+        }
+        return {};
+    }
     if (role == EmailRole) {
         const auto item = QSortFilterProxyModel::data(idx, Akonadi::EntityTreeModel::ItemRole).value<Akonadi::Item>();
         if (item.mimeType() == KContacts::Addressee::mimeType()) {

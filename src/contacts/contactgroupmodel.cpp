@@ -29,7 +29,7 @@ public:
     {
     }
 
-    void resolveContactReference(const KContacts::ContactGroup::ContactReference &reference, int row)
+    void resolveContactReference(const KContacts::ContactGroup::ContactReference &reference, int row, const QString &preferredEmail = {})
     {
         Item item;
         if (!reference.gid().isEmpty()) {
@@ -41,12 +41,12 @@ public:
         job->setProperty("row", row);
         job->fetchScope().fetchFullPayload();
 
-        mParent->connect(job, &ItemFetchJob::result, mParent, [this](KJob *job) {
-            itemFetched(job);
+        mParent->connect(job, &ItemFetchJob::result, mParent, [this, preferredEmail](KJob *job) {
+            itemFetched(job, preferredEmail);
         });
     }
 
-    void itemFetched(KJob *job)
+    void itemFetched(KJob *job, const QString &preferredEmail)
     {
         const int row = job->property("row").toInt();
 
@@ -69,6 +69,10 @@ public:
 
         GroupMember &member = mMembers[row];
         member.referencedContact = contact;
+        if (!preferredEmail.isEmpty() && contact.preferredEmail() != preferredEmail) {
+            // we are using a special email address
+            member.reference.setPreferredEmail(preferredEmail);
+        }
         Q_EMIT mParent->dataChanged(mParent->index(row, 0, {}), mParent->index(row, 0, {}));
     }
 
@@ -377,7 +381,7 @@ void ContactGroupModel::removeContact(int row)
     endRemoveRows();
 }
 
-void ContactGroupModel::addContactFromReference(const QString &gid)
+void ContactGroupModel::addContactFromReference(const QString &gid, const QString &email)
 {
     GroupMember member;
     member.isReference = true;
@@ -386,41 +390,7 @@ void ContactGroupModel::addContactFromReference(const QString &gid)
     d->mMembers.append(member);
     endInsertRows();
 
-    d->resolveContactReference(member.reference, d->mMembers.count() - 1);
-    /*
-    Item item;
-    item.setId(itemId);
-    auto job = new ItemFetchJob(item, this);
-    job->fetchScope().fetchFullPayload();
-
-    connect(job, &ItemFetchJob::result, this, [this](KJob *job) {
-        if (job->error()) {
-            return;
-        }
-
-        auto fetchJob = qobject_cast<ItemFetchJob *>(job);
-        if (fetchJob->items().count() != 1) {
-            GroupMember member;
-            member.loadingError = true;
-            beginInsertRows({}, d->mMembers.count(), d->mMembers.count());
-            d->mMembers.append(member);
-            endInsertRows();
-            return;
-        }
-
-        const Item item = fetchJob->items().at(0);
-        const auto contact = item.payload<KContacts::Addressee>();
-
-        GroupMember member;
-        member.isReference = true;
-        member.referencedContact = contact;
-        member.data.setName(member.referencedContact.realName());
-        member.data.setEmail(member.referencedContact.preferredEmail());
-        beginInsertRows({}, d->mMembers.count(), d->mMembers.count());
-        d->mMembers.append(member);
-        endInsertRows();
-    });
-    */
+    d->resolveContactReference(member.reference, d->mMembers.count() - 1, email);
 }
 
 void ContactGroupModel::addContactFromData(const QString &name, const QString &email)

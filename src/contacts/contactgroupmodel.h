@@ -42,7 +42,7 @@ public:
     int rowCount(const QModelIndex &parent = QModelIndex()) const override;
 
     Q_INVOKABLE void removeContact(int row);
-    Q_INVOKABLE void addContactFromReference(const QString &gid);
+    Q_INVOKABLE void addContactFromReference(const QString &gid, const QString &email);
     Q_INVOKABLE void addContactFromData(const QString &name, const QString &email);
 
 private:

@@ -13,8 +13,10 @@ class ContactsModel : public QSortFilterProxyModel
 public:
     enum ExtraRoles {
         EmailRole = Akonadi::EntityTreeModel::UserRole + 1,
+        AllEmailsRole,
         GidRole,
     };
+    Q_ENUM(ExtraRoles)
     explicit ContactsModel(QObject *parent = nullptr);
 
     QVariant data(const QModelIndex &idx, int role) const override;
