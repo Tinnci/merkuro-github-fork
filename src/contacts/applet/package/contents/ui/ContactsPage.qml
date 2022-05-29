@@ -62,7 +62,7 @@ PlasmaComponents3.ScrollView {
 
     contentItem: ListView {
         id: contactsList
-        model: ContactManager.filteredContacts
+        model: ContactsModel { }
         boundsBehavior: Flickable.StopAtBounds
         topMargin: PlasmaCore.Units.smallSpacing * 2
         bottomMargin: PlasmaCore.Units.smallSpacing * 2
