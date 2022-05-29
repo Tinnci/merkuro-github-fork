@@ -10,36 +10,35 @@ class QAbstractListModel;
 class ContactGroupModel;
 
 #include <Akonadi/Item>
+#include <Akonadi/ItemMonitor>
 #include <KContacts/ContactGroup>
 
-namespace Akonadi
-{
-    class Monitor;
-}
-
-class ContactGroupWrapper : public QObject {
+class ContactGroupWrapper : public QObject, public Akonadi::ItemMonitor {
     Q_OBJECT
-    Q_PROPERTY(QString name READ name NOTIFY itemChanged)
-    Q_PROPERTY(Akonadi::Item item READ item WRITE setItem NOTIFY itemChanged)
+    Q_PROPERTY(QString name READ name NOTIFY nameChanged)
+    Q_PROPERTY(Akonadi::Item item READ item WRITE setItem NOTIFY akonadiItemChanged)
     Q_PROPERTY(QAbstractListModel *model READ model CONSTANT)
 
 public:
     ContactGroupWrapper(QObject *parent = nullptr);
     QString name() const;
+    void setName(const QString &name);
     Akonadi::Item item() const;
     void setItem(const Akonadi::Item &item);
     QAbstractListModel *model() const;
 
+protected:
+    virtual void itemChanged(const Akonadi::Item &item) override;
+
 Q_SIGNALS:
-    void itemChanged();
+    void nameChanged();
+    void akonadiItemChanged();
 
 private:
     void itemFetchDone(KJob *job);
-    void setupMonitor();
     void loadContactGroup(const KContacts::ContactGroup &contactGroup);
 
     QString m_name;
     ContactGroupModel *m_model;
     Akonadi::Item m_item;
-    Akonadi::Monitor *m_monitor = nullptr;
 };

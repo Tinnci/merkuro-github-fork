@@ -6,18 +6,33 @@
 #include <Akonadi/ItemFetchJob>
 #include <Akonadi/ItemFetchScope>
 #include <Akonadi/Session>
-#include <Akonadi/Monitor>
+#include <Akonadi/ItemMonitor>
 #include <QAbstractListModel>
+#include <akonadi/itemmonitor.h>
 #include "contactgroupmodel.h"
 
 using namespace Akonadi;
 
 ContactGroupWrapper::ContactGroupWrapper(QObject *parent)
     : QObject(parent)
+    , Akonadi::ItemMonitor()
     , m_model(new ContactGroupModel(false, this))
 {
+    Akonadi::ItemFetchScope scope;
+    scope.fetchFullPayload();
+    scope.fetchAllAttributes();
+    scope.setFetchRelations(true);
+    scope.setAncestorRetrieval(Akonadi::ItemFetchScope::Parent);
+    setFetchScope(scope);
+
     KContacts::ContactGroup dummyGroup;
     m_model->loadContactGroup(dummyGroup);
+}
+
+void ContactGroupWrapper::itemChanged(const Akonadi::Item &item)
+{
+    const auto group = item.payload<KContacts::ContactGroup>();
+    loadContactGroup(group);
 }
 
 QString ContactGroupWrapper::name() const
@@ -37,6 +52,7 @@ Akonadi::Item ContactGroupWrapper::item() const
 
 void ContactGroupWrapper::setItem(const Akonadi::Item &item)
 {
+    ItemMonitor::setItem(item);
     m_item = item;
     auto job = new ItemFetchJob(item);
     job->fetchScope().fetchFullPayload();
@@ -44,23 +60,6 @@ void ContactGroupWrapper::setItem(const Akonadi::Item &item)
 
     connect(job, &Akonadi::ItemFetchJob::result, this, [this](KJob *job) {
         itemFetchDone(job);
-    });
-
-    setupMonitor();
-    m_monitor->setItemMonitored(item);
-}
-
-void ContactGroupWrapper::setupMonitor()
-{
-    delete m_monitor;
-    m_monitor = new Monitor;
-    m_monitor->setObjectName(QStringLiteral("ContactGroupWrapprMonitor"));
-    m_monitor->ignoreSession(Session::defaultSession());
-
-    QObject::connect(m_monitor, &Monitor::itemChanged, this, [this](const Akonadi::Item &item, const QSet<QByteArray> &) {
-        m_item = item;
-        const auto group = m_item.payload<KContacts::ContactGroup>();
-        loadContactGroup(group);
     });
 }
 
@@ -83,11 +82,19 @@ void ContactGroupWrapper::itemFetchDone(KJob *job)
 
     const auto group = m_item.payload<KContacts::ContactGroup>();
     loadContactGroup(group);
-    Q_EMIT itemChanged();
 }
 
 void ContactGroupWrapper::loadContactGroup(const KContacts::ContactGroup &group)
 {
-    m_name = group.name();
+    setName(group.name());
     m_model->loadContactGroup(group);
+}
+
+void ContactGroupWrapper::setName(const QString &name)
+{
+    if (m_name == name) {
+        return;
+    }
+    m_name = name;
+    Q_EMIT nameChanged();
 }
