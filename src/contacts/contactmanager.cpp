@@ -92,6 +92,9 @@ ContactManager::ContactManager(QObject *parent)
 
     m_filteredContacts = new QSortFilterProxyModel(this);
     m_filteredContacts->setSourceModel(entityMimeTypeFilterModel);
+    m_filteredContacts->setSortLocaleAware(true);
+    m_filteredContacts->setSortCaseSensitivity(Qt::CaseInsensitive);
+    m_filteredContacts->setFilterCaseSensitivity(Qt::CaseInsensitive);
     m_filteredContacts->sort(0);
 }
 

@@ -82,7 +82,8 @@ void ContactEditorBackend::setupMonitor()
     m_monitor->setObjectName(QStringLiteral("ContactEditorMonitor"));
     m_monitor->ignoreSession(Akonadi::Session::defaultSession());
 
-    connect(m_monitor, &Akonadi::Monitor::itemChanged, this, [this](const Akonadi::Item &, const QSet<QByteArray> &) {
+    connect(m_monitor, &Akonadi::Monitor::itemChanged, this, [this](const Akonadi::Item &item, const QSet<QByteArray> &) {
+        m_item = item;
         Q_EMIT itemChangedExternally();
     });
 }
@@ -170,6 +171,7 @@ void ContactEditorBackend::saveContactInAddressBook()
 {
     if (m_mode == EditMode) {
         if (!m_item.isValid() || m_readOnly) {
+            qDebug() << "item not valid anymore";
             return;
         }
 
@@ -186,23 +188,7 @@ void ContactEditorBackend::saveContactInAddressBook()
             storeDone(job);
         });
     } else if (m_mode == CreateMode) {
-        if (!m_defaltAddressBook.isValid()) {
-            const QStringList mimeTypeFilter(KContacts::Addressee::mimeType());
-            // TODO port to collection picker page
-            //
-            // QPointer<Akonadi::CollectionDialog> dlg = new Akonadi::CollectionDialog(nullptr);
-            // dlg->setMimeTypeFilter(mimeTypeFilter);
-            // dlg->setAccessRightsFilter(Akonadi::Collection::CanCreateItem);
-            // dlg->setWindowTitle(i18nc("@title:window", "Select Address Book"));
-            // dlg->setDescription(i18n("Select the address book the new contact shall be saved in:"));
-            // if (dlg->exec() == QDialog::Accepted) {
-            //     setDefaultAddressBook(dlg->selectedCollection());
-            //     delete dlg;
-            // } else {
-            //     delete dlg;
-            //     return;
-            // }
-        }
+        Q_ASSERT(m_defaltAddressBook.isValid());
 
         KContacts::Addressee addr(m_addressee->addressee());
         storeContact(addr, m_contactMetaData);

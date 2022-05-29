@@ -161,7 +161,7 @@ Kirigami.ScrollablePage {
 
             Controls.Label {
                 visible: text !== ""
-                text: addressee.name
+                text: addressee.formattedName
                 Kirigami.FormData.label: i18n("Name:")
             }
 

@@ -25,7 +25,7 @@ Kirigami.ScrollablePage {
         onFinished: root.closeDialog()
         onErrorOccured: {
             errorContainer.errorMessage = errorMsg;
-            errorContainer.visible = true;
+            errorContainer.contentItem.visible = true;
         }
         onItemChangedExternally: itemChangedExternallySheet.open()
     }
@@ -50,7 +50,11 @@ Kirigami.ScrollablePage {
         id: errorContainer
         property bool displayError: false
         property string errorMessage: ''
-        padding: Kirigami.Units.smallSpacing
+        padding: contentItem.visible ? Kirigami.Units.smallSpacing : 0
+        leftPadding: padding
+        rightPadding: padding
+        topPadding: padding
+        bottomPadding: padding
         contentItem: Kirigami.InlineMessage {
             type: Kirigami.MessageType.Error
             visible: errorContainer.displayError
