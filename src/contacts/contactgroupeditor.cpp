@@ -51,7 +51,6 @@ public:
     Collection mDefaultCollection;
     ContactGroupEditor *mParent = nullptr;
     ContactGroupModel *mGroupModel = nullptr;
-    GroupFilterModel *mFilterModel = nullptr;
     Monitor *mMonitor = nullptr;
     QString mName;
     bool mReadOnly = false;
@@ -135,6 +134,7 @@ void ContactGroupEditorPrivate::storeDone(KJob *job)
     } else if (mMode == ContactGroupEditor::CreateMode) {
         Q_EMIT mParent->contactGroupStored(static_cast<ItemCreateJob *>(job)->item());
     }
+    Q_EMIT mParent->finished();
 }
 
 void ContactGroupEditor::fetchItem()
@@ -186,9 +186,6 @@ ContactGroupEditor::ContactGroupEditor(QObject *parent)
 {
     d->mMode = ContactGroupEditor::CreateMode;
     d->mGroupModel = new ContactGroupModel(true, this);
-    auto proxyModel = new GroupFilterModel(this);
-    proxyModel->setSourceModel(d->mGroupModel);
-
     KContacts::ContactGroup dummyGroup;
     d->mGroupModel->loadContactGroup(dummyGroup);
 }
@@ -240,6 +237,8 @@ bool ContactGroupEditor::saveContactGroup()
     } else if (d->mMode == CreateMode) {
         if (!d->mDefaultCollection.isValid()) {
             const QStringList mimeTypeFilter(KContacts::ContactGroup::mimeType());
+            Q_EMIT errorOccured(i18n("No address book selected"));
+            return false;
 
             // TODO check if this can happen
             // QPointer<CollectionDialog> dlg = new CollectionDialog(this);

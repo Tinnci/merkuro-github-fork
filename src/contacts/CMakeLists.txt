@@ -30,6 +30,8 @@ target_sources(kalendar_contact_plugin PRIVATE
     contactgroupmodel.cpp
     contactmetadata.cpp
     contactmetadata.h
+    contactsmodel.cpp
+    contactsmodel.h
     attributes/contactmetadataattribute_p.h
     attributes/contactmetadataattribute.cpp
     attributes/attributeregistrar.cpp

@@ -41,18 +41,11 @@ public:
     Qt::ItemFlags flags(const QModelIndex &index) const override;
     int rowCount(const QModelIndex &parent = QModelIndex()) const override;
 
-    bool removeRows(int row, int count, const QModelIndex &parent = QModelIndex()) override;
+    Q_INVOKABLE void removeContact(int row);
+    Q_INVOKABLE void addContactFromReference(const QString &gid);
+    Q_INVOKABLE void addContactFromData(const QString &name, const QString &email);
 
 private:
     friend class ContactGroupModelPrivate;
     std::unique_ptr<ContactGroupModelPrivate> const d;
-};
-
-class GroupFilterModel : public QSortFilterProxyModel
-{
-public:
-    explicit GroupFilterModel(QObject *parent = nullptr);
-
-    bool filterAcceptsRow(int sourceRow, const QModelIndex &sourceParent) const override;
-    bool lessThan(const QModelIndex &left, const QModelIndex &right) const override;
 };

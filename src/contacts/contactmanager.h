@@ -27,9 +27,6 @@ class ContactManager : public QObject
     /// Model for getting the contact collections available for the mainDrawer
     Q_PROPERTY(QAbstractItemModel *contactCollections READ contactCollections CONSTANT)
 
-    /// Model for getting all contact with email address
-    Q_PROPERTY(QSortFilterProxyModel *contactsModel READ contactsModel CONSTANT)
-
     /// Model containing the contacts from the selected collection
     Q_PROPERTY(QAbstractItemModel *filteredContacts READ filteredContacts CONSTANT)
 public:
@@ -38,7 +35,6 @@ public:
     QAbstractItemModel *contactCollections() const;
     QAbstractItemModel *filteredContacts() const;
 
-    QSortFilterProxyModel *contactsModel();
     Q_INVOKABLE void contactEmails(qint64 itemId);
     Q_INVOKABLE void updateAllCollections();
     Q_INVOKABLE QUrl decorationToUrl(QVariant decoration);
@@ -56,5 +52,4 @@ private:
     Akonadi::EntityMimeTypeFilterModel *m_filteredContacts;
     KCheckableProxyModel *m_checkableProxyModel;
     ColorProxyModel *m_colorProxy;
-    QSortFilterProxyModel *m_model;
 };

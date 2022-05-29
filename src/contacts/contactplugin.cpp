@@ -9,6 +9,7 @@
 #include "contactgroupeditor.h"
 #include "contactgroupwrapper.h"
 #include "contactmanager.h"
+#include "contactsmodel.h"
 #include "emailmodel.h"
 #include "globalcontactmodel.h"
 #include "contactconfig.h"
@@ -39,6 +40,7 @@ void CalendarPlugin::registerTypes(const char *uri)
     qmlRegisterType<ContactEditorBackend>("org.kde.kalendar.contact", 1, 0, "ContactEditor");
     qmlRegisterType<ContactGroupWrapper>("org.kde.kalendar.contact", 1, 0, "ContactGroupWrapper");
     qmlRegisterType<ContactGroupEditor>("org.kde.kalendar.contact", 1, 0, "ContactGroupEditor");
+    qmlRegisterType<ContactsModel>("org.kde.kalendar.contact", 1, 0, "ContactsModel");
     qRegisterMetaType<KContacts::Picture>("KContacts::Picture");
     qRegisterMetaType<KContacts::PhoneNumber::List>("KContacts::PhoneNumber::List");
     qRegisterMetaType<KContacts::PhoneNumber>("KContacts::PhoneNumber");

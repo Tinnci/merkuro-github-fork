@@ -18,9 +18,18 @@ Kirigami.ScrollablePage {
     actions.main: Kirigami.Action {
         icon.name: 'contact-new-symbolic'
         text: i18n('Create')
-        onTriggered: pageStack.pushDialogLayer(Qt.resolvedUrl("private/ContactEditorPage.qml"), {
-            mode: ContactEditor.CreateMode
-        })
+        Kirigami.Action {
+            text: i18n('New Contact')
+            onTriggered: pageStack.pushDialogLayer(Qt.resolvedUrl("private/ContactEditorPage.qml"), {
+                mode: ContactEditor.CreateMode,
+            })
+        }
+        Kirigami.Action {
+            text: i18n('New Contact Group')
+            onTriggered: pageStack.pushDialogLayer(Qt.resolvedUrl("private/ContactGroupEditorPage.qml"), {
+                mode: ContactGroupEditor.CreateMode,
+            })
+        }
     }
 
     ListView {
@@ -28,7 +37,9 @@ Kirigami.ScrollablePage {
         reuseItems: true
         section.property: "display"
         section.criteria: ViewSection.FirstCharacter
-        section.delegate: Kirigami.ListSectionHeader {text: section}
+        section.delegate: Kirigami.ListSectionHeader {
+            text: section
+        }
         clip: true
         model: ContactManager.filteredContacts
         delegate: ContactListItem {

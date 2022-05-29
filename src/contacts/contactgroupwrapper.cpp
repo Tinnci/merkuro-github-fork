@@ -57,7 +57,8 @@ void ContactGroupWrapper::setupMonitor()
     m_monitor->setObjectName(QStringLiteral("ContactGroupWrapprMonitor"));
     m_monitor->ignoreSession(Session::defaultSession());
 
-    QObject::connect(m_monitor, &Monitor::itemChanged, this, [this](const Akonadi::Item &, const QSet<QByteArray> &) {
+    QObject::connect(m_monitor, &Monitor::itemChanged, this, [this](const Akonadi::Item &item, const QSet<QByteArray> &) {
+        m_item = item;
         const auto group = m_item.payload<KContacts::ContactGroup>();
         loadContactGroup(group);
     });

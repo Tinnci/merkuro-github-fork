@@ -15,7 +15,7 @@
 #include <Akonadi/ItemFetchScope>
 #include <Akonadi/Monitor>
 #include <Akonadi/SelectionProxyModel>
-#include <kdescendantsproxymodel.h>
+#include <KDescendantsProxyModel>
 #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
 #include <akonadi_version.h>
 #if AKONADI_VERSION >= QT_VERSION_CHECK(5, 19, 40)
@@ -48,43 +48,6 @@
 #include <colorproxymodel.h>
 #include <sortedcollectionproxymodel.h>
 
-namespace
-{
-class ContactsModel : public QSortFilterProxyModel
-{
-public:
-    explicit ContactsModel(QAbstractItemModel *model, QObject *parent = nullptr)
-        : QSortFilterProxyModel(parent)
-    {
-        auto flatModel = new KDescendantsProxyModel(this);
-        flatModel->setSourceModel(model);
-
-        auto addresseeOnlyModel = new Akonadi::EntityMimeTypeFilterModel(this);
-        addresseeOnlyModel->setSourceModel(flatModel);
-        addresseeOnlyModel->addMimeTypeInclusionFilter(KContacts::Addressee::mimeType());
-        addresseeOnlyModel->addMimeTypeInclusionFilter(KContacts::ContactGroup::mimeType());
-
-        setSourceModel(addresseeOnlyModel);
-        setDynamicSortFilter(true);
-        setFilterCaseSensitivity(Qt::CaseInsensitive);
-        sort(0);
-    }
-
-protected:
-    bool filterAcceptsRow(int row, const QModelIndex &sourceParent) const override
-    {
-        // Eliminate duplicate Akonadi items
-        const QModelIndex sourceIndex = sourceModel()->index(row, 0, sourceParent);
-        Q_ASSERT(sourceIndex.isValid());
-
-        auto data = sourceIndex.data(Akonadi::EntityTreeModel::ItemIdRole);
-        auto matches = match(index(0, 0), Akonadi::EntityTreeModel::ItemIdRole, data, 2, Qt::MatchExactly | Qt::MatchWrap | Qt::MatchRecursive);
-
-        return matches.length() < 1;
-    }
-};
-}
-
 ContactManager::ContactManager(QObject *parent)
     : QObject(parent)
 {
@@ -112,16 +75,6 @@ ContactManager::ContactManager(QObject *parent)
     m_collectionSelectionModelStateSaver->setView(nullptr);
     m_collectionSelectionModelStateSaver->setSelectionModel(m_checkableProxyModel->selectionModel());
     m_collectionSelectionModelStateSaver->restoreState(selectionGroup);
-
-
-    // List of contacts with an email address
-    auto sourceModel = new Akonadi::EmailAddressSelectionModel(this);
-    auto filterModel = new Akonadi::ContactsFilterProxyModel(this);
-    filterModel->setSourceModel(sourceModel->model());
-    filterModel->setFilterFlags(Akonadi::ContactsFilterProxyModel::HasEmail);
-
-    m_model = new ContactsModel(filterModel, this);
-
 
     // List of contacts for the main contact view
     auto selectionProxyModel = new Akonadi::SelectionProxyModel(m_checkableProxyModel->selectionModel(), this);
@@ -155,11 +108,6 @@ QAbstractItemModel *ContactManager::contactCollections() const
 QAbstractItemModel *ContactManager::filteredContacts() const
 {
     return m_filteredContacts;
-}
-
-QSortFilterProxyModel *ContactManager::contactsModel()
-{
-    return m_model;
 }
 
 void ContactManager::contactEmails(qint64 itemId)

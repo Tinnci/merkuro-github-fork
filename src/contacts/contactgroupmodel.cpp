@@ -1,4 +1,5 @@
 // SPDX-FileCopyrightText: 2009 Tobias Koenig <tokoe@kde.org>
+// SPDX-FileCopyrightText: 2022 Carl Schwan <carl@carlschwan.eu>
 // SPDX-License-Identifier: LGPL-2.0-or-later
 
 #include "contactgroupmodel.h"
@@ -51,7 +52,7 @@ public:
 
         if (job->error()) {
             mMembers[row].loadingError = true;
-            Q_EMIT mParent->dataChanged(mParent->index(row, 0, QModelIndex()), mParent->index(row, 1, QModelIndex()));
+            Q_EMIT mParent->dataChanged(mParent->index(row, 0, {}), mParent->index(row, 0, {}));
             return;
         }
 
@@ -59,7 +60,7 @@ public:
 
         if (fetchJob->items().count() != 1) {
             mMembers[row].loadingError = true;
-            Q_EMIT mParent->dataChanged(mParent->index(row, 0, QModelIndex()), mParent->index(row, 1, QModelIndex()));
+            Q_EMIT mParent->dataChanged(mParent->index(row, 0, {}), mParent->index(row, 0, {}));
             return;
         }
 
@@ -68,7 +69,7 @@ public:
 
         GroupMember &member = mMembers[row];
         member.referencedContact = contact;
-        Q_EMIT mParent->dataChanged(mParent->index(row, 0, QModelIndex()), mParent->index(row, 1, QModelIndex()));
+        Q_EMIT mParent->dataChanged(mParent->index(row, 0, {}), mParent->index(row, 0, {}));
     }
 
     void normalizeMemberList()
@@ -100,15 +101,6 @@ public:
         }
 
         bool foundEmpty = false;
-
-        // add an empty line at the end
-        // if (mIsEditing) {
-        //     mParent->beginInsertRows(QModelIndex(), mMembers.count(), mMembers.count());
-        //     GroupMember member;
-        //     member.isReference = false;
-        //     mMembers.append(member);
-        //     mParent->endInsertRows();
-        // }
 
         // remove all empty lines first except the last line
         do {
@@ -186,13 +178,11 @@ bool ContactGroupModel::storeContactGroup(KContacts::ContactGroup &group) const
         if (member.isReference) {
             group.append(member.reference);
         } else {
-            if (i != (d->mMembers.count() - 1)) {
-                if (member.data.email().isEmpty()) {
-                    d->mLastErrorMessage = i18n("The member with name <b>%1</b> is missing an email address", member.data.name());
-                    return false;
-                }
-                group.append(member.data);
+            if (member.data.email().isEmpty()) {
+                d->mLastErrorMessage = i18n("The member with name <b>%1</b> is missing an email address", member.data.name());
+                return false;
             }
+            group.append(member.data);
         }
     }
 
@@ -228,8 +218,10 @@ QVariant ContactGroupModel::data(const QModelIndex &index, int role) const
 
     const GroupMember &member = d->mMembers[index.row()];
 
+
     switch (role) {
     case Qt::DisplayRole:
+        qDebug() << "requested name" << index.row() << member.referencedContact.realName();
         if (member.loadingError) {
             return i18n("Contact does not exist any more");
         }
@@ -379,46 +371,66 @@ int ContactGroupModel::rowCount(const QModelIndex &parent) const
     }
 }
 
-bool ContactGroupModel::removeRows(int row, int count, const QModelIndex &parent)
+void ContactGroupModel::removeContact(int row)
 {
-    if (parent.isValid()) {
-        return false;
-    }
-
-    beginRemoveRows(QModelIndex(), row, row + count - 1);
-    for (int i = 0; i < count; ++i) {
-        d->mMembers.remove(row);
-    }
+    beginRemoveRows({}, row, row);
+    d->mMembers.remove(row);
     endRemoveRows();
-
-    return true;
 }
 
-GroupFilterModel::GroupFilterModel(QObject *parent)
-    : QSortFilterProxyModel(parent)
+void ContactGroupModel::addContactFromReference(const QString &gid)
 {
-    setFilterCaseSensitivity(Qt::CaseInsensitive);
-    setFilterKeyColumn(-1);
+    GroupMember member;
+    member.isReference = true;
+    member.reference.setGid(gid);
+    beginInsertRows({}, d->mMembers.count(), d->mMembers.count());
+    d->mMembers.append(member);
+    endInsertRows();
+
+    d->resolveContactReference(member.reference, d->mMembers.count() - 1);
+    /*
+    Item item;
+    item.setId(itemId);
+    auto job = new ItemFetchJob(item, this);
+    job->fetchScope().fetchFullPayload();
+
+    connect(job, &ItemFetchJob::result, this, [this](KJob *job) {
+        if (job->error()) {
+            return;
+        }
+
+        auto fetchJob = qobject_cast<ItemFetchJob *>(job);
+        if (fetchJob->items().count() != 1) {
+            GroupMember member;
+            member.loadingError = true;
+            beginInsertRows({}, d->mMembers.count(), d->mMembers.count());
+            d->mMembers.append(member);
+            endInsertRows();
+            return;
+        }
+
+        const Item item = fetchJob->items().at(0);
+        const auto contact = item.payload<KContacts::Addressee>();
+
+        GroupMember member;
+        member.isReference = true;
+        member.referencedContact = contact;
+        member.data.setName(member.referencedContact.realName());
+        member.data.setEmail(member.referencedContact.preferredEmail());
+        beginInsertRows({}, d->mMembers.count(), d->mMembers.count());
+        d->mMembers.append(member);
+        endInsertRows();
+    });
+    */
 }
 
-bool GroupFilterModel::filterAcceptsRow(int sourceRow, const QModelIndex &sourceParent) const
+void ContactGroupModel::addContactFromData(const QString &name, const QString &email)
 {
-    if (sourceRow == sourceModel()->rowCount() - 1) {
-        return true;
-    }
-
-    return QSortFilterProxyModel::filterAcceptsRow(sourceRow, sourceParent);
-}
-
-bool GroupFilterModel::lessThan(const QModelIndex &left, const QModelIndex &right) const
-{
-    if (left.row() == sourceModel()->rowCount() - 1) {
-        return true;
-    }
-
-    if (right.row() == sourceModel()->rowCount() - 1) {
-        return false;
-    }
-
-    return QSortFilterProxyModel::lessThan(left, right);
+    GroupMember member;
+    member.isReference = false;
+    member.data.setName(name);
+    member.data.setEmail(email);
+    beginInsertRows({}, d->mMembers.count(), d->mMembers.count());
+    d->mMembers.append(member);
+    endInsertRows();
 }

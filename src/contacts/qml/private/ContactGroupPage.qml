@@ -27,12 +27,10 @@ Kirigami.ScrollablePage {
         main: Kirigami.Action {
             iconName: "document-edit"
             text: i18n("Edit")
-            onTriggered: {
-                pageStack.pushDialogLayer(Qt.resolvedUrl("ContactGroupEditorPage.qml"), {
-                    mode: ContactGroupEditor.EditMode,
-                    item: page.contactGroup.item
-                })
-            }
+            onTriggered: pageStack.pushDialogLayer(Qt.resolvedUrl("ContactGroupEditorPage.qml"), {
+                mode: ContactGroupEditor.EditMode,
+                item: page.contactGroup.item
+            })
         }
     }
 

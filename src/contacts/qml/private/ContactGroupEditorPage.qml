@@ -10,6 +10,7 @@ import org.kde.kalendar.contact 1.0
 import org.kde.akonadi 1.0 as Akonadi
 
 Kirigami.ScrollablePage {
+    id: root
     property alias mode: contactGroupEditor.mode
     property var item
     title: mode === ContactGroupEditor.EditMode && contactGroupEditor.name ? i18n('Edit %1', contactGroupEditor.name) : i18n('Create a new contact group')
@@ -61,9 +62,15 @@ Kirigami.ScrollablePage {
             onSelectedCollectionChanged: contactGroupEditor.setDefaultAddressBook(collection)
         }
 
+        QQC2.TextField {
+            Kirigami.FormData.label: i18n("Name:")
+            text: contactGroupEditor.name
+            onTextChanged: contactGroupEditor.name = text;
+        }
+
         ColumnLayout {
-            Kirigami.FormData.label: i18n("Members:")
-            Kirigami.FormData.labelAlignment: repeater.count > 0 ? Qt.AlignTop : Qt.AlignVCenter
+            Kirigami.FormData.label: repeater.count > 0 ? i18n("Members:") : ''
+            Kirigami.FormData.labelAlignment: repeater.count > 1 ? Qt.AlignTop : Qt.AlignVCenter
             Repeater {
                 id: repeater
                 model: contactGroupEditor.groupModel
@@ -71,26 +78,55 @@ Kirigami.ScrollablePage {
                     QQC2.TextField {
                         text: model.display
                         readOnly: true
+                        implicitWidth: Kirigami.Units.gridUnit * 10
                     }
                     QQC2.TextField {
                         text: model.email
                         readOnly: true
+                        implicitWidth: Kirigami.Units.gridUnit * 10
                     }
                     QQC2.Button {
                         icon.name: 'list-remove'
+                        onClicked: contactGroupEditor.groupModel.removeContact(index)
                     }
                 }
             }
         }
         RowLayout {
-            QQC2.TextField {
-                placeholderText: i18n('Name')
+            Kirigami.FormData.label: repeater.count === 0 ? i18n("Members:") : ''
+            Kirigami.FormData.labelAlignment: Qt.AlignVCenter
+            QQC2.ComboBox {
+                id: nameSearch
+                textRole: 'display'
+                valueRole: 'itemId'
+                model: ContactsModel {}
+                editable: true
+                implicitWidth: Kirigami.Units.gridUnit * 10
+                onCurrentIndexChanged: emailSearch.currentIndex = currentIndex
             }
-            QQC2.TextField {
-                placeholderText: i18n('Email')
+            QQC2.ComboBox {
+                id: emailSearch
+                textRole: 'email'
+                valueRole: 'gid'
+                model: ContactsModel {}
+                editable: true
+                implicitWidth: Kirigami.Units.gridUnit * 10
+                onCurrentIndexChanged: nameSearch.currentIndex = currentIndex
             }
+            // TODO use item role instead of itemId after 22.08
             QQC2.Button {
                 icon.name: 'list-add'
+                enabled: emailSearch.currentIndex > 0 || (emailSearch.editText.length > 0 && nameSearch.editText.length > 0)
+                onClicked: {
+                    if (emailSearch.editText !== emailSearch.currentText && nameSearch.editText !== nameSearch.currentText) {
+                        contactGroupEditor.groupModel.addContactFromData(nameSearch.editText, emailSearch.editText)
+                    } else {
+                        contactGroupEditor.groupModel.addContactFromReference(emailSearch.currentValue)
+                    }
+                    emailSearch.editText = '';
+                    nameSearch.editText = '';
+                    emailSearch.currentIndex = -1;
+                }
             }
         }
     }
@@ -111,7 +147,7 @@ Kirigami.ScrollablePage {
             root.closeDialog();
         }
         onAccepted: {
-            contactEditor.saveContactInAddressBook()
+            contactGroupEditor.saveContactGroup()
             ContactConfig.lastUsedAddressBookCollection = addressBookComboBox.defaultCollectionId;
             ContactConfig.save();
         }
