@@ -41,91 +41,93 @@ Kirigami.ScrollablePage {
         }
     }
 
-    Kirigami.FormLayout {
-        Layout.fillWidth: true
-
-        Akonadi.CollectionComboBox {
-            id: addressBookComboBox
-
-            Kirigami.FormData.label: i18n("Address Book:")
+    ColumnLayout {
+        Kirigami.FormLayout {
             Layout.fillWidth: true
-            enabled: mode === ContactGroupEditor.CreateMode
 
-            defaultCollectionId: if (mode === ContactGroupEditor.CreateMode) {
-                return ContactConfig.lastUsedAddressBookCollection;
-            } else {
-                return contactGroupEditor.collectionId;
+            Akonadi.CollectionComboBox {
+                id: addressBookComboBox
+
+                Kirigami.FormData.label: i18n("Address Book:")
+                Layout.fillWidth: true
+                enabled: mode === ContactGroupEditor.CreateMode
+
+                defaultCollectionId: if (mode === ContactGroupEditor.CreateMode) {
+                    return ContactConfig.lastUsedAddressBookCollection;
+                } else {
+                    return contactGroupEditor.collectionId;
+                }
+
+                mimeTypeFilter: [Akonadi.MimeTypes.address, Akonadi.MimeTypes.contactGroup]
+                accessRightsFilter: Akonadi.Collection.CanCreateItem
+                onSelectedCollectionChanged: contactGroupEditor.setDefaultAddressBook(collection)
             }
 
-            mimeTypeFilter: [Akonadi.MimeTypes.address, Akonadi.MimeTypes.contactGroup]
-            accessRightsFilter: Akonadi.Collection.CanCreateItem
-            onSelectedCollectionChanged: contactGroupEditor.setDefaultAddressBook(collection)
-        }
+            QQC2.TextField {
+                Kirigami.FormData.label: i18n("Name:")
+                text: contactGroupEditor.name
+                onTextChanged: contactGroupEditor.name = text;
+            }
 
-        QQC2.TextField {
-            Kirigami.FormData.label: i18n("Name:")
-            text: contactGroupEditor.name
-            onTextChanged: contactGroupEditor.name = text;
-        }
-
-        ColumnLayout {
-            Kirigami.FormData.label: repeater.count > 0 ? i18n("Members:") : ''
-            Kirigami.FormData.labelAlignment: repeater.count > 1 ? Qt.AlignTop : Qt.AlignVCenter
-            Repeater {
-                id: repeater
-                model: contactGroupEditor.groupModel
-                RowLayout {
-                    QQC2.TextField {
-                        text: model.display
-                        readOnly: true
-                        implicitWidth: Kirigami.Units.gridUnit * 10
-                    }
-                    QQC2.TextField {
-                        text: model.email
-                        readOnly: true
-                        implicitWidth: Kirigami.Units.gridUnit * 10
-                    }
-                    QQC2.Button {
-                        icon.name: 'list-remove'
-                        onClicked: contactGroupEditor.groupModel.removeContact(index)
+            ColumnLayout {
+                Kirigami.FormData.label: repeater.count > 0 ? i18n("Members:") : ''
+                Kirigami.FormData.labelAlignment: repeater.count > 1 ? Qt.AlignTop : Qt.AlignVCenter
+                Repeater {
+                    id: repeater
+                    model: contactGroupEditor.groupModel
+                    RowLayout {
+                        QQC2.TextField {
+                            text: model.display
+                            readOnly: true
+                            implicitWidth: Kirigami.Units.gridUnit * 10
+                        }
+                        QQC2.TextField {
+                            text: model.email
+                            readOnly: true
+                            implicitWidth: Kirigami.Units.gridUnit * 10
+                        }
+                        QQC2.Button {
+                            icon.name: 'list-remove'
+                            onClicked: contactGroupEditor.groupModel.removeContact(index)
+                        }
                     }
                 }
             }
-        }
-        RowLayout {
-            Kirigami.FormData.label: repeater.count === 0 ? i18n("Members:") : ''
-            Kirigami.FormData.labelAlignment: Qt.AlignVCenter
-            QQC2.ComboBox {
-                id: nameSearch
-                textRole: 'display'
-                valueRole: 'itemId'
-                model: ContactsModel {}
-                editable: true
-                implicitWidth: Kirigami.Units.gridUnit * 10
-                onCurrentIndexChanged: emailSearch.currentIndex = currentIndex
-            }
-            QQC2.ComboBox {
-                id: emailSearch
-                textRole: 'email'
-                valueRole: 'gid'
-                model: ContactsModel {}
-                editable: true
-                implicitWidth: Kirigami.Units.gridUnit * 10
-                onCurrentIndexChanged: nameSearch.currentIndex = currentIndex
-            }
-            // TODO use item role instead of itemId after 22.08
-            QQC2.Button {
-                icon.name: 'list-add'
-                enabled: emailSearch.currentIndex > 0 || (emailSearch.editText.length > 0 && nameSearch.editText.length > 0)
-                onClicked: {
-                    if (emailSearch.editText !== emailSearch.currentText && nameSearch.editText !== nameSearch.currentText) {
-                        contactGroupEditor.groupModel.addContactFromData(nameSearch.editText, emailSearch.editText)
-                    } else {
-                        contactGroupEditor.groupModel.addContactFromReference(emailSearch.currentValue)
+            RowLayout {
+                Kirigami.FormData.label: repeater.count === 0 ? i18n("Members:") : ''
+                Kirigami.FormData.labelAlignment: Qt.AlignVCenter
+                QQC2.ComboBox {
+                    id: nameSearch
+                    textRole: 'display'
+                    valueRole: 'itemId'
+                    model: ContactsModel {}
+                    editable: true
+                    implicitWidth: Kirigami.Units.gridUnit * 10
+                    onCurrentIndexChanged: emailSearch.currentIndex = currentIndex
+                }
+                QQC2.ComboBox {
+                    id: emailSearch
+                    textRole: 'email'
+                    valueRole: 'gid'
+                    model: ContactsModel {}
+                    editable: true
+                    implicitWidth: Kirigami.Units.gridUnit * 10
+                    onCurrentIndexChanged: nameSearch.currentIndex = currentIndex
+                }
+                // TODO use item role instead of itemId after 22.08
+                QQC2.Button {
+                    icon.name: 'list-add'
+                    enabled: emailSearch.currentIndex > 0 || (emailSearch.editText.length > 0 && nameSearch.editText.length > 0)
+                    onClicked: {
+                        if (emailSearch.editText !== emailSearch.currentText && nameSearch.editText !== nameSearch.currentText) {
+                            contactGroupEditor.groupModel.addContactFromData(nameSearch.editText, emailSearch.editText)
+                        } else {
+                            contactGroupEditor.groupModel.addContactFromReference(emailSearch.currentValue)
+                        }
+                        emailSearch.editText = '';
+                        nameSearch.editText = '';
+                        emailSearch.currentIndex = -1;
                     }
-                    emailSearch.editText = '';
-                    nameSearch.editText = '';
-                    emailSearch.currentIndex = -1;
                 }
             }
         }
@@ -153,18 +155,28 @@ Kirigami.ScrollablePage {
         }
     }
 
-    QQC2.Dialog {
+    property QQC2.Dialog itemChangedExternallySheet: QQC2.Dialog {
         id: itemChangedExternallySheet
         visible: false
-        title: i18n('The contact group has been changed by someone else')
+        title: i18n('Warning')
         modal: true
         focus: true
         x: (parent.width - width) / 2
         y: parent.height / 3
         width: Math.min(parent.width - Kirigami.Units.gridUnit * 4, Kirigami.Units.gridUnit * 20)
 
-        contentItem: QQC2.Label {
-            text: i18n('What should be done?')
+        contentItem: ColumnLayout {
+            Kirigami.Heading {
+                level: 4
+                text: i18n('The contact group has been changed by someone else.')
+                wrapMode: Text.WordWrap
+                Layout.fillWidth: true
+            }
+            QQC2.Label {
+                text: i18n('What should be done?')
+                wrapMode: Text.WordWrap
+                Layout.fillWidth: true
+            }
         }
         onRejected: itemChangedExternallySheet.close()
         onAccepted: {

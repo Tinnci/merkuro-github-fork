@@ -49,7 +49,7 @@ private:
     QItemSelectionModel *m_collectionSelectionModel;
     Akonadi::CollectionFilterProxyModel *m_contactMimeTypeFilterModel = nullptr;
     Akonadi::ETMViewStateSaver *m_collectionSelectionModelStateSaver;
-    Akonadi::EntityMimeTypeFilterModel *m_filteredContacts;
+    QSortFilterProxyModel *m_filteredContacts;
     KCheckableProxyModel *m_checkableProxyModel;
     ColorProxyModel *m_colorProxy;
 };

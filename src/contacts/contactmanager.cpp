@@ -16,6 +16,7 @@
 #include <Akonadi/Monitor>
 #include <Akonadi/SelectionProxyModel>
 #include <KDescendantsProxyModel>
+#include <qsortfilterproxymodel.h>
 #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
 #include <akonadi_version.h>
 #if AKONADI_VERSION >= QT_VERSION_CHECK(5, 19, 40)
@@ -84,10 +85,14 @@ ContactManager::ContactManager(QObject *parent)
     auto flatModel = new KDescendantsProxyModel(this);
     flatModel->setSourceModel(selectionProxyModel);
 
-    m_filteredContacts = new Akonadi::EntityMimeTypeFilterModel(this);
-    m_filteredContacts->setSourceModel(flatModel);
-    m_filteredContacts->addMimeTypeExclusionFilter(Akonadi::Collection::mimeType());
-    m_filteredContacts->setHeaderGroup(Akonadi::EntityTreeModel::ItemListHeaders);
+    auto entityMimeTypeFilterModel = new Akonadi::EntityMimeTypeFilterModel(this);
+    entityMimeTypeFilterModel->setSourceModel(flatModel);
+    entityMimeTypeFilterModel->addMimeTypeExclusionFilter(Akonadi::Collection::mimeType());
+    entityMimeTypeFilterModel->setHeaderGroup(Akonadi::EntityTreeModel::ItemListHeaders);
+
+    m_filteredContacts = new QSortFilterProxyModel(this);
+    m_filteredContacts->setSourceModel(entityMimeTypeFilterModel);
+    m_filteredContacts->sort(0);
 }
 
 ContactManager::~ContactManager()
