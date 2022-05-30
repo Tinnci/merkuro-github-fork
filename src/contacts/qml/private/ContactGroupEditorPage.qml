@@ -28,6 +28,17 @@ Kirigami.ScrollablePage {
         onItemChangedExternally: itemChangedExternallySheet.open()
     }
 
+    QQC2.Action {
+        id: submitAction
+        enabled: contactGroupEditor.name.length > 0
+        shortcut: "Return"
+        onTriggered: {
+            contactGroupEditor.saveContactGroup()
+            ContactConfig.lastUsedAddressBookCollection = addressBookComboBox.defaultCollectionId;
+            ContactConfig.save();
+        }
+    }
+
     header: QQC2.Control {
         id: errorContainer
         property bool displayError: false
@@ -146,11 +157,7 @@ Kirigami.ScrollablePage {
             ContactConfig.save();
             root.closeDialog();
         }
-        onAccepted: {
-            contactGroupEditor.saveContactGroup()
-            ContactConfig.lastUsedAddressBookCollection = addressBookComboBox.defaultCollectionId;
-            ContactConfig.save();
-        }
+        onAccepted: submitAction.trigger()
     }
 
     property QQC2.Dialog itemChangedExternallySheet: QQC2.Dialog {
@@ -166,12 +173,12 @@ Kirigami.ScrollablePage {
         contentItem: ColumnLayout {
             Kirigami.Heading {
                 level: 4
-                text: i18n('The contact group has been changed by someone else.')
+                text: i18n('This contact group was changed elsewhere during editing.')
                 wrapMode: Text.WordWrap
                 Layout.fillWidth: true
             }
             QQC2.Label {
-                text: i18n('What should be done?')
+                text: i18n('Which changes should be kept?')
                 wrapMode: Text.WordWrap
                 Layout.fillWidth: true
             }
@@ -184,12 +191,12 @@ Kirigami.ScrollablePage {
 
         footer: QQC2.DialogButtonBox {
             QQC2.Button {
-                text: i18n("Take over changes")
+                text: i18n("Current changes")
                 QQC2.DialogButtonBox.buttonRole: QQC2.DialogButtonBox.AcceptRole
             }
 
             QQC2.Button {
-                text: i18n("Ignore and Overwrite changes")
+                text: i18n("External changes")
                 QQC2.DialogButtonBox.buttonRole: QQC2.DialogButtonBox.RejectRole
             }
         }
