@@ -166,12 +166,12 @@ Kirigami.ScrollablePage {
         contentItem: ColumnLayout {
             Kirigami.Heading {
                 level: 4
-                text: i18n('The contact group has been changed by someone else.')
+                text: i18n('This contact group was changed elsewhere during editing.')
                 wrapMode: Text.WordWrap
                 Layout.fillWidth: true
             }
             QQC2.Label {
-                text: i18n('What should be done?')
+                text: i18n('Which changes should be kept?')
                 wrapMode: Text.WordWrap
                 Layout.fillWidth: true
             }
@@ -184,12 +184,12 @@ Kirigami.ScrollablePage {
 
         footer: QQC2.DialogButtonBox {
             QQC2.Button {
-                text: i18n("Take over changes")
+                text: i18n("Current changes")
                 QQC2.DialogButtonBox.buttonRole: QQC2.DialogButtonBox.AcceptRole
             }
 
             QQC2.Button {
-                text: i18n("Ignore and Overwrite changes")
+                text: i18n("External changes")
                 QQC2.DialogButtonBox.buttonRole: QQC2.DialogButtonBox.RejectRole
             }
         }
