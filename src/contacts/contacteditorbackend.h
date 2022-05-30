@@ -165,7 +165,7 @@ private:
     void storeContact(KContacts::Addressee &contact, ContactMetaData &metaData) const;
 
     Akonadi::Item m_item;
-    Akonadi::Collection m_defaltAddressBook;
+    Akonadi::Collection m_defaultAddressBook;
     AddresseeWrapper *m_addressee = nullptr;
     Mode m_mode;
     bool m_readOnly = false;

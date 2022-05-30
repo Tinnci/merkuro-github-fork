@@ -43,7 +43,7 @@ class CollectionComboBoxModel : public QSortFilterProxyModel
 {
     Q_OBJECT
     Q_PROPERTY(QStringList mimeTypeFilter READ mimeTypeFilter WRITE setMimeTypeFilter NOTIFY mimeTypeFilterChanged)
-    Q_PROPERTY(Akonadi::Collection::Right accessRightsFilter READ accessRightsFilter WRITE setAccessRightsFilter NOTIFY accessRightsFilterChanged)
+    Q_PROPERTY(int accessRightsFilter READ accessRightsFilter WRITE setAccessRightsFilter NOTIFY accessRightsFilterChanged)
 
     Q_PROPERTY(int currentIndex READ currentIndex WRITE setCurrentIndex NOTIFY currentIndexChanged)
     Q_PROPERTY(Akonadi::Collection currentCollection READ currentCollection NOTIFY currentCollectionChanged)
@@ -68,12 +68,12 @@ public:
     /**
      * Sets the access @p rights the collections shall be filtered by.
      */
-    void setAccessRightsFilter(Akonadi::Collection::Right rights);
+    void setAccessRightsFilter(int rights);
 
     /**
      * Returns the access rights the collections are filtered by.
      */
-    Q_REQUIRED_RESULT Akonadi::Collection::Right accessRightsFilter() const;
+    Q_REQUIRED_RESULT int accessRightsFilter() const;
 
     /**
      * Return the default collection id.
