@@ -13,7 +13,7 @@ Kirigami.ScrollablePage {
     id: root
     property alias mode: contactGroupEditor.mode
     property var item
-    title: mode === ContactGroupEditor.EditMode && contactGroupEditor.name ? i18n('Edit %1', contactGroupEditor.name) : i18n('Create a new contact group')
+    title: mode === ContactGroupEditor.EditMode && contactGroupEditor.name ? i18n('Edit %1', contactGroupEditor.name) : i18n('Create Contact Group')
 
     onItemChanged: contactGroupEditor.loadContactGroup(item)
 
@@ -140,7 +140,7 @@ Kirigami.ScrollablePage {
                 }
             }
             QQC2.Label {
-                text: i18n('You can only add contact with an email address in a contact group')
+                text: i18n('Only contacts with an email address can be added to a contact group')
                 font: Kirigami.Theme.smallFont
             }
         }
