@@ -146,15 +146,15 @@ QStringList CollectionComboBoxModel::mimeTypeFilter() const
     return d->mMimeTypeFilterModel->mimeTypeFilters();
 }
 
-void CollectionComboBoxModel::setAccessRightsFilter(Collection::Right rights)
+void CollectionComboBoxModel::setAccessRightsFilter(int rights)
 {
-    d->mRightsFilterModel->setAccessRights(rights);
+    d->mRightsFilterModel->setAccessRights((Collection::Right)rights);
     Q_EMIT accessRightsFilterChanged();
 }
 
-Akonadi::Collection::Right CollectionComboBoxModel::accessRightsFilter() const
+int CollectionComboBoxModel::accessRightsFilter() const
 {
-    return (Akonadi::Collection::Right)(int)d->mRightsFilterModel->accessRights();
+    return (int)d->mRightsFilterModel->accessRights();
 }
 
 qint64 CollectionComboBoxModel::defaultCollectionId() const

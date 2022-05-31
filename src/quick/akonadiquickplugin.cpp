@@ -27,9 +27,5 @@ void AkonadiQuickPlugin::registerTypes(const char *uri)
     qmlRegisterType<Akonadi::Quick::CollectionComboBoxModel>("org.kde.akonadi", 1, 0, "CollectionComboBoxModel");
     qmlRegisterType<Akonadi::Quick::CollectionPickerModel>("org.kde.akonadi", 1, 0, "CollectionPickerModel");
 
-#if AKONADI_VERSION > QT_VERSION_CHECK(5, 20, 41)
-    qmlRegisterUncreatableType<Akonadi::Collection>("org.kde.akonadi", 1, 0, "Collection", QStringLiteral("It's just an enum"));
-#else
     qmlRegisterUncreatableType<Akonadi::Quick::Collection>("org.kde.akonadi", 1, 0, "Collection", QStringLiteral("It's just an enum"));
-#endif
 }
