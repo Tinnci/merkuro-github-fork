@@ -23,7 +23,7 @@ ContactEditorBackend::~ContactEditorBackend() = default;
 
 void ContactEditorBackend::setDefaultAddressBook(const Akonadi::Collection &addressbook)
 {
-    m_defaltAddressBook = addressbook;
+    m_defaultAddressBook = addressbook;
 }
 
 AddresseeWrapper *ContactEditorBackend::contact()
@@ -153,7 +153,7 @@ void ContactEditorBackend::parentCollectionFetchDone(KJob *job)
     const Akonadi::Collection parentCollection = fetchJob->collections().at(0);
     if (parentCollection.isValid()) {
         setReadOnly(!(parentCollection.rights() & Akonadi::Collection::CanChangeItem));
-        m_defaltAddressBook = parentCollection;
+        m_defaultAddressBook = parentCollection;
         Q_EMIT collectionChanged();
     }
 
@@ -164,7 +164,7 @@ void ContactEditorBackend::parentCollectionFetchDone(KJob *job)
 
 qint64 ContactEditorBackend::collectionId() const
 {
-    return m_defaltAddressBook.id();
+    return m_defaultAddressBook.id();
 }
 
 void ContactEditorBackend::saveContactInAddressBook()
@@ -188,7 +188,7 @@ void ContactEditorBackend::saveContactInAddressBook()
             storeDone(job);
         });
     } else if (m_mode == CreateMode) {
-        Q_ASSERT(m_defaltAddressBook.isValid());
+        Q_ASSERT(m_defaultAddressBook.isValid());
 
         KContacts::Addressee addr(m_addressee->addressee());
         storeContact(addr, m_contactMetaData);
@@ -199,7 +199,7 @@ void ContactEditorBackend::saveContactInAddressBook()
 
         m_contactMetaData.store(item);
 
-        auto job = new Akonadi::ItemCreateJob(item, m_defaltAddressBook);
+        auto job = new Akonadi::ItemCreateJob(item, m_defaultAddressBook);
         connect(job, &Akonadi::ItemCreateJob::result, this, [this](KJob *job) {
             storeDone(job);
         });
