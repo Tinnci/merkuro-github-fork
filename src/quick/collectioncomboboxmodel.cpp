@@ -35,17 +35,15 @@ public:
         mMonitor->setCollectionMonitored(Akonadi::Collection::root());
 
         // This ETM will be set to only show collections with the wanted mimetype in setMimeTypeFilter
-        mModel = new Akonadi::EntityTreeModel(mMonitor, mParent);
-        mModel->setItemPopulationStrategy(Akonadi::EntityTreeModel::NoItemPopulation);
-        mModel->setListFilter(Akonadi::CollectionFetchScope::Display);
-
-        mBaseModel = mModel;
+        auto entityModel = new Akonadi::EntityTreeModel(mMonitor, mParent);
+        entityModel->setItemPopulationStrategy(Akonadi::EntityTreeModel::NoItemPopulation);
+        entityModel->setListFilter(Akonadi::CollectionFetchScope::Display);
 
         // Display color
         auto colorProxy = new ColorProxyModel(mParent);
         colorProxy->setObjectName(QStringLiteral("Show collection colors"));
         colorProxy->setDynamicSortFilter(true);
-        colorProxy->setSourceModel(mBaseModel);
+        colorProxy->setSourceModel(entityModel);
 
         // Flatten the tree, e.g.
         // Kolab
@@ -67,9 +65,9 @@ public:
         mParent->setSourceModel(mRightsFilterModel);
         // mRightsFilterModel->sort(mParent->modelColumn());
 
-        mParent->connect(mParent, &QAbstractItemModel::rowsInserted, mParent, [this](const QModelIndex &parent, int start, int end) {
+        mParent->connect(mRightsFilterModel, &QAbstractItemModel::rowsInserted, mParent, [this](const QModelIndex &parent, int start, int end) {
             for (int i = start; i <= end; ++i) {
-                scanSubTree(mParent->index(i, 0, parent));
+                scanSubTree(mRightsFilterModel->index(i, 0, parent));
             }
         });
     }
@@ -81,8 +79,6 @@ public:
     CollectionComboBoxModel *const mParent;
 
     Akonadi::Monitor *mMonitor = nullptr;
-    Akonadi::EntityTreeModel *mModel = nullptr;
-    QAbstractItemModel *mBaseModel = nullptr;
     Akonadi::CollectionFilterProxyModel *mMimeTypeFilterModel = nullptr;
     Akonadi::EntityRightsFilterModel *mRightsFilterModel = nullptr;
     Akonadi::Collection mDefaultCollection;
@@ -92,6 +88,10 @@ public:
 
 bool CollectionComboBoxModelPrivate::scanSubTree(const QModelIndex &index)
 {
+    if (!index.isValid()) {
+        return false;
+    }
+
     const Akonadi::Collection::Id id = index.data(EntityTreeModel::CollectionIdRole).toLongLong();
 
     if (mDefaultCollectionId == id) {
@@ -108,6 +108,7 @@ bool CollectionComboBoxModelPrivate::scanSubTree(const QModelIndex &index)
             return false;
         }
         if (scanSubTree(childIndex)) {
+            qDebug() << "end 1";
             return true;
         }
     }
