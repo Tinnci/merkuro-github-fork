@@ -820,6 +820,19 @@ void CalendarManager::editCollection(qint64 collectionId)
     dlg->show();
 }
 
+void CalendarManager::toggleCollection(qint64 collectionId)
+{
+    const auto matches = m_calendar->checkableProxyModel()->match(m_calendar->checkableProxyModel()->index(0, 0),
+                                                                  Akonadi::EntityTreeModel::CollectionIdRole,
+                                                                  collectionId,
+                                                                  1,
+                                                                  Qt::MatchExactly | Qt::MatchWrap | Qt::MatchRecursive);
+    if (matches.count() > 0) {
+        const auto collectionIndex = matches.first();
+        m_calendar->checkableProxyModel()->setData(collectionIndex, Qt::Checked, Qt::CheckStateRole);
+    }
+}
+
 #ifndef UNITY_CMAKE_SUPPORT
 Q_DECLARE_METATYPE(KCalendarCore::Incidence::Ptr)
 #endif
