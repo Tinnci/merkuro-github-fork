@@ -35,13 +35,9 @@ public:
     QAbstractItemModel *contactCollections() const;
     QAbstractItemModel *filteredContacts() const;
 
-    Q_INVOKABLE void contactEmails(qint64 itemId);
     Q_INVOKABLE void updateAllCollections();
     Q_INVOKABLE QUrl decorationToUrl(QVariant decoration);
     Q_INVOKABLE Akonadi::Item getItem(qint64 itemId);
-
-Q_SIGNALS:
-    void emailsFetched(QStringList emails, qint64 itemId);
 
 private:
     Akonadi::EntityMimeTypeFilterModel *m_collectionTree;

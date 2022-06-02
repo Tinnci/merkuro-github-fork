@@ -310,8 +310,7 @@ Kirigami.ScrollablePage {
                                     { value: EmailModel.Unknown, text: "Unknown" },
                                     { value: EmailModel.Home, text: i18n("Home") },
                                     { value: EmailModel.Work, text: i18n("Work") },
-                                    { value: EmailModel.Both, text: i18n("Both") },
-                                    { value: EmailModel.Other, text: i18n("Other…") }
+                                    { value: EmailModel.Other, text: i18n("Other") }
                                 ].forEach((type) => {
                                     emailTypeModel.append(type);
                                 });
@@ -331,6 +330,9 @@ Kirigami.ScrollablePage {
                         QQC2.Button {
                             icon.name: "list-remove"
                             implicitWidth: implicitHeight
+                            QQC2.ToolTip {
+                                text: i18n("Remove email")
+                            }
                             onClicked: contactEditor.contact.emailModel.deleteEmail(index)
                         }
                     }
@@ -364,6 +366,9 @@ Kirigami.ScrollablePage {
                         icon.name: "list-add"
                         implicitWidth: implicitHeight
                         enabled: toAddEmail.text.length > 0
+                        QQC2.ToolTip {
+                            text: i18n("Add email")
+                        }
                         onClicked: {
                             contactEditor.contact.emailModel.addEmail(toAddEmail.text, newEmailType.currentValue);
                             toAddEmail.text = '';

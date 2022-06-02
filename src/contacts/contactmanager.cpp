@@ -118,22 +118,6 @@ QAbstractItemModel *ContactManager::filteredContacts() const
     return m_filteredContacts;
 }
 
-void ContactManager::contactEmails(qint64 itemId)
-{
-    Akonadi::Item item(itemId);
-
-    auto job = new Akonadi::ItemFetchJob(item);
-    job->fetchScope().fetchFullPayload();
-
-    connect(job, &Akonadi::ItemFetchJob::result, this, [this, itemId](KJob *job) {
-        auto fetchJob = qobject_cast<Akonadi::ItemFetchJob *>(job);
-        auto item = fetchJob->items().at(0);
-        auto payload = item.payload<KContacts::Addressee>();
-
-        Q_EMIT emailsFetched(payload.emails(), itemId);
-    });
-}
-
 Akonadi::Item ContactManager::getItem(qint64 itemId)
 {
     Akonadi::Item item(itemId);
