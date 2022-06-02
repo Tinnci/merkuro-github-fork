@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: LGPL-2.0-or-later
 
 #include <QObject>
+#include <Akonadi/EntityTreeModel>
 
 namespace Akonadi
 {
@@ -26,6 +27,12 @@ public:
                      | CanDeleteCollection) ///< Has all rights on this storage collection
     };
     Q_ENUM(Right)
+
+
+    enum Role {
+        CollectionRole = Akonadi::EntityTreeModel::CollectionRole,
+    };
+    Q_ENUM(Role)
 };
 }
 }

@@ -72,7 +72,6 @@ QQC2.ComboBox {
     model: Akonadi.CollectionComboBoxModel {
         id: collectionComboBoxModel
         onCurrentIndexChanged: comboBox.currentIndex = currentIndex
-        onCurrentCollectionChanged: comboBox.selectedCollectionChanged(currentCollection)
     }
 
     delegate: Kirigami.BasicListItem {
@@ -87,7 +86,10 @@ QQC2.ComboBox {
     }
     currentIndex: 0
     onCurrentIndexChanged: if (currentIndex !== -1) {
-        collectionComboBoxModel.currentIndex = currentIndex;
+        const collection = model.data(model.index(currentIndex, 0), Akonadi.Collection.CollectionRole);
+        if (collection) {
+            comboBox.selectedCollectionChanged(collection);
+        }
     }
 
     popup.z: 1000

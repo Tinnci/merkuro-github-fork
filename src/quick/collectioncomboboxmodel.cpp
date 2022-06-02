@@ -66,49 +66,33 @@ public:
         // mRightsFilterModel->sort(mParent->modelColumn());
 
         mParent->connect(mRightsFilterModel, &QAbstractItemModel::rowsInserted, mParent, [this](const QModelIndex &parent, int start, int end) {
-            for (int i = start; i <= end; ++i) {
-                scanSubTree(mRightsFilterModel->index(i, 0, parent));
-            }
+            Q_UNUSED(parent)
+            Q_UNUSED(start)
+            Q_UNUSED(end)
+            scanSubTree();
         });
     }
 
     ~CollectionComboBoxModelPrivate() = default;
 
-    bool scanSubTree(const QModelIndex &index);
+    bool scanSubTree();
 
     CollectionComboBoxModel *const mParent;
 
     Akonadi::Monitor *mMonitor = nullptr;
     Akonadi::CollectionFilterProxyModel *mMimeTypeFilterModel = nullptr;
     Akonadi::EntityRightsFilterModel *mRightsFilterModel = nullptr;
-    Akonadi::Collection mDefaultCollection;
     qint64 mDefaultCollectionId = -1;
     int mCurrentIndex = -1;
 };
 
-bool CollectionComboBoxModelPrivate::scanSubTree(const QModelIndex &index)
+bool CollectionComboBoxModelPrivate::scanSubTree()
 {
-    if (!index.isValid()) {
-        return false;
-    }
+    for (int row = 0; row < mRightsFilterModel->rowCount(); ++row) {
+        const Akonadi::Collection::Id id = mRightsFilterModel->data(mRightsFilterModel->index(row, 0), EntityTreeModel::CollectionIdRole).toLongLong();
 
-    const Akonadi::Collection::Id id = index.data(EntityTreeModel::CollectionIdRole).toLongLong();
-
-    if (mDefaultCollectionId == id) {
-        mParent->setCurrentIndex(index.row());
-        return true;
-    }
-
-    for (int row = 0; row < mRightsFilterModel->rowCount(index); ++row) {
-        const QModelIndex childIndex = mRightsFilterModel->index(row, 0, index);
-        // This should not normally happen, but if it does we end up in an endless loop
-        if (!childIndex.isValid()) {
-            qWarning() << "Invalid child detected: " << index.data().toString();
-            Q_ASSERT(false);
-            return false;
-        }
-        if (scanSubTree(childIndex)) {
-            qDebug() << "end 1";
+        if (mDefaultCollectionId == id && id > 0) {
+            mParent->setCurrentIndex(row);
             return true;
         }
     }
@@ -120,12 +104,6 @@ CollectionComboBoxModel::CollectionComboBoxModel(QObject *parent)
     : QSortFilterProxyModel(parent)
     , d(new CollectionComboBoxModelPrivate(this))
 {
-    connect(this, &CollectionComboBoxModel::currentIndexChanged, this, [this]() {
-        const QModelIndex modelIndex = index(d->mCurrentIndex, 0);
-        if (modelIndex.isValid()) {
-            Q_EMIT currentCollectionChanged();
-        }
-    });
 }
 
 CollectionComboBoxModel::~CollectionComboBoxModel() = default;
@@ -160,38 +138,17 @@ int CollectionComboBoxModel::accessRightsFilter() const
 
 qint64 CollectionComboBoxModel::defaultCollectionId() const
 {
-    auto collection = currentCollection();
-    if (collection.isValid()) {
-        return collection.id();
-    } else {
-        return d->mDefaultCollectionId;
-    }
+    return d->mDefaultCollectionId;
 }
 
 void CollectionComboBoxModel::setDefaultCollectionId(qint64 collectionId)
 {
-    if (d->mDefaultCollectionId == collectionId || collectionId < -1) {
+    if (d->mDefaultCollectionId == collectionId) {
         return;
     }
     d->mDefaultCollectionId = collectionId;
-    d->scanSubTree({});
-}
-
-void CollectionComboBoxModel::setDefaultCollection(const Collection &collection)
-{
-    d->mDefaultCollection = collection;
-    d->mDefaultCollectionId = collection.id();
-    d->scanSubTree({});
-}
-
-Akonadi::Collection CollectionComboBoxModel::currentCollection() const
-{
-    const QModelIndex modelIndex = index(currentIndex(), 0);
-    if (modelIndex.isValid()) {
-        return modelIndex.data(Akonadi::EntityTreeModel::CollectionRole).value<Collection>();
-    } else {
-        return Akonadi::Collection();
-    }
+    d->scanSubTree();
+    Q_EMIT defaultCollectionIdChanged();
 }
 
 void CollectionComboBoxModel::setExcludeVirtualCollections(bool b)

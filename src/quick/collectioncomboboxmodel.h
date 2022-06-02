@@ -46,9 +46,7 @@ class CollectionComboBoxModel : public QSortFilterProxyModel
     Q_PROPERTY(int accessRightsFilter READ accessRightsFilter WRITE setAccessRightsFilter NOTIFY accessRightsFilterChanged)
 
     Q_PROPERTY(int currentIndex READ currentIndex WRITE setCurrentIndex NOTIFY currentIndexChanged)
-    Q_PROPERTY(Akonadi::Collection currentCollection READ currentCollection NOTIFY currentCollectionChanged)
-
-    Q_PROPERTY(qint64 defaultCollectionId READ defaultCollectionId WRITE setDefaultCollectionId NOTIFY currentCollection)
+    Q_PROPERTY(qint64 defaultCollectionId READ defaultCollectionId WRITE setDefaultCollectionId NOTIFY defaultCollectionIdChanged)
 
 public:
     explicit CollectionComboBoxModel(QObject *parent = nullptr);
@@ -86,16 +84,6 @@ public:
     void setDefaultCollectionId(qint64 collectionId);
 
     /**
-     * Sets the @p collection that shall be selected by default.
-     */
-    void setDefaultCollection(const Akonadi::Collection &collection);
-
-    /**
-     * Returns the current selection.
-     */
-    Q_REQUIRED_RESULT Akonadi::Collection currentCollection() const;
-
-    /**
      * Sets if the virtual collections are excluded.
      */
     void setExcludeVirtualCollections(bool b);
@@ -109,16 +97,10 @@ public:
     void setCurrentIndex(int currendIndex);
 
 Q_SIGNALS:
-    /**
-     * This signal is emitted whenever the current selection
-     * has been changed.
-     *
-     * @param collection The current selection.
-     */
-    void currentCollectionChanged();
-    void currentIndexChanged();
     void mimeTypeFilterChanged();
     void accessRightsFilterChanged();
+    void defaultCollectionIdChanged();
+    void currentIndexChanged();
 
 private:
     std::unique_ptr<CollectionComboBoxModelPrivate> const d;
