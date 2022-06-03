@@ -255,6 +255,7 @@ Kirigami.OverlayDrawer {
                             KActionFromAction {
                                 kalendarAction: "open_mail_view"
                                 checkable: false
+                                visible: Config.enableMailIntegration
                                 onTriggered: {
                                     mailViewAction.trigger()
                                     if (mainDrawer.modal) mainDrawer.close()
@@ -294,6 +295,7 @@ Kirigami.OverlayDrawer {
                             icon: modelData.icon.name
                             separatorVisible: false
                             action: modelData
+                            visible: modelData.visible
                         }
                     }
                 }
