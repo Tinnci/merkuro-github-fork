@@ -6,15 +6,17 @@ import QtQuick.Controls 2.15 as QQC2
 import QtQuick.Layouts 1.15
 import org.kde.kirigami 2.15 as Kirigami
 
+import "dateutils.js" as DateUtils
+
 QQC2.ComboBox {
     id: root
 
     signal newDateChosen(int day, int month, int year)
 
     property int timeZoneOffset: 0
-    property string display: dateTime.toLocaleString(Qt.locale(), Locale.NarrowFormat) // Can override for better C++ time strings
+    property string display: dateTime.toLocaleDateString(Qt.locale(), Locale.NarrowFormat) // Can override for better C++ time strings
     property date dateTime: new Date()
-    property date dateFromText: Date.fromLocaleDateString(Qt.locale(), editText, Locale.NarrowFormat)
+    property date dateFromText: DateUtils.parseDateString(editText)
     property bool validDate: !isNaN(dateFromText.getTime())
 
     onDateTimeChanged: {
@@ -27,7 +29,7 @@ QQC2.ComboBox {
 
     onEditTextChanged: {
         // Set date from text here because it otherwise updates after this handler
-        dateFromText = Date.fromLocaleDateString(Qt.locale(), editText, Locale.NarrowFormat);
+        dateFromText = DateUtils.parseDateString(editText);
 
         if (validDate && activeFocus) {
             datePicker.selectedDate = dateFromText;
