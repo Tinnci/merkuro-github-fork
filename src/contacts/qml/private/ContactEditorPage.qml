@@ -35,6 +35,16 @@ Kirigami.ScrollablePage {
         enabled: contactEditor.contact.formattedName.length > 0
         shortcut: "Return"
         onTriggered: {
+            if (toAddPhone.text.length > 0) {
+                contactEditor.contact.phoneModel.addPhoneNumber(toAddPhone.text, newPhoneTypeCombo.currentValue)
+                toAddPhone.text = '';
+                newPhoneTypeCombo.currentIndex = 0;
+            }
+            if (toAddEmail.text.length > 0) {
+                contactEditor.contact.emailModel.addEmail(toAddEmail.text, newEmailType.currentValue);
+                toAddEmail.text = '';
+                newEmailType.currentIndex = 0;
+            }
             contactEditor.saveContactInAddressBook()
             ContactConfig.lastUsedAddressBookCollection = addressBookComboBox.defaultCollectionId;
             ContactConfig.save();
