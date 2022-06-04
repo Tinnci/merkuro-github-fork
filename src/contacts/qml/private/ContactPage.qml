@@ -154,6 +154,7 @@ Kirigami.ScrollablePage {
         Kirigami.FormLayout {
             id: contactForm
             twinFormLayouts: [addreseesForm, phoneForm, contactForm, businessForm]
+            Layout.fillWidth: true
             Item {
                 Kirigami.FormData.isSection: true
                 Kirigami.FormData.label: i18n("Contact information")
@@ -228,7 +229,7 @@ Kirigami.ScrollablePage {
         Kirigami.FormLayout {
             id: phoneForm
             twinFormLayouts: [emailForm, contactForm, businessForm]
-            width: parent.width
+            Layout.fillWidth: true
 
             Item {
                 visible: phoneRepeater.count > 0
@@ -260,7 +261,7 @@ Kirigami.ScrollablePage {
         Kirigami.FormLayout {
             id: addreseesForm
             twinFormLayouts: [emailForm, phoneForm, contactForm, businessForm]
-            width: parent.width
+            Layout.fillWidth: true
 
             Item {
                 visible: addressesRepeater.count > 0
@@ -283,7 +284,7 @@ Kirigami.ScrollablePage {
         Kirigami.FormLayout {
             id: businessForm
             twinFormLayouts: [emailForm, addreseesForm, contactForm, phoneForm]
-            width: parent.width
+            Layout.fillWidth: true
 
             Item {
                 Kirigami.FormData.isSection: true
@@ -344,7 +345,7 @@ Kirigami.ScrollablePage {
         Kirigami.FormLayout {
             id: emailForm
             twinFormLayouts: [addreseesForm, phoneForm, contactForm, businessForm]
-            width: parent.width
+            Layout.fillWidth: true
 
             Item {
                 Kirigami.FormData.isSection: true

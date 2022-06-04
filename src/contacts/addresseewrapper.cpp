@@ -77,8 +77,8 @@ AddressModel *AddresseeWrapper::addressesModel() const
 
 void AddresseeWrapper::setAddresseeItem(const Akonadi::Item &addresseeItem)
 {
+    Akonadi::ItemMonitor::setItem(addresseeItem);
     if (addresseeItem.hasPayload<KContacts::Addressee>()) {
-        setItem(addresseeItem);
         setAddressee(addresseeItem.payload<KContacts::Addressee>());
         Q_EMIT addresseeItemChanged();
         Q_EMIT collectionChanged();
@@ -90,7 +90,6 @@ void AddresseeWrapper::setAddresseeItem(const Akonadi::Item &addresseeItem)
             auto fetchJob = qobject_cast<Akonadi::ItemFetchJob *>(job);
             auto item = fetchJob->items().at(0);
             if (item.hasPayload<KContacts::Addressee>()) {
-                setItem(item);
                 setAddressee(item.payload<KContacts::Addressee>());
                 Q_EMIT addresseeItemChanged();
                 Q_EMIT collectionChanged();

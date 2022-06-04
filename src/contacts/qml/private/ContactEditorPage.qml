@@ -18,6 +18,7 @@ Kirigami.ScrollablePage {
     property alias item: contactEditor.item
 
     property bool displayAdvancedNameFields: false
+    property bool saving: false
 
     property ContactEditor contactEditor: ContactEditor {
         id: contactEditor
@@ -35,6 +36,13 @@ Kirigami.ScrollablePage {
         enabled: contactEditor.contact.formattedName.length > 0
         shortcut: "Return"
         onTriggered: {
+            root.saving = true;
+            if (toAddPhone.text.length > 0) {
+                contactEditor.contact.phoneModel.addPhoneNumber(toAddPhone.text, newPhoneTypeCombo.currentValue)
+            }
+            if (toAddEmail.text.length > 0) {
+                contactEditor.contact.emailModel.addEmail(toAddEmail.text, newEmailType.currentValue);
+            }
             contactEditor.saveContactInAddressBook()
             ContactConfig.lastUsedAddressBookCollection = addressBookComboBox.defaultCollectionId;
             ContactConfig.save();
@@ -242,6 +250,7 @@ Kirigami.ScrollablePage {
                     }
                 }
                 RowLayout {
+                    visible: !root.saving
                     QQC2.ComboBox {
                         id: newPhoneTypeCombo
                         model: ListModel {id: phoneTypeModel; dynamicRoles: true }
@@ -337,7 +346,8 @@ Kirigami.ScrollablePage {
                         }
                     }
                 }
-                RowLayout {  
+                RowLayout {
+                    visible: !root.saving
                     QQC2.ComboBox {
                         id: newEmailType
                         model: ListModel {id: newEmailTypeModel; dynamicRoles: true }
