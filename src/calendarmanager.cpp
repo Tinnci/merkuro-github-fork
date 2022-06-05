@@ -185,13 +185,11 @@ protected:
     }
 };
 
+Q_GLOBAL_STATIC(CalendarManager, calendarManagerGlobalInstance)
+
 CalendarManager *CalendarManager::instance()
 {
-    if (m_instance == nullptr) {
-        m_instance = new CalendarManager;
-    }
-
-    return m_instance;
+    return calendarManagerGlobalInstance;
 }
 
 CalendarManager::CalendarManager(QObject *parent)
