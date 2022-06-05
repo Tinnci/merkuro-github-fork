@@ -33,7 +33,7 @@ class IncidenceWrapper : public QObject, public Akonadi::ItemMonitor
 {
     Q_OBJECT
     Q_PROPERTY(Akonadi::Item incidenceItem READ incidenceItem WRITE setIncidenceItem NOTIFY incidenceItemChanged)
-    Q_PROPERTY(KCalendarCore::Incidence::Ptr incidencePtr READ incidencePtr WRITE setIncidencePtr NOTIFY incidencePtrChanged)
+    Q_PROPERTY(KCalendarCore::Incidence::Ptr incidencePtr READ incidencePtr NOTIFY incidencePtrChanged)
     Q_PROPERTY(KCalendarCore::Incidence::Ptr originalIncidencePtr READ originalIncidencePtr NOTIFY originalIncidencePtrChanged)
     Q_PROPERTY(int incidenceType READ incidenceType NOTIFY incidenceTypeChanged)
     Q_PROPERTY(QString incidenceTypeStr READ incidenceTypeStr NOTIFY incidenceTypeStrChanged)
@@ -104,6 +104,8 @@ public:
     };
     Q_ENUM(RecurrenceActions)
 
+    typedef QSharedPointer<IncidenceWrapper> Ptr;
+
     explicit IncidenceWrapper(QObject *parent = nullptr);
     ~IncidenceWrapper() override;
 
@@ -112,7 +114,6 @@ public:
     Akonadi::Item incidenceItem() const;
     void setIncidenceItem(const Akonadi::Item &incidenceItem);
     KCalendarCore::Incidence::Ptr incidencePtr() const;
-    void setIncidencePtr(KCalendarCore::Incidence::Ptr incidencePtr);
     KCalendarCore::Incidence::Ptr originalIncidencePtr();
     int incidenceType() const;
     QString incidenceTypeStr() const;
@@ -123,7 +124,7 @@ public:
     QString parent() const;
     void setParent(QString parent);
     IncidenceWrapper *parentIncidence();
-    QVariantList childIncidences() const;
+    QVariantList childIncidences();
 
     QString summary() const;
     void setSummary(const QString &summary);
@@ -199,10 +200,12 @@ Q_SIGNALS:
     void parentChanged();
     void parentIncidenceChanged();
     void childIncidencesChanged();
+
     void summaryChanged();
     void categoriesChanged();
     void descriptionChanged();
     void locationChanged();
+
     void incidenceStartChanged();
     void incidenceStartDateDisplayChanged();
     void incidenceStartTimeDisplayChanged();
@@ -216,12 +219,14 @@ Q_SIGNALS:
     void durationDisplayStringChanged();
     void allDayChanged();
     void priorityChanged();
+
     void remindersModelChanged();
     void recurrenceDataChanged();
     void organizerChanged();
     void attendeesModelChanged();
     void recurrenceExceptionsModelChanged();
     void attachmentsModelChanged();
+
     void todoCompletedChanged();
     void todoCompletionDtChanged();
     void todoPercentCompleteChanged();
@@ -231,7 +236,11 @@ protected:
     void itemChanged(const Akonadi::Item &item) override;
 
 private:
+    void setIncidencePtr(KCalendarCore::Incidence::Ptr incidencePtr);
     void setNewIncidence(KCalendarCore::Incidence::Ptr incidence);
+    void updateParentIncidence();
+    void resetChildIncidences();
+    void cleanupChildIncidences();
 
     KCalendarCore::Incidence::Ptr m_incidence;
     KCalendarCore::Incidence::Ptr m_originalIncidence;
@@ -242,5 +251,6 @@ private:
     AttachmentsModel m_attachmentsModel;
 
     KFormat m_format;
-    QScopedPointer<IncidenceWrapper> m_parentIncidence;
+    Ptr m_parentIncidence;
+    QVariantList m_childIncidences;
 };
