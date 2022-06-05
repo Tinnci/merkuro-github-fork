@@ -450,7 +450,7 @@ QString IncidenceWrapper::durationDisplayString() const
 {
     const auto dur = duration();
     if (dur.asSeconds() == 0) {
-        return QLatin1String("");
+        return QString();
     } else {
         return m_format.formatSpelloutDuration(dur.asSeconds() * 1000);
     }
