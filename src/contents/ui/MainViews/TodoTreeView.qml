@@ -145,7 +145,7 @@ TreeListView {
         objectName: "taskDelegate"
 
         decoration.decorationHighlightColor: model.color
-        activeBackgroundColor: LabelUtils.getIncidenceDelegateBackgroundColor(model, root.isDark)
+        activeBackgroundColor: LabelUtils.getIncidenceDelegateBackgroundColor(model.color, root.isDark)
         onActiveBackgroundColorChanged: activeBackgroundColor.a = 0.15
         Kirigami.Theme.inherit: false
         Kirigami.Theme.highlightColor: activeBackgroundColor
