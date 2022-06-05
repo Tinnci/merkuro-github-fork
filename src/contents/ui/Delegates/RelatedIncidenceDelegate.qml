@@ -11,7 +11,7 @@ import org.kde.kalendar 1.0
 import org.kde.kalendar.utils 1.0
 
 Item {
-    property IncidenceWrapper incidenceWrapper: modelData
+    property var incidenceWrapper: modelData
     property var collectionData: CalendarManager.getCollectionDetails(incidenceWrapper.collectionId)
 
     Layout.fillWidth: true

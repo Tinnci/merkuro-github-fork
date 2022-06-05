@@ -25,7 +25,17 @@ IncidenceWrapper::IncidenceWrapper(QObject *parent)
         m_attachmentsModel.setIncidencePtr(incidencePtr);
     });
 
-    connect(CalendarManager::instance(), &CalendarManager::calendarChanged, this, &IncidenceWrapper::childIncidencesChanged);
+    // While generally we know of the relationship an incidence has regarding its parent,
+    // from the POV of an incidence, we have no idea of its relationship to its children.
+    // This is a limitation of KCalendarCore, which only supports one type of relationship
+    // type per incidence and throughout the PIM infrastructure it is always the 'parent'
+    // relationship that is used.
+
+    // We therefore need to rely on the ETMCalendar for this information. Since the ETMCalendar
+    // does not provide us with any specific information about the incidences changed when it
+    // updates, we unfortunately have to this the coarse way and just update everything when
+    // things change.
+    connect(CalendarManager::instance(), &CalendarManager::calendarChanged, this, &IncidenceWrapper::resetChildIncidences);
 
     Akonadi::ItemFetchScope scope;
     scope.fetchFullPayload();
@@ -37,7 +47,10 @@ IncidenceWrapper::IncidenceWrapper(QObject *parent)
     setNewEvent();
 }
 
-IncidenceWrapper::~IncidenceWrapper() = default;
+IncidenceWrapper::~IncidenceWrapper()
+{
+    cleanupChildIncidences();
+}
 
 void IncidenceWrapper::notifyDataChanged()
 {
@@ -86,6 +99,7 @@ void IncidenceWrapper::setIncidenceItem(const Akonadi::Item &incidenceItem)
     if (incidenceItem.hasPayload<KCalendarCore::Incidence::Ptr>()) {
         setItem(incidenceItem);
         setIncidencePtr(incidenceItem.payload<KCalendarCore::Incidence::Ptr>());
+
         Q_EMIT incidenceItemChanged();
         Q_EMIT collectionIdChanged();
     } else {
@@ -154,32 +168,20 @@ QString IncidenceWrapper::parent() const
 void IncidenceWrapper::setParent(QString parent)
 {
     m_incidence->setRelatedTo(parent);
+    updateParentIncidence();
     Q_EMIT parentChanged();
-    Q_EMIT parentIncidenceChanged();
 }
 
 IncidenceWrapper *IncidenceWrapper::parentIncidence()
 {
-    if (!parent().isEmpty() && (!m_parentIncidence || m_parentIncidence->uid() != parent())) {
-        m_parentIncidence.reset(new IncidenceWrapper);
-        m_parentIncidence->setIncidenceItem(CalendarManager::instance()->incidenceItem(parent()));
-    }
-
+    updateParentIncidence();
     return m_parentIncidence.data();
 }
 
-QVariantList IncidenceWrapper::childIncidences() const
+QVariantList IncidenceWrapper::childIncidences()
 {
-    const auto incidences = CalendarManager::instance()->childIncidences(uid());
-    QVariantList wrappedIncidences;
-
-    for (const auto incidence : incidences) {
-        const auto wrappedIncidence = new IncidenceWrapper;
-        wrappedIncidence->setIncidenceItem(CalendarManager::instance()->incidenceItem(incidence));
-        wrappedIncidences.append(QVariant::fromValue(wrappedIncidence));
-    }
-
-    return wrappedIncidences;
+    resetChildIncidences();
+    return m_childIncidences;
 }
 
 QString IncidenceWrapper::summary() const
@@ -740,6 +742,59 @@ void IncidenceWrapper::setNewIncidence(KCalendarCore::Incidence::Ptr incidence)
     Akonadi::Item incidenceItem;
     incidenceItem.setPayload<KCalendarCore::Incidence::Ptr>(incidence);
     setIncidenceItem(incidenceItem);
+}
+
+// We need to be careful when we call updateParentIncidence and resetChildIncidences.
+// For instance, we always call them on-demand based on access to the properties and not
+// upon object construction on upon setting the incidence pointer.
+
+// Calling them both recursively down a family tree can cause a cascade of infinite
+// new IncidenceWrappers being created. Say we create a new incidence wrapper here and
+// call this new incidence's updateParentIncidence and resetChildIncidences, creating
+// a new child wrapper, creating more wrappers there, and so on.
+
+void IncidenceWrapper::updateParentIncidence()
+{
+    if (!m_incidence) {
+        return;
+    }
+
+    if (!parent().isEmpty() && (!m_parentIncidence || m_parentIncidence->uid() != parent())) {
+        m_parentIncidence.reset(new IncidenceWrapper);
+        m_parentIncidence->setIncidenceItem(CalendarManager::instance()->incidenceItem(parent()));
+        Q_EMIT parentIncidenceChanged();
+    }
+}
+
+void IncidenceWrapper::resetChildIncidences()
+{
+    cleanupChildIncidences();
+
+    if (!m_incidence) {
+        return;
+    }
+
+    const auto incidences = CalendarManager::instance()->childIncidences(uid());
+    QVariantList wrappedIncidences;
+
+    for (const auto &incidence : incidences) {
+        const auto wrappedIncidence = new IncidenceWrapper;
+        wrappedIncidence->setIncidenceItem(CalendarManager::instance()->incidenceItem(incidence));
+        wrappedIncidences.append(QVariant::fromValue(wrappedIncidence));
+    }
+
+    m_childIncidences = wrappedIncidences;
+    Q_EMIT childIncidencesChanged();
+}
+
+void IncidenceWrapper::cleanupChildIncidences()
+{
+    while (!m_childIncidences.isEmpty()) {
+        const auto incidence = m_childIncidences.takeFirst();
+        const auto incidencePtr = incidence.value<IncidenceWrapper *>();
+
+        delete incidencePtr;
+    }
 }
 
 void IncidenceWrapper::addAlarms(KCalendarCore::Alarm::List alarms)
