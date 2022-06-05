@@ -52,6 +52,8 @@ class CalendarManager : public QObject
 
 public:
     static CalendarManager *instance();
+    explicit CalendarManager(QObject *parent = nullptr);
+    ~CalendarManager() override;
 
     KCheckableProxyModel *collectionSelectionProxyModel() const;
     void setCollectionSelectionProxyModel(KCheckableProxyModel *);
@@ -115,10 +117,6 @@ Q_SIGNALS:
     void incidenceAdded();
 
 private:
-    inline static CalendarManager *m_instance;
-    explicit CalendarManager(QObject *parent = nullptr);
-    ~CalendarManager() override;
-
     Akonadi::ETMCalendar::Ptr m_calendar = nullptr;
     Akonadi::IncidenceChanger *m_changer = nullptr;
     KDescendantsProxyModel *m_flatCollectionTreeModel = nullptr;
