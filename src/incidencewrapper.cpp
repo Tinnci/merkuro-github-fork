@@ -25,6 +25,8 @@ IncidenceWrapper::IncidenceWrapper(QObject *parent)
         m_attachmentsModel.setIncidencePtr(incidencePtr);
     });
 
+    connect(CalendarManager::instance(), &CalendarManager::calendarChanged, this, &IncidenceWrapper::childIncidencesChanged);
+
     Akonadi::ItemFetchScope scope;
     scope.fetchFullPayload();
     scope.fetchAllAttributes();
@@ -43,6 +45,9 @@ void IncidenceWrapper::notifyDataChanged()
     Q_EMIT incidenceTypeStrChanged();
     Q_EMIT incidenceIconNameChanged();
     Q_EMIT collectionIdChanged();
+    Q_EMIT parentChanged();
+    Q_EMIT parentIncidenceChanged();
+    Q_EMIT childIncidencesChanged();
     Q_EMIT summaryChanged();
     Q_EMIT categoriesChanged();
     Q_EMIT descriptionChanged();
@@ -56,6 +61,8 @@ void IncidenceWrapper::notifyDataChanged()
     Q_EMIT timeZoneChanged();
     Q_EMIT startTimeZoneUTCOffsetMinsChanged();
     Q_EMIT endTimeZoneUTCOffsetMinsChanged();
+    Q_EMIT durationChanged();
+    Q_EMIT durationDisplayStringChanged();
     Q_EMIT allDayChanged();
     Q_EMIT priorityChanged();
     Q_EMIT remindersModelChanged();
@@ -148,6 +155,31 @@ void IncidenceWrapper::setParent(QString parent)
 {
     m_incidence->setRelatedTo(parent);
     Q_EMIT parentChanged();
+    Q_EMIT parentIncidenceChanged();
+}
+
+IncidenceWrapper *IncidenceWrapper::parentIncidence()
+{
+    if (!parent().isEmpty() && (!m_parentIncidence || m_parentIncidence->uid() != parent())) {
+        m_parentIncidence.reset(new IncidenceWrapper);
+        m_parentIncidence->setIncidenceItem(CalendarManager::instance()->incidenceItem(parent()));
+    }
+
+    return m_parentIncidence.data();
+}
+
+QVariantList IncidenceWrapper::childIncidences() const
+{
+    const auto incidences = CalendarManager::instance()->childIncidences(uid());
+    QVariantList wrappedIncidences;
+
+    for (const auto incidence : incidences) {
+        const auto wrappedIncidence = new IncidenceWrapper;
+        wrappedIncidence->setIncidenceItem(CalendarManager::instance()->incidenceItem(incidence));
+        wrappedIncidences.append(QVariant::fromValue(wrappedIncidence));
+    }
+
+    return wrappedIncidences;
 }
 
 QString IncidenceWrapper::summary() const
@@ -249,6 +281,8 @@ void IncidenceWrapper::setIncidenceStart(const QDateTime &incidenceStart, bool r
     Q_EMIT incidenceStartChanged();
     Q_EMIT incidenceStartDateDisplayChanged();
     Q_EMIT incidenceStartTimeDisplayChanged();
+    Q_EMIT durationChanged();
+    Q_EMIT durationDisplayStringChanged();
 }
 
 void IncidenceWrapper::setIncidenceStartDate(int day, int month, int year)
@@ -320,6 +354,8 @@ void IncidenceWrapper::setIncidenceEnd(const QDateTime &incidenceEnd, bool respe
     Q_EMIT incidenceEndChanged();
     Q_EMIT incidenceEndDateDisplayChanged();
     Q_EMIT incidenceEndTimeDisplayChanged();
+    Q_EMIT durationChanged();
+    Q_EMIT durationDisplayStringChanged();
 }
 
 void IncidenceWrapper::setIncidenceEndDate(int day, int month, int year)
@@ -401,6 +437,21 @@ int IncidenceWrapper::startTimeZoneUTCOffsetMins()
 int IncidenceWrapper::endTimeZoneUTCOffsetMins()
 {
     return QTimeZone(timeZone()).offsetFromUtc(incidenceEnd());
+}
+
+KCalendarCore::Duration IncidenceWrapper::duration() const
+{
+    return m_incidence->duration();
+}
+
+QString IncidenceWrapper::durationDisplayString() const
+{
+    const auto dur = duration();
+    if (dur.asSeconds() == 0) {
+        return QLatin1String("");
+    } else {
+        return m_format.formatSpelloutDuration(dur.asSeconds() * 1000);
+    }
 }
 
 bool IncidenceWrapper::allDay() const
