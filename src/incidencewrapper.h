@@ -3,10 +3,12 @@
 
 #pragma once
 
+#include "calendarmanager.h"
 #include "models/attachmentsmodel.h"
 #include "models/attendeesmodel.h"
 #include "models/recurrenceexceptionsmodel.h"
 #include "models/remindersmodel.h"
+
 #include <Akonadi/CollectionIdentificationAttribute>
 #include <Akonadi/Item>
 #include <Akonadi/ItemFetchJob>
@@ -15,6 +17,7 @@
 #include <CalendarSupport/KCalPrefs>
 #include <CalendarSupport/Utils>
 #include <KCalUtils/RecurrenceActions>
+#include <KFormat>
 #include <QByteArray>
 #include <QObject>
 
@@ -35,17 +38,19 @@ class IncidenceWrapper : public QObject, public Akonadi::ItemMonitor
     Q_PROPERTY(int incidenceType READ incidenceType NOTIFY incidenceTypeChanged)
     Q_PROPERTY(QString incidenceTypeStr READ incidenceTypeStr NOTIFY incidenceTypeStrChanged)
     Q_PROPERTY(QString incidenceIconName READ incidenceIconName NOTIFY incidenceIconNameChanged)
-    Q_PROPERTY(QString uid READ uid CONSTANT)
-
+    Q_PROPERTY(QString uid READ uid CONSTANT) // TODO: This needs to not be a CONSTANT
     Q_PROPERTY(qint64 collectionId READ collectionId WRITE setCollectionId NOTIFY collectionIdChanged)
     Q_PROPERTY(QString parent READ parent WRITE setParent NOTIFY parentChanged)
+    Q_PROPERTY(IncidenceWrapper *parentIncidence READ parentIncidence NOTIFY parentIncidenceChanged)
+    Q_PROPERTY(QVariantList childIncidences READ childIncidences NOTIFY childIncidencesChanged)
+
     Q_PROPERTY(QString summary READ summary WRITE setSummary NOTIFY summaryChanged)
     Q_PROPERTY(QStringList categories READ categories WRITE setCategories NOTIFY categoriesChanged)
     Q_PROPERTY(QString description READ description WRITE setDescription NOTIFY descriptionChanged)
     Q_PROPERTY(QString location READ location WRITE setLocation NOTIFY locationChanged)
-    Q_PROPERTY(bool hasGeo READ hasGeo CONSTANT)
-    Q_PROPERTY(float geoLatitude READ geoLatitude CONSTANT)
-    Q_PROPERTY(float geoLongitude READ geoLongitude CONSTANT)
+    Q_PROPERTY(bool hasGeo READ hasGeo CONSTANT) // TODO: This needs to not be a CONSTANT
+    Q_PROPERTY(float geoLatitude READ geoLatitude CONSTANT) // TODO: This needs to not be a CONSTANT
+    Q_PROPERTY(float geoLongitude READ geoLongitude CONSTANT) // TODO: This needs to not be a CONSTANT
 
     Q_PROPERTY(QDateTime incidenceStart READ incidenceStart WRITE setIncidenceStart NOTIFY incidenceStartChanged)
     Q_PROPERTY(QString incidenceStartDateDisplay READ incidenceStartDateDisplay NOTIFY incidenceStartDateDisplayChanged)
@@ -56,6 +61,8 @@ class IncidenceWrapper : public QObject, public Akonadi::ItemMonitor
     Q_PROPERTY(QByteArray timeZone READ timeZone WRITE setTimeZone NOTIFY timeZoneChanged)
     Q_PROPERTY(int startTimeZoneUTCOffsetMins READ startTimeZoneUTCOffsetMins NOTIFY startTimeZoneUTCOffsetMinsChanged)
     Q_PROPERTY(int endTimeZoneUTCOffsetMins READ endTimeZoneUTCOffsetMins NOTIFY endTimeZoneUTCOffsetMinsChanged)
+    Q_PROPERTY(KCalendarCore::Duration duration READ duration NOTIFY durationChanged)
+    Q_PROPERTY(QString durationDisplayString READ durationDisplayString NOTIFY durationDisplayStringChanged)
     Q_PROPERTY(bool allDay READ allDay WRITE setAllDay NOTIFY allDayChanged)
     Q_PROPERTY(int priority READ priority WRITE setPriority NOTIFY priorityChanged)
 
@@ -115,6 +122,9 @@ public:
     void setCollectionId(qint64 collectionId);
     QString parent() const;
     void setParent(QString parent);
+    IncidenceWrapper *parentIncidence();
+    QVariantList childIncidences() const;
+
     QString summary() const;
     void setSummary(const QString &summary);
     QStringList categories();
@@ -144,6 +154,8 @@ public:
     void setTimeZone(const QByteArray &timeZone);
     int startTimeZoneUTCOffsetMins();
     int endTimeZoneUTCOffsetMins();
+    KCalendarCore::Duration duration() const;
+    QString durationDisplayString() const;
     bool allDay() const;
     void setAllDay(bool allDay);
     int priority() const;
@@ -185,6 +197,8 @@ Q_SIGNALS:
     void incidenceIconNameChanged();
     void collectionIdChanged();
     void parentChanged();
+    void parentIncidenceChanged();
+    void childIncidencesChanged();
     void summaryChanged();
     void categoriesChanged();
     void descriptionChanged();
@@ -198,6 +212,8 @@ Q_SIGNALS:
     void timeZoneChanged();
     void startTimeZoneUTCOffsetMinsChanged();
     void endTimeZoneUTCOffsetMinsChanged();
+    void durationChanged();
+    void durationDisplayStringChanged();
     void allDayChanged();
     void priorityChanged();
     void remindersModelChanged();
@@ -224,4 +240,7 @@ private:
     AttendeesModel m_attendeesModel;
     RecurrenceExceptionsModel m_recurrenceExceptionsModel;
     AttachmentsModel m_attachmentsModel;
+
+    KFormat m_format;
+    QScopedPointer<IncidenceWrapper> m_parentIncidence;
 };
