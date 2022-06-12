@@ -23,6 +23,7 @@ import org.kde.kitemmodels 1.0 as KItemModels
         delegate: Kirigami.BasicListItem {
             label: model.title
             subtitle: model.from
+            labelItem.color: model.status.isRead ? Kirigami.Theme.textColor : Kirigami.Theme.linkColor
             onClicked: {
                 applicationWindow().pageStack.push(Qt.resolvedUrl('ConversationViewer.qml'), {
                     item: model.item,

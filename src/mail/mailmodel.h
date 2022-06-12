@@ -24,7 +24,7 @@ public:
         DateRole,
         DateTimeRole,
         BackgroundColorRole,
-        UnreadRole,
+        StatusRole,
         FavoriteRole,
         ItemRole,
     };
@@ -32,6 +32,4 @@ public:
     explicit MailModel(QObject *parent = nullptr);
     QHash<int, QByteArray> roleNames() const override;
     virtual QVariant data(const QModelIndex &index, int role) const override;
-
-    Q_INVOKABLE void loadItem(int row);
 };
