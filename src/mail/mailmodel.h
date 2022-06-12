@@ -23,8 +23,8 @@ public:
         DateTimeRole,
         BackgroundColorRole,
         UnreadRole,
-        MailRole,
         FavoriteRole,
+        ItemRole,
     };
 
     explicit MailModel(QObject *parent = nullptr);

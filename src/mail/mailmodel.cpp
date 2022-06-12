@@ -13,6 +13,7 @@
 #include <KMime/Message>
 #include <QQmlEngine>
 #include <kformat.h>
+#include <qvariant.h>
 
 MailModel::MailModel(QObject *parent)
     : QIdentityProxyModel(parent)
@@ -31,6 +32,7 @@ QHash<int, QByteArray> MailModel::roleNames() const
         {FavoriteRole, QByteArrayLiteral("favorite")},
         {TextColorRole, QByteArrayLiteral("textColor")},
         {BackgroundColorRole, QByteArrayLiteral("backgroudColor")},
+        {ItemRole, QByteArrayLiteral("item")},
     };
 }
 
@@ -118,12 +120,8 @@ QVariant MailModel::data(const QModelIndex &index, int role) const
         } else {
             return QString();
         }
-    case MailRole:
-        {
-            //auto wrapper = new MessageWrapper(item);
-            //QQmlEngine::setObjectOwnership(wrapper, QQmlEngine::JavaScriptOwnership);
-            //return QVariant::fromValue(wrapper);
-        }
+    case ItemRole:
+        return QVariant::fromValue(item);
     }
 
     return {};
