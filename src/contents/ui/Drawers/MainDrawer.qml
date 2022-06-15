@@ -334,7 +334,7 @@ Kirigami.OverlayDrawer {
             Layout.fillWidth: true
             Layout.fillHeight: true
             active: true
-            sourceComponent: mode !== KalendarApplication.Mail ? calendarContactView : mailView
+            sourceComponent: mode === KalendarApplication.Mail ? mailView : calendarContactView
         }
 
         Component {
