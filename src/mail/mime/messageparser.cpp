@@ -55,7 +55,12 @@ void MessageParser::setItem(const Akonadi::Item &item)
     job->fetchScope().fetchFullPayload();
     connect(job, &Akonadi::ItemFetchJob::result, this, [this](KJob *job) {
         auto fetchJob = qobject_cast<Akonadi::ItemFetchJob *>(job);
-        auto item = fetchJob->items().at(0);
+        const auto items = fetchJob->items();
+        if (items.count() == 0) {
+            qWarning() << "Empty fetch job result";
+            return;
+        }
+        const auto item = items.at(0);
         if (item.hasPayload<KMime::Message::Ptr>()) {
             const auto message = item.payload<KMime::Message::Ptr>();
             QElapsedTimer time;
