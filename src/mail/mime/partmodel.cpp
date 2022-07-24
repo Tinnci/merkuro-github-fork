@@ -159,7 +159,7 @@ public:
         const auto parts = mParser->collectContentParts();
         for (auto part : parts) {
             checkPart(part);
-            if (auto encapsulatedPart = p.dynamicCast<MimeTreeParser::EncapsulatedRfc822MessagePart>()) {
+            if (auto encapsulatedPart = part.dynamicCast<MimeTreeParser::EncapsulatedRfc822MessagePart>()) {
                 findEncapsulated(encapsulatedPart);
             }
         }
