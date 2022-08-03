@@ -6,7 +6,9 @@
 
 #include "crypto.h"
 
+#ifndef _WIN32
 #include <gpgme.h>
+#endif
 
 #include <QDateTime>
 #include <QDebug>
