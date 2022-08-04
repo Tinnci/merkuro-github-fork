@@ -1,8 +1,12 @@
+# SPDX-FileCopyrightText: 2022 Carl Schwan <carl@carlschwan.eu>
+# SPDX-License-Identifier: BSD-3-Clause
+
 include(${CMAKE_SOURCE_DIR}/cmake/modules/add_gpg_crypto_test.cmake)
 include_directories(
     ${CMAKE_CURRENT_BINARY_DIR}
     ${CMAKE_CURRENT_SOURCE_DIR}/..
-    )
+)
+
 include_directories(${GPGME_INCLUDE_DIRS})
 
 include(ECMAddTests)
