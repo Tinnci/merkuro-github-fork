@@ -14,7 +14,7 @@
 using namespace MailCrypto;
 using namespace Crypto;
 
-#ifndef _WIN32
+#ifdef _WIN32
 Expected<Error, std::unique_ptr<KMime::Content>>
 MailCrypto::processCrypto(std::unique_ptr<KMime::Content> content, const std::vector<Key> &signingKeys, const std::vector<Key> &encryptionKeys)
 {

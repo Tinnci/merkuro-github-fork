@@ -756,7 +756,7 @@ void MailTemplates::reply(const KMime::Message::Ptr &origMsg,
             result.chop(1);
         }
         // The plain body is complete
-        auto plainBodyResult = plainBody + result;
+        QString plainBodyResult = plainBody + result;
         htmlMessageText(plainTextContent, htmlContent, [=](const QString &body, const QString &headElement) {
             QString result = stripSignature(body);
 
