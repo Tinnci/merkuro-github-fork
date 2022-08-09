@@ -90,7 +90,7 @@ QString replacePrefixes(const QString &str, const QStringList &prefixRegExps, co
     // 1. is anchored to the beginning of str (sans whitespace)
     // 2. matches at least one of the part regexps in prefixRegExps
     const QString bigRegExp = QStringLiteral("^(?:\\s+|(?:%1))+\\s*").arg(prefixRegExps.join(QStringLiteral(")|(?:")));
-    static QRegularExpression regex(bigRegExp, QRegularExpression::CaseInsensitiveOption);
+    static const QRegularExpression regex(bigRegExp, QRegularExpression::CaseInsensitiveOption);
     Q_ASSERT(regex.isValid());
 
     QString tmp = str;
