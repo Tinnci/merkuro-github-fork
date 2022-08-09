@@ -298,7 +298,7 @@ void ObjectTreeParser::importCertificates()
 QString ObjectTreeParser::resolveCidLinks(const QString &html)
 {
     auto text = html;
-    static const auto regex = QRegularExpression(QLatin1String("(src)\\s*=\\s*(\"|')(cid:[^\"']+)\\2"));
+    static const QRegularExpression regex(QLatin1String("(src)\\s*=\\s*(\"|')(cid:[^\"']+)\\2"));
     auto it = regex.globalMatch(text);
     while (it.hasNext()) {
         const auto match = it.next();
