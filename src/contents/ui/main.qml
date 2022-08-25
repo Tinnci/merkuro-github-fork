@@ -544,9 +544,9 @@ Kirigami.ApplicationWindow {
         id: incidenceInfoDrawer
 
         width: if(!Kirigami.Settings.isMobile) actualWidth
-	height: if(Kirigami.Settings.isMobile) applicationWindow().height * 0.6
-	bottomPadding: menuLoader.active ? menuLoader.height : 0
-	
+        height: if(Kirigami.Settings.isMobile) applicationWindow().height * 0.6
+        bottomPadding: menuLoader.active ? menuLoader.height : 0
+
         modal: !root.wideScreen || !enabled
         onEnabledChanged: drawerOpen = enabled && !modal
         onModalChanged: drawerOpen = !modal
@@ -557,26 +557,9 @@ Kirigami.ApplicationWindow {
         activeTags: root.filter && root.filter.tags ?
                     root.filter.tags : []
         onIncidenceDataChanged: root.openOccurrence = incidenceData;
-        onVisibleChanged: {
-            if(visible) {
-                root.openOccurrence = incidenceData;
-            } else {
-                root.openOccurrence = null;
-            }
-        }
+        onVisibleChanged: visible ?
+            root.openOccurrence = incidenceData : root.openOccurrence = null
 
-        onAddSubTodo: {
-            KalendarUiUtils.setUpAddSubTodo(parentWrapper);
-            if (modal) { incidenceInfoDrawer.close() }
-        }
-        onEditIncidence: {
-            KalendarUiUtils.setUpEdit(incidencePtr);
-            if (modal) { incidenceInfoDrawer.close() }
-        }
-        onDeleteIncidence: {
-            KalendarUiUtils.setUpDelete(incidencePtr, deleteDate)
-            if (modal) { incidenceInfoDrawer.close() }
-        }
         onTagClicked: root.toggleFilterTag(tagName)
 
         readonly property int minWidth: Kirigami.Units.gridUnit * 15
@@ -617,6 +600,65 @@ Kirigami.ApplicationWindow {
                 }
             }
         }
+    }
+
+    property alias incidenceInfoPopup: incidenceInfoPopup
+    IncidenceInfoPopup {
+        id: incidenceInfoPopup
+
+        // Called on mouse events by the KBMNavigationMouseArea in root
+        function reposition() {
+            calculatePositionTimer.start();
+        }
+
+        function calculateIncidenceItemPosition() {
+            if (!openingIncidenceItem) {
+                return;
+            }
+
+            // We need to compensate for the x and y local adjustments used, for instance, in the day grid view to
+            // position the incidence item delegates
+            incidenceItemPosition = openingIncidenceItem.mapToItem(root.pageStack.currentItem, openingIncidenceItem.x, openingIncidenceItem.y);
+            incidenceItemPosition.x -= openingIncidenceItem.x;
+            incidenceItemPosition.y -= openingIncidenceItem.y;
+        }
+
+        property Item openingIncidenceItem: null
+        onOpeningIncidenceItemChanged: reposition()
+
+        property point incidenceItemPosition
+        property bool positionBelowIncidenceItem: incidenceItemPosition && incidenceItemPosition.y < root.pageStack.currentItem.height / 2;
+        property int maxXPosition: root.pageStack.currentItem.width - width
+
+        // HACK:
+        // If we reposition immediately we often end up updating the position of the popup
+        // before the assigned delegate has finished changing position itself. Even with
+        // this tiny interval, we avoid  problem and 2ms is not enough to be noticeable
+        Timer {
+            id: calculatePositionTimer
+            interval: 2
+            onTriggered: incidenceInfoPopup.calculateIncidenceItemPosition()
+        }
+
+        Connections {
+            target: incidenceInfoPopup.openingIncidenceItem
+            function onXChanged() { incidenceInfoPopup.reposition(); }
+            function onYChanged() { incidenceInfoPopup.reposition(); }
+            function onWidthChanged() { incidenceInfoPopup.reposition(); }
+            function onHeightChanged() { incidenceInfoPopup.reposition(); }
+        }
+
+        x: Math.min(incidenceItemPosition.x, maxXPosition)
+        y: positionBelowIncidenceItem ? incidenceItemPosition.y + openingIncidenceItem.height : incidenceItemPosition.y - height;
+
+        width: Kirigami.Units.gridUnit * 30
+        height: Math.min(Kirigami.Units.gridUnit * 50, scrollView.contentHeight)
+
+        activeTags: root.filter && root.filter.tags ? root.filter.tags : []
+        onIncidenceDataChanged: root.openOccurrence = incidenceData
+        onVisibleChanged: visible ? root.openOccurrence = incidenceData : root.openOccurrence = null
+
+        onTagClicked: root.toggleFilterTag(tagName)
     }
 
     Loader {
