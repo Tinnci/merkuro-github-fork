@@ -186,7 +186,7 @@ Item {
         drag.target: !Kirigami.Settings.isMobile && !modelData.isReadOnly && incidenceDelegate.dragDropEnabled ? parent : undefined
         onReleased: parent.Drag.drop()
 
-        onViewClicked: KalendarUiUtils.setUpView(modelData)
+        onViewClicked: KalendarUiUtils.setUpView(modelData, incidenceDelegate)
         onEditClicked: KalendarUiUtils.setUpEdit(modelData.incidencePtr)
         onDeleteClicked: KalendarUiUtils.setUpDelete(modelData.incidencePtr, deleteDate)
         onTodoCompletedClicked: KalendarUiUtils.completeTodo(incidencePtr)
