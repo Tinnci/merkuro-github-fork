@@ -110,9 +110,16 @@ QtObject {
         editorToUse.incidenceWrapper.incidenceEnd = parentWrapper.incidenceEnd;
     }
 
-    function setUpView(modelData) {
-        appMain.incidenceInfoDrawer.incidenceData = modelData;
-        appMain.incidenceInfoDrawer.open();
+    function setUpView(modelData, incidenceItem = null) {
+        const incidenceInfoComponent = Kirigami.Settings.isMobile ?
+            appMain.incidenceInfoDrawer : appMain.incidenceInfoPopup;
+        incidenceInfoComponent.incidenceData = modelData;
+
+        if(!Kirigami.Settings.isMobile) {
+            incidenceInfoComponent.openingIncidenceItem = incidenceItem;
+        }
+
+        incidenceInfoComponent.open();
     }
 
     function fakeModelDataFromIncidenceWrapper(incidenceWrapper) {
