@@ -1,11 +1,14 @@
 # SPDX-FileCopyrightText: 2022 Carl Schwan <carl@carlschwan.eu>
 # SPDX-License-Identifier: BSD-2-Clause
 
-ecm_add_qml_module(kalendar_mail_plugin URI "org.kde.kalendar.mail" VERSION 1.0)
+if (BUILD_TESTING)
+    add_subdirectory(tests)
+    add_subdirectory(mime/tests)
+    add_subdirectory(mimetreeparser/autotests)
+    add_subdirectory(mimetreeparser/tests)
+endif()
 
-target_sources(kalendar_mail_plugin PUBLIC
-    mailplugin.cpp
-    mailplugin.h
+set(kalendar_mail_SRCS
     mailmanager.cpp
     mailmanager.h
     mailmodel.cpp
@@ -33,6 +36,35 @@ target_sources(kalendar_mail_plugin PUBLIC
     mime/partmodel.cpp
 )
 
+ecm_qt_declare_logging_category(kalendar_mail_SRCS
+    HEADER kalendar_mail_debug.h
+    IDENTIFIER "KALENDAR_MAIL_LOG"
+    CATEGORY_NAME org.kde.kalendar.mail
+    DESCRIPTION "kalendar mail"
+    EXPORT KALENDAR
+)
+
+ecm_qt_export_logging_category(
+    IDENTIFIER "KALENDAR_MAIL_LOG"
+    CATEGORY_NAME "org.kde.kalendar.mail"
+    DESCRIPTION "Kalendar - mail"
+    EXPORT KALENDAR
+)
+
+qt_generate_dbus_interface(mailmanager.h org.kde.kalendar.mail.xml OPTIONS -a)
+
+qt_add_dbus_adaptor(kalendar_mail_SRCS ${kalendar_BINARY_DIR}/src/mail/org.kde.kalendar.mail.xml mailmanager.h MailManager)
+
+add_library(kalendar_mail_static STATIC ${kalendar_mail_SRCS})
+target_link_libraries(kalendar_mail_static PUBLIC kalendar_lib KF5::MailCommon KF5::AkonadiMime)
+
+ecm_add_qml_module(kalendar_mail_plugin URI "org.kde.kalendar.mail" VERSION 1.0)
+
+target_sources(kalendar_mail_plugin PRIVATE
+    mailplugin.cpp
+    mailplugin.h
+)
+
 ecm_target_qml_sources(kalendar_mail_plugin SOURCES
     qml/MailSidebar.qml
     qml/FolderView.qml
@@ -42,6 +74,7 @@ ecm_target_qml_sources(kalendar_mail_plugin SOURCES
 ecm_target_qml_sources(kalendar_mail_plugin
     PRIVATE PATH private SOURCES
     qml/private/AttachmentDelegate.qml
+    qml/private/FollowUpReminderCreateDialog.qml
 )
 
 ecm_target_qml_sources(kalendar_mail_plugin
@@ -54,29 +87,7 @@ ecm_target_qml_sources(kalendar_mail_plugin
     qml/mailpartview/TextPart.qml
 )
 
-ecm_qt_declare_logging_category(kalendar_contact_plugin
-    HEADER kalendar_mail_debug.h
-    IDENTIFIER KALENDAR_MAIL_LOG
-    CATEGORY_NAME org.kde.kalendar.mail
-    DESCRIPTION "kalendar mail"
-    EXPORT KALENDAR
-)
-
-target_link_libraries(kalendar_mail_plugin PRIVATE kalendar_lib KF5::MailCommon KF5::AkonadiMime)
-
-
-ecm_qt_install_logging_categories(
-    EXPORT KALENDAR
-    FILE kalendar.contact.categories
-    DESTINATION ${KDE_INSTALL_LOGGINGCATEGORIESDIR}
-)
-
-if (BUILD_TESTING)
-    add_subdirectory(tests)
-    add_subdirectory(mime/tests)
-    add_subdirectory(mimetreeparser/autotests)
-    add_subdirectory(mimetreeparser/tests)
-endif()
+target_link_libraries(kalendar_mail_plugin PUBLIC kalendar_mail_static)
 
 ecm_finalize_qml_module(kalendar_mail_plugin
     DESTINATION ${KDE_INSTALL_QMLDIR}

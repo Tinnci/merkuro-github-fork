@@ -11,6 +11,7 @@
 #include "mailmodel.h"
 #include "mime/htmlutils.h"
 #include "mime/messageparser.h"
+#include <MessageComposer/FollowupReminderCreateJob>
 
 void CalendarPlugin::registerTypes(const char *uri)
 {
@@ -29,6 +30,7 @@ void CalendarPlugin::registerTypes(const char *uri)
     });
 
     qmlRegisterType<MessageParser>(uri, 1, 0, "MessageParser");
+    qmlRegisterType<MessageComposer::FollowupReminderCreateJob>(uri, 1, 0, "FollowupReminderCreateJob");
 
     qRegisterMetaType<MailModel *>("MailModel*");
 }
