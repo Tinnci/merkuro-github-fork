@@ -12,6 +12,8 @@ target_sources(kalendar_mail_plugin PUBLIC
     mailmodel.h
     helper.h
     helper.cpp
+    contactimageprovider.cpp
+    contactimageprovider.h
 
     messagestatus.h
     messagestatus.cpp
