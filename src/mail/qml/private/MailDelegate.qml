@@ -5,7 +5,7 @@ import QtQuick 2.15
 import QtQuick.Controls 2.15 as QQC2
 import QtQuick.Layouts 1.15
 
-import org.kde.kirigami 2.12 as Kirigami
+import org.kde.kirigami 2.19 as Kirigami
 
 Kirigami.AbstractListItem {
     id: root
@@ -76,6 +76,17 @@ Kirigami.AbstractListItem {
             anchors.left: parent.left
             anchors.right: parent.right
 
+            Kirigami.Avatar {
+                name: author.replace(/<.*>/, '')
+
+                source: 'image://contact/' + new RegExp("<(.*)>").exec(author)[1] ?? ''
+                Layout.rightMargin: Kirigami.Units.largeSpacing
+                sourceSize.width: Kirigami.Units.gridUnit + Kirigami.Units.largeSpacing * 2
+                sourceSize.height: Kirigami.Units.gridUnit + Kirigami.Units.largeSpacing * 2
+                Layout.preferredWidth: Kirigami.Units.gridUnit + Kirigami.Units.largeSpacing * 2
+                Layout.preferredHeight: Kirigami.Units.gridUnit + Kirigami.Units.largeSpacing * 2
+            }
+
             ColumnLayout {
                 Layout.fillWidth: true
                 spacing: Kirigami.Units.smallSpacing
@@ -119,3 +130,4 @@ Kirigami.AbstractListItem {
         }
     }
 }
+
