@@ -30,7 +30,7 @@ Kirigami.OverlayDrawer {
     property var incidenceData
     property var incidenceWrapper
     property var collectionData
-    property var activeTags : []
+    readonly property var activeTags : Filter.tags
 
     readonly property int relatedIncidenceDelegateHeight: Kirigami.Units.gridUnit * 3
 
@@ -261,7 +261,7 @@ Kirigami.OverlayDrawer {
                                 implicitWidth: itemLayout.implicitWidth > tagFlow.width ? tagFlow.width : itemLayout.implicitWidth
                                 activeFocusOnTab: true
                                 backgroundColor: mainDrawer.activeTags.includes(modelData) ? Kirigami.Theme.highlightColor : Kirigami.Theme.backgroundColor
-                                onClicked: incidenceInfoDrawer.tagClicked(modelData)
+                                onClicked: Filter.toggleFilterTag(modelData)
                             }
                         }
                     }

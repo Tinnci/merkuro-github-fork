@@ -20,12 +20,7 @@ Kirigami.ScrollablePage {
 
     property var mode: Kalendar.KalendarApplication.Todo
 
-    property var filter: {
-        "collectionId": -1,
-        "tags": [],
-        "name": ""
-    }
-    property var filterCollectionDetails: root.filter && root.filter.collectionId >= 0 ?
+    property var filterCollectionDetails: Filter.collectionId >= 0 ?
         Kalendar.CalendarManager.getCollectionDetails(root.filter.collectionId) : null
 
     property int sortBy: switch (Kalendar.Config.sort) {
@@ -109,7 +104,6 @@ Kirigami.ScrollablePage {
             Layout.fillWidth: true
             Layout.fillHeight: true
 
-            filter: root.filter
             filterCollectionDetails: root.filterCollectionDetails
 
             showCompleted: Kalendar.TodoSortFilterProxyModel.ShowCompleteOnly
@@ -141,7 +135,6 @@ Kirigami.ScrollablePage {
         Layout.fillWidth: true
         Layout.fillHeight: true
 
-        filter: root.filter
         filterCollectionDetails: root.filterCollectionDetails
 
         showCompleted: Kalendar.TodoSortFilterProxyModel.ShowIncompleteOnly

@@ -34,7 +34,6 @@ TreeListView {
     property var retainedCollectionData: ({})
 
     property date currentDate: new Date()
-    property var filter
     property var filterCollectionDetails
 
     property int showCompleted: Kalendar.TodoSortFilterProxyModel.ShowAll
@@ -101,7 +100,7 @@ TreeListView {
     Kirigami.PlaceholderMessage {
         id: allTasksPlaceholderMessage
         anchors.centerIn: parent
-        visible: (!root.filter || !root.filter.collectionId || root.filter.collectionId < 0) && Kalendar.CalendarManager.enabledTodoCollections.length === 0 && parent.count === 0
+        visible: (!Filter.collectionId || Filter.collectionId < 0) && Kalendar.CalendarManager.enabledTodoCollections.length === 0 && parent.count === 0
         text: i18n("No task calendars enabled.")
     }
 
