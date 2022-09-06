@@ -16,7 +16,6 @@ Kirigami.OverlayDrawer {
     signal addSubTodo(var parentWrapper)
     signal editIncidence(var incidencePtr)
     signal deleteIncidence(var incidencePtr, date deleteDate)
-    signal tagClicked(string tagName)
 
     /**
      * We use both incidenceData and incidenceWrapper to get info about the occurrence.
