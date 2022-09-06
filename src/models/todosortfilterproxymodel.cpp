@@ -350,16 +350,22 @@ void TodoSortFilterProxyModel::setFilterMap(Filter *filterMap)
     }
     invalidateFilter();
     connect(m_filterMap, &Filter::nameChanged, this, [this]() {
+        Q_EMIT filterMapAboutToChange();
         if (!m_filterMap->name().isEmpty()) {
             const auto name = m_filterMap->name();
             setFilterFixedString(name);
+            Q_EMIT layoutChanged();
         }
     });
     connect(m_filterMap, &Filter::tagsChanged, this, [this]() {
+        Q_EMIT filterMapAboutToChange();
         invalidateFilter();
+        Q_EMIT layoutChanged();
     });
     connect(m_filterMap, &Filter::collectionIdChanged, this, [this]() {
+        Q_EMIT filterMapAboutToChange();
         invalidateFilter();
+        Q_EMIT layoutChanged();
     });
     Q_EMIT layoutChanged();
 
