@@ -118,7 +118,7 @@ void IncidenceOccurrenceModel::updateFromSource()
             occurrenceIterator.next();
             const auto incidence = occurrenceIterator.incidence();
 
-            if (mFilter->tags().length() > 0) {
+            if (mFilter && mFilter->tags().length() > 0) {
                 bool match = false;
                 QStringList tags = mFilter->tags();
                 for (const auto &tag : tags) {
