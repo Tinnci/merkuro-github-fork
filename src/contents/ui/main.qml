@@ -163,7 +163,10 @@ Kirigami.ApplicationWindow {
         }
     }
 
-    KBMNavigationMouseArea { anchors.fill: parent }
+    KBMNavigationMouseArea {
+        id: kbmNavigationMouseArea
+        anchors.fill: parent
+    }
 
     Connections {
         target: KalendarApplication
@@ -654,6 +657,8 @@ Kirigami.ApplicationWindow {
             onOpeningIncidenceItemChanged: reposition()
 
             property point incidenceItemPosition
+            property int incidenceItemMidXPoint: incidenceItemPosition ?
+                incidenceItemPosition.x + openingIncidenceItem.width / 2 : 0
             property bool positionBelowIncidenceItem: incidenceItemPosition &&
                 incidenceItemPosition.y < root.pageStack.currentItem.height / 2;
             property int maxXPosition: root.pageStack.currentItem.width - width
@@ -676,8 +681,11 @@ Kirigami.ApplicationWindow {
                 function onHeightChanged() { incidenceInfoPopup.reposition(); }
             }
 
-            x: Math.min(incidenceItemPosition.x, maxXPosition)
-            y: positionBelowIncidenceItem ? incidenceItemPosition.y + openingIncidenceItem.height : incidenceItemPosition.y - height;
+            // Center the popup on the incidence item if possible
+            x: Math.min(incidenceItemMidXPoint - width / 2, maxXPosition)
+            // Make sure not to cover up the incidence item
+            y: positionBelowIncidenceItem ?
+                incidenceItemPosition.y + openingIncidenceItem.height : incidenceItemPosition.y - height;
 
             width: Kirigami.Units.gridUnit * 30
             height: Math.min(Kirigami.Units.gridUnit * 50, scrollView.contentHeight)
