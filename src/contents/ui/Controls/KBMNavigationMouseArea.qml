@@ -7,6 +7,7 @@ import QtQuick.Controls 2.15 as QQC2
 
 MouseArea {
     acceptedButtons: Qt.BackButton | Qt.ForwardButton
+    hoverEnabled: true
     propagateComposedEvents: true
 
     function repositionIncidencePopup() {

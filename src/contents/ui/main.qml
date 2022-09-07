@@ -163,7 +163,10 @@ Kirigami.ApplicationWindow {
         }
     }
 
-    KBMNavigationMouseArea { anchors.fill: parent }
+    KBMNavigationMouseArea {
+        id: kbmNavigationMouseArea
+        anchors.fill: parent
+    }
 
     Connections {
         target: KalendarApplication
@@ -632,6 +635,7 @@ Kirigami.ApplicationWindow {
             // Remember that when a delegate is scrolled within a scroll view, the
             // delegate's own relative x and y values do not change
             function reposition() {
+                mouseXOnRepositionRequested = kbmNavigationMouseArea.mouseX;
                 calculatePositionTimer.start();
             }
 
@@ -650,6 +654,7 @@ Kirigami.ApplicationWindow {
                 incidenceItemPosition.y -= openingIncidenceItem.y;
             }
 
+            property int mouseXOnRepositionRequested: 0
             property Item openingIncidenceItem: null
             onOpeningIncidenceItemChanged: reposition()
 
@@ -676,7 +681,7 @@ Kirigami.ApplicationWindow {
                 function onHeightChanged() { incidenceInfoPopup.reposition(); }
             }
 
-            x: Math.min(incidenceItemPosition.x, maxXPosition)
+            x: Math.min(mouseXOnRepositionRequested, maxXPosition)
             y: positionBelowIncidenceItem ? incidenceItemPosition.y + openingIncidenceItem.height : incidenceItemPosition.y - height;
 
             width: Kirigami.Units.gridUnit * 30
