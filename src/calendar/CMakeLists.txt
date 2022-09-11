@@ -35,6 +35,8 @@ ecm_target_qml_sources(kalendar_calendar_plugin SOURCES
 ecm_target_qml_sources(kalendar_calendar_plugin
     PRIVATE PATH private SOURCES
     qml/private/MenuBar.qml
+    qml/private/GlobalMenuBar.qml
+    qml/private/EditMenu.qml
 )
 
 target_link_libraries(kalendar_calendar_plugin PUBLIC kalendar_calendar_static)

@@ -4,11 +4,9 @@
 import Qt.labs.platform 1.1 as Labs
 
 import QtQuick 2.15
-import QtQuick.Controls 2.12 as QQC2
-import QtQuick.Layouts 1.10
-import org.kde.kirigami 2.15 as Kirigami
 import QtQuick.Window 2.15
 import org.kde.kalendar 1.0
+import org.kde.kalendar.components 1.0
 
 Labs.MenuBar {
     id: bar
@@ -29,7 +27,7 @@ Labs.MenuBar {
             onTriggered: Qt.quit()
         }
     }
-    EditMenu {
+    NativeEditMenu {
         id: editMenu
         title: i18nc("@action:menu", "Edit")
         Connections {
@@ -172,37 +170,8 @@ Labs.MenuBar {
             onTriggered: root.visibility === Window.FullScreen ? root.showNormal() : root.showFullScreen()
         }
     }
-    Labs.Menu {
-        title: i18nc("@action:menu", "Settings")
 
-        NativeMenuItemFromAction {
-            kalendarAction: 'toggle_menubar'
-            visible: !globalMenuLoader.active
-        }
-        NativeMenuItemFromAction {
-            kalendarAction: 'open_tag_manager'
-        }
-        Labs.MenuSeparator {
-        }
-        NativeMenuItemFromAction {
-            kalendarAction: 'options_configure_keybinding'
-        }
-        NativeMenuItemFromAction {
-            kalendarAction: 'options_configure'
-        }
-    }
-    Labs.Menu {
-        title: i18nc("@action:menu", "Help")
+    NativeSettingsMenu {}
 
-        NativeMenuItemFromAction {
-            kalendarAction: 'open_about_page'
-            enabled: pageStack.layers.currentItem.objectName != "aboutPage"
-        }
-
-        Labs.MenuItem {
-            text: i18nc("@action:menu", "Kalendar Handbook") // todo
-            visible: false
-        }
-    }
+    NativeHelpMenu {}
 }
-
