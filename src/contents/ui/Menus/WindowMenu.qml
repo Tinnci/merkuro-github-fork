@@ -4,9 +4,10 @@
 import QtQuick 2.15
 import QtQuick.Controls 2.12 as QQC2
 import QtQuick.Layouts 1.10
-import org.kde.kirigami 2.15 as Kirigami
 import QtQuick.Window 2.15
+import org.kde.kirigami 2.15 as Kirigami
 import org.kde.kalendar 1.0
+import org.kde.kalendar.components 1.0
 
 QQC2.MenuBar {
     id: bar
@@ -242,41 +243,8 @@ QQC2.MenuBar {
             onTriggered: root.visibility === Window.FullScreen ? root.showNormal() : root.showFullScreen()
         }
     }
-    QQC2.Menu {
-        title: i18nc("@action:menu", "Settings")
 
-        KActionFromAction {
-            kalendarAction: "open_tag_manager"
-        }
+    SettingsMenu {}
 
-        QQC2.MenuSeparator {
-        }
-
-        KActionFromAction {
-            kalendarAction: "toggle_menubar"
-        }
-
-        KActionFromAction {
-            kalendarAction: 'options_configure_keybinding'
-        }
-
-        KActionFromAction {
-            kalendarAction: "options_configure"
-        }
-    }
-    QQC2.Menu {
-        title: i18nc("@action:menu", "Help")
-
-        KActionFromAction {
-            kalendarAction: "open_about_page"
-            enabled: pageStack.layers.currentItem.objectName != "aboutPage"
-        }
-
-        QQC2.MenuItem {
-            text: i18nc("@action:menu", "Kalendar Handbook") // todo
-            visible: false
-        }
-    }
+    HelpMenu {}
 }
-
-
