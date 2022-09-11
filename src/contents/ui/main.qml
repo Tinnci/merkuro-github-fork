@@ -471,11 +471,11 @@ Kirigami.ApplicationWindow {
 
         onItemChanged: if (item) {
             item.parentWindow = root;
-            item.mode = applicationWindow().pageStack.currentItem.mode;
+            item.mode = applicationWindow().mode;
             item.Kirigami.Theme.colorSet = Kirigami.Theme.Header;
         }
 
-        source: switch (applicationWindow().pageStack.currentItem.mode) {
+        source: switch (applicationWindow().mode) {
             case KalendarApplication.Mail:
                 return mailApplication.menuBar
             case KalendarApplication.Contact:
@@ -491,6 +491,38 @@ Kirigami.ApplicationWindow {
                 return calendarApplication.menuBar
         }
     }
+
+    Loader {
+        id: globalMenuLoader
+        active: !Kirigami.Settings.isMobile
+
+        onItemChanged: if (globalMenuLoader.item) {
+            globalMenuLoader.item.mode = applicationWindow().mode;
+        }
+
+        onSourceChanged: {
+            if (globalMenuLoader.item) {
+                globalMenuLoader.item.mode = applicationWindow().mode;
+            }
+        }
+        source: switch (applicationWindow().mode) {
+            case KalendarApplication.Mail:
+                return mailApplication.globalMenuBar
+            case KalendarApplication.Contact:
+                return mailApplication.globalMenuBar
+            case KalendarApplication.Event:
+            case KalendarApplication.Todo:
+            case KalendarApplication.ThreeDay:
+            case KalendarApplication.Day:
+            case KalendarApplication.Week:
+            case KalendarApplication.Schedule:
+                return calendarApplication.globalMenuBar
+            default: 
+                return calendarApplication.globalMenuBar
+        }
+    }
+
+
 
     footer: Loader {
         id: bottomLoader
@@ -616,15 +648,6 @@ Kirigami.ApplicationWindow {
         onAdded: CalendarManager.addIncidence(incidenceWrapper)
         onEdited: CalendarManager.editIncidence(incidenceWrapper)
         onCancel: pageStack.layers.pop()
-    }
-
-    Loader {
-        id: globalMenuLoader
-        active: !Kirigami.Settings.isMobile
-        sourceComponent: GlobalMenu {
-            mode: pageStack.currentItem ? pageStack.currentItem.mode : KalendarApplication.Event
-        }
-        onLoaded: item.parentWindow = root;
     }
 
     property alias editorWindowedLoaderItem: editorWindowedLoader

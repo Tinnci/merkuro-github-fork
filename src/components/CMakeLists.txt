@@ -30,8 +30,13 @@ target_sources(kalendar_components_plugin PRIVATE
 
 ecm_target_qml_sources(kalendar_components_plugin SOURCES
     qml/KActionFromAction.qml
+    qml/NativeMenuItemFromAction.qml
+    qml/KalendarApp.qml
+    qml/SettingsMenu.qml
+    qml/NativeSettingsMenu.qml
+    qml/HelpMenu.qml
+    qml/NativeHelpMenu.qml
 )
-
 
 target_link_libraries(kalendar_components_plugin PUBLIC kalendar_components_static)
 
