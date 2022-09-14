@@ -14,7 +14,6 @@ QQC2.Popup {
     id: root
 
     property var incidenceData
-
     property alias scrollView: incidenceInfoContents.scrollView
 
     contentWidth: availableWidth
@@ -24,11 +23,21 @@ QQC2.Popup {
     rightPadding: 0
     bottomPadding: 0
 
-    Kirigami.Theme.colorSet: Kirigami.Theme.Window
+    clip: false
+
+    background: IncidenceDelegateBackground {
+        Kirigami.Theme.inherit: false
+        Kirigami.Theme.colorSet: Kirigami.Theme.View
+        color: Kirigami.Theme.backgroundColor
+    }
 
     contentItem: IncidenceInfoContents {
         id: incidenceInfoContents
         anchors.fill: parent
+        anchors.left: Kirigami.Units.largeSpacing
+        anchors.right: Kirigami.Units.largeSpacing
+
+        clip: true
         incidenceData: root.incidenceData
     }
 }
