@@ -157,6 +157,7 @@ qint64 IncidenceWrapper::collectionId() const
 
 void IncidenceWrapper::setCollectionId(qint64 collectionId)
 {
+    qDebug() << collectionId;
     m_collectionId = collectionId;
     Q_EMIT collectionIdChanged();
 }

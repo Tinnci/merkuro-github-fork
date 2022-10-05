@@ -83,7 +83,7 @@ public:
     Akonadi::CollectionFilterProxyModel *mMimeTypeFilterModel = nullptr;
     Akonadi::EntityRightsFilterModel *mRightsFilterModel = nullptr;
     qint64 mDefaultCollectionId = -1;
-    int mCurrentIndex = -1;
+    int mCurrentIndex = 0;
 };
 
 bool CollectionComboBoxModelPrivate::scanSubTree()
