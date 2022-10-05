@@ -66,13 +66,19 @@ Kirigami.ScrollablePage {
             if (editMode) {
                 edited(incidenceWrapper);
             } else if (root.validDates) {
-                added(incidenceWrapper);
+                if(root.incidenceWrapper.collectionId < 0) {
+                    console.log(editorLoader.item.calendarCombo.currentValue)
+                    root.incidenceWrapper.collectionId = editorLoader.item.calendarCombo.currentValue;
+                }
+
                 if(root.incidenceWrapper.incidenceType === IncidenceWrapper.TypeTodo) {
                     Config.lastUsedTodoCollection = root.incidenceWrapper.collectionId;
                 } else {
                     Config.lastUsedEventCollection = root.incidenceWrapper.collectionId;
                 }
                 Config.save();
+
+                added(incidenceWrapper);
             }
             cancel(); // Easy way to close the editor
         }
@@ -115,6 +121,8 @@ Kirigami.ScrollablePage {
 
             property alias attendeesColumnY: attendeesColumn.y
 
+            readonly property alias calendarCombo: calendarCombo
+
             Kirigami.InlineMessage {
                 id: invalidDateMessage
 
@@ -139,9 +147,18 @@ Kirigami.ScrollablePage {
                     Kirigami.FormData.label: i18n("Calendar:")
                     Layout.fillWidth: true
 
-                    defaultCollectionId: if (root.incidenceWrapper.collectionId === -1) {
-                        return incidenceForm.isTodo ? Config.lastUsedTodoCollection : Config.lastUsedEventCollection;
-                    } else {
+                    defaultCollectionId: {
+                        if (root.incidenceWrapper.collectionId === -1) {
+
+                            if ((incidenceForm.isTodo && Config.lastUsedTodoCollection === -1) ||
+                                (!incidenceForm.isTodo && Config.lastUsedEventCollection === -1)) {
+
+                                return selectedCollectionId;
+                            }
+
+                            return incidenceForm.isTodo ? Config.lastUsedTodoCollection : Config.lastUsedEventCollection;
+                        }
+
                         return root.incidenceWrapper.collectionId;
                     }
 
@@ -151,7 +168,7 @@ Kirigami.ScrollablePage {
                         return [Akonadi.MimeTypes.todo]
                     }
                     accessRightsFilter: Akonadi.Collection.CanCreateItem
-                    onSelectedCollectionChanged: root.incidenceWrapper.setCollection(collection)
+                    onUserSelectedCollection: root.incidenceWrapper.setCollection(collection)
                 }
 
                 QQC2.TextField {

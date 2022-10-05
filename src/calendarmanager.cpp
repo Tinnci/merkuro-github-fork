@@ -420,6 +420,22 @@ KCalendarCore::Incidence::List CalendarManager::childIncidences(const QString &u
 
 void CalendarManager::addIncidence(IncidenceWrapper *incidenceWrapper)
 {
+    qDebug() << incidenceWrapper->collectionId() << (incidenceWrapper->collectionId() < 0);
+    if (incidenceWrapper->collectionId() < 0) {
+        const auto sharedConfig = KSharedConfig::openConfig();
+        const auto editorConfigSection = sharedConfig->group("Editor");
+
+        const auto lastUsedCollectionType = incidenceWrapper->incidenceType() == KCalendarCore::IncidenceBase::TypeTodo
+            ? QStringLiteral("lastUsedTodoCollection")
+            : QStringLiteral("lastUsedEventCollection");
+        const auto lastUsedCollectionId = editorConfigSection.readEntry(lastUsedCollectionType, -1);
+
+        qDebug() << lastUsedCollectionId;
+        if (lastUsedCollectionId > -1) {
+            incidenceWrapper->setCollectionId(lastUsedCollectionId);
+        }
+    }
+
     Akonadi::Collection collection(incidenceWrapper->collectionId());
 
     switch (incidenceWrapper->incidencePtr()->type()) {
