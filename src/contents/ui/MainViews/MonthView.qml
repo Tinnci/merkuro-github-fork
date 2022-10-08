@@ -19,8 +19,10 @@ Kirigami.Page {
     property date currentDate: new Date()
     property date firstDayOfMonth: DateUtils.getFirstDayOfMonth(currentDate)
     property date startDate: DateUtils.getFirstDayOfWeek(firstDayOfMonth)
-    property int month: startDate.month()
-    property int year: startDate.getFullYear()
+
+    readonly property int month: firstDayOfMonth.getMonth()
+    readonly property int year: firstDayOfMonth.getFullYear()
+
     readonly property bool isLarge: width > Kirigami.Units.gridUnit * 40
     readonly property bool isTiny: width < Kirigami.Units.gridUnit * 18
     readonly property int mode: Kalendar.KalendarApplication.Month
@@ -38,7 +40,8 @@ Kirigami.Page {
     }
 
     function setToDate(date, isInitialMonth = false) {
-        dayGrid.setToDate(date, isInitialMonth);
+        initialMonth = isInitialMonth;
+        dayGrid.setToDate(date);
     }
 
     padding: 0
@@ -82,7 +85,6 @@ Kirigami.Page {
         sourceComponent: SwipeableMonthGridView {
             anchors.fill: parent
 
-            initialMonth: monthPage.initialMonth
             isLarge: monthPage.isLarge
             isTiny: monthPage.isTiny
             dragDropEnabled: monthPage.dragDropEnabled
@@ -92,8 +94,6 @@ Kirigami.Page {
             onViewDatesChanged: {
                 monthPage.startDate = startDate;
                 monthPage.firstDayOfMonth = firstDayOfMonth;
-                monthPage.month = month;
-                monthPage.year = year;
             }
         }
     }
@@ -115,8 +115,6 @@ Kirigami.Page {
             onViewDatesChanged: {
                 monthPage.startDate = startDate;
                 monthPage.firstDayOfMonth = firstDayOfMonth;
-                monthPage.month = month;
-                monthPage.year = year;
             }
         }
     }
