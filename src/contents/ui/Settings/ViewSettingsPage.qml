@@ -72,6 +72,42 @@ Kirigami.ScrollablePage {
                 MobileForm.FormCardHeader {
                     title: i18n("Month View settings")
                 }
+
+                Controls.ButtonGroup {
+                    id: monthGridModeGroup
+                    exclusive: true
+                    onClicked: {
+                        Config.monthGridMode = button.value;
+                        Config.save();
+                    }
+                }
+                MobileForm.FormSectionText {
+                    text: i18n("Month view mode")
+                }
+                ColumnLayout {
+                    spacing: 0
+                    Layout.fillWidth: true
+                    MobileForm.FormRadioDelegate {
+                        property int value: Config.SwipeableMonthGrid
+                        text: i18n("Swipeable month grid")
+                        enabled: !Config.isMonthGridModeImmutable
+                        checked: Config.monthGridMode === value
+                        Controls.ButtonGroup.group: monthGridGroup
+                    }
+                    MobileForm.FormRadioDelegate {
+                        property int value: Config.BasicMonthGrid
+                        text: i18n("Basic month grid")
+                        enabled: !Config.isMonthGridModeImmutable
+                        checked: Config.monthGridMode === value
+                        Controls.ButtonGroup.group: monthGridGroup
+                    }
+                    Controls.Label {
+                        font: Kirigami.Theme.smallFont
+                        text: i18n("Swipeable month grid requires higher system performance.")
+                        visible: Config.monthGridMode === Config.SwipeableMonthGrid
+                    }
+                }
+
                 Controls.ButtonGroup {
                     id: weekdayLabelGroup
                     exclusive: true
