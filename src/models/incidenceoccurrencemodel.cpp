@@ -120,32 +120,13 @@ void IncidenceOccurrenceModel::updateFromSource()
         occurrenceIterator.next();
         const auto incidence = occurrenceIterator.incidence();
 
-        if (mFilter && mFilter->tags().length() > 0) {
-            auto match = false;
-            const auto tags = mFilter->tags();
-            for (const auto &tag : tags) {
-                if (incidence->categories().contains(tag)) {
-                    match = true;
-                    break;
-                }
-            }
-
-            if (!match) {
-                continue;
-            }
+        if(!incidencePassesFilter(incidence)) {
+            continue;
         }
 
-        auto start = occurrenceIterator.occurrenceStartDate();
-        const auto end = incidence->endDateForStart(start);
-
-        if (incidence->type() == KCalendarCore::Incidence::IncidenceType::TypeTodo) {
-            KCalendarCore::Todo::Ptr todo = incidence.staticCast<KCalendarCore::Todo>();
-
-            if (!start.isValid()) { // Todos are very likely not to have a set start date
-                start = todo->dtDue();
-            }
-        }
-
+        const auto occurrenceStartEnd = incidenceOccurrenceStartEnd(occurrenceIterator.occurrenceStartDate(), incidence);
+        const auto start = occurrenceStartEnd.first;
+        const auto end = occurrenceStartEnd.second;
         const auto occurrenceHashKey = qHash(QString::number(start.toSecsSinceEpoch()) +
                                              QString::number(end.toSecsSinceEpoch()) +
                                              incidence->uid());
@@ -208,17 +189,9 @@ void IncidenceOccurrenceModel::slotSourceDataChanged(const QModelIndex &upperLef
         while (occurrenceIterator.hasNext()) {
             occurrenceIterator.next();
 
-            auto start = occurrenceIterator.occurrenceStartDate();
-            const auto end = incidence->endDateForStart(start);
-
-            if (incidence->type() == KCalendarCore::Incidence::IncidenceType::TypeTodo) {
-                KCalendarCore::Todo::Ptr todo = incidence.staticCast<KCalendarCore::Todo>();
-
-                if (!start.isValid()) { // Todos are very likely not to have a set start date
-                    start = todo->dtDue();
-                }
-            }
-
+            const auto occurrenceStartEnd = incidenceOccurrenceStartEnd(occurrenceIterator.occurrenceStartDate(), incidence);
+            const auto start = occurrenceStartEnd.first;
+            const auto end = occurrenceStartEnd.second;
             const auto occurrenceHashKey = qHash(QString::number(start.toSecsSinceEpoch()) +
                                                  QString::number(end.toSecsSinceEpoch()) +
                                                  incidence->uid());
@@ -396,4 +369,38 @@ void IncidenceOccurrenceModel::load()
         QColor color = rColorsConfig.readEntry(key, QColor("blue"));
         m_colors[key] = color;
     }
+}
+
+std::pair<QDateTime, QDateTime> IncidenceOccurrenceModel::incidenceOccurrenceStartEnd(const QDateTime &ocStart, const KCalendarCore::Incidence::Ptr &incidence)
+{
+    auto start = ocStart;
+    const auto end = incidence->endDateForStart(start);
+
+    if (incidence->type() == KCalendarCore::Incidence::IncidenceType::TypeTodo) {
+        KCalendarCore::Todo::Ptr todo = incidence.staticCast<KCalendarCore::Todo>();
+
+        if (!start.isValid()) { // Todos are very likely not to have a set start date
+            start = todo->dtDue();
+        }
+    }
+
+    return {start, end};
+}
+
+bool IncidenceOccurrenceModel::incidencePassesFilter(const KCalendarCore::Incidence::Ptr &incidence)
+{
+    if(!mFilter || mFilter->tags().empty()) {
+        return true;
+    }
+
+    auto match = false;
+    const auto tags = mFilter->tags();
+    for (const auto &tag : tags) {
+        if (incidence->categories().contains(tag)) {
+            match = true;
+            break;
+        }
+    }
+
+    return match;
 }

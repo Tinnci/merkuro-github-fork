@@ -23,6 +23,7 @@ class Filter;
 namespace KCalendarCore
 {
 class Incidence;
+class OccurrenceIterator;
 }
 namespace Akonadi
 {
@@ -108,10 +109,13 @@ Q_SIGNALS:
 
 private Q_SLOTS:
     void slotSourceDataChanged(const QModelIndex &upperLeft, const QModelIndex &bottomRight);
-
-private:
     void refreshView();
     void updateFromSource();
+
+private:
+    static std::pair<QDateTime, QDateTime> incidenceOccurrenceStartEnd(const QDateTime &ocStart, const KCalendarCore::Incidence::Ptr &incidence);
+    bool incidencePassesFilter(const KCalendarCore::Incidence::Ptr &incidence);
+
     QColor getColor(const KCalendarCore::Incidence::Ptr &incidence);
     qint64 getCollectionId(const KCalendarCore::Incidence::Ptr &incidence);
 
