@@ -23,5 +23,9 @@ Dependencies:
     'frameworks/kirigami' : '@latest'
 
 Options:
-  cmake-options: "-DAKONADI_RUN_MYSQL_ISOLATED_TESTS=FALSE -DAKONADI_RUN_PGSQL_ISOLATED_TESTS=FALSE"
+  # The add_akonadi_isolated_test_advanced functions used in our tests CMake
+  # does not distinguish between -DAKONADI_RUN_{backend}_ISOLATED_TESTS
+  # arguments being set to true or false -- it only checks if they are
+  # defined
+  cmake-options: "-DAKONADI_RUN_SQLITE_ISOLATED_TESTS=TRUE"
   require-passing-tests-on: ['Linux']
