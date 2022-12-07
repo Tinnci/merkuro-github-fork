@@ -3,13 +3,16 @@
 
 import QtQuick 2.15
 import org.kde.kirigami 2.19 as Kirigami
-import QtQuick.Controls 2.15 as Controls
+import QtQuick.Controls 2.15 as QQC2
 import QtQuick.Layouts 1.15
 import org.kde.kalendar 1.0
 import org.kde.kirigamiaddons.labs.mobileform 0.1 as MobileForm
 
 Kirigami.ScrollablePage {
     title: i18n("Appearance")
+
+    leftPadding: 0
+    rightPadding: 0
 
     ColumnLayout {
         MobileForm.FormCard {
@@ -44,18 +47,18 @@ Kirigami.ScrollablePage {
                 MobileForm.AbstractFormDelegate {
                     Layout.fillWidth: true
                     contentItem: ColumnLayout {
-                        Controls.Label {
-                            text: i18n("Past event transparency:")
+                        QQC2.Label {
+                            text: i18n("Past event transparency")
                             Layout.fillWidth: true
                         }
-                        Controls.Slider {
+                        QQC2.Slider {
                             Layout.fillWidth: true
-                            stepSize: 1.0
-                            from: 0.0
-                            to: 100.0
-                            value: Config.pastEventsTransparencyLevel * 100
+                            stepSize: 0.05
+                            from: 0
+                            to: 1
+                            value: Config.pastEventsTransparencyLevel
                             onMoved: {
-                                Config.pastEventsTransparencyLevel = value / 100;
+                                Config.pastEventsTransparencyLevel = value;
                                 Config.save();
                             }
                         }
@@ -73,7 +76,7 @@ Kirigami.ScrollablePage {
                     title: i18n("Month view settings")
                 }
 
-                Controls.ButtonGroup {
+                QQC2.ButtonGroup {
                     id: monthGridModeGroup
                     exclusive: true
                     onCheckedButtonChanged: {
@@ -81,7 +84,7 @@ Kirigami.ScrollablePage {
                         Config.save();
                     }
                 }
-                MobileForm.FormSectionText {
+                MobileForm.FormTextDelegate {
                     text: i18n("Month view mode")
                 }
                 ColumnLayout {
@@ -92,22 +95,22 @@ Kirigami.ScrollablePage {
                         text: i18n("Swipeable month grid")
                         enabled: !Config.isMonthGridModeImmutable
                         checked: Config.monthGridMode === value
-                        Controls.ButtonGroup.group: monthGridModeGroup
+                        QQC2.ButtonGroup.group: monthGridModeGroup
                     }
                     MobileForm.FormRadioDelegate {
                         property int value: Config.BasicMonthGrid
                         text: i18n("Basic month grid")
                         enabled: !Config.isMonthGridModeImmutable
                         checked: Config.monthGridMode === value
-                        Controls.ButtonGroup.group: monthGridModeGroup
+                        QQC2.ButtonGroup.group: monthGridModeGroup
                     }
                     MobileForm.FormTextDelegate {
-                        text: i18n("Swipeable month grid requires higher system performance.")
+                        description: i18n("Swipeable month grid requires higher system performance.")
                         visible: Config.monthGridMode === Config.SwipeableMonthGrid
                     }
                 }
 
-                Controls.ButtonGroup {
+                QQC2.ButtonGroup {
                     id: weekdayLabelGroup
                     exclusive: true
                     onCheckedButtonChanged: {
@@ -115,7 +118,8 @@ Kirigami.ScrollablePage {
                         Config.save();
                     }
                 }
-                MobileForm.FormSectionText {
+                MobileForm.FormDelegateSeparator {}
+                MobileForm.FormTextDelegate {
                     text: i18n("Weekday label alignment")
                 }
                 ColumnLayout {
@@ -126,25 +130,25 @@ Kirigami.ScrollablePage {
                         text: i18n("Left")
                         enabled: !Config.isWeekdayLabelAlignmentImmutable
                         checked: Config.weekdayLabelAlignment === value
-                        Controls.ButtonGroup.group: weekdayLabelGroup
+                        QQC2.ButtonGroup.group: weekdayLabelGroup
                     }
                     MobileForm.FormRadioDelegate {
                         property int value: Config.Center
                         text: i18n("Center")
                         enabled: !Config.isWeekdayLabelAlignmentImmutable
                         checked: Config.weekdayLabelAlignment === value
-                        Controls.ButtonGroup.group: weekdayLabelGroup
+                        QQC2.ButtonGroup.group: weekdayLabelGroup
                     }
                     MobileForm.FormRadioDelegate {
                         property int value: Config.Right
                         text: i18n("Right")
                         enabled: !Config.isWeekdayLabelAlignmentImmutable
                         checked: Config.weekdayLabelAlignment === value
-                        Controls.ButtonGroup.group: weekdayLabelGroup
+                        QQC2.ButtonGroup.group: weekdayLabelGroup
                     }
                 }
 
-                Controls.ButtonGroup {
+                QQC2.ButtonGroup {
                     id: weekdayLabelLengthGroup
                     exclusive: true
                     onCheckedButtonChanged: {
@@ -153,7 +157,8 @@ Kirigami.ScrollablePage {
                     }
                 }
 
-                MobileForm.FormSectionText {
+                MobileForm.FormDelegateSeparator {}
+                MobileForm.FormTextDelegate {
                     text: i18n("Weekday label length:")
                 }
 
@@ -162,24 +167,27 @@ Kirigami.ScrollablePage {
                     text: i18n("Full name (Monday)")
                     enabled: !Config.isWeekdayLabelLengthImmutable
                     checked: Config.weekdayLabelLength === value
-                    Controls.ButtonGroup.group: weekdayLabelLengthGroup
+                    QQC2.ButtonGroup.group: weekdayLabelLengthGroup
                 }
                 MobileForm.FormRadioDelegate {
                     property int value: Config.Abbreviated
                     text: i18n("Abbreviated (Mon)")
                     enabled: !Config.isWeekdayLabelLengthImmutable
                     checked: Config.weekdayLabelLength === value
-                    Controls.ButtonGroup.group: weekdayLabelLengthGroup
+                    QQC2.ButtonGroup.group: weekdayLabelLengthGroup
                 }
                 MobileForm.FormRadioDelegate {
+                    id: configLetterDelegate
                     property int value: Config.Letter
                     text: i18n("Letter only (M)")
                     enabled: !Config.isWeekdayLabelLengthImmutable
                     checked: Config.weekdayLabelLength === value
-                    Controls.ButtonGroup.group: weekdayLabelLengthGroup
+                    QQC2.ButtonGroup.group: weekdayLabelLengthGroup
                 }
 
+                MobileForm.FormDelegateSeparator { above: showWeekNumbersDelegate; below: configLetterDelegate }
                 MobileForm.FormCheckDelegate {
+                    id: showWeekNumbersDelegate
                     text: i18n("Show week numbers")
                     checked: Config.showWeekNumbers
                     enabled: !Config.isShowWeekNumbersImmutable
@@ -188,13 +196,15 @@ Kirigami.ScrollablePage {
                         Config.save();
                     }
                 }
+                MobileForm.FormDelegateSeparator { above: showWeekNumbersDelegate }
                 MobileForm.AbstractFormDelegate {
+                    background: Item {}
                     Layout.fillWidth: true
                     contentItem: RowLayout {
-                        Controls.Label {
+                        QQC2.Label {
                             text: i18n("Grid border width (pixels):")
                         }
-                        Controls.SpinBox {
+                        QQC2.SpinBox {
                             Layout.fillWidth: true
                             value: Config.monthGridBorderWidth
                             onValueModified: {
@@ -225,7 +235,7 @@ Kirigami.ScrollablePage {
                     title: i18n("Week view settings")
                 }
 
-                Controls.ButtonGroup {
+                QQC2.ButtonGroup {
                     id: hourlyViewModeGroup
                     exclusive: true
                     onCheckedButtonChanged: {
@@ -233,7 +243,7 @@ Kirigami.ScrollablePage {
                         Config.save();
                     }
                 }
-                MobileForm.FormSectionText {
+                MobileForm.FormTextDelegate {
                     text: i18n("Week view mode")
                 }
                 ColumnLayout {
@@ -244,17 +254,17 @@ Kirigami.ScrollablePage {
                         text: i18n("Swipeable week view")
                         enabled: !Config.isHourlyViewModeImmutable
                         checked: Config.monthGridMode === value
-                        Controls.ButtonGroup.group: hourlyViewModeGroup
+                        QQC2.ButtonGroup.group: hourlyViewModeGroup
                     }
                     MobileForm.FormRadioDelegate {
                         property int value: Config.BasicInternalHourlyView
                         text: i18n("Basic week view")
                         enabled: !Config.isHourlyViewModeImmutable
                         checked: Config.monthGridMode === value
-                        Controls.ButtonGroup.group: hourlyViewModeGroup
+                        QQC2.ButtonGroup.group: hourlyViewModeGroup
                     }
                     MobileForm.FormTextDelegate {
-                        text: i18n("Swipeable week view requires higher system performance.")
+                        description: i18n("Swipeable week view requires higher system performance.")
                         visible: Config.hourlyViewMode === Config.SwipeableInternalHourlyView
                     }
                 }
@@ -270,7 +280,7 @@ Kirigami.ScrollablePage {
                     title: i18n("Schedule View settings")
                 }
 
-                Controls.ButtonGroup {
+                QQC2.ButtonGroup {
                     id: monthListModeGroup
                     exclusive: true
                     onCheckedButtonChanged: {
@@ -278,7 +288,7 @@ Kirigami.ScrollablePage {
                         Config.save();
                     }
                 }
-                MobileForm.FormSectionText {
+                MobileForm.FormTextDelegate {
                     text: i18n("Schedule view mode")
                 }
                 ColumnLayout {
@@ -289,22 +299,25 @@ Kirigami.ScrollablePage {
                         text: i18n("Swipeable schedule view")
                         enabled: !Config.isMonthListModeImmutable
                         checked: Config.monthListMode === value
-                        Controls.ButtonGroup.group: monthListModeGroup
+                        QQC2.ButtonGroup.group: monthListModeGroup
                     }
                     MobileForm.FormRadioDelegate {
                         property int value: Config.BasicMonthList
                         text: i18n("Basic schedule view")
                         enabled: !Config.isMonthListModeImmutable
                         checked: Config.monthListMode === value
-                        Controls.ButtonGroup.group: monthListModeGroup
+                        QQC2.ButtonGroup.group: monthListModeGroup
                     }
                     MobileForm.FormTextDelegate {
-                        text: i18n("Swipeable schedule view requires higher system performance.")
+                        description: i18n("Swipeable schedule view requires higher system performance.")
                         visible: Config.monthListMode === Config.SwipeableMonthList
                     }
                 }
 
+                MobileForm.FormDelegateSeparator { above: showWeekHeaders }
+
                 MobileForm.FormCheckDelegate {
+                    id: showWeekHeaders
                     text: i18n("Show week headers")
                     checked: Config.showWeekHeaders
                     enabled: !Config.isShowWeekHeadersImmutable
@@ -344,19 +357,18 @@ Kirigami.ScrollablePage {
                     title: i18n("Maps")
                 }
                 MobileForm.FormCheckDelegate {
+                    id: enableMapsDelegate
                     text: i18n("Enable maps")
-
                     checked: Config.enableMaps
                     enabled: !Config.isEnableMapsImmutable
                     onCheckedChanged: {
                         Config.enableMaps = checked;
                         Config.save();
                     }
+                    description: i18n("May cause crashing on some systems.")
                 }
-                MobileForm.FormTextDelegate {
-                    text: i18n("May cause crashing on some systems.")
-                }
-                Controls.ButtonGroup {
+                MobileForm.FormDelegateSeparator { above: enableMapsDelegate }
+                QQC2.ButtonGroup {
                     id: locationGroup
                     exclusive: true
                     onCheckedButtonChanged: {
@@ -364,8 +376,8 @@ Kirigami.ScrollablePage {
                         Config.save();
                     }
                 }
-                MobileForm.FormSectionText {
-                    text: i18n("Location marker")
+                MobileForm.FormCardHeader {
+                    title: i18n("Location marker")
                 }
                 ColumnLayout {
                     id: locationMarkerButtonColumn
@@ -376,14 +388,14 @@ Kirigami.ScrollablePage {
                         text: i18n("Circle (shows area of location)")
                         enabled: Config.enableMaps && !Config.isLocationMarkerImmutable
                         checked: Config.locationMarker === value
-                        Controls.ButtonGroup.group: locationGroup
+                        QQC2.ButtonGroup.group: locationGroup
                     }
                     MobileForm.FormRadioDelegate {
                         property int value: Config.Pin
                         text: i18n("Pin (shows exact location)")
                         enabled: Config.enableMaps && !Config.isLocationMarkerImmutable
                         checked: Config.locationMarker === value
-                        Controls.ButtonGroup.group: locationGroup
+                        QQC2.ButtonGroup.group: locationGroup
                     }
                 }
             }
