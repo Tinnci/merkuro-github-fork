@@ -17,6 +17,7 @@
 #include "addressmodel.h"
 
 #include "emailmodel.h"
+#include "imppmodel.h"
 #include "phonemodel.h"
 
 /// This class is a QObject wrapper for a KContact::Adressee
@@ -46,6 +47,9 @@ class AddresseeWrapper : public QObject, public Akonadi::ItemMonitor
 
     // Address
     Q_PROPERTY(AddressModel *addressesModel READ addressesModel CONSTANT)
+
+    // Impp
+    Q_PROPERTY(ImppModel *imppModel READ imppModel CONSTANT)
 
     // Personal information
     Q_PROPERTY(QDateTime birthday READ birthday WRITE setBirthday NOTIFY birthdayChanged)

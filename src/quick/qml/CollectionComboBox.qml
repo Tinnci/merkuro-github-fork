@@ -5,13 +5,14 @@ import QtQuick 2.15
 import QtQuick.Controls 2.15 as QQC2
 import org.kde.akonadi 1.0 as Akonadi
 import org.kde.kirigami 2.19 as Kirigami
+import org.kde.kirigamiaddons.labs.mobileform 0.1 as MobileForm
 
 /**
  * Special combobox control that allows to choose a collection.
  * The collection displayed can be filtered using the \p mimeTypeFilter
  * and \p accessRightsFilter properties.
  */
-QQC2.ComboBox {
+MobileForm.FormComboBoxDelegate {
     id: comboBox
 
     /**
@@ -85,7 +86,7 @@ QQC2.ComboBox {
         onCurrentIndexChanged: comboBox.currentIndex = currentIndex
     }
 
-    delegate: Kirigami.BasicListItem {
+    comboBoxDelegate: Kirigami.BasicListItem {
         label: display
         icon: decoration
         trailing: Rectangle {
@@ -95,6 +96,4 @@ QQC2.ComboBox {
             color: model.collectionColor
         }
     }
-
-    popup.z: 1000
 }

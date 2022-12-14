@@ -12,6 +12,8 @@ target_sources(kalendar_contact_plugin PRIVATE
     addressmodel.h
     phonemodel.h
     phonemodel.cpp
+    imppmodel.h
+    imppmodel.cpp
     emailmodel.h
     emailmodel.cpp
     globalcontactmodel.cpp
