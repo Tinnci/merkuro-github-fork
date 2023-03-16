@@ -46,12 +46,22 @@ set(todoSortFilterProxyModelTest_SRCS
     ../src/utils.cpp
 )
 
+set(calutilsTest_SRCS
+    calutilstest.cpp
+    ../src/calendar/utils.cpp
+)
+
 ecm_qt_declare_logging_category(incidenceOccurrenceModelTest_SRCS HEADER kalendar_debug.h IDENTIFIER KALENDAR_LOG CATEGORY_NAME org.kde.kalendar DESCRIPTION "kalendar" EXPORT KALENDAR)
 
 add_executable(filtertest ${filterTest_SRCS})
 add_test(NAME filtertest COMMAND filtertest)
 ecm_mark_as_test(filtertest)
 target_link_libraries(filtertest ${commonAkonadiTest_LIBS})
+
+add_executable(calutilstest ${calutilsTest_SRCS})
+add_test(NAME calutilstest COMMAND calutilstest)
+ecm_mark_as_test(calutilstest)
+target_link_libraries(calutilstest ${commonAkonadiTest_LIBS})
 
 # the tests need the ical resource, which we might not have at this point (e.g. on the CI)
 find_program(AKONADI_ICAL_RESOURCE NAMES akonadi_ical_resource)
