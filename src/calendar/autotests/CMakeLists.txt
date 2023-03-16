@@ -1,0 +1,8 @@
+# SPDX-FileCopyrightText: 2023 Carl Schwan <carl@carlschwan.eu>
+# SPDX-License-Identifier: BSD-2-Clause
+
+ecm_add_test(remindersmodeltest.cpp
+    TEST_NAME remindersmodeltest
+    LINK_LIBRARIES kalendar_calendar_static Qt::Test
+    NAME_PREFIX "kalendar-calendar-"
+)

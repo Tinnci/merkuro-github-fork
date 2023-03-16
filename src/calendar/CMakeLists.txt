@@ -1,7 +1,12 @@
 # SPDX-FileCopyrightText: 2022 Carl Schwan <carl@carlschwan.eu>
 # SPDX-License-Identifier: BSD-2-Clause
 
-set(kalendar_calendar_SRCS)
+set(kalendar_calendar_SRCS
+    utils.h
+    utils.cpp
+    remindersmodel.h
+    remindersmodel.cpp
+)
 
 ecm_qt_declare_logging_category(kalendar_calendar_SRCS
     HEADER kalendar_calendar_debug.h
@@ -27,10 +32,6 @@ ecm_add_qml_module(kalendar_calendar_plugin URI "org.kde.kalendar.calendar" VERS
 target_sources(kalendar_calendar_plugin PRIVATE
     calendarplugin.cpp
     calendarplugin.h
-    utils.h
-    utils.cpp
-    remindersmodel.h
-    remindersmodel.cpp
 )
 
 ecm_target_qml_sources(kalendar_calendar_plugin SOURCES
@@ -49,3 +50,7 @@ target_link_libraries(kalendar_calendar_plugin PUBLIC kalendar_calendar_static)
 ecm_finalize_qml_module(kalendar_calendar_plugin
     DESTINATION ${KDE_INSTALL_QMLDIR}
     BUILD_SHARED_LIBS ON)
+
+if (BUILD_TESTING)
+    add_subdirectory(autotests)
+endif()
