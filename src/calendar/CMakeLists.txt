@@ -29,6 +29,8 @@ target_sources(kalendar_calendar_plugin PRIVATE
     calendarplugin.h
     utils.h
     utils.cpp
+    remindersmodel.h
+    remindersmodel.cpp
 )
 
 ecm_target_qml_sources(kalendar_calendar_plugin SOURCES
