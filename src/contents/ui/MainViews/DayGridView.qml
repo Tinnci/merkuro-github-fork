@@ -192,11 +192,17 @@ Item {
                                             enabled: root.daysToShow > 1
                                             onClicked: KalendarUiUtils.openDayLayer(gridItem.date)
 
+                                            Accessible.role: Accessible.Button
+                                            Accessible.name: label.text
+                                            Accessible.description: "shows the day number"
+                                            Accessible.onPressAction: onClicked()
+
                                             contentItem: RowLayout {
                                                 id: dayNumberLayout
                                                 visible: root.showDayIndicator
 
                                                 QQC2.Label {
+                                                    id: label
                                                     Layout.alignment: Qt.AlignLeft | Qt.AlignTop
                                                     padding: Kirigami.Units.smallSpacing
                                                     text: i18n("<b>Today</b>")
