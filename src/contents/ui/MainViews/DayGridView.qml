@@ -146,12 +146,17 @@ Item {
                                                 gridItem.isToday ? Kirigami.Theme.activeBackgroundColor :
                                                 gridItem.isCurrentMonth ? Kirigami.Theme.backgroundColor : Kirigami.Theme.alternateBackgroundColor
 
+                                            border.color: activeFocus ? Kirigami.Theme.focusColor : "transparent"
+
                                             DayMouseArea {
                                                 id: backgroundDayMouseArea
                                                 anchors.fill: parent
                                                 addDate: gridItem.date
                                                 onAddNewIncidence: KalendarUiUtils.setUpAdd(type, addDate)
-                                                onDeselect: KalendarUiUtils.appMain.incidenceInfoViewer.close()
+                                                onDeselect: {
+                                                    KalendarUiUtils.appMain.incidenceInfoViewer.close();
+                                                    backgroundRectangle.forceActiveFocus();
+                                                }
 
                                                 DropArea {
                                                     id: incidenceDropArea
@@ -292,6 +297,13 @@ Item {
                                     id: listViewMenu
                                     anchors.fill: parent
                                     z: -1
+                                    propagateComposedEvents: true
+
+                                    //override so that background mouseArea can get click events and focus the relevant cell
+                                    onClicked: {
+                                        mouse.accepted = false;
+                                        deselect();
+                                    }
 
                                     function useGridSquareDate(type, root, globalPos) {
                                         for(var i in root.children) {
