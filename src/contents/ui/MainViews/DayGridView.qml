@@ -192,10 +192,10 @@ Item {
                                             enabled: root.daysToShow > 1
                                             onClicked: KalendarUiUtils.openDayLayer(gridItem.date)
 
-                                            Accessible.role: Accessible.Button
-                                            Accessible.name: label.text
-                                            Accessible.description: "shows the day number"
-                                            Accessible.onPressAction: onClicked()
+                                            text: gridItem.isToday ? i18n("Today") : gridItem.date.toLocaleDateString(Qt.locale(), gridItem.day == 1 ? "d MMM" : "d")
+                                            display: QQC2.AbstractButton.IconOnly
+                                            Accessible.description: i18n("Shows the day number")
+
 
                                             contentItem: RowLayout {
                                                 id: dayNumberLayout
