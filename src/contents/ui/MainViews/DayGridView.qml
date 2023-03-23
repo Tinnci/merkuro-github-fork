@@ -163,7 +163,6 @@ Item {
                                                 onDeselect: {
                                                     KalendarUiUtils.appMain.incidenceInfoViewer.close();
                                                     backgroundRectangle.forceActiveFocus();
-                                                    console.log(outerRepeater.itemAt(Math.max(weekDelegate.weekNumber - 1, 0)).innerRepeater.itemAt(index).backgroundRectangle)
                                                 }
 
                                                 DropArea {
