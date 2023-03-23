@@ -144,7 +144,9 @@ Item {
 
                                         readonly property alias backgroundRectangle: backgroundRectangle
 
-                                        readonly property var nextCell: gridRepeater.itemAt(index + 1) ? gridRepeater.itemAt(index + 1).backgroundRectangle : gridItem
+                                        readonly property var nextWeekFirstCell: outerRepeater.itemAt(Math.min(weekDelegate.weekNumber + 1, outerRepeater.count - 1)).innerRepeater.itemAt(0)
+                                        readonly property var nextItem: gridRepeater.itemAt(index + 1)
+                                        readonly property var nextCell: nextItem ? nextItem.backgroundRectangle : nextWeekFirstCell ? nextWeekFirstCell.backgroundRectangle : gridItem // just a backup item
 
                                         Rectangle {
                                             id: backgroundRectangle
@@ -159,6 +161,10 @@ Item {
 
                                             KeyNavigation.right: gridItem.nextCell
                                             KeyNavigation.tab: gridItem.nextCell
+
+                                            // Can't use KeyNavigation since items have not yet instatntiated and we get errors like 'can't assign undefined to ...'
+                                            Keys.onUpPressed: outerRepeater.itemAt(Math.max(weekDelegate.weekNumber - 1, 0)).innerRepeater.itemAt(index).backgroundRectangle.forceActiveFocus()
+                                            Keys.onDownPressed: outerRepeater.itemAt(Math.min(weekDelegate.weekNumber + 1, outerRepeater.count - 1)).innerRepeater.itemAt(index).backgroundRectangle.forceActiveFocus()
 
                                             DayMouseArea {
                                                 id: backgroundDayMouseArea
