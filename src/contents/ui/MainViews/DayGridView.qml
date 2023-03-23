@@ -90,13 +90,18 @@ Item {
             }
 
             Repeater {
+                id: outerRepeater
                 model: root.numberOfRows
-
                 //One row => one week
                 Item {
+                    id: weekDelegate
                     width: parent.width
                     height: root.dayHeight
                     clip: true
+
+                    property alias innerRepeater: gridRepeater
+                    property int weekNumber: index
+
                     RowLayout {
                         width: parent.width
                         height: parent.height
@@ -137,6 +142,8 @@ Item {
                                         property bool isToday: day === root.currentDay && month === root.currentMonth && year === root.currentYear
                                         property bool isCurrentMonth: month === root.month
 
+                                        readonly property alias backgroundRectangle: backgroundRectangle
+
                                         Rectangle {
                                             id: backgroundRectangle
                                             anchors.fill: parent
@@ -156,6 +163,7 @@ Item {
                                                 onDeselect: {
                                                     KalendarUiUtils.appMain.incidenceInfoViewer.close();
                                                     backgroundRectangle.forceActiveFocus();
+                                                    console.log(outerRepeater.itemAt(Math.max(weekDelegate.weekNumber - 1, 0)).innerRepeater.itemAt(index).backgroundRectangle)
                                                 }
 
                                                 DropArea {
