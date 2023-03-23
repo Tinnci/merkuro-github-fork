@@ -6,7 +6,7 @@
 // SPDX-License-Identifier: LGPL-2.0-or-later
 
 #include "multidayincidencemodel.h"
-#include "kalendar_debug.h"
+#include "kalendar_calendar_debug.h"
 #include <QBitArray>
 
 MultiDayIncidenceModel::MultiDayIncidenceModel(QObject *parent)
