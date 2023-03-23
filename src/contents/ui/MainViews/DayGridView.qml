@@ -137,9 +137,6 @@ Item {
                                         property bool isToday: day === root.currentDay && month === root.currentMonth && year === root.currentYear
                                         property bool isCurrentMonth: month === root.month
 
-                                        readonly property alias backgroundRectangle: backgroundRectangle
-                                        readonly property var nextCell: gridRepeater.itemAt(index + 1) ? gridRepeater.itemAt(index + 1).backgroundRectangle : gridItem
-
                                         Rectangle {
                                             id: backgroundRectangle
                                             anchors.fill: parent
@@ -150,9 +147,6 @@ Item {
                                                 gridItem.isCurrentMonth ? Kirigami.Theme.backgroundColor : Kirigami.Theme.alternateBackgroundColor
 
                                             border.color: activeFocus ? Kirigami.Theme.focusColor : "transparent"
-
-                                            KeyNavigation.right: gridItem.nextCell
-                                            KeyNavigation.tab: gridItem.nextCell
 
                                             DayMouseArea {
                                                 id: backgroundDayMouseArea
