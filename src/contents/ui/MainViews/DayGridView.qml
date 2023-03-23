@@ -166,6 +166,10 @@ Item {
                                             Keys.onUpPressed: outerRepeater.itemAt(Math.max(weekDelegate.weekNumber - 1, 0)).innerRepeater.itemAt(index).backgroundRectangle.forceActiveFocus()
                                             Keys.onDownPressed: outerRepeater.itemAt(Math.min(weekDelegate.weekNumber + 1, outerRepeater.count - 1)).innerRepeater.itemAt(index).backgroundRectangle.forceActiveFocus()
 
+                                            // Key Actions
+                                            Keys.onReturnPressed: backgroundDayMouseArea.addNewIncidence(backgroundDayMouseArea.defaultType, backgroundDayMouseArea.addDate)
+                                            Keys.onSpacePressed: backgroundDayMouseArea.addNewIncidence(backgroundDayMouseArea.defaultType, backgroundDayMouseArea.addDate)
+
                                             DayMouseArea {
                                                 id: backgroundDayMouseArea
                                                 anchors.fill: parent
