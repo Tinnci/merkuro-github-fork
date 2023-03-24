@@ -144,9 +144,9 @@ Item {
 
                                         readonly property alias backgroundRectangle: backgroundRectangle
 
-                                        readonly property var nextWeekFirstCell: outerRepeater.itemAt(Math.min(weekDelegate.weekNumber + 1, outerRepeater.count - 1)).innerRepeater.itemAt(0)
-                                        readonly property var nextItem: gridRepeater.itemAt(index + 1)
-                                        readonly property var nextCell: nextItem ? nextItem.backgroundRectangle : nextWeekFirstCell ? nextWeekFirstCell.backgroundRectangle : gridItem // just a backup item
+                                        readonly property Item nextWeekFirstCell: outerRepeater.itemAt(Math.min(weekDelegate.weekNumber + 1, outerRepeater.count - 1)).innerRepeater.itemAt(0)
+                                        readonly property Item nextItem: gridRepeater.itemAt(index + 1)
+                                        readonly property Item nextCell: nextItem ? nextItem.backgroundRectangle : nextWeekFirstCell ? nextWeekFirstCell.backgroundRectangle : gridItem // just a backup item
 
                                         Rectangle {
                                             id: backgroundRectangle
