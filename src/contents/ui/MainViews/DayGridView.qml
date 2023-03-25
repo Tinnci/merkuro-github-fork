@@ -244,6 +244,11 @@ Item {
                                                     font.bold: gridItem.isToday
                                                 }
                                             }
+                                            onFocusChanged: {
+                                                if(focus) {
+                                                    backgroundRectangle.forceActiveFocus()
+                                                }
+                                            }
                                         }
                                     }
                                 }
