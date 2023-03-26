@@ -144,10 +144,6 @@ Item {
 
                                         readonly property alias backgroundRectangle: backgroundRectangle
 
-                                        readonly property Item nextWeekFirstCell: outerRepeater.itemAt(Math.min(weekDelegate.weekNumber + 1, outerRepeater.count - 1)).innerRepeater.itemAt(0)
-                                        readonly property Item nextItem: gridRepeater.itemAt(index + 1)
-                                        readonly property Item nextCell: nextItem ? nextItem.backgroundRectangle : nextWeekFirstCell ? nextWeekFirstCell.backgroundRectangle : gridItem // just a backup item
-
                                         Rectangle {
                                             id: backgroundRectangle
                                             anchors.fill: parent
@@ -159,12 +155,39 @@ Item {
 
                                             border.color: activeFocus ? Kirigami.Theme.focusColor : "transparent"
 
-                                            KeyNavigation.right: gridItem.nextCell
-                                            KeyNavigation.tab: gridItem.nextCell
-
                                             // Can't use KeyNavigation since items have not yet instatntiated and we get errors like 'can't assign undefined to ...'
                                             Keys.onUpPressed: outerRepeater.itemAt(Math.max(weekDelegate.weekNumber - 1, 0)).innerRepeater.itemAt(index).backgroundRectangle.forceActiveFocus()
                                             Keys.onDownPressed: outerRepeater.itemAt(Math.min(weekDelegate.weekNumber + 1, outerRepeater.count - 1)).innerRepeater.itemAt(index).backgroundRectangle.forceActiveFocus()
+
+                                            Keys.onRightPressed: {
+                                                const nextCell = gridRepeater.itemAt(index + 1);
+                                                if(nextCell) {
+                                                   nextCell.backgroundRectangle.forceActiveFocus();
+                                                } else {
+                                                    const nextWeek = outerRepeater.itemAt(weekDelegate.weekNumber + 1);
+                                                    if(nextWeek) {
+                                                        nextWeek.innerRepeater.itemAt(0).backgroundRectangle.forceActiveFocus();
+                                                    } else {
+                                                        Kalendar.KalendarApplication.moveViewForwards();
+                                                    }
+                                                }
+                                            }
+                                             Keys.onLeftPressed: {
+                                                const previousCell = gridRepeater.itemAt(index - 1);
+                                                if(previousCell) {
+                                                   previousCell.backgroundRectangle.forceActiveFocus();
+                                                } else {
+                                                    const previousWeek = outerRepeater.itemAt(weekDelegate.weekNumber - 1);
+                                                    if(previousWeek) {
+                                                        previousWeek.innerRepeater.itemAt(previousWeek.innerRepeater.count - 1).backgroundRectangle.forceActiveFocus();
+                                                    } else {
+                                                        Kalendar.KalendarApplication.moveViewBackwards();
+                                                    }
+                                                }
+                                            }
+
+                                            Keys.onTabPressed: Keys.rightPressed(null)
+                                            Keys.onBacktabPressed: Keys.leftPressed(null)
 
                                             // Key Actions
                                             Keys.onReturnPressed: backgroundDayMouseArea.addNewIncidence(backgroundDayMouseArea.defaultType, backgroundDayMouseArea.addDate)
