@@ -17,6 +17,14 @@
 #include <KSharedConfig>
 #include <QMetaEnum>
 
+namespace
+{
+uint incidenceOccurrenceHash(const QDateTime &recurrenceId, const QString &incidenceUid)
+{
+    return qHash(QString::number(recurrenceId.toSecsSinceEpoch()) + incidenceUid);
+}
+}
+
 IncidenceOccurrenceModel::IncidenceOccurrenceModel(QObject *parent)
     : QAbstractListModel(parent)
     , m_coreCalendar(nullptr)
@@ -154,7 +162,7 @@ void IncidenceOccurrenceModel::resetFromSource()
         const auto occurrenceStartEnd = incidenceOccurrenceStartEnd(occurrenceIterator.occurrenceStartDate(), incidence);
         const auto start = occurrenceStartEnd.first;
         const auto end = occurrenceStartEnd.second;
-        const auto occurrenceHashKey = incidenceOccurrenceHash(start, end, incidence->uid());
+        const auto occurrenceHashKey = incidenceOccurrenceHash(occurrenceIterator.recurrenceId(), incidence->uid());
         const Occurrence occurrence{
             start,
             end,
@@ -206,9 +214,10 @@ void IncidenceOccurrenceModel::slotSourceDataChanged(const QModelIndex &upperLef
             const auto occurrenceStartEnd = incidenceOccurrenceStartEnd(occurrenceIterator.occurrenceStartDate(), incidence);
             const auto start = occurrenceStartEnd.first;
             const auto end = occurrenceStartEnd.second;
-            const auto occurrenceHashKey = incidenceOccurrenceHash(start, end, incidence->uid());
+            const auto occurrenceHashKey = incidenceOccurrenceHash(occurrenceIterator.recurrenceId(), incidence->uid());
 
             if (!m_occurrenceIndexHash.contains(occurrenceHashKey)) {
+                qCWarning(KALENDAR_LOG) << "Not found" << occurrenceIterator.recurrenceId() << incidence->uid();
                 continue;
             }
 
@@ -234,6 +243,7 @@ void IncidenceOccurrenceModel::slotSourceDataChanged(const QModelIndex &upperLef
 
 void IncidenceOccurrenceModel::slotSourceRowsInserted(const QModelIndex &parent, const int first, const int last)
 {
+    qCWarning(KALENDAR_LOG) << "sourceRowsInderted IncidenceOccurrenceModel" << parent << first << last;
     if (!m_coreCalendar || m_resetThrottlingTimer.isActive()) {
         return;
     } else if (m_coreCalendar->isLoading()) {
@@ -265,7 +275,7 @@ void IncidenceOccurrenceModel::slotSourceRowsInserted(const QModelIndex &parent,
             const auto occurrenceStartEnd = incidenceOccurrenceStartEnd(occurrenceIterator.occurrenceStartDate(), incidence);
             const auto start = occurrenceStartEnd.first;
             const auto end = occurrenceStartEnd.second;
-            const auto occurrenceHashKey = incidenceOccurrenceHash(start, end, incidence->uid());
+            const auto occurrenceHashKey = incidenceOccurrenceHash(occurrenceIterator.recurrenceId(), incidence->uid());
 
             if (m_occurrenceIndexHash.contains(occurrenceHashKey)) {
                 continue;
@@ -426,7 +436,9 @@ void IncidenceOccurrenceModel::setCalendar(Akonadi::ETMCalendar::Ptr calendar)
     connect(m_coreCalendar->model(), &QAbstractItemModel::dataChanged, this, &IncidenceOccurrenceModel::slotSourceDataChanged);
     connect(m_coreCalendar->model(), &QAbstractItemModel::rowsInserted, this, &IncidenceOccurrenceModel::slotSourceRowsInserted);
     connect(m_coreCalendar->model(), &QAbstractItemModel::rowsRemoved, this, &IncidenceOccurrenceModel::scheduleReset);
+    connect(m_coreCalendar->model(), &QAbstractItemModel::layoutChanged, this, &IncidenceOccurrenceModel::scheduleReset);
     connect(m_coreCalendar->model(), &QAbstractItemModel::modelReset, this, &IncidenceOccurrenceModel::scheduleReset);
+    connect(m_coreCalendar->model(), &QAbstractItemModel::rowsMoved, this, &IncidenceOccurrenceModel::scheduleReset);
     connect(m_coreCalendar.get(), &Akonadi::ETMCalendar::collectionsRemoved, this, &IncidenceOccurrenceModel::scheduleReset);
 
     Q_EMIT calendarChanged();
@@ -465,11 +477,6 @@ std::pair<QDateTime, QDateTime> IncidenceOccurrenceModel::incidenceOccurrenceSta
     }
 
     return {start, end};
-}
-
-uint IncidenceOccurrenceModel::incidenceOccurrenceHash(const QDateTime &ocStart, const QDateTime &ocEnd, const QString &incidenceUid)
-{
-    return qHash(QString::number(ocStart.toSecsSinceEpoch()) + QString::number(ocEnd.toSecsSinceEpoch()) + incidenceUid);
 }
 
 bool IncidenceOccurrenceModel::incidencePassesFilter(const KCalendarCore::Incidence::Ptr &incidence)
