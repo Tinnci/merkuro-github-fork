@@ -122,7 +122,6 @@ private Q_SLOTS:
 
 private:
     static std::pair<QDateTime, QDateTime> incidenceOccurrenceStartEnd(const QDateTime &ocStart, const KCalendarCore::Incidence::Ptr &incidence);
-    static uint incidenceOccurrenceHash(const QDateTime &ocStart, const QDateTime &ocEnd, const QString &incidenceUid);
     bool incidencePassesFilter(const KCalendarCore::Incidence::Ptr &incidence);
 
     QColor getColor(const KCalendarCore::Incidence::Ptr &incidence);
