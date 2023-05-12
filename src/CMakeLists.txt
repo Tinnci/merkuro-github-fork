@@ -51,6 +51,8 @@ set(kalendar_SRCS
     models/timezonelistmodel.h
     models/todosortfilterproxymodel.cpp
     models/todosortfilterproxymodel.h
+    pointergestureswayland.cpp
+    pointergestureswayland.h
     resources.qrc
     utils.h
     utils.cpp
@@ -60,6 +62,22 @@ set_source_files_properties(models/todosortfilterproxymodel.cpp PROPERTIES SKIP_
 
 target_sources(kalendar PRIVATE
     ${kalendar_SRCS})
+
+if(UNIX AND NOT APPLE)
+    if (QT_MAJOR_VERSION EQUAL "5")
+        ecm_add_qtwayland_client_protocol(wayland_SRCS
+            PROTOCOL ${WaylandProtocols_DATADIR}/unstable/pointer-gestures/pointer-gestures-unstable-v1.xml
+            BASENAME pointer-gestures-unstable-v1
+        )
+    else()
+        qt6_generate_wayland_protocol_client_sources(kalendar FILES
+            ${WaylandProtocols_DATADIR}/unstable/pointer-gestures/pointer-gestures-unstable-v1.xml)
+    endif()
+
+    target_sources(kalendar PRIVATE ${wayland_SRCS})
+    target_link_libraries(kalendar PRIVATE Wayland::Client Qt::WaylandClient Qt::GuiPrivate)
+    target_compile_definitions(kalendar PRIVATE -DWITH_WAYLAND=1)
+endif()
 
 ecm_qt_declare_logging_category(kalendar
     HEADER kalendar_debug.h
@@ -84,7 +102,7 @@ set(kalendar_LIBS
     KF${QT_MAJOR_VERSION}::XmlGui
     )
 
-target_link_libraries(kalendar
+target_link_libraries(kalendar PRIVATE
     ${kalendar_LIBS}
 )
 

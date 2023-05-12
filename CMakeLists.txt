@@ -114,6 +114,15 @@ find_package(KPim${QT_MAJOR_VERSION}CalendarUtils ${CALENDARUTILS_LIB_VERSION} R
 find_package(KPim${QT_MAJOR_VERSION}IdentityManagement ${IDENTITYMANAGEMENT_LIB_VERSION} REQUIRED)
 find_package(KPim${QT_MAJOR_VERSION}MailCommon ${MAILCOMMON_LIB_VERSION} REQUIRED)
 
+if(UNIX AND NOT APPLE)
+    find_package(WaylandProtocols REQUIRED)
+    if (QT_MAJOR_VERSION EQUAL "5")
+        find_package(QtWaylandScanner REQUIRED)
+    endif()
+    find_package(Wayland 1.9 REQUIRED Client)
+    find_package(Qt${QT_MAJOR_VERSION} REQUIRED COMPONENTS WaylandClient)
+endif()
+
 option(USE_UNITY_CMAKE_SUPPORT "Use UNITY cmake support (speedup compile time)" OFF)
 
 set(COMPILE_WITH_UNITY_CMAKE_SUPPORT OFF)

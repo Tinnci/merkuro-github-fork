@@ -717,6 +717,7 @@ void KalendarApplication::showIncidenceByUid(const QString &uid, const QDateTime
         window->raise();
     }
 }
+
 #ifndef UNITY_CMAKE_SUPPORT
 Q_DECLARE_METATYPE(KCalendarCore::Incidence::Ptr)
 #endif
