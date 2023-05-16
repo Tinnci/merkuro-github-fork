@@ -304,7 +304,7 @@ QVariantList HourlyIncidenceModel::layoutLines(const QDateTime &rowStart) const
 
 void HourlyIncidenceModel::resetLayoutLines()
 {
-    if (mSourceModel->calendar()->isLoading()) {
+    if (mSourceModel->calendar() && mSourceModel->calendar()->isLoading()) {
         if (!mRefreshTimer.isActive()) {
             mRefreshTimer.start(100);
         }
@@ -329,21 +329,20 @@ void HourlyIncidenceModel::resetLayoutLines()
 
 QVariant HourlyIncidenceModel::data(const QModelIndex &idx, int role) const
 {
-    if (!hasIndex(idx.row(), idx.column()) || !mSourceModel || m_laidOutLines.empty()) {
-        return {};
-    }
-    if (!mSourceModel) {
-        return {};
-    }
+    Q_ASSERT(hasIndex(idx.row(), idx.column()) && mSourceModel);
+
     const auto rowStart = mSourceModel->start().addDays(idx.row()).startOfDay();
     switch (role) {
-    case PeriodStartDateTime:
+    case PeriodStartDateTimeRole:
         return rowStart;
-    case Incidences:
-        return m_laidOutLines.at(idx.row());
+    case IncidencesRole:
+        if (m_laidOutLines.empty()) {
+            return m_laidOutLines.at(idx.row());
+        } else {
+            return QVariantList{};
+        }
     default:
-        Q_ASSERT(false);
-        return {};
+        Q_UNREACHABLE();
     }
 }
 
@@ -367,12 +366,13 @@ void HourlyIncidenceModel::setModel(IncidenceOccurrenceModel *model)
             mRefreshTimer.start(100);
         }
     };
-    QObject::connect(model, &QAbstractItemModel::dataChanged, this, resetModel);
-    QObject::connect(model, &QAbstractItemModel::layoutChanged, this, resetModel);
-    QObject::connect(model, &QAbstractItemModel::modelReset, this, resetModel);
-    QObject::connect(model, &QAbstractItemModel::rowsInserted, this, resetModel);
-    QObject::connect(model, &QAbstractItemModel::rowsMoved, this, resetModel);
-    QObject::connect(model, &QAbstractItemModel::rowsRemoved, this, resetModel);
+
+    connect(model, &QAbstractItemModel::dataChanged, this, resetModel);
+    connect(model, &QAbstractItemModel::layoutChanged, this, resetModel);
+    connect(model, &QAbstractItemModel::modelReset, this, resetModel);
+    connect(model, &QAbstractItemModel::rowsInserted, this, resetModel);
+    connect(model, &QAbstractItemModel::rowsMoved, this, resetModel);
+    connect(model, &QAbstractItemModel::rowsRemoved, this, resetModel);
 }
 
 void HourlyIncidenceModel::slotSourceDataChanged(const QModelIndex &upperLeft, const QModelIndex &bottomRight)
@@ -513,7 +513,7 @@ void HourlyIncidenceModel::setShowSubTodos(const bool showSubTodos)
 QHash<int, QByteArray> HourlyIncidenceModel::roleNames() const
 {
     return {
-        {Incidences, "incidences"},
-        {PeriodStartDateTime, "periodStartDateTime"},
+        {IncidencesRole, "incidences"},
+        {PeriodStartDateTimeRole, "periodStartDateTime"},
     };
 }

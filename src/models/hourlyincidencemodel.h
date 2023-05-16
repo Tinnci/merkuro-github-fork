@@ -39,8 +39,8 @@ public:
     Q_ENUM(Filter)
 
     enum Roles {
-        Incidences = IncidenceOccurrenceModel::LastRole,
-        PeriodStartDateTime,
+        IncidencesRole = IncidenceOccurrenceModel::LastRole,
+        PeriodStartDateTimeRole,
     };
 
     explicit HourlyIncidenceModel(QObject *parent = nullptr);
