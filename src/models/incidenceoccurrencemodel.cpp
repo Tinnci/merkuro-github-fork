@@ -209,7 +209,7 @@ QColor IncidenceOccurrenceModel::getColor(const KCalendarCore::Incidence::Ptr &i
         return {};
     }
 
-    const QString id = QString::number(collection.id());
+    const auto id = collection.id();
     // qCDebug(KALENDAR_LOG) << "Collection id: " << collection.id();
 
     if (collection.hasAttribute<Akonadi::CollectionColorAttribute>()) {
@@ -357,8 +357,9 @@ void IncidenceOccurrenceModel::loadColors()
     const QStringList colorKeyList = rColorsConfig.keyList();
 
     for (const QString &key : colorKeyList) {
+        const auto keyId = key.toLong();
         QColor color = rColorsConfig.readEntry(key, QColor("blue"));
-        m_colors[key] = color;
+        m_colors[keyId] = color;
     }
 }
 
