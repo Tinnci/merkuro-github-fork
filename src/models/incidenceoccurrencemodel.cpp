@@ -174,10 +174,10 @@ void IncidenceOccurrenceModel::resetFromSource()
 
 int IncidenceOccurrenceModel::rowCount(const QModelIndex &parent) const
 {
-    if (!parent.isValid()) {
-        return m_incidences.size();
+    if (parent.isValid()) {
+        return 0;
     }
-    return 0;
+    return m_incidences.size();
 }
 
 qint64 IncidenceOccurrenceModel::getCollectionId(const KCalendarCore::Incidence::Ptr &incidence)
@@ -199,20 +199,29 @@ QColor IncidenceOccurrenceModel::getColor(const KCalendarCore::Incidence::Ptr &i
     if (!item.isValid()) {
         return {};
     }
+
+    if (!incidence->color().isEmpty()) {
+        return incidence->color();
+    }
+
     const auto collection = item.parentCollection();
     if (!collection.isValid()) {
         return {};
     }
 
+    const QString id = QString::number(collection.id());
+    // qCDebug(KALENDAR_LOG) << "Collection id: " << collection.id();
+
     if (collection.hasAttribute<Akonadi::CollectionColorAttribute>()) {
         const auto colorAttr = collection.attribute<Akonadi::CollectionColorAttribute>();
         if (colorAttr && colorAttr->color().isValid()) {
+            m_colors[id] = colorAttr->color();
             return colorAttr->color();
         }
     }
 
-    const auto id = QString::number(collection.id());
     if (m_colors.contains(id)) {
+        // qCDebug(KALENDAR_LOG) << collection.id() << "Found in m_colors";
         return m_colors[id];
     }
 
@@ -308,6 +317,7 @@ QVariant IncidenceOccurrenceModel::data(const QModelIndex &idx, int role) const
     case Qt::SizeHintRole:
     case Qt::TextAlignmentRole:
     case Qt::CheckStateRole:
+    case Qt::FontRole:
     case -1:
         return {};
     default:
