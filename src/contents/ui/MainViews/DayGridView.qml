@@ -90,13 +90,18 @@ Item {
             }
 
             Repeater {
+                id: outerRepeater
                 model: root.numberOfRows
-
                 //One row => one week
                 Item {
+                    id: weekDelegate
                     width: parent.width
                     height: root.dayHeight
                     clip: true
+
+                    property alias innerRepeater: gridRepeater
+                    property int weekNumber: index
+
                     RowLayout {
                         width: parent.width
                         height: parent.height
@@ -137,6 +142,8 @@ Item {
                                         property bool isToday: day === root.currentDay && month === root.currentMonth && year === root.currentYear
                                         property bool isCurrentMonth: month === root.month
 
+                                        readonly property alias backgroundRectangle: backgroundRectangle
+
                                         Rectangle {
                                             id: backgroundRectangle
                                             anchors.fill: parent
@@ -146,12 +153,55 @@ Item {
                                                 gridItem.isToday ? Kirigami.Theme.activeBackgroundColor :
                                                 gridItem.isCurrentMonth ? Kirigami.Theme.backgroundColor : Kirigami.Theme.alternateBackgroundColor
 
+                                            border.color: activeFocus ? Kirigami.Theme.focusColor : "transparent"
+
+                                            // Can't use KeyNavigation since items have not yet instatntiated and we get errors like 'can't assign undefined to ...'
+                                            Keys.onUpPressed: outerRepeater.itemAt(Math.max(weekDelegate.weekNumber - 1, 0)).innerRepeater.itemAt(index).backgroundRectangle.forceActiveFocus()
+                                            Keys.onDownPressed: outerRepeater.itemAt(Math.min(weekDelegate.weekNumber + 1, outerRepeater.count - 1)).innerRepeater.itemAt(index).backgroundRectangle.forceActiveFocus()
+
+                                            Keys.onRightPressed: {
+                                                const nextCell = gridRepeater.itemAt(index + 1);
+                                                if(nextCell) {
+                                                   nextCell.backgroundRectangle.forceActiveFocus();
+                                                } else {
+                                                    const nextWeek = outerRepeater.itemAt(weekDelegate.weekNumber + 1);
+                                                    if(nextWeek) {
+                                                        nextWeek.innerRepeater.itemAt(0).backgroundRectangle.forceActiveFocus();
+                                                    } else {
+                                                        Kalendar.KalendarApplication.moveViewForwards();
+                                                    }
+                                                }
+                                            }
+                                             Keys.onLeftPressed: {
+                                                const previousCell = gridRepeater.itemAt(index - 1);
+                                                if(previousCell) {
+                                                   previousCell.backgroundRectangle.forceActiveFocus();
+                                                } else {
+                                                    const previousWeek = outerRepeater.itemAt(weekDelegate.weekNumber - 1);
+                                                    if(previousWeek) {
+                                                        previousWeek.innerRepeater.itemAt(previousWeek.innerRepeater.count - 1).backgroundRectangle.forceActiveFocus();
+                                                    } else {
+                                                        Kalendar.KalendarApplication.moveViewBackwards();
+                                                    }
+                                                }
+                                            }
+
+                                            Keys.onTabPressed: Keys.rightPressed(null)
+                                            Keys.onBacktabPressed: Keys.leftPressed(null)
+
+                                            // Key Actions
+                                            Keys.onReturnPressed: backgroundDayMouseArea.addNewIncidence(backgroundDayMouseArea.defaultType, backgroundDayMouseArea.addDate)
+                                            Keys.onSpacePressed: backgroundDayMouseArea.addNewIncidence(backgroundDayMouseArea.defaultType, backgroundDayMouseArea.addDate)
+
                                             DayMouseArea {
                                                 id: backgroundDayMouseArea
                                                 anchors.fill: parent
                                                 addDate: gridItem.date
                                                 onAddNewIncidence: KalendarUiUtils.setUpAdd(type, addDate)
-                                                onDeselect: KalendarUiUtils.appMain.incidenceInfoViewer.close()
+                                                onDeselect: {
+                                                    KalendarUiUtils.appMain.incidenceInfoViewer.close();
+                                                    backgroundRectangle.forceActiveFocus();
+                                                }
 
                                                 DropArea {
                                                     id: incidenceDropArea
@@ -215,6 +265,11 @@ Item {
                                                         Kirigami.Theme.highlightColor :
                                                         (!gridItem.isCurrentMonth ? Kirigami.Theme.disabledTextColor : Kirigami.Theme.textColor)
                                                     font.bold: gridItem.isToday
+                                                }
+                                            }
+                                            onFocusChanged: {
+                                                if(focus) {
+                                                    backgroundRectangle.forceActiveFocus()
                                                 }
                                             }
                                         }
@@ -292,6 +347,13 @@ Item {
                                     id: listViewMenu
                                     anchors.fill: parent
                                     z: -1
+                                    propagateComposedEvents: true
+
+                                    //override so that background mouseArea can get click events and focus the relevant cell
+                                    onClicked: {
+                                        mouse.accepted = false;
+                                        deselect();
+                                    }
 
                                     function useGridSquareDate(type, root, globalPos) {
                                         for(var i in root.children) {
