@@ -8,10 +8,11 @@ import QtQuick.Layouts 1.15
 import QtQuick.Controls 2.15 as QQC2
 import org.kde.kirigami 2.14 as Kirigami
 
-import org.kde.kalendar 1.0 as Kalendar
-import org.kde.kalendar.utils 1.0
-import "dateutils.js" as DateUtils
-import "labelutils.js" as LabelUtils
+import org.kde.kalendar.calendar 1.0 as Calendar
+import "../components" as CalendarComponents
+import "../delegates/" as Delegates
+import "../dateutils.js" as DateUtils
+import "../labelutils.js" as LabelUtils
 
 Item {
     id: root
@@ -20,7 +21,7 @@ Item {
 
     property int daysToShow: daysPerRow * 6
     property int daysPerRow: 7
-    property double weekHeaderWidth: Kalendar.Config.showWeekNumbers ? Kirigami.Units.gridUnit * 1.5 : 0
+    property double weekHeaderWidth: Calendar.Config.showWeekNumbers ? Kirigami.Units.gridUnit * 1.5 : 0
 
     property date currentDate: new Date()
     // Getting the components once makes this faster when we need them repeatedly
@@ -45,15 +46,15 @@ Item {
     //Internal
     property int numberOfLinesShown: 0
     property int numberOfRows: (daysToShow / daysPerRow)
-    property int dayWidth: Kalendar.Config.showWeekNumbers ?
+    property int dayWidth: Calendar.Config.showWeekNumbers ?
         ((width - weekHeaderWidth) / daysPerRow) - spacing : // No spacing on right, spacing in between weekheader and monthgrid
         (width - weekHeaderWidth - (spacing * (daysPerRow - 1))) / daysPerRow // No spacing on left or right of month grid when no week header
     property int dayHeight: ((height - bgLoader.dayLabelsBar.height) / numberOfRows) - spacing
-    property int spacing: Kalendar.Config.monthGridBorderWidth // Between grid squares in background
+    property int spacing: Calendar.Config.monthGridBorderWidth // Between grid squares in background
     property int listViewSpacing: root.dayWidth < (Kirigami.Units.gridUnit * 5 + Kirigami.Units.smallSpacing * 2) ?
         Kirigami.Units.smallSpacing / 2 : Kirigami.Units.smallSpacing // Between lines of incidences ( ====== <- )
-    readonly property bool isDark: KalendarUiUtils.darkMode
-    readonly property int mode: Kalendar.KalendarApplication.Event
+    readonly property bool isDark: CalendarUiUtils.darkMode
+    readonly property int mode: LabelUtils.isDarkColor(Kirigami.Theme.backgroundColor)
 
     implicitHeight: (numberOfRows > 1 ? Kirigami.Units.gridUnit * 10 * numberOfRows : numberOfLinesShown * Kirigami.Units.gridUnit) + bgLoader.dayLabelsBar.height
     height: implicitHeight
@@ -77,14 +78,14 @@ Item {
             anchors.fill: parent
 
             property alias dayLabelsBar: dayLabelsBarComponent
-            DayLabelsBar {
+            CalendarComponents.DayLabelsBar {
                 id: dayLabelsBarComponent
                 delegate: root.dayHeaderDelegate
                 startDate: root.startDate
                 dayWidth: root.dayWidth
                 daysToShow: root.daysPerRow
                 spacing: root.spacing
-                anchors.leftMargin: Kalendar.Config.showWeekNumbers ? weekHeaderWidth + root.spacing : 0
+                anchors.leftMargin: Calendar.Config.showWeekNumbers ? weekHeaderWidth + root.spacing : 0
                 anchors.left: parent.left
                 anchors.right: parent.right
             }
@@ -107,8 +108,8 @@ Item {
                             property date startDate: DateUtils.addDaysToDate(root.startDate, index * 7)
                             Layout.preferredWidth: weekHeaderWidth
                             Layout.fillHeight: true
-                            active: Kalendar.Config.showWeekNumbers
-                            visible: Kalendar.Config.showWeekNumbers
+                            active: Calendar.Config.showWeekNumbers
+                            visible: Calendar.Config.showWeekNumbers
 
                         }
                         Item {
@@ -146,11 +147,14 @@ Item {
                                                 gridItem.isToday ? Kirigami.Theme.activeBackgroundColor :
                                                 gridItem.isCurrentMonth ? Kirigami.Theme.backgroundColor : Kirigami.Theme.alternateBackgroundColor
 
-                                            DayMouseArea {
+                                            Delegates.DayMouseArea {
                                                 id: backgroundDayMouseArea
                                                 anchors.fill: parent
                                                 addDate: gridItem.date
-                                                onAddNewIncidence: KalendarUiUtils.setUpAdd(type, addDate)
+                                                onAddNewIncidence: Navigation.switchView('calendar', 'editor', {
+                                                    initialDate: addData,
+                                                    type: root.type,
+                                                });
                                                 onDeselect: KalendarUiUtils.appMain.incidenceInfoViewer.close()
 
                                                 DropArea {
@@ -158,6 +162,7 @@ Item {
                                                     anchors.fill: parent
                                                     z: 9999
                                                     onDropped: if(root.isCurrentView) {
+                                                        // TODOMIGRATION
                                                         if (DateUtils.sameDay(backgroundDayMouseArea.addDate, drop.source.occurrenceDate)) {
                                                             return;
                                                         }
@@ -168,7 +173,7 @@ Item {
                                                             pos.y;
                                                         drop.source.caught = true;
 
-                                                        const incidenceWrapper = Qt.createQmlObject('import org.kde.kalendar 1.0; IncidenceWrapper {id: incidence}', incidenceDropArea, "incidence");
+                                                        const incidenceWrapper = Calendar.CalendarManager.createIncidenceWrapper();
                                                         incidenceWrapper.incidenceItem = Kalendar.CalendarManager.incidenceItem(drop.source.incidencePtr);
 
                                                         let sameTimeOnDate = new Date(backgroundDayMouseArea.addDate);
@@ -238,20 +243,20 @@ Item {
             anchors {
                 fill: parent
                 topMargin: root.bgLoader.dayLabelsBar.height + root.spacing
-                leftMargin: Kalendar.Config.showWeekNumbers ? weekHeaderWidth + root.spacing : 0
+                leftMargin: Calendar.Config.showWeekNumbers ? weekHeaderWidth + root.spacing : 0
             }
 
             //Weeks
             Repeater {
-                model: Kalendar.MultiDayIncidenceModel {
+                model: Calendar.MultiDayIncidenceModel {
                     periodLength: 7
-                    showTodos: Kalendar.Config.showTodosInCalendarViews
-                    showSubTodos: Kalendar.Config.showSubtodosInCalendarViews
-                    model: Kalendar.IncidenceOccurrenceModel {
+                    showTodos: Calendar.Config.showTodosInCalendarViews
+                    showSubTodos: Calendar.Config.showSubtodosInCalendarViews
+                    model: Calendar.IncidenceOccurrenceModel {
                         start: root.startDate
                         length: root.daysToShow
-                        calendar: Kalendar.CalendarManager.calendar
-                        filter: Kalendar.Filter
+                        calendar: Calendar.CalendarManager.calendar
+                        filter: Calendar.Filter
                     }
                 }
                 //One row => one week
@@ -288,7 +293,7 @@ Item {
                                 clip: true
                                 spacing: root.listViewSpacing
 
-                                DayMouseArea {
+                                Delegates.DayMouseArea {
                                     id: listViewMenu
                                     anchors.fill: parent
                                     z: -1
@@ -324,7 +329,7 @@ Item {
                                         id: incidencesRepeater
                                         model: modelData
 
-                                        DayGridViewIncidenceDelegate {
+                                        Delegates.DayGridViewIncidenceDelegate {
                                             id: incidenceDelegate
                                             dayWidth: root.dayWidth
                                             height: line.height
