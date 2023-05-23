@@ -5,6 +5,10 @@
 ecm_add_qml_module(akonadi_quick_plugin URI "org.kde.akonadi" VERSION 1.0)
 
 target_sources(akonadi_quick_plugin PRIVATE
+    akonadiquickplugin.cpp
+    akonadiquickplugin.h
+    agentconfiguration.cpp
+    agentconfiguration.h
     collectioncomboboxmodel.cpp
     collectioncomboboxmodel.h
     collectionpickermodel.cpp
@@ -13,16 +17,15 @@ target_sources(akonadi_quick_plugin PRIVATE
     collection.h
     mimetypes.cpp
     mimetypes.h
-    akonadiquickplugin.cpp
-    akonadiquickplugin.h
-    agentconfiguration.cpp
-    agentconfiguration.h
+    tagmanager.cpp
+    tagmanager.h
 )
 
 ecm_target_qml_sources(akonadi_quick_plugin SOURCES
-    qml/CollectionComboBox.qml
-    qml/MobileCollectionComboBox.qml
     qml/AgentConfigurationForm.qml
+    qml/CollectionComboBox.qml
+    qml/CollectionPickerPage.qml
+    qml/MobileCollectionComboBox.qml
 )
 
 ecm_qt_declare_logging_category(akonadi_quick_plugin
