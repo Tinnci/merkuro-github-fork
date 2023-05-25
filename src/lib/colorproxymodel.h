@@ -24,8 +24,6 @@ public:
     Qt::ItemFlags flags(const QModelIndex &index) const override;
     QHash<int, QByteArray> roleNames() const override;
     QColor getCollectionColor(Akonadi::Collection collection) const;
-    void load();
-    void save() const;
     mutable QHash<QString, QColor> colorCache;
 
 private:
