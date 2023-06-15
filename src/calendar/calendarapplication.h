@@ -68,9 +68,7 @@ Q_SIGNALS:
     void createNewEvent();
     void createNewTodo();
     void windowChanged();
-    void openSettings();
     void openLanguageSwitcher();
-    void openTagManager();
     void importCalendar();
     void importCalendarFromFile(const QUrl &url);
     void undo();
@@ -81,7 +79,6 @@ Q_SIGNALS:
     void todoViewOrderAscending();
     void todoViewOrderDescending();
     void todoViewShowCompleted();
-    void openKCommandBarAction();
     void importStarted();
     void importFinished();
     void importIntoExistingFinished(bool success, int total);

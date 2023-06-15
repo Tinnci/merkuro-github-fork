@@ -231,12 +231,6 @@ void CalendarApplication::setupActions()
         action->setIcon(QIcon::fromTheme(QStringLiteral("view-task-add")));
     }
 
-    actionName = QLatin1String("switch_application_language");
-    if (KAuthorized::authorizeAction(actionName)) {
-        auto action = KStandardAction::switchApplicationLanguage(this, &CalendarApplication::openLanguageSwitcher, this);
-        mCollection->addAction(action->objectName(), action);
-    }
-
     actionName = QLatin1String("import_calendar");
     if (KAuthorized::authorizeAction(actionName)) {
         auto importIcalAction = mCollection->addAction(actionName, this, &CalendarApplication::importCalendar);
@@ -355,16 +349,6 @@ void CalendarApplication::setupActions()
             });
             todoViewShowCompletedAction->setEnabled(openTodoAction->isChecked());
         }
-    }
-
-    actionName = QLatin1String("open_kcommand_bar");
-    if (KAuthorized::authorizeAction(actionName)) {
-        auto openKCommandBarAction = mCollection->addAction(actionName, this, &CalendarApplication::openKCommandBarAction);
-        openKCommandBarAction->setText(i18n("Open Command Bar"));
-        openKCommandBarAction->setIcon(QIcon::fromTheme(QStringLiteral("new-command-alarm")));
-
-        mCollection->addAction(openKCommandBarAction->objectName(), openKCommandBarAction);
-        mCollection->setDefaultShortcut(openKCommandBarAction, QKeySequence(Qt::CTRL | Qt::ALT | Qt::Key_I));
     }
 
     actionName = QLatin1String("refresh_all");
