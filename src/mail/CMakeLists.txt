@@ -101,15 +101,11 @@ ecm_target_qml_sources(kalendar_mail_plugin SOURCES
     qml/FolderView.qml
     qml/MailViewer.qml
     qml/ConversationViewer.qml
-    qml/MailApplication.qml
 )
 ecm_target_qml_sources(kalendar_mail_plugin
     PRIVATE PATH private SOURCES
     qml/private/AttachmentDelegate.qml
     qml/private/MailDelegate.qml
-    qml/private/MenuBar.qml
-    qml/private/GlobalMenuBar.qml
-    qml/private/EditMenu.qml
 )
 
 ecm_target_qml_sources(kalendar_mail_plugin
@@ -133,3 +129,20 @@ target_link_libraries(kalendar_mail_plugin PUBLIC kalendar_mail_static)
 ecm_finalize_qml_module(kalendar_mail_plugin
     DESTINATION ${KDE_INSTALL_QMLDIR}
     BUILD_SHARED_LIBS OFF)
+
+#### Binary
+
+add_executable(kalendar-mail main.cpp resources.qrc)
+target_link_libraries(kalendar-mail
+    PRIVATE
+        Qt::Widgets
+        Qt::Quick
+        Qt::QuickControls2
+        KF${QT_MAJOR_VERSION}::I18n
+        KF${QT_MAJOR_VERSION}::CoreAddons
+        KF${QT_MAJOR_VERSION}::DBusAddons
+        KF${QT_MAJOR_VERSION}::WindowSystem
+        KF${QT_MAJOR_VERSION}::ConfigGui
+)
+install(TARGETS kalendar-mail ${KDE_INSTALL_TARGETS_DEFAULT_ARGS})
+install(PROGRAMS org.kde.kalendar.mail.desktop DESTINATION ${KDE_INSTALL_APPDIR})
