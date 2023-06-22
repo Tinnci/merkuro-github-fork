@@ -49,7 +49,7 @@ void CalendarPlugin::registerTypes(const char *uri)
     qmlRegisterSingletonType<CalendarManager>(uri, 1, 0, "CalendarManager", [](QQmlEngine *engine, QJSEngine *scriptEngine) {
         Q_UNUSED(engine)
         Q_UNUSED(scriptEngine)
-        return CalendarManager::instance();
+        return new CalendarManager;
     });
 
     qmlRegisterSingletonType<DateTimeState>(uri, 1, 0, "DateTimeState", [](QQmlEngine *engine, QJSEngine *scriptEngine) {
