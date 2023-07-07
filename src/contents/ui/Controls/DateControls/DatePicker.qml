@@ -244,7 +244,7 @@ QQC2.Control {
                 }
                 onCurrentIndexChanged: {
                     if(pickerView.currentIndex == 0) {
-                        datepicker.selectedDate = new Date(currentItem.firstDayOfMonth.getFullYear(), currentItem.firstDayOfMonth.getMonth(), datepicker.selectedDate.getDate());
+                        datepicker.selectedDate = selectedDate;
                     }
 
                     if(currentIndex >= count - 2) {
@@ -273,8 +273,8 @@ QQC2.Control {
                         property var modelLoader: Loader {
                             asynchronous: true
                             sourceComponent: Kalendar.MonthModel {
-                                year: firstDay.getFullYear()
-                                month: firstDay.getMonth() + 1 // From pathview model
+                                year: selectedDate.getFullYear()
+                                month: selectedDate.getMonth() + 1 // From pathview model
                             }
                         }
 
