@@ -8,6 +8,8 @@
 #include "datetimestate.h"
 #include "filter.h"
 #include "incidencewrapper.h"
+#include "freebusy/freebusyitemmodel.h"
+#include "freebusy/freeperiodmodel.h"
 #include "models/hourlyincidencemodel.h"
 #include "models/incidenceoccurrencemodel.h"
 #include "models/infinitecalendarviewmodel.h"
@@ -88,6 +90,8 @@ void CalendarPlugin::registerTypes(const char *uri)
     qmlRegisterType<TimeZoneListModel>(uri, 1, 0, "TimeZoneListModel");
     qmlRegisterType<MonthModel>(uri, 1, 0, "MonthModel");
     qmlRegisterType<InfiniteCalendarViewModel>(uri, 1, 0, "InfiniteCalendarViewModel");
+    qmlRegisterType<CalendarSupport::FreeBusyItemModel>("org.kde.kalendar", 1, 0, "FreeBusyItemModel");
+    qmlRegisterType<CalendarSupport::FreePeriodModel>("org.kde.kalendar", 1, 0, "FreePeriodModel");
 
     qmlRegisterSingletonType(QUrl(QStringLiteral("qrc:/CalendarUiUtils.qml")), "org.kde.merkuro.utils", 1, 0, "CalendarUiUtils");
 
