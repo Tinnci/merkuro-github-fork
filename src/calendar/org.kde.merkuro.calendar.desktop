@@ -5,11 +5,11 @@
 [Desktop Entry]
 Name=Calendar
 GenericName=Calendar
-Keywords=Kalendar, Events
+Keywords=Merkuro, Events
 Comment=Manage your tasks and events with Calendar
-Exec=kalendar-calendar %u
+Exec=merkuro-calendar %u
 Categories=Qt;KDE;Office;Calendar;
-Icon=org.kde.kalendar
+Icon=org.kde.merkuro
 Type=Application
 Terminal=false
 StartupNotify=true

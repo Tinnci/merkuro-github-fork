@@ -3,17 +3,14 @@
 # SPDX-License-Identifier: CC0-1.0
 
 [Desktop Entry]
-Name=Kalendar Mail
-GenericName=EMail Client
-Comment=Manage your e-mails with Kalendar Mail
-Exec=kalendar-mail
-Categories=Qt;KDE;Office;Mail;
-Icon=org.kde.kalendar
+Name=Merkuro Contacts
+GenericName=Address Book
+Comment=Manage your contacts with Merkuro Contacts
+Exec=merkuro-contact
+Categories=Qt;KDE;Office;ContactManagement;
+Icon=org.kde.merkuro
 Type=Application
 Terminal=false
 StartupNotify=true
 SingleMainWindow=true
 Version=1.5
-
-# This component is not yet release ready
-NoDisplay=true
