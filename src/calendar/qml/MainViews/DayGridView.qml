@@ -220,11 +220,17 @@ Item {
                                                 left: parent.left
                                             }
 
+                                            text: gridItem.isToday ? i18n("Today") : gridItem.date.toLocaleDateString(Qt.locale(), gridItem.day == 1 ? "d MMM" : "d")
+                                            display: QQC2.AbstractButton.IconOnly
+                                            Accessible.description: i18n("Shows the day number")
+
+
                                             contentItem: RowLayout {
                                                 id: dayNumberLayout
                                                 visible: root.showDayIndicator
 
                                                 QQC2.Label {
+                                                    id: label
                                                     Layout.alignment: Qt.AlignLeft | Qt.AlignTop
                                                     padding: Kirigami.Units.smallSpacing
                                                     text: i18n("<b>Today</b>")
