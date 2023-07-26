@@ -8,6 +8,10 @@
 
 using namespace KIdentityManagement;
 
+namespace Akonadi
+{
+namespace Quick
+{
 class IdentityModel : public QAbstractListModel
 {
     Q_OBJECT
@@ -33,3 +37,5 @@ private:
     QList<int> m_identitiesUoid;
     IdentityManager *const m_identityManager;
 };
+}
+}

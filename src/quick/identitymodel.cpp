@@ -5,7 +5,10 @@
 #include <KIdentityManagement/Identity>
 #include <KLocalizedString>
 
-
+namespace Akonadi
+{
+namespace Quick
+{
 IdentityModel::IdentityModel(QObject *parent)
     : QAbstractListModel(parent)
     , m_identityManager(IdentityManager::self())
@@ -66,4 +69,7 @@ QHash<int, QByteArray> IdentityModel::roleNames() const
         {UoidRole, QByteArrayLiteral("uoid")},
         {EmailRole, QByteArrayLiteral("email")}
     };
+}
+
+}
 }
