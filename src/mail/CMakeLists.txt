@@ -96,7 +96,6 @@ target_sources(merkuro_mail_plugin PRIVATE
 ecm_target_qml_sources(merkuro_mail_plugin SOURCES
     qml/MailSidebar.qml
     qml/FolderView.qml
-    qml/MailViewer.qml
     qml/MailComposer.qml
     qml/ConversationViewer.qml
 )

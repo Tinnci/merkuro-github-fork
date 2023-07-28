@@ -9,6 +9,7 @@ import QtQuick.Controls 2.15 as QQC2
 import org.kde.merkuro.mail 1.0
 import org.kde.kirigami 2.14 as Kirigami
 import org.kde.kitemmodels 1.0 as KItemModels
+import org.kde.pim.mimetreeparser 1.0 as MimeTreeParser
 
 import './mailpartview'
 
@@ -53,7 +54,7 @@ Kirigami.ScrollablePage {
         }
 
         // TODO use repeater to see the full conversation
-        MailViewer {
+        MimeTreeparser.MailViewer {
             Layout.fillWidth: true
 
             item: root.item ?? ''

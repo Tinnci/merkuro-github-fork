@@ -100,6 +100,7 @@ find_package(KF${QT_MAJOR_VERSION} ${KF_MIN_VERSION} REQUIRED COMPONENTS
     QQC2DesktopStyle
     WindowSystem
     XmlGui
+    MimeTreeParserCore
 )
 find_package(KF${QT_MAJOR_VERSION}KirigamiAddons 0.7.2 REQUIRED)
 find_package(Gpgme REQUIRED)
