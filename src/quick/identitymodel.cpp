@@ -71,7 +71,7 @@ QString IdentityModel::email(uint uoid)
 QHash<int, QByteArray> IdentityModel::roleNames() const
 {
     return {
-        {Qt::DisplayRole, QByteArrayLiteral("display")},
+        {Qt::DisplayRole, QByteArrayLiteral("displayName")},
         {UoidRole, QByteArrayLiteral("uoid")},
         {EmailRole, QByteArrayLiteral("email")},
         {IdentityNameRole, QByteArrayLiteral("identityName")},
