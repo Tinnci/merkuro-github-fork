@@ -17,6 +17,7 @@
 #include <akonadi-calendar_version.h>
 
 class IncidenceWrapper;
+class AvailabilityWrapper;
 
 namespace Akonadi
 {
@@ -72,6 +73,8 @@ public:
 
     Q_INVOKABLE void addIncidence(IncidenceWrapper *incidenceWrapper);
     Q_INVOKABLE void editIncidence(IncidenceWrapper *incidenceWrapper);
+    Q_INVOKABLE void addAvailability(AvailabilityWrapper *availabilityWrapper);
+    Q_INVOKABLE void editAvailability(AvailabilityWrapper *availabilityWrapper);
     Q_INVOKABLE void updateIncidenceDates(IncidenceWrapper *incidenceWrapper,
                                           int startOffset,
                                           int endOffset,

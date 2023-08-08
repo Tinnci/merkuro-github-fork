@@ -41,8 +41,10 @@
 #include <QPointer>
 #include <models/todosortfilterproxymodel.h>
 
+#include <availabilitywrapper.h>
 #include <colorproxymodel.h>
 #include <incidencewrapper.h>
+#include <qstringliteral.h>
 #include <sortedcollectionproxymodel.h>
 
 using namespace Akonadi;
@@ -461,6 +463,30 @@ void CalendarManager::editIncidence(IncidenceWrapper *incidenceWrapper)
     }
 
     changeIncidenceCollection(modifiedItem, incidenceWrapper->collectionId());
+}
+
+void CalendarManager::addAvailability(AvailabilityWrapper *availabilityWrapper)
+{
+    qDebug() << "CalendarManager::" << __FUNCTION__ << " START";
+
+    if (availabilityWrapper->collectionId() < 0) {
+        const auto sharedConfig = KSharedConfig::openConfig();
+        const auto editorConfigSection = sharedConfig->group("Editor");
+
+        const auto lastUsedCollectionId = editorConfigSection.readEntry(QStringLiteral("lastUsedTodoCollection"), -1);
+
+        if (lastUsedCollectionId > -1) {
+            availabilityWrapper->setCollectionId(lastUsedCollectionId);
+        }
+    }
+
+    qDebug() << "CalendarManager::" << __FUNCTION__ << " END";
+}
+
+void CalendarManager::editAvailability(AvailabilityWrapper *availabilityWrapper)
+{
+    qDebug() << "CalendarManager::" << __FUNCTION__ << " START";
+    qDebug() << "CalendarManager::" << __FUNCTION__ << " END";
 }
 
 void CalendarManager::updateIncidenceDates(IncidenceWrapper *incidenceWrapper, int startOffset, int endOffset, int occurrences, const QDateTime &occurrenceDate)

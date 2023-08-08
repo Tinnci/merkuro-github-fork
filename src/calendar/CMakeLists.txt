@@ -18,6 +18,8 @@ set(merkuro_calendar_SRCS
     filter.h
     incidencewrapper.cpp
     incidencewrapper.h
+    availabilitywrapper.cpp
+    availabilitywrapper.h
     mousetracker.cpp
     mousetracker.h
 

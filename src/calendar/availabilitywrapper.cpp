@@ -10,3 +10,34 @@ AvailabilityWrapper::AvailabilityWrapper(CalendarManager *calendarmanager, QObje
 {
     // TODO
 }
+
+AvailabilityWrapper::~AvailabilityWrapper()
+{
+}
+
+KCalendarCore::Availability::Ptr AvailabilityWrapper::availabilityPtr() const
+{
+    return mAvailabilityPtr;
+}
+
+qint64 AvailabilityWrapper::collectionId() const
+{
+    return m_collectionId < 0 ? item().parentCollection().id() : m_collectionId;
+}
+
+void AvailabilityWrapper::setCollectionId(qint64 collectionId)
+{
+    m_collectionId = collectionId;
+    Q_EMIT collectionIdChanged();
+}
+
+void AvailabilityWrapper::itemChanged(const Akonadi::Item &item)
+{
+}
+
+void AvailabilityWrapper::setAvailabilityPtr(const KCalendarCore::Availability::Ptr &availabilityPtr)
+{
+    mAvailabilityPtr = availabilityPtr;
+
+    Q_EMIT availabilityPtrChanged(availabilityPtr);
+}

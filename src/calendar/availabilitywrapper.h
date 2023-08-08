@@ -14,6 +14,9 @@ class AvailabilityWrapper : public QObject, public Akonadi::ItemMonitor
 {
     Q_OBJECT
 
+    // Akonadi properties
+    Q_PROPERTY(qint64 collectionId READ collectionId WRITE setCollectionId NOTIFY collectionIdChanged)
+
     Q_PROPERTY(KCalendarCore::Availability::Ptr availabilityPtr READ availabilityPtr WRITE setAvailabilityPtr NOTIFY availabilityPtrChanged)
 
 public:
@@ -25,9 +28,13 @@ public:
 
     KCalendarCore::Availability::Ptr availabilityPtr() const;
 
+    qint64 collectionId() const;
+    void setCollectionId(qint64 collectionId);
+
 Q_SIGNALS:
 
-    void availabilityPtrChanged();
+    void collectionIdChanged();
+    void availabilityPtrChanged(KCalendarCore::Availability::Ptr availabilityPtr);
 
 protected:
     void itemChanged(const Akonadi::Item &item) override;
@@ -37,4 +44,6 @@ private:
 
     QPointer<CalendarManager> m_calendarManager = nullptr;
     KCalendarCore::Availability::Ptr mAvailabilityPtr;
+
+    qint64 m_collectionId = -1; // For when we want to edit, this is temporary
 };
