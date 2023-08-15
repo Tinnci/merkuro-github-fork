@@ -11,6 +11,7 @@
 #include <Akonadi/CollectionModifyJob>
 #include <Akonadi/CollectionUtils>
 #include <Akonadi/EntityDisplayAttribute>
+#include <KCalendarCore/Availability>
 #include <KCalendarCore/Event>
 #include <KCalendarCore/Journal>
 #include <KCalendarCore/Todo>
@@ -31,7 +32,8 @@ static bool hasCompatibleMimeTypes(const Akonadi::Collection &collection)
 
     if (goodMimeTypes.isEmpty()) {
         goodMimeTypes << QStringLiteral("text/calendar") << KCalendarCore::Event::eventMimeType() << KCalendarCore::Todo::todoMimeType()
-                      << KContacts::Addressee::mimeType() << KContacts::ContactGroup::mimeType() << KCalendarCore::Journal::journalMimeType();
+                      << KContacts::Addressee::mimeType() << KContacts::ContactGroup::mimeType() << KCalendarCore::Journal::journalMimeType()
+                      << KCalendarCore::Availability::availabilityMimeType();
     }
 
     for (int i = 0; i < goodMimeTypes.count(); ++i) {
@@ -115,11 +117,14 @@ QHash<int, QByteArray> ColorProxyModel::roleNames() const
 
 QColor ColorProxyModel::getCollectionColor(Akonadi::Collection collection) const
 {
+    qDebug() << "ColorProxyModel" << __FUNCTION__ << " BEGIN";
     const auto id = collection.id();
+    qDebug() << "ColorProxyModel" << __FUNCTION__ << " contentMimeTypes : " << collection.contentMimeTypes();
     auto supportsMimeType = collection.contentMimeTypes().contains(QLatin1String("application/x-vnd.akonadi.calendar.event"))
         || collection.contentMimeTypes().contains(QLatin1String("application/x-vnd.akonadi.calendar.todo"))
         || collection.contentMimeTypes().contains(QLatin1String("application/x-vnd.akonadi.calendar.journal"))
         || collection.contentMimeTypes().contains(KContacts::Addressee::mimeType())
+        || collection.contentMimeTypes().contains(KCalendarCore::Availability::availabilityMimeType())
         || collection.contentMimeTypes().contains(KContacts::ContactGroup::mimeType());
 
     if (!supportsMimeType) {
@@ -164,6 +169,7 @@ QColor ColorProxyModel::getCollectionColor(Akonadi::Collection collection) const
         }
     });
 
+    qDebug() << "ColorProxyModel" << __FUNCTION__ << " END";
     return color;
 }
 

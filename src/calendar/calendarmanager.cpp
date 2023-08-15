@@ -136,6 +136,8 @@ CalendarManager::CalendarManager(QObject *parent)
     , m_calendar(nullptr)
     , m_config(new CalendarConfig(this))
 {
+    qDebug() << "CalendarManager::CalendarManager"
+             << " BEGIN";
     if (!Akonadi::Control::start()) {
         qApp->exit(-1);
         return;
@@ -170,23 +172,33 @@ CalendarManager::CalendarManager(QObject *parent)
     mCollectionSelectionModelStateSaver->setSelectionModel(m_calendar->checkableProxyModel()->selectionModel());
     mCollectionSelectionModelStateSaver->restoreState(selectionGroup);
 
+    qDebug() << "CalendarManager::CalendarManager get call calendars";
     m_allCalendars = new Akonadi::CollectionFilterProxyModel(this);
     m_allCalendars->setSourceModel(collectionFilter);
     m_allCalendars->setExcludeVirtualCollections(true);
 
     // Filter it by mimetype again, to only keep
     // Kolab / Inbox / Calendar
+    qDebug() << "CalendarManager::CalendarManager filter by mimetype event";
     m_eventMimeTypeFilterModel = new Akonadi::CollectionFilterProxyModel(this);
     m_eventMimeTypeFilterModel->setSourceModel(collectionFilter);
     m_eventMimeTypeFilterModel->addMimeTypeFilter(QStringLiteral("application/x-vnd.akonadi.calendar.event"));
 
     // text/calendar mimetype includes todo cals
+    qDebug() << "CalendarManager::CalendarManager filter by mimetype todo";
     m_todoMimeTypeFilterModel = new Akonadi::CollectionFilterProxyModel(this);
     m_todoMimeTypeFilterModel->setSourceModel(collectionFilter);
     m_todoMimeTypeFilterModel->addMimeTypeFilter(QStringLiteral("application/x-vnd.akonadi.calendar.todo"));
     m_todoMimeTypeFilterModel->setExcludeVirtualCollections(true);
 
+    qDebug() << "CalendarManager::CalendarManager filter by mimetype availability";
+    m_availabilityMimeTypeFilterModel = new Akonadi::CollectionFilterProxyModel(this);
+    m_availabilityMimeTypeFilterModel->setSourceModel(collectionFilter);
+    m_availabilityMimeTypeFilterModel->addMimeTypeFilter(QStringLiteral("application/x-vnd.akonadi.calendar.availability"));
+    m_availabilityMimeTypeFilterModel->setExcludeVirtualCollections(true);
+
     // Filter by access rights
+    qDebug() << "CalendarManager::CalendarManager filter by mimetype access right?";
     m_allCollectionsRightsFilterModel = new Akonadi::EntityRightsFilterModel(this);
     m_allCollectionsRightsFilterModel->setAccessRights(Collection::CanCreateItem);
     m_allCollectionsRightsFilterModel->setSourceModel(collectionFilter);
@@ -232,6 +244,8 @@ CalendarManager::CalendarManager(QObject *parent)
     connect(m_colorWatcher.data(), &KConfigWatcher::configChanged, this, &CalendarManager::collectionColorsChanged);
 
     connect(m_calendar.data(), &Akonadi::ETMCalendar::calendarChanged, this, &CalendarManager::calendarChanged);
+    qDebug() << "CalendarManager::CalendarManager"
+             << " END";
 }
 
 CalendarManager::~CalendarManager()
@@ -411,6 +425,7 @@ KCalendarCore::Incidence::List CalendarManager::childIncidences(const QString &u
 
 void CalendarManager::addIncidence(IncidenceWrapper *incidenceWrapper)
 {
+    qDebug() << "CalendarManager::" << __FUNCTION__ << "START";
     if (incidenceWrapper->collectionId() < 0) {
         const auto sharedConfig = KSharedConfig::openConfig();
         const auto editorConfigSection = sharedConfig->group("Editor");
@@ -480,12 +495,17 @@ void CalendarManager::addAvailability(AvailabilityWrapper *availabilityWrapper)
         }
     }
 
+    Akonadi::Collection collection(availabilityWrapper->collectionId());
+    KCalendarCore::Availability::Ptr avai = availabilityWrapper->availabilityPtr().staticCast<KCalendarCore::Availability>();
+    m_changer->createAvailability(avai, collection);
+
     qDebug() << "CalendarManager::" << __FUNCTION__ << " END";
 }
 
 void CalendarManager::editAvailability(AvailabilityWrapper *availabilityWrapper)
 {
     qDebug() << "CalendarManager::" << __FUNCTION__ << " START";
+    qDebug() << "CalendarManager::" << __FUNCTION__ << " TODO";
     qDebug() << "CalendarManager::" << __FUNCTION__ << " END";
 }
 

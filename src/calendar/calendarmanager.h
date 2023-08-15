@@ -119,6 +119,7 @@ private:
     Akonadi::CollectionFilterProxyModel *m_allCalendars = nullptr;
     Akonadi::CollectionFilterProxyModel *m_eventMimeTypeFilterModel = nullptr;
     Akonadi::CollectionFilterProxyModel *m_todoMimeTypeFilterModel = nullptr;
+    Akonadi::CollectionFilterProxyModel *m_availabilityMimeTypeFilterModel = nullptr;
     Akonadi::EntityRightsFilterModel *m_allCollectionsRightsFilterModel = nullptr;
     Akonadi::EntityRightsFilterModel *m_eventRightsFilterModel = nullptr;
     Akonadi::EntityRightsFilterModel *m_todoRightsFilterModel = nullptr;

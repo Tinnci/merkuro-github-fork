@@ -14,6 +14,8 @@ IncidenceWrapper::IncidenceWrapper(CalendarManager *calendarManager, QObject *pa
     , Akonadi::ItemMonitor()
     , m_calendarManager(calendarManager)
 {
+    qDebug() << "IncidenceWrapper::IncidenceWrapper"
+             << " BEGIN";
     connect(this, &IncidenceWrapper::incidencePtrChanged, &m_attendeesModel, [this](KCalendarCore::Incidence::Ptr incidencePtr) {
         m_attendeesModel.setIncidencePtr(incidencePtr);
     });
@@ -44,6 +46,8 @@ IncidenceWrapper::IncidenceWrapper(CalendarManager *calendarManager, QObject *pa
     setFetchScope(scope);
 
     setNewEvent();
+    qDebug() << "IncidenceWrapper::IncidenceWrapper"
+             << " END";
 }
 
 IncidenceWrapper::~IncidenceWrapper()
@@ -95,6 +99,7 @@ Akonadi::Item IncidenceWrapper::incidenceItem() const
 
 void IncidenceWrapper::setIncidenceItem(const Akonadi::Item &incidenceItem)
 {
+    qDebug() << "IncidenceWrapper::" << __FUNCTION__ << "START";
     if (incidenceItem.hasPayload<KCalendarCore::Incidence::Ptr>()) {
         setItem(incidenceItem);
         setIncidencePtr(incidenceItem.payload<KCalendarCore::Incidence::Ptr>());
@@ -104,6 +109,7 @@ void IncidenceWrapper::setIncidenceItem(const Akonadi::Item &incidenceItem)
     } else {
         qCWarning(MERKURO_CALENDAR_LOG) << "This is not an incidence item.";
     }
+    qDebug() << "IncidenceWrapper::" << __FUNCTION__ << "END";
 }
 
 KCalendarCore::Incidence::Ptr IncidenceWrapper::incidencePtr() const
@@ -709,6 +715,7 @@ static int nearestQuarterHour(int secsSinceEpoch)
 
 void IncidenceWrapper::setNewEvent()
 {
+    qDebug() << "IncidenceWrapper::" << __FUNCTION__ << "START";
     auto event = KCalendarCore::Event::Ptr(new KCalendarCore::Event);
     QDateTime start;
     start.setSecsSinceEpoch(nearestQuarterHour(QDateTime::currentSecsSinceEpoch()));
@@ -723,19 +730,24 @@ void IncidenceWrapper::setNewEvent()
     event->addAlarm(alarm);
 
     setNewIncidence(event);
+    qDebug() << "IncidenceWrapper::" << __FUNCTION__ << "END";
 }
 
 void IncidenceWrapper::setNewTodo()
 {
+    qDebug() << "IncidenceWrapper::" << __FUNCTION__ << "START";
     auto todo = KCalendarCore::Todo::Ptr(new KCalendarCore::Todo);
     setNewIncidence(todo);
+    qDebug() << "IncidenceWrapper::" << __FUNCTION__ << "END";
 }
 
 void IncidenceWrapper::setNewIncidence(KCalendarCore::Incidence::Ptr incidence)
 {
+    qDebug() << "IncidenceWrapper::" << __FUNCTION__ << "START";
     Akonadi::Item incidenceItem;
     incidenceItem.setPayload<KCalendarCore::Incidence::Ptr>(incidence);
     setIncidenceItem(incidenceItem);
+    qDebug() << "IncidenceWrapper::" << __FUNCTION__ << "END";
 }
 
 // We need to be careful when we call updateParentIncidence and resetChildIncidences.
