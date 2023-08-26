@@ -23,6 +23,7 @@ class Filter;
 namespace KCalendarCore
 {
 class Incidence;
+class Availability;
 }
 namespace Akonadi
 {
@@ -144,4 +145,5 @@ Q_DECLARE_METATYPE(IncidenceOccurrenceModel::Occurrence)
 
 #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
 Q_DECLARE_METATYPE(KCalendarCore::Incidence::Ptr)
+Q_DECLARE_METATYPE(KCalendarCore::Availability::Ptr) // TODO temporarily added to use this header file only
 #endif

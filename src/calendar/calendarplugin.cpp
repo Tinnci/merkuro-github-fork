@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: LGPL-2.0-or-later
 
 #include "calendarplugin.h"
+#include "availabilitywrapper.h"
 #include "calendarapplication.h"
 #include "calendarconfig.h"
 #include "calendarmanager.h"
@@ -49,6 +50,7 @@ void CalendarPlugin::registerTypes(const char *uri)
     qmlRegisterType<RemindersModel>(uri, 1, 0, "RemindersModel");
     qmlRegisterModule(uri, 1, 0);
     qRegisterMetaType<KCalendarCore::Incidence::Ptr>();
+    qRegisterMetaType<KCalendarCore::Availability::Ptr>();
 
     qmlRegisterSingletonType<CalendarManager>(uri, 1, 0, "CalendarManager", [](QQmlEngine *engine, QJSEngine *scriptEngine) {
         Q_UNUSED(engine)
@@ -79,6 +81,7 @@ void CalendarPlugin::registerTypes(const char *uri)
     });
 
     qmlRegisterUncreatableType<IncidenceWrapper>(uri, 1, 0, "IncidenceWrapper", QStringLiteral("Only returned from apis"));
+    qmlRegisterUncreatableType<AvailabilityWrapper>(uri, 1, 0, "AvailabilityWrapper", QStringLiteral("Only returned from apis"));
     qmlRegisterType<AttendeesModel>(uri, 1, 0, "AttendeesModel");
     qmlRegisterType<MultiDayIncidenceModel>(uri, 1, 0, "MultiDayIncidenceModel");
     qmlRegisterType<IncidenceOccurrenceModel>(uri, 1, 0, "IncidenceOccurrenceModel");

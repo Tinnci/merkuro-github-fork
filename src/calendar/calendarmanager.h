@@ -59,6 +59,7 @@ public:
     void refreshEnabledTodoCollections();
 
     Q_INVOKABLE IncidenceWrapper *createIncidenceWrapper();
+    Q_INVOKABLE AvailabilityWrapper *createAvailabilityWrapper();
 
     Q_INVOKABLE void save();
     Akonadi::ETMCalendar::Ptr calendar() const;

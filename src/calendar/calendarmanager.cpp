@@ -808,4 +808,15 @@ IncidenceWrapper *CalendarManager::createIncidenceWrapper()
 Q_DECLARE_METATYPE(KCalendarCore::Incidence::Ptr)
 #endif
 
+AvailabilityWrapper *CalendarManager::createAvailabilityWrapper()
+{
+    // Ownership is transfered to the qml engine
+    qDebug() << "ANANT: createAvailabilityWrapper";
+    return new AvailabilityWrapper(this, nullptr);
+}
+
+#ifndef UNITY_CMAKE_SUPPORT
+Q_DECLARE_METATYPE(KCalendarCore::Availability::Ptr)
+#endif
+
 #include "calendarmanager.moc"

@@ -41,3 +41,7 @@ void AvailabilityWrapper::setAvailabilityPtr(const KCalendarCore::Availability::
 
     Q_EMIT availabilityPtrChanged(availabilityPtr);
 }
+
+#ifndef UNITY_CMAKE_SUPPORT
+Q_DECLARE_METATYPE(KCalendarCore::Availability::Ptr)
+#endif
