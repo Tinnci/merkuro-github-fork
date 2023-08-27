@@ -19,6 +19,8 @@ class AvailabilityWrapper : public QObject, public Akonadi::ItemMonitor
 
     Q_PROPERTY(KCalendarCore::Availability::Ptr availabilityPtr READ availabilityPtr WRITE setAvailabilityPtr NOTIFY availabilityPtrChanged)
 
+    Q_PROPERTY(QString summary READ summary WRITE setSummary NOTIFY summaryChanged)
+
 public:
     typedef QSharedPointer<AvailabilityWrapper> Ptr;
 
@@ -31,10 +33,17 @@ public:
     qint64 collectionId() const;
     void setCollectionId(qint64 collectionId);
 
+    QString summary() const;
+    void setSummary(const QString &summary);
+
+    Q_INVOKABLE void setMondayStartTime(const QDateTime &MondayStart, bool respectTimeZone = false);
+
 Q_SIGNALS:
 
     void collectionIdChanged();
     void availabilityPtrChanged(KCalendarCore::Availability::Ptr availabilityPtr);
+
+    void summaryChanged();
 
 protected:
     void itemChanged(const Akonadi::Item &item) override;

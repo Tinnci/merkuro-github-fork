@@ -9,6 +9,13 @@ AvailabilityWrapper::AvailabilityWrapper(CalendarManager *calendarmanager, QObje
     , m_calendarManager(calendarmanager)
 {
     // TODO
+    qDebug() << "AvailabilityWrapper::AvailabilityWrapper"
+             << " BEGIN";
+
+    // TODO hack below
+    setAvailabilityPtr(KCalendarCore::Availability::Ptr());
+    qDebug() << "AvailabilityWrapper::AvailabilityWrapper"
+             << " END";
 }
 
 AvailabilityWrapper::~AvailabilityWrapper()
@@ -37,9 +44,23 @@ void AvailabilityWrapper::itemChanged(const Akonadi::Item &item)
 
 void AvailabilityWrapper::setAvailabilityPtr(const KCalendarCore::Availability::Ptr &availabilityPtr)
 {
+    qDebug() << "AvailabilityWrapper::" << __FUNCTION__ << " BEGIN";
     mAvailabilityPtr = availabilityPtr;
 
     Q_EMIT availabilityPtrChanged(availabilityPtr);
+}
+
+// misc
+
+QString AvailabilityWrapper::summary() const
+{
+    return mAvailabilityPtr->summary();
+}
+
+void AvailabilityWrapper::setSummary(const QString &summary)
+{
+    mAvailabilityPtr->setSummary(summary);
+    Q_EMIT summaryChanged();
 }
 
 #ifndef UNITY_CMAKE_SUPPORT

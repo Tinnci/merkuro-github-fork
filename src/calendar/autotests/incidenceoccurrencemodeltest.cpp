@@ -45,6 +45,12 @@ public:
         return createResult != -1 && createFinished.wait(3000) && loadingChanged.wait(3000) && !model.loading() && model.rowCount() == modelRowCount + 1;
     }
 
+    // TODO @ANANT
+    bool addTestAvailability()
+    {
+        return false;
+    }
+
 public Q_SLOTS:
     void checkAllItems(KCheckableProxyModel *model, const QModelIndex &parent = QModelIndex())
     {
@@ -72,6 +78,7 @@ public Q_SLOTS:
 private:
     Akonadi::ETMCalendar::Ptr m_calendar;
     KCalendarCore::Todo::Ptr m_testTodo;
+    KCalendarCore::Availability::Ptr m_testAvailability;
     Akonadi::Collection m_testCollection;
     Filter m_testFilter;
 
@@ -90,6 +97,7 @@ private:
 private Q_SLOTS:
     void initTestCase()
     {
+        qDebug() << "initTestCase";
         AkonadiTest::checkTestIsIsolated();
 
         m_calendar.reset(new Akonadi::ETMCalendar);
@@ -117,6 +125,13 @@ private Q_SLOTS:
         m_testTodo->setPriority(1);
         m_testTodo->setCategories(m_testTag);
         m_testTodo->setUid(QStringLiteral("__test_todo__"));
+
+        // instantiate a availability obj
+        m_testAvailability.reset(new KCalendarCore::Availability);
+        m_testAvailability->setSummary(QStringLiteral("Test availability"));
+        m_testAvailability->setUid(QStringLiteral("__test_todo__"));
+        m_testAvailability->setDtStart(m_now.addDays(1));
+        m_testAvailability->setDtEnd(m_now.addDays(2));
 
         m_testFilter.setTags({m_testTag});
     }
@@ -273,6 +288,11 @@ private Q_SLOTS:
 
         QCOMPARE(modelReset.count(), 1);
         QCOMPARE(model.rowCount(), m_expectedIncidenceCount + 1);
+    }
+
+    void testAvailabilityAdded()
+    {
+        // TODO
     }
 
     void testIncidenceRemoved()
