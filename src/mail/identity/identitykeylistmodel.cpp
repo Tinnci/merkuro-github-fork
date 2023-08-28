@@ -26,6 +26,7 @@ IdentityKeyListModel::IdentityKeyListModel(QObject *parent, const TypeKeys typeO
 
 QVariant IdentityKeyListModel::data(const QModelIndex &index, int role) const
 {
+    Q_ASSERT(checkIndex(idx, QAbstractItemModel::CheckIndexOption::IndexIsValid));
     if (index.row() == 0) {
         switch (role) {
         case Qt::DisplayRole:
