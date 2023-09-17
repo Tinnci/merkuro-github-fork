@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: LGPL-2.1-or-later
 
 import QtQuick 2.15
+import QtQml.Models 2.2
 import QtQuick.Controls 2.15 as QQC2
 import QtQuick.Layouts 1.15
 import QtQuick.Dialogs 1.0
@@ -98,6 +99,26 @@ Kirigami.ScrollablePage {
                 root.flickable.contentY = editorLoader.item.attendeesColumnY;
             }
         }
+    }
+
+    Component {
+        id: freeBusyViewComponent
+
+        ListView {
+            model: FreeBusyItemModel { id: freeBusyItemModel }
+            delegate: ColumnLayout { // Just want a list of strings for now, will use RowLayout when plotting to calendar
+                Repeater {
+                    model: DelegateModel {
+                            model: freeBusyItemModel
+                            rootIndex: freeBusyItemModel.index(index, 0)
+                            delegate: QQC2.Label {
+                                text: modelData
+                            }
+                    }
+                }
+            }
+        }
+
     }
 
     Loader {
@@ -991,10 +1012,18 @@ Kirigami.ScrollablePage {
                                                                                                        checked,
                                                                                                        AttendeesModel.RSVPRole)
                                         visible: root.editMode
-                                    }
+                                    }        
                                 }
                             }
                         }
+                    }
+
+                    QQC2.Button {
+                        id: availabilityButton
+                        Layout.fillWidth: true
+                        visible: attendeesRepeater.count > 0
+                        text: i18n("View availability...")
+                        onClicked: pageStack.push(freeBusyViewComponent)
                     }
 
                     QQC2.Button {

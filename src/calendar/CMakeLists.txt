@@ -21,6 +21,15 @@ set(merkuro_calendar_SRCS
     mousetracker.cpp
     mousetracker.h
 
+    freebusy/freebusycalendar.cpp
+    freebusy/freebusycalendar.h
+    freebusy/freebusyitem.cpp
+    freebusy/freebusyitem.h
+    freebusy/freebusyitemmodel.cpp
+    freebusy/freebusyitemmodel.h
+    freebusy/freeperiodmodel.cpp
+    freebusy/freeperiodmodel.h
+
     models/attachmentsmodel.cpp
     models/attachmentsmodel.h
     models/attendeesmodel.cpp
@@ -112,3 +121,8 @@ target_link_libraries(merkuro-calendar
 install(TARGETS merkuro-calendar ${KDE_INSTALL_TARGETS_DEFAULT_ARGS})
 install(PROGRAMS org.kde.merkuro.calendar.desktop DESTINATION ${KDE_INSTALL_APPDIR})
 install(FILES org.kde.merkuro.calendar.metainfo.xml DESTINATION ${KDE_INSTALL_METAINFODIR})
+
+# # TODO: test this
+# if (BUILD_TESTING)
+#     add_subdirectory(models/freebusymodel/autotests)
+# endif()
