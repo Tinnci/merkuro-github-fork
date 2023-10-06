@@ -44,8 +44,6 @@ ListView {
     property bool ascendingOrder: false
     property bool dragDropEnabled: true
 
-    readonly property bool isDark: CalendarUiUtils.darkMode
-
     currentIndex: -1
     clip: true
 
@@ -188,7 +186,7 @@ ListView {
 
         Kirigami.Theme.inherit: false
         Kirigami.Theme.colorSet: Kirigami.Theme.View
-        Kirigami.Theme.highlightColor: LabelUtils.getIncidenceDelegateBackgroundColor(model.color, root.isDark)
+        Kirigami.Theme.highlightColor: model.color
 
         Behavior on x {
             enabled: repositionAnimationEnabled
