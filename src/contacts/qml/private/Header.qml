@@ -5,64 +5,141 @@
  */
 
 import QtQuick 2.15
-import QtQuick.Controls 2.15
+import QtQuick.Controls 2.15 as QQC2
 import QtQuick.Layouts 1.15
-import org.kde.kirigami 2.19 as Kirigami
-import Qt5Compat.GraphicalEffects as GE
-import org.kde.kirigamiaddons.labs.components 1.0 as KAComponents
+import Qt5Compat.GraphicalEffects
 
-Control {
+import org.kde.kirigami as Kirigami
+import org.kde.kirigamiaddons.components as Components
+
+Item {
     id: root
 
     required property var source
     required property string name
+    property alias actions: toolbar.actions
 
-    clip: true
+    height: 170
 
-    // Container for the content of the header
-    contentItem: Kirigami.FlexColumn {
-        id: contentContainer
+    Item {
+        anchors.fill: parent
 
-        maximumWidth: Kirigami.Units.gridUnit * 30
+        Rectangle {
+            anchors.fill: parent
+            color: avatar.color
+            opacity: 0.2
 
-        RowLayout {
-            Layout.fillHeight: true
-            Layout.topMargin: Kirigami.Units.gridUnit
-            Layout.bottomMargin: Kirigami.Units.gridUnit
+        }
+        Kirigami.Icon {
+            visible: source
+            scale: 1.8
+            anchors.fill: parent
 
-            KAComponents.Avatar {
-                Layout.fillHeight: true
-                Layout.preferredWidth: height
-                name: root.name
-                visible: !root.source
+            source: root.source
+
+            implicitWidth: 512
+            implicitHeight: 512
+        }
+
+        layer.enabled: true
+        layer.effect: HueSaturation {
+            cached: true
+
+            saturation: 1.9
+
+            layer {
+                enabled: true
+                effect: FastBlur {
+                    cached: true
+                    radius: 100
+                }
             }
+        }
+    }
 
-            Kirigami.Icon {
-                id: imageIcon
+    Rectangle {
+        anchors.fill: parent
+        gradient: Gradient {
+            GradientStop { position: -1.0; color: "transparent" }
+            GradientStop { position: 1.0; color: Kirigami.Theme.backgroundColor }
+        }
+    }
 
-                Layout.fillHeight: true
-                Layout.preferredWidth: height
+    RowLayout {
+        anchors.fill: parent
+        RowLayout {
+            Layout.maximumWidth: Kirigami.Units.gridUnit * 30
+            Layout.alignment: Qt.AlignHCenter
 
-                source: root.source
-                visible: root.source
 
-                layer {
-                    enabled: root.source
-                    effect: GE.OpacityMask {
-                        maskSource: Rectangle {
-                            width: imageIcon.width
-                            height: imageIcon.width
-                            radius: imageIcon.width
-                            color: "black"
-                            visible: false
+            Kirigami.ShadowedRectangle {
+                color: Kirigami.Theme.backgroundColor
+                Layout.margins: 30
+                width: 120
+                height: width
+                radius: width/2
+
+                shadow {
+                    size: 15
+                    xOffset: 5
+                    yOffset: 5
+                    color: Qt.rgba(0, 0, 0, 0.2)
+                }
+
+                Components.Avatar {
+                    id: avatar
+
+                    height: parent.height
+                    width: height
+
+                    visible: !imageIcon.visible
+                    name: root.name
+                    imageMode: Components.Avatar.ImageMode.AdaptiveImageOrInitals
+                }
+
+                Kirigami.Icon {
+                    id: imageIcon
+
+                    height: parent.height
+                    width: height
+
+                    source: root.source
+                    visible: source
+
+                    layer {
+                        enabled: imageIcon.visible
+                        effect: OpacityMask {
+                            maskSource: Rectangle {
+                                width: imageIcon.width
+                                height: imageIcon.width
+                                radius: imageIcon.width
+                                color: "black"
+                                visible: false
+                            }
                         }
                     }
                 }
-            }
 
-            Kirigami.Heading {
-                text: root.name
-                Layout.alignment: Qt.AlignBottom
+            }
+            ColumnLayout {
+                Layout.leftMargin: 10
+                Layout.rightMargin: 10
+                Layout.fillWidth: true
+
+                QQC2.Label {
+                    Layout.fillWidth: true
+                    text: root.name
+                    font.bold: true
+                    font.pixelSize: 22
+                    maximumLineCount: 2
+                    wrapMode: Text.Wrap
+                    elide: Text.ElideRight
+
+                }
+
+                Kirigami.ActionToolBar {
+                    id: toolbar
+                }
             }
         }
     }
