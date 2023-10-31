@@ -178,7 +178,7 @@ Kirigami.ScrollablePage {
                     id: summaryField
 
                     Kirigami.FormData.label: i18n("Summary:")
-                    placeholderText: i18n("Add a title for your ${incidenceWrapper.incidenceTypeStr.toLowerCase()}")
+                    placeholderText: i18n("Add a title for your %1", incidenceWrapper.incidenceTypeStr.toLowerCase())
                     text: root.incidenceWrapper.summary
                     onTextChanged: root.incidenceWrapper.summary = text
                 }
