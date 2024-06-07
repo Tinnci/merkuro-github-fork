@@ -48,5 +48,9 @@ BaseApplication {
             });
             openDialogWindow.Keys.escapePressed.connect(function() { openDialogWindow.closeDialog() });
         }
+
+        function onCheckMail() {
+            Mail.MailManager.checkMail();
+        }
     }
 }
