@@ -4,6 +4,7 @@
 #include "progressmodel.h"
 
 using namespace Akonadi::Quick;
+using namespace KPIM;
 
 ProgressModel::ProgressModel(QObject *const parent)
     : QAbstractListModel(parent)
