@@ -5,7 +5,16 @@
 
 using namespace Akonadi::Quick;
 
-ProgressModel::ProgressModel(QObject *parent)
+ProgressModel::ProgressModel(QObject *const parent)
     : QAbstractListModel(parent)
 {
+    const auto pm = ProgressManager::instance();
+    connect(pm, &ProgressManager::progressItemAdded, this, &ProgressModel::slotProgressItemAdded);
+}
+
+void ProgressModel::slotProgressItemAdded(KPIM::ProgressItem *const item)
+{
+    beginInsertRows(QModelIndex(), rowCount(), rowCount());
+    m_items.append(item);
+    endInsertRows();
 }
