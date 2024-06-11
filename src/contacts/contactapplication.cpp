@@ -12,16 +12,16 @@
 
 ContactApplication::ContactApplication(QObject *parent)
     : AbstractApplication(parent)
-    , mContactCollection(new KActionCollection(parent, i18n("Contact")))
+    , mContactCollection(new KirigamiActionCollection(parent, i18n("Contact")))
 {
     mContactCollection->setComponentDisplayName(i18n("Contact"));
     setupActions();
 }
 
-QList<KActionCollection *> ContactApplication::actionCollections() const
+QList<KirigamiActionCollection *> ContactApplication::actionCollections() const
 {
     return {
-        mCollection,
+        mainCollection(),
         mContactCollection,
     };
 }
@@ -54,8 +54,7 @@ void ContactApplication::setupActions()
         action->setIcon(QIcon::fromTheme(QStringLiteral("contact-new-symbolic")));
     }
 
-    mCollection->readSettings();
-    mContactCollection->readSettings();
+    readSettings();
 }
 
 void ContactApplication::saveWindowGeometry(QQuickWindow *window)
