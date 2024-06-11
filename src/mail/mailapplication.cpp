@@ -18,26 +18,19 @@ void MailApplication::setupActions()
 
     auto actionName = QLatin1StringView("create_mail");
     if (KAuthorized::authorizeAction(actionName)) {
-        auto action = mCollection->addAction(actionName, this, &MailApplication::createNewMail);
+        auto action = mainCollection()->addAction(actionName, this, &MailApplication::createNewMail);
         action->setText(i18n("New Mail…"));
         action->setIcon(QIcon::fromTheme(QStringLiteral("mail-message-new")));
     }
 
     const auto checkMailActionName = QLatin1StringView("check_mail");
     if (KAuthorized::authorizeAction(checkMailActionName)) {
-        const auto action = mCollection->addAction(checkMailActionName, this, &MailApplication::checkMail);
+        const auto action = mainCollection()->addAction(checkMailActionName, this, &MailApplication::checkMail);
         action->setText(i18n("Check Mail"));
         action->setIcon(QIcon::fromTheme(QStringLiteral("mail-receive")));
     }
 
-    mCollection->readSettings();
-}
-
-QList<KActionCollection *> MailApplication::actionCollections() const
-{
-    return {
-        mCollection,
-    };
+    readSettings();
 }
 
 #include "moc_mailapplication.cpp"

@@ -10,8 +10,6 @@ class MailApplication : public AbstractApplication
 public:
     explicit MailApplication(QObject *parent = nullptr);
 
-    QList<KActionCollection *> actionCollections() const override;
-
 Q_SIGNALS:
     void createNewMail();
     void checkMail();

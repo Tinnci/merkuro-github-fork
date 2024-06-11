@@ -41,7 +41,7 @@ Kirigami.ScrollablePage {
     }
 
     actions: [
-        KActionFromAction {
+        BaseApp.Action {
             action: MailApplication.action("check_mail")
         },
         Kirigami.Action {
