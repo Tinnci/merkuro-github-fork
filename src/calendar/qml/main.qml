@@ -310,21 +310,7 @@ BaseApplication {
         return 'Calendar';
     }
 
-    menuBar: Loader {
-        id: menuLoader
-        active: Config.showMenubar &&
-                !Kirigami.Settings.hasPlatformMenuBar &&
-                !Kirigami.Settings.isMobile &&
-                applicationWindow().pageStack.currentItem
-
-        height: active ? implicitHeight : 0
-
-        onItemChanged: if (item) {
-            item.Kirigami.Theme.colorSet = Kirigami.Theme.Header;
-        }
-
-        sourceComponent: MenuBar {}
-    }
+    menubarComponent: MenuBar {}
 
     Loader {
         id: globalMenuLoader

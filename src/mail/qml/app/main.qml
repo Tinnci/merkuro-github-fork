@@ -14,15 +14,7 @@ BaseApplication {
 
     application: Mail.MailApplication
 
-    menuBar: Loader {
-        active: !Kirigami.Settings.hasPlatformMenuBar && !Kirigami.Settings.isMobile && applicationWindow().pageStack.currentItem
-
-        height: visible ? implicitHeight : 0
-        sourceComponent: MenuBar {}
-        onItemChanged: if (item) {
-            item.Kirigami.Theme.colorSet = Kirigami.Theme.Header;
-        }
-    }
+    menubarComponent: MenuBar {}
 
     pageStack.initialPage: Mail.FolderView {}
 

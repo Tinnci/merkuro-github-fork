@@ -15,6 +15,8 @@ import org.kde.kirigamiaddons.baseapp as BaseApp
 BaseApp.ManagedWindow {
     id: root
 
+    required property Component menubarComponent
+
     width: Kirigami.Units.gridUnit * 65
 
     minimumWidth: Kirigami.Units.gridUnit * 15
@@ -22,6 +24,16 @@ BaseApp.ManagedWindow {
     onClosing: root.application.saveWindowGeometry(root)
 
     pageStack.globalToolBar.style: Kirigami.ApplicationHeaderStyle.ToolBar
+
+    menuBar: Loader {
+        active: !Kirigami.Settings.hasPlatformMenuBar && !Kirigami.Settings.isMobile && root.application.menubarVisible && root.pageStack.currentItem
+
+        height: active ? implicitHeight : 0
+        sourceComponent: root.menubarComponent
+        onItemChanged: if (item) {
+            item.Kirigami.Theme.colorSet = Kirigami.Theme.Header;
+        }
+    }
 
     QQC2.Action {
         id: closeOverlayAction
@@ -42,7 +54,7 @@ BaseApp.ManagedWindow {
         target: root.application
 
         function onOpenTagManager() {
-            const openDialogWindow = pageStack.pushDialogLayer(tagManagerPage, {
+            const openDialogWindow = pageStack.pushDialogLayer(Qt.createComponent('org.kde.akonadi', 'TagManagerPage'), {
                 width: root.width
             }, {
                 width: Kirigami.Units.gridUnit * 30,
@@ -52,11 +64,5 @@ BaseApp.ManagedWindow {
             openDialogWindow.Keys.escapePressed.connect(function() { openDialogWindow.closeDialog() });
         }
 
-    }
-
-    // TODO Qt6 use module url import instead for faster startup
-    Component {
-        id: tagManagerPage
-        Akonadi.TagManagerPage {}
     }
 }
