@@ -81,7 +81,6 @@ private Q_SLOTS:
 
 private:
     void setupActions() override;
-    void toggleMenubar();
     bool showMenubar() const;
 
     KirigamiActionCollection *mSortCollection = nullptr;

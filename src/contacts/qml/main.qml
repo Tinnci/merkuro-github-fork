@@ -16,16 +16,7 @@ BaseApplication {
 
     title: pageStack.currentItem.title
 
-    menuBar: Loader {
-        active: !Kirigami.Settings.hasPlatformMenuBar && !Kirigami.Settings.isMobile && Contact.Config.showMenubar && applicationWindow().pageStack.currentItem
-
-        visible: Contact.Config.showMenubar
-        height: visible ? implicitHeight : 0
-        sourceComponent: Contact.MenuBar {}
-        onItemChanged: if (item) {
-            item.Kirigami.Theme.colorSet = Kirigami.Theme.Header;
-        }
-    }
+    menubarComponent: Contact.MenuBar {}
 
     pageStack.initialPage: Contact.ContactView {}
 

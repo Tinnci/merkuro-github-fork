@@ -195,16 +195,6 @@ void CalendarApplication::setupActions()
         }
     }
 
-    actionName = QLatin1StringView("toggle_menubar");
-    if (KAuthorized::authorizeAction(actionName)) {
-        auto action = mainCollection()->addAction(actionName, this, &CalendarApplication::toggleMenubar);
-        action->setText(i18n("Show Menubar"));
-        action->setIcon(QIcon::fromTheme(QStringLiteral("show-menu")));
-        action->setCheckable(true);
-        action->setChecked(m_config->showMenubar());
-        mainCollection()->setDefaultShortcut(action, QKeySequence(i18n("Ctrl+M")));
-    }
-
     actionName = QLatin1StringView("create_event");
     if (KAuthorized::authorizeAction(actionName)) {
         auto action = mainCollection()->addAction(actionName, this, &CalendarApplication::createNewEvent);
@@ -455,15 +445,6 @@ void CalendarApplication::handleMouseViewNavButtons(const Qt::MouseButton presse
 QList<KirigamiActionCollection *> CalendarApplication::actionCollections() const
 {
     return {mainCollection(), mSortCollection};
-}
-
-void CalendarApplication::toggleMenubar()
-{
-    auto state = !m_config->showMenubar();
-    m_config->setShowMenubar(state);
-    m_config->save();
-
-    Q_EMIT showMenubarChanged(state);
 }
 
 bool CalendarApplication::showMenubar() const
