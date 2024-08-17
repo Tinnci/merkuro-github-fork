@@ -22,6 +22,7 @@
 #include <QQmlContext>
 #include <QQuickStyle>
 #include <QQuickWindow>
+#include <QTimer>
 #define HAVE_KICONTHEME __has_include(<KIconTheme>)
 #if HAVE_KICONTHEME
 #include <KIconTheme>
@@ -91,6 +92,8 @@ int main(int argc, char *argv[])
     QGuiApplication::setWindowIcon(QIcon::fromTheme(QStringLiteral("org.kde.merkuro.calendar")));
 
     QCommandLineParser parser;
+    QCommandLineOption selfTestOpt(QStringLiteral("self-test"), QStringLiteral("internal, for automated testing"));
+    parser.addOption(selfTestOpt);
     aboutData.setupCommandLine(&parser);
     parser.process(app);
     aboutData.processCommandLine(&parser);
@@ -152,6 +155,10 @@ int main(int argc, char *argv[])
 
             break;
         }
+    }
+
+    if (parser.isSet(selfTestOpt)) {
+        QTimer::singleShot(std::chrono::milliseconds(250), &app, &QCoreApplication::quit);
     }
 
     return app.exec();
