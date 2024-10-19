@@ -30,7 +30,7 @@ PathView {
         }
     }
 
-    model: Calendar.InfiniteCalendarViewModel {
+    model: Calendar.InfiniteMerkuroCalendarViewModel {
         scale: Calendar.InfiniteCalendarViewModel.MonthScale
     }
 

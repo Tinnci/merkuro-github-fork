@@ -60,7 +60,7 @@ PathView {
         }
     }
 
-    model: Calendar.InfiniteCalendarViewModel {
+    model: Calendar.InfiniteMerkuroCalendarViewModel {
         scale: switch(root.daysToShow) {
         case 1:
             return Calendar.InfiniteCalendarViewModel.DayScale;
