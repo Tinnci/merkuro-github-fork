@@ -352,7 +352,6 @@ FormCard.FormCardPage {
                 Config.enableMaps = checked;
                 Config.save();
             }
-            description: i18n("May cause crashing on some systems.")
         }
 
         FormCard.FormDelegateSeparator { above: enableMapsDelegate }
