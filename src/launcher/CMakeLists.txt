@@ -1,5 +1,5 @@
 # SPDX-FileCopyrightText: 2024 Carl Schwan <carl@carlschwan.eu>
-# SPDX-License-Identifier: BSD-2-Clauses
+# SPDX-License-Identifier: BSD-2-Clause
 
 add_executable(merkurolauncher main.cpp helper.cpp helper.h)
 
