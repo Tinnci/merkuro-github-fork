@@ -20,6 +20,14 @@ target_link_libraries(merkuro_contact_static PUBLIC KF6::ConfigGui Qt6::Qml)
 
 add_library(merkuro_contact SHARED)
 
+set_target_properties(merkuro_contact PROPERTIES
+    VERSION     ${PROJECT_VERSION}
+    SOVERSION   6
+    EXPORT_NAME "merkuro_contact"
+    POSITION_INDEPENDENT_CODE ON
+)
+
+
 target_link_libraries(merkuro_contact PUBLIC
     KF6::XmlGui
     KF6::Contacts
@@ -32,7 +40,6 @@ target_link_libraries(merkuro_contact PUBLIC
     KPim6::Libkleo
 )
 
-set_target_properties(merkuro_contact PROPERTIES POSITION_INDEPENDENT_CODE ON)
 target_sources(merkuro_contact PUBLIC
     contactapplication.cpp
     contactapplication.h
@@ -70,6 +77,10 @@ target_sources(merkuro_contact PUBLIC
     attributes/contactmetadataattribute.cpp
     attributes/attributeregistrar.cpp
 )
+
+install(TARGETS merkuro_contact EXPORT MerkuroContact ${KF_INSTALL_TARGETS_DEFAULT_ARGS})
+
+## QML plugin
 
 ecm_add_qml_module(merkuro_contact_plugin
     URI "org.kde.merkuro.contact"
@@ -115,7 +126,7 @@ ecm_target_qml_sources(merkuro_contact_plugin
     qml/private/contact_editor/InstantMessengerEditorCard.qml
 )
 
-target_link_libraries(merkuro_contact_plugin PRIVATE
+target_link_libraries(merkuro_contact_plugin PUBLIC
     merkuro_contact
 )
 
@@ -133,14 +144,6 @@ add_subdirectory(applet)
 
 ecm_finalize_qml_module(merkuro_contact_plugin
     DESTINATION ${KDE_INSTALL_QMLDIR})
-
-set_target_properties(merkuro_contact PROPERTIES
-    VERSION     ${PROJECT_VERSION}
-    SOVERSION   6
-    EXPORT_NAME "merkuro_contact_plugin"
-)
-
-install(TARGETS merkuro_contact EXPORT MerkuroComponents ${KF_INSTALL_TARGETS_DEFAULT_ARGS})
 
 #### Binary
 
