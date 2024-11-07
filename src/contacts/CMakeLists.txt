@@ -20,6 +20,15 @@ target_link_libraries(merkuro_contact_static PUBLIC KF6::ConfigGui Qt6::Qml)
 
 add_library(merkuro_contact SHARED)
 
+set_target_properties(merkuro_contact PROPERTIES
+    VERSION     ${PROJECT_VERSION}
+    SOVERSION   6
+    EXPORT_NAME "merkuro_contact"
+    POSITION_INDEPENDENT_CODE ON
+)
+
+install(TARGETS merkuro_contact EXPORT MerkuroComponents ${KF_INSTALL_TARGETS_DEFAULT_ARGS})
+
 target_link_libraries(merkuro_contact PUBLIC
     KF6::XmlGui
     KF6::Contacts
@@ -32,7 +41,6 @@ target_link_libraries(merkuro_contact PUBLIC
     KPim6::Libkleo
 )
 
-set_target_properties(merkuro_contact PROPERTIES POSITION_INDEPENDENT_CODE ON)
 target_sources(merkuro_contact PUBLIC
     contactapplication.cpp
     contactapplication.h
@@ -133,14 +141,6 @@ add_subdirectory(applet)
 
 ecm_finalize_qml_module(merkuro_contact_plugin
     DESTINATION ${KDE_INSTALL_QMLDIR})
-
-set_target_properties(merkuro_contact PROPERTIES
-    VERSION     ${PROJECT_VERSION}
-    SOVERSION   6
-    EXPORT_NAME "merkuro_contact_plugin"
-)
-
-install(TARGETS merkuro_contact EXPORT MerkuroComponents ${KF_INSTALL_TARGETS_DEFAULT_ARGS})
 
 #### Binary
 
