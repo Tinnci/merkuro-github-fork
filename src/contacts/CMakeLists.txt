@@ -18,7 +18,7 @@ target_link_libraries(merkuro_contact_static PUBLIC KF6::ConfigGui Qt6::Qml)
 
 ### Contact QML Plugin lib
 
-add_library(merkuro_contact SHARED)
+qt_add_library(merkuro_contact SHARED)
 
 set_target_properties(merkuro_contact PROPERTIES
     VERSION     ${PROJECT_VERSION}
@@ -26,7 +26,6 @@ set_target_properties(merkuro_contact PROPERTIES
     EXPORT_NAME "merkuro_contact"
     POSITION_INDEPENDENT_CODE ON
 )
-
 
 target_link_libraries(merkuro_contact PUBLIC
     KF6::XmlGui
@@ -147,7 +146,7 @@ ecm_finalize_qml_module(merkuro_contact_plugin
 
 #### Binary
 
-add_executable(merkuro-contact main.cpp)
+qt_add_executable(merkuro-contact main.cpp)
 target_link_libraries(merkuro-contact
     PRIVATE
         Qt::Widgets
