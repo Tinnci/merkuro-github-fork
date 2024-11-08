@@ -20,6 +20,8 @@ target_link_libraries(merkuro_contact_static PUBLIC KF6::ConfigGui Qt6::Qml)
 
 qt_add_library(merkuro_contact SHARED)
 
+ecm_generate_export_header(merkuro_contact VERSION ${PROJECT_VERSION})
+
 set_target_properties(merkuro_contact PROPERTIES
     VERSION     ${PROJECT_VERSION}
     SOVERSION   6
@@ -80,6 +82,8 @@ target_sources(merkuro_contact PUBLIC
 install(TARGETS merkuro_contact EXPORT MerkuroContact ${KF_INSTALL_TARGETS_DEFAULT_ARGS})
 
 ## QML plugin
+
+qt_add_library(merkuro_contact_plugin SHARED)
 
 ecm_add_qml_module(merkuro_contact_plugin
     URI "org.kde.merkuro.contact"
