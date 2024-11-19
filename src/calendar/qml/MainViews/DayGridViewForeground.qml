@@ -53,103 +53,91 @@ Column {
             required property var incidences
             required property var periodStartDate
 
+            readonly property date startDate: weekDelegate.periodStartDate
+
             width: parent.width
             height: root.dayHeight
             clip: true
 
-            RowLayout {
-                width: parent.width
-                height: parent.height
-                spacing: root.spacing
-                Item {
-                    id: dayDelegate
+            ListView {
+                id: linesRepeater
 
-                    readonly property date startDate: weekDelegate.periodStartDate
+                anchors {
+                    fill: parent
+                    // Offset for date
+                    topMargin: root.showDayIndicator ? Kirigami.Units.gridUnit + Kirigami.Units.largeSpacing * 1.5 : 0
+                    rightMargin: spacing
+                }
 
-                    Layout.fillWidth: true
-                    Layout.fillHeight: true
+                // DO NOT use a ScrollView as a bug causes this to crash randomly.
+                // So we instead make the ListView act like a ScrollView on desktop. No crashing now!
+                flickableDirection: Flickable.VerticalFlick
+                boundsBehavior: Kirigami.Settings.isMobile ? Flickable.DragAndOvershootBounds : Flickable.StopAtBounds
 
-                    ListView {
-                        id: linesRepeater
+                focus: true
+                clip: true
+                spacing: root.listViewSpacing
 
-                        anchors {
-                            fill: parent
-                            // Offset for date
-                            topMargin: root.showDayIndicator ? Kirigami.Units.gridUnit + Kirigami.Units.largeSpacing * 1.5 : 0
-                            rightMargin: spacing
-                        }
+                QQC2.ScrollBar.vertical: QQC2.ScrollBar {}
 
-                        // DO NOT use a ScrollView as a bug causes this to crash randomly.
-                        // So we instead make the ListView act like a ScrollView on desktop. No crashing now!
-                        flickableDirection: Flickable.VerticalFlick
-                        boundsBehavior: Kirigami.Settings.isMobile ? Flickable.DragAndOvershootBounds : Flickable.StopAtBounds
+                onCountChanged: root.numberOfLinesShown = count
 
-                        clip: true
-                        spacing: root.listViewSpacing
+                model: weekDelegate.incidences
+                delegate: Item {
+                    id: line
 
-                        QQC2.ScrollBar.vertical: QQC2.ScrollBar {}
+                    required property var modelData
 
-                        onCountChanged: root.numberOfLinesShown = count
+                    height: Kirigami.Units.gridUnit + Kirigami.Units.smallSpacing
+                    width: ListView.view.width
 
-                        model: weekDelegate.incidences
-                        delegate: Item {
-                            id: line
+                    // Incidences
+                    Repeater {
+                        id: incidencesRepeater
+
+                        model: line.modelData
+                        delegate: DayGridViewIncidenceDelegate {
+                            id: incidenceDelegate
 
                             required property var modelData
 
-                            height: Kirigami.Units.gridUnit + Kirigami.Units.smallSpacing
-                            width: ListView.view.width
+                            starts: incidenceDelegate.modelData.starts
+                            duration: incidenceDelegate.modelData.duration
+                            incidenceId: incidenceDelegate.modelData.incidenceId
+                            occurrenceDate: incidenceDelegate.modelData.startTime
+                            occurrenceEndDate: incidenceDelegate.modelData.endTime
+                            incidencePtr: incidenceDelegate.modelData.incidencePtr
+                            allDay: incidenceDelegate.modelData.allDay
+                            isDark: root.isDark
 
-                            // Incidences
-                            Repeater {
-                                id: incidencesRepeater
-
-                                model: line.modelData
-                                delegate: DayGridViewIncidenceDelegate {
-                                    id: incidenceDelegate
-
-                                    required property var modelData
-
-                                    starts: incidenceDelegate.modelData.starts
-                                    duration: incidenceDelegate.modelData.duration
-                                    incidenceId: incidenceDelegate.modelData.incidenceId
-                                    occurrenceDate: incidenceDelegate.modelData.startTime
-                                    occurrenceEndDate: incidenceDelegate.modelData.endTime
-                                    incidencePtr: incidenceDelegate.modelData.incidencePtr
-                                    allDay: incidenceDelegate.modelData.allDay
-                                    isDark: root.isDark
-
-                                    dayWidth: root.dayWidth
-                                    height: line.height
-                                    parentViewSpacing: root.spacing
-                                    horizontalSpacing: linesRepeater.spacing
-                                    openOccurrenceId: root.openOccurrence ? root.openOccurrence.incidenceId : ""
-                                    dragDropEnabled: root.dragDropEnabled
-                                }
-                            }
+                            dayWidth: root.dayWidth
+                            height: line.height
+                            parentViewSpacing: root.spacing
+                            horizontalSpacing: linesRepeater.spacing
+                            openOccurrenceId: root.openOccurrence ? root.openOccurrence.incidenceId : ""
+                            dragDropEnabled: root.dragDropEnabled
                         }
-
-                        DayTapHandler {
-                            id: listViewMenu
-
-                            function useGridSquareDate(type, root, globalPosition) {
-                                for (const i in root.children) {
-                                    const child = root.children[i];
-                                    const localPosition = child.mapFromGlobal(globalPosition.x, globalPosition.y);
-
-                                    if(child.contains(localPosition) && child.gridSquareDate) {
-                                        IncidenceEditorManager.openNewIncidenceEditorDialog(QQC2.ApplicationWindow.window, type, child.gridSquareDate);
-                                    } else {
-                                        useGridSquareDate(type, child, globalPosition);
-                                    }
-                                }
-                            }
-
-                            onAddNewIncidence: useGridSquareDate(type, applicationWindow().contentItem, parent.mapToGlobal(clickX, clickY))
-                            onDeselect: CalendarUiUtils.appMain.incidenceInfoViewer.close()
-                        }
-
                     }
+                }
+
+                DayTapHandler {
+                    id: listViewMenu
+
+                    function useGridSquareDate(type, root, globalPosition) {
+                        for (const i in root.children) {
+                            const child = root.children[i];
+                            const localPosition = child.mapFromGlobal(globalPosition.x, globalPosition.y);
+
+                            if(child.contains(localPosition) && child.gridSquareDate) {
+                                IncidenceEditorManager.openNewIncidenceEditorDialog(QQC2.ApplicationWindow.window, type, child.gridSquareDate);
+                            } else {
+                                useGridSquareDate(type, child, globalPosition);
+                            }
+                        }
+                    }
+
+                    onAddNewIncidence: useGridSquareDate(type, applicationWindow().contentItem, parent.mapToGlobal(clickX, clickY))
+                    onDeselect: CalendarUiUtils.appMain.incidenceInfoViewer.close()
                 }
             }
         }
