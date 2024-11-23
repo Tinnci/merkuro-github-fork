@@ -170,14 +170,31 @@ int InfiniteMerkuroCalendarViewModel::moveToDate(const QDate &selectedDate, cons
     }
 
     if (firstItemDate < selectedDate.startOfDay() && newIndex == 0) {
-        newIndex = selectedDate.month() - firstItemDate.date().month() + (12 * (selectedDate.year() - firstItemDate.date().year())) + 1;
+        switch (m_scale) {
+        case MonthScale:
+            newIndex += selectedDate.month() - firstItemDate.date().month() + (12 * (selectedDate.year() - firstItemDate.date().year()));
+            break;
+        case WeekScale:
+            newIndex += firstItemDate.date().daysTo(selectedDate) / 7;
+            break;
+        case ThreeDayScale:
+            newIndex += firstItemDate.date().daysTo(selectedDate) / 3;
+            break;
+        case DayScale:
+            newIndex += firstItemDate.date().daysTo(selectedDate);
+            break;
+        default:
+            Q_UNREACHABLE();
+        }
     }
 
     while (lastItemDate <= selectedDate.startOfDay()) {
         addDates(true);
         lastItemDate = data(index(rowCount() - 1, 0), role).toDateTime();
+        qDebug() << "baap" << firstItemDate << lastItemDate << newIndex << selectedDate;
     }
 
+    qDebug() << "potato" << newIndex;
     return newIndex;
 }
 
@@ -213,6 +230,7 @@ void InfiniteMerkuroCalendarViewModel::addDayDates(const bool atEnd, const QDate
 
     for (int i = 0; i < m_datesToAdd; i++) {
         QDate startDate = startFrom.isValid() && i == 0 ? startFrom : atEnd ? m_startDates[rowCount() - 1].addDays(amount) : m_startDates[0].addDays(-amount);
+        qDebug() << "addDayDate" << startDate;
 
         if (atEnd) {
             m_startDates.append(startDate);
