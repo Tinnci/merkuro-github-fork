@@ -20,6 +20,9 @@ public:
     QVariant data(const QModelIndex &index, int role) const override;
     QHash<int, QByteArray> roleNames() const override;
 
+public Q_SLOTS:
+    void updateThreading();
+
 private:
     struct MailItem {
         KMime::Message::Ptr mail;
