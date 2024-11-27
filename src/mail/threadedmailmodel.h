@@ -32,4 +32,5 @@ private:
 
     MailModel *m_baseModel = nullptr;
     QHash<QString, std::shared_ptr<MailItem>> m_items;
+    QList<QString> m_orderedIds;
 };
