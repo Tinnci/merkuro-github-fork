@@ -6,15 +6,16 @@
 
 #include <Akonadi/Item>
 
+#include <Akonadi/EntityTreeModel>
+#include <QItemSelectionModel>
 #include <QObject>
 #include <QSortFilterProxyModel>
-#include <akonadi/entitytreemodel.h>
-#include <qitemselectionmodel.h>
 #include <qqmlregistration.h>
 
+#include "abstractmailmodel.h"
 #include "messagestatus.h"
 
-class MailModel : public QSortFilterProxyModel
+class MailModel : public QSortFilterProxyModel, AbstractMailModel
 {
     Q_OBJECT
     QML_ELEMENT

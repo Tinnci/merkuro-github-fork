@@ -3,6 +3,7 @@
 
 #include "../config-merkuro.h"
 #include "messagehandler.h"
+#include "searchmodel.h"
 #include <KAboutData>
 #include <KCrash>
 #include <KDBusService>
@@ -115,6 +116,9 @@ int main(int argc, char *argv[])
                              }
                          });
     }
+
+    SearchModel model;
+    model.setSearchString(QStringLiteral("Hello"));
 
     if (engine.rootObjects().isEmpty()) {
         return -1;
