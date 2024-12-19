@@ -14,7 +14,7 @@ import './private'
 
 Kirigami.ScrollablePage {
     id: folderView
-    title: MailManager.selectedFolderName
+    title: mailModel.folderName
 
     property var collection
 
@@ -53,7 +53,12 @@ Kirigami.ScrollablePage {
 
     ListView {
         id: mails
-        model: MailManager.folderModel
+        model: MailModel {
+            id: mailModel
+
+            collectionSelectionModel: MailManager.collectionSelectionModel
+            entryTreeModel: MailManager.entryTreeModel
+        }
         currentIndex: -1
 
         Component {
