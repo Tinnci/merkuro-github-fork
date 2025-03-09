@@ -5,58 +5,83 @@
 #include <KHolidays/HolidayRegion>
 #include <QLocale>
 
+using namespace Qt::StringLiterals;
+
 HolidayModel::HolidayModel(QObject *parent)
     : QObject(parent)
 {
-    loadSystemRegionCode();
 }
 
-void HolidayModel::loadSystemRegionCode()
+QStringList HolidayModel::holidayRegions() const
 {
-    const QLocale locale = QLocale::system();
-    const QString country = locale.name().split(u'_').last().toUpper();
-    const QString language = locale.name().split(u'_').constFirst().toLower();
+    return m_holidayRegions;
+}
 
-    QString region = KHolidays::HolidayRegion::defaultRegionCode(country, language);
-    if (!KHolidays::HolidayRegion::isValid(region)) {
-        region.clear();
+void HolidayModel::setHolidayRegions(const QStringList &holidayRegions)
+{
+    if (holidayRegions.isEmpty()) {
+        const QLocale locale = QLocale::system();
+        const QString country = locale.name().split(u'_').last().toUpper();
+        const QString language = locale.name().split(u'_').constFirst().toLower();
+
+        QString region = KHolidays::HolidayRegion::defaultRegionCode(country, language);
+        if (KHolidays::HolidayRegion::isValid(region)) {
+            m_holidayRegions = {region};
+        }
+        return;
     }
-    m_regionCode = region;
+    if (m_holidayRegions == holidayRegions) {
+        return;
+    }
+    m_holidayRegions = holidayRegions;
+    Q_EMIT holidayRegionsChanged();
+
+    loadDateRange(m_start, m_days, true);
 }
 
-QString HolidayModel::regionCode() const
+void HolidayModel::loadDateRange(const QDate &start, int days, bool force)
 {
-    return m_regionCode;
-}
-
-void HolidayModel::setRegionCode(const QString &regionCode)
-{
-    if (KHolidays::HolidayRegion::isValid(regionCode) && m_regionCode != regionCode) {
-        m_regionCode = regionCode;
+    if (!force) {
+        const auto it = std::ranges::find(m_fetchedIntervals, std::pair<QDate, int>(start, days));
+        if (it != m_fetchedIntervals.end()) {
+            // we already fetched this interval
+            return;
+        }
+    } else {
+        // reset everything
+        m_fetchedIntervals.clear();
         m_holidays.clear();
-        Q_EMIT regionCodeChanged();
+        Q_EMIT holidaysChanged();
     }
-}
 
-void HolidayModel::setDateRange(const QDate &start, const QDate &end)
-{
-    m_holidays.clear();
-    KHolidays::HolidayRegion region(m_regionCode);
-    const auto holidays = region.rawHolidays(start, end);
-    for (const auto &holiday : holidays) {
-        const QDate date = holiday.observedStartDate();
-        m_holidays[date].append(holiday.name());
+    if (days == 0) {
+        return;
     }
+
+    const QDate end = start.addDays(days);
+
+    for (const auto &regionCode : std::as_const(m_holidayRegions)) {
+        KHolidays::HolidayRegion region(regionCode);
+        const auto holidays = region.rawHolidays(start, end);
+        for (const auto &holiday : holidays) {
+            if (holiday.dayType() != KHolidays::Holiday::NonWorkday) {
+                continue;
+            }
+
+            const QDate date = holiday.observedStartDate();
+            QStringList list = m_holidays[date.toString(u"yyyy-MM-dd"_s)].toStringList();
+            if (!list.contains(holiday.name())) {
+                list.append(holiday.name());
+            }
+            m_holidays[date.toString(u"yyyy-MM-dd"_s)] = list;
+        }
+    }
+    Q_EMIT holidaysChanged();
 }
 
-QDate HolidayModel::addDaysToDate(const QDate &date, int days) const
+QVariantMap HolidayModel::holidays() const
 {
-    return date.addDays(days);
-}
-
-QStringList HolidayModel::getHolidays(const QDate &date) const
-{
-    return m_holidays.value(date);
+    return m_holidays;
 }
 
 #include "moc_holidaymodel.cpp"
