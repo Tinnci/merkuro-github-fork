@@ -1,6 +1,8 @@
 // SPDX-FileCopyrightText: 2022 Claudio Cambra <claudio.cambra@gmail.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
+pragma ComponentBehavior: Bound
+
 import QtQuick
 import QtQml
 import QtQuick.Layouts
@@ -296,7 +298,7 @@ QQC2.ScrollView {
                                     showClickFeedback: true
                                     background: Calendar.IncidenceDelegateBackground {
                                         id: incidenceDelegateBackground
-                                        isOpenOccurrence: parent.isOpenOccurrence
+                                        isOpenOccurrence: incidenceCard.isOpenOccurrence
                                         isDark: scrollView.isDark
                                     }
 
@@ -304,7 +306,7 @@ QQC2.ScrollView {
 
                                     // Drag reposition animations -- when the incidence goes to the section of the view
                                     Behavior on x {
-                                        enabled: repositionAnimationEnabled
+                                        enabled: incidenceCard.repositionAnimationEnabled
                                         NumberAnimation {
                                             duration: Kirigami.Units.shortDuration
                                             easing.type: Easing.OutCubic
@@ -312,7 +314,7 @@ QQC2.ScrollView {
                                     }
 
                                     Behavior on y {
-                                        enabled: repositionAnimationEnabled
+                                        enabled: incidenceCard.repositionAnimationEnabled
                                         NumberAnimation {
                                             duration: Kirigami.Units.shortDuration
                                             easing.type: Easing.OutCubic
@@ -357,7 +359,7 @@ QQC2.ScrollView {
                                                 Layout.maximumHeight: Kirigami.Units.iconSizes.medium
 
                                                 color: incidenceCard.isOpenOccurrence ?
-                                                    (LabelUtils.isDarkColor(modelData.color) ? "white" : "black") :
+                                                    (Calendar.LabelUtils.isDarkColor(modelData.color) ? "white" : "black") :
                                                     cardContents.textColor
                                                 Behavior on color { ColorAnimation { duration: Kirigami.Units.shortDuration; easing.type: Easing.OutCubic } }
                                             }
@@ -399,7 +401,7 @@ QQC2.ScrollView {
                                                 Layout.fillHeight: true
                                                 source: "appointment-recurring"
                                                 isMask: true
-                                                color: incidenceCard.isOpenOccurrence ? (LabelUtils.isDarkColor(modelData.color) ? "white" : "black") :
+                                                color: incidenceCard.isOpenOccurrence ? (Calendar.LabelUtils.isDarkColor(modelData.color) ? "white" : "black") :
                                                     cardContents.textColor
                                                 Behavior on color { ColorAnimation { duration: Kirigami.Units.shortDuration; easing.type: Easing.OutCubic } }
                                                 visible: modelData.recurs
@@ -409,7 +411,7 @@ QQC2.ScrollView {
                                                 Layout.fillHeight: true
                                                 source: "appointment-reminder"
                                                 isMask: true
-                                                color: incidenceCard.isOpenOccurrence ? (LabelUtils.isDarkColor(modelData.color) ? "white" : "black") :
+                                                color: incidenceCard.isOpenOccurrence ? (Calendar.LabelUtils.isDarkColor(modelData.color) ? "white" : "black") :
                                                     cardContents.textColor
                                                 Behavior on color { ColorAnimation { duration: Kirigami.Units.shortDuration; easing.type: Easing.OutCubic } }
                                                 visible: modelData.hasReminders
@@ -426,7 +428,7 @@ QQC2.ScrollView {
                                             Layout.row: scrollView.isLarge ? 0 : 1
 
                                             horizontalAlignment: scrollView.isLarge ? Text.AlignRight : Text.AlignLeft
-                                            color: incidenceCard.isOpenOccurrence ? (LabelUtils.isDarkColor(modelData.color) ? "white" : "black") :
+                                            color: incidenceCard.isOpenOccurrence ? (Calendar.LabelUtils.isDarkColor(modelData.color) ? "white" : "black") :
                                                 cardContents.textColor
                                             Behavior on color { ColorAnimation { duration: Kirigami.Units.shortDuration; easing.type: Easing.OutCubic } }
                                             text: {
