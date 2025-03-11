@@ -7,8 +7,6 @@ import QtQuick
 import org.kde.kirigami as Kirigami
 
 import org.kde.merkuro.calendar as Calendar
-import org.kde.merkuro.utils
-import "dateutils.js" as DateUtils
 
 Item {
     id: root

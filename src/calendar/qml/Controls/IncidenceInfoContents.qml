@@ -7,7 +7,6 @@ import QtQuick.Controls as QQC2
 import QtQuick.Layouts
 import QtLocation
 import org.kde.merkuro.calendar as Calendar
-import "labelutils.js" as LabelUtils
 
 QQC2.ScrollView {
     id: root
@@ -435,7 +434,7 @@ QQC2.ScrollView {
                     !locationLabel.isLink
                 visible: active && (item.queryHasResults || item.hasCoordinate)
 
-                sourceComponent: LocationMap {
+                sourceComponent: Calendar.LocationMap {
                     id: map
                     query: root.incidenceWrapper.location
                     selectedLatitude: root.incidenceWrapper.hasGeo ? root.incidenceWrapper.geoLatitude : NaN
@@ -597,7 +596,7 @@ QQC2.ScrollView {
                 height: root.relatedIncidenceDelegateHeight
 
                 active: root.incidenceWrapper.parent !== ""
-                sourceComponent: RelatedIncidenceDelegate {
+                sourceComponent: Calendar.RelatedIncidenceDelegate {
                     incidenceWrapper: root.incidenceWrapper.parentIncidence
                 }
             }
@@ -619,7 +618,7 @@ QQC2.ScrollView {
 
             Repeater {
                 model: subTaskColumn.visible ? root.incidenceWrapper.childIncidences : []
-                delegate: RelatedIncidenceDelegate {
+                delegate: Calendar.RelatedIncidenceDelegate {
                     implicitHeight: root.relatedIncidenceDelegateHeight
                     incidenceWrapper: modelData
                 }

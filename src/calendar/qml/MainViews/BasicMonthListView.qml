@@ -8,9 +8,6 @@ import QtQuick.Controls as QQC2
 import org.kde.kirigami as Kirigami
 
 import org.kde.merkuro.calendar as Calendar
-import org.kde.merkuro.utils
-import "dateutils.js" as DateUtils
-import "labelutils.js" as LabelUtils
 
 /**
  * This is the schedule view
@@ -105,10 +102,10 @@ QQC2.ScrollView {
                 dayGrid.isToday ? Kirigami.Theme.activeBackgroundColor :
                 Kirigami.Theme.backgroundColor
 
-            DayTapHandler {
+            Calendar.DayTapHandler {
                 id: dayTapHandler
                 addDate: periodStartDate
-                onDeselect: CalendarUiUtils.appMain.incidenceInfoViewer.close()
+                onDeselect: Calendar.CalendarUiUtils.appMain.incidenceInfoViewer.close()
             }
 
             DropArea {
@@ -297,7 +294,7 @@ QQC2.ScrollView {
                                     bottomPadding: paddingSize
 
                                     showClickFeedback: true
-                                    background: IncidenceDelegateBackground {
+                                    background: Calendar.IncidenceDelegateBackground {
                                         id: incidenceDelegateBackground
                                         isOpenOccurrence: parent.isOpenOccurrence
                                         isDark: scrollView.isDark
@@ -347,7 +344,7 @@ QQC2.ScrollView {
                                         columns: scrollView.isLarge ? 3 : 2
                                         rows: scrollView.isLarge ? 1 : 2
 
-                                        property color textColor: LabelUtils.getIncidenceLabelColor(modelData.color, scrollView.isDark)
+                                        property color textColor: Calendar.LabelUtils.getIncidenceLabelColor(modelData.color, scrollView.isDark)
 
                                         RowLayout {
                                             Kirigami.Icon {
@@ -452,7 +449,7 @@ QQC2.ScrollView {
                                         }
                                     }
 
-                                    IncidenceMouseArea {
+                                    Calendar.IncidenceMouseArea {
                                         id: incidenceMouseArea
 
                                         preventStealing: !Kirigami.Settings.tabletMode && !Kirigami.Settings.isMobile

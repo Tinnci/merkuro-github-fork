@@ -16,7 +16,6 @@ import org.kde.kirigamiaddons.dateandtime
 import org.kde.merkuro.contact
 import org.kde.merkuro.calendar as Calendar
 import org.kde.akonadi as Akonadi
-import "labelutils.js" as LabelUtils
 
 Kirigami.ScrollablePage {
     id: root

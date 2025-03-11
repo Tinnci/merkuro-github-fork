@@ -10,9 +10,6 @@ import org.kde.kirigamiaddons.delegates as Delegates
 import org.kde.kitemmodels
 
 import org.kde.merkuro.calendar as Calendar
-import org.kde.merkuro.utils
-import "dateutils.js" as DateUtils
-import "labelutils.js" as LabelUtils
 
 ListView {
     id: root

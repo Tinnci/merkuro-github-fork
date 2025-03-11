@@ -8,7 +8,6 @@ import QtQuick.Controls as QQC2
 import org.kde.kirigami as Kirigami
 
 import org.kde.merkuro.calendar as Calendar
-import org.kde.merkuro.utils
 
 Kirigami.Page {
     id: root
@@ -44,7 +43,7 @@ Kirigami.Page {
     Kirigami.Theme.inherit: false
     Kirigami.Theme.colorSet: Kirigami.Theme.View
 
-    titleDelegate: ViewTitleDelegate {}
+    titleDelegate: Calendar.ViewTitleDelegate {}
 
     background: Rectangle {
         color: Kirigami.Theme.backgroundColor

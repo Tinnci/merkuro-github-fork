@@ -7,9 +7,6 @@ import QtQuick.Controls as QQC2
 import org.kde.kirigami as Kirigami
 
 import org.kde.merkuro.calendar as Calendar
-import org.kde.merkuro.utils
-import "dateutils.js" as DateUtils
-import "labelutils.js" as LabelUtils
 
 Item {
     id: incidenceDelegate
@@ -206,7 +203,7 @@ Item {
         }
     }
 
-    IncidenceMouseArea {
+    Calendar.IncidenceMouseArea {
         id: mouseArea
         incidenceData: modelData
         collectionId: modelData.collectionId
