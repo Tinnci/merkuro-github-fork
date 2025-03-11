@@ -3,6 +3,8 @@
 
 // SPDX-License-Identifier: GPL-2.0-or-later
 
+pragma ComponentBehavior: Bound
+
 import QtQuick
 import QtQuick.Layouts
 import QtQuick.Controls as QQC2
@@ -63,6 +65,7 @@ Kirigami.ScrollablePage {
             onTriggered: Calendar.IncidenceEditorManager.openNewIncidenceEditorDialog(root.QQC2.ApplicationWindow.window, Calendar.IncidenceWrapper.TypeTodo, new Date(), Calendar.Filter.collectionId);
         },
         Kirigami.Action {
+            id: action
             text: i18n("Sort")
             icon.name: "view-sort"
 
