@@ -5,8 +5,6 @@ import QtQuick
 import QtQuick.Layouts
 import QtQuick.Controls
 
-import "dateutils.js" as DateUtils
-
 Row {
     id: root
     property date startDate

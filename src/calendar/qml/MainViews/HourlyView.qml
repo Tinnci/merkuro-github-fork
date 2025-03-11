@@ -10,7 +10,6 @@ import org.kde.kirigamiaddons.statefulapp as StatefulApp
 
 import org.kde.merkuro.calendar as Calendar
 import org.kde.merkuro.components
-import org.kde.merkuro.utils
 
 Kirigami.Page {
     id: root

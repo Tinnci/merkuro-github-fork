@@ -8,7 +8,6 @@ import QtQuick.Layouts
 import "labelutils.js" as LabelUtils
 
 import org.kde.merkuro.calendar
-import org.kde.merkuro.utils
 
 Item {
     id: root

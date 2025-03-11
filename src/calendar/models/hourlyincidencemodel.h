@@ -9,6 +9,7 @@
 #include <QList>
 #include <QSharedPointer>
 #include <QTimer>
+#include <qqmlintegration.h>
 
 namespace KCalendarCore
 {
@@ -23,6 +24,8 @@ class Incidence;
 class HourlyIncidenceModel : public QAbstractListModel
 {
     Q_OBJECT
+    QML_ELEMENT
+
     Q_PROPERTY(int periodLength READ periodLength WRITE setPeriodLength NOTIFY periodLengthChanged)
     Q_PROPERTY(HourlyIncidenceModel::Filters filters READ filters WRITE setFilters NOTIFY filtersChanged)
     Q_PROPERTY(IncidenceOccurrenceModel *model READ model WRITE setModel NOTIFY modelChanged)

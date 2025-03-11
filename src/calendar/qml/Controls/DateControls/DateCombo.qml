@@ -8,8 +8,6 @@ import org.kde.kirigami as Kirigami
 import org.kde.kirigamiaddons.dateandtime
 import org.kde.merkuro.calendar as Calendar
 
-import "dateutils.js" as DateUtils
-
 QQC2.ComboBox {
     id: root
 

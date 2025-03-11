@@ -11,12 +11,8 @@ import QtQuick.Layouts
 import QtQml.Models 2.15
 import Qt.labs.platform
 
-import "dateutils.js" as DateUtils
-import "labelutils.js" as LabelUtils
 import org.kde.merkuro.calendar
-import org.kde.merkuro.utils
 import org.kde.merkuro.components
-import org.kde.merkuro.calendar.private 1.0
 
 BaseApplication {
     id: root

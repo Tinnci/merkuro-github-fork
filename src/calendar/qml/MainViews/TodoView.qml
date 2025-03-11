@@ -12,10 +12,7 @@ import org.kde.kitemmodels
 import org.kde.kirigamiaddons.statefulapp as StatefulApp
 
 import org.kde.merkuro.calendar as Calendar
-import org.kde.merkuro.utils
 import org.kde.merkuro.components
-import "dateutils.js" as DateUtils
-import "labelutils.js" as LabelUtils
 
 Kirigami.ScrollablePage {
     id: root

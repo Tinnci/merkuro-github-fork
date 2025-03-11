@@ -8,9 +8,6 @@ import QtQuick.Controls as QQC2
 import org.kde.kirigami as Kirigami
 
 import org.kde.merkuro.calendar as Calendar
-import org.kde.merkuro.utils
-import "dateutils.js" as DateUtils
-import "labelutils.js" as LabelUtils
 
 /**
  * This is the schedule view
