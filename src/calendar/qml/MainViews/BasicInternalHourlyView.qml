@@ -8,9 +8,6 @@ import org.kde.kirigami as Kirigami
 import Qt5Compat.GraphicalEffects
 
 import org.kde.merkuro.calendar as Calendar
-import org.kde.merkuro.utils
-import "dateutils.js" as DateUtils
-import "labelutils.js" as LabelUtils
 
 Column {
     id: viewColumn
@@ -22,10 +19,10 @@ Column {
     property date endDate: Calendar.Utils.addDaysToDate(startDate, viewColumn.daysToShow)
 
     readonly property date currentDate: Calendar.DateTimeState.currentDate
-    readonly property int daysFromWeekStart: DateUtils.fullDaysBetweenDates(startDate, currentDate) - 1
+    readonly property int daysFromWeekStart: Calendar.DateUtils.fullDaysBetweenDates(startDate, currentDate) - 1
 
     readonly property int minutesFromStartOfDay: (currentDate.getHours() * 60) + currentDate.getMinutes()
-    readonly property bool isDark: CalendarUiUtils.darkMode
+    readonly property bool isDark: Calendar.CalendarUiUtils.darkMode
     property bool dragDropEnabled: true
 
     property int allDayViewDelegateHeight: Kirigami.Units.gridUnit + Kirigami.Units.smallSpacing
@@ -367,7 +364,7 @@ Column {
 
                                                 model: line.modelData
 
-                                                delegate: DayGridViewIncidenceDelegate {
+                                                delegate: Calendar.DayGridViewIncidenceDelegate {
                                                     id: incidenceDelegate
 
                                                     required property var modelData
@@ -430,7 +427,7 @@ Column {
                                                 height: linesListViewScrollView.height
                                                 color: multiDayViewBackground.bgColor
 
-                                                DayTapHandler {
+                                                Calendar.DayTapHandler {
                                                     id: listViewMenu
 
                                                     addDate: parent.date
@@ -481,7 +478,7 @@ Column {
         }
     }
 
-    ResizerSeparator {
+    Calendar.ResizerSeparator {
         id: headerBottomSeparator
         width: viewColumn.width
         height: viewColumn.gridLineWidth
@@ -687,7 +684,7 @@ Column {
                             required property var incidences
                             required property var periodStartDateTime
 
-                            readonly property date columnDate: DateUtils.addDaysToDate(viewColumn.startDate, index)
+                            readonly property date columnDate: Calendar.DateUtils.addDaysToDate(viewColumn.startDate, index)
                             readonly property string formatedDate: Qt.formatDate(columnDate, 'yyyy-MM-dd')
                             readonly property bool isHoliday: formatedDate in Calendar.HolidayModel.holidays
                             readonly property bool isToday: columnDate.getDate() === viewColumn.currentDate.getDate() &&
@@ -817,10 +814,10 @@ Column {
                                             }
                                         }
 
-                                        DayTapHandler {
+                                        Calendar.DayTapHandler {
                                             id: backgroundDayTapHandler
-                                            addDate: new Date(DateUtils.addDaysToDate(viewColumn.startDate, dayColumn.index).setHours(backgroundRectangle.index))
-                                            onDeselect: CalendarUiUtils.appMain.incidenceInfoViewer.close()
+                                            addDate: new Date(Calendar.DateUtils.addDaysToDate(viewColumn.startDate, dayColumn.index).setHours(backgroundRectangle.index))
+                                            onDeselect: Calendar.CalendarUiUtils.appMain.incidenceInfoViewer.close()
                                         }
                                     }
                                 }
@@ -913,7 +910,7 @@ Column {
                                             }
                                         ]
 
-                                        IncidenceDelegateBackground {
+                                        Calendar.IncidenceDelegateBackground {
                                             id: incidenceDelegateBackground
                                             isOpenOccurrence: parent.isOpenOccurrence
                                             isDark: viewColumn.isDark
@@ -923,8 +920,8 @@ Column {
                                             id: incidenceContents
 
                                             readonly property color textColor: isOpenOccurrence ?
-                                                (LabelUtils.isDarkColor(modelData.color) ? "white" : "black") :
-                                                LabelUtils.getIncidenceLabelColor(modelData.color, viewColumn.isDark)
+                                                (Calendar.LabelUtils.isDarkColor(modelData.color) ? "white" : "black") :
+                                                Calendar.LabelUtils.getIncidenceLabelColor(modelData.color, viewColumn.isDark)
                                             readonly property bool isTinyHeight: parent.height <= Kirigami.Units.gridUnit
 
                                             clip: true
@@ -981,7 +978,7 @@ Column {
                                             }
                                         }
 
-                                        IncidenceMouseArea {
+                                        Calendar.IncidenceMouseArea {
                                             id: mouseArea
                                             preventStealing: !Kirigami.Settings.tabletMode && !Kirigami.Settings.isMobile
                                             incidenceData: modelData
@@ -995,7 +992,7 @@ Column {
                                             onTodoCompletedClicked: CalendarUiUtils.completeTodo(incidencePtr)
                                         }
 
-                                        ResizerSeparator {
+                                        Calendar.ResizerSeparator {
                                             id: hourlyIncidenceResizer
                                             objectName: "endDtResizeMouseArea"
                                             anchors.left: parent.left

@@ -8,7 +8,6 @@ import org.kde.kirigami as Kirigami
 import Qt5Compat.GraphicalEffects
 
 import org.kde.merkuro.calendar as Calendar
-import org.kde.merkuro.utils
 
 PathView {
     id: root

@@ -13,11 +13,15 @@
 #include <QWindow>
 #include <abstractmerkuroapplication.h>
 
+#include <qqmlintegration.h>
+
 class QQuickWindow;
 
 class CalendarApplication : public AbstractMerkuroApplication
 {
     Q_OBJECT
+    QML_ELEMENT
+    QML_SINGLETON
 
     Q_PROPERTY(QWindow *window READ window WRITE setWindow NOTIFY windowChanged)
     Q_PROPERTY(Akonadi::ETMCalendar::Ptr calendar MEMBER m_calendar NOTIFY calendarChanged)

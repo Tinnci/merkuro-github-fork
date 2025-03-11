@@ -16,7 +16,6 @@ import org.kde.kirigamiaddons.dateandtime
 import org.kde.merkuro.contact
 import org.kde.merkuro.calendar as Calendar
 import org.kde.akonadi as Akonadi
-import "labelutils.js" as LabelUtils
 
 Kirigami.ScrollablePage {
     id: root
@@ -287,7 +286,7 @@ Kirigami.ScrollablePage {
                     }
 
 
-                    DateCombo {
+                    Calendar.DateCombo {
                         id: incidenceStartDateCombo
 
                         Layout.fillWidth: true
@@ -295,7 +294,7 @@ Kirigami.ScrollablePage {
                         dateTime: root.incidenceWrapper.incidenceStart
                         onNewDateChosen: root.incidenceWrapper.setIncidenceStartDate(day, month, year)
                     }
-                    TimeCombo {
+                    Calendar.TimeCombo {
                         id: incidenceStartTimeCombo
 
                         Layout.fillWidth: true
@@ -333,7 +332,7 @@ Kirigami.ScrollablePage {
                         visible: incidenceForm.isTodo
                     }
 
-                    DateCombo {
+                    Calendar.DateCombo {
                         id: incidenceEndDateCombo
 
                         Layout.fillWidth: true
@@ -344,7 +343,7 @@ Kirigami.ScrollablePage {
                         }
                         enabled: !incidenceForm.isTodo || (incidenceForm.isTodo && incidenceEndCheckBox.checked)
                     }
-                    TimeCombo {
+                    Calendar.TimeCombo {
                         id: incidenceEndTimeCombo
 
                         Layout.fillWidth: true
@@ -572,7 +571,7 @@ Kirigami.ScrollablePage {
                         QQC2.RadioButton {
                             property int dateOfMonth: incidenceStartDateCombo.dateFromText.getDate()
 
-                            text: i18nc("%1 is the day number of month", "The %1 of each month", LabelUtils.numberToString(dateOfMonth))
+                            text: i18nc("%1 is the day number of month", "The %1 of each month", Calendar.LabelUtils.numberToString(dateOfMonth))
 
                             checked: root.incidenceWrapper.recurrenceData.type === 6 // Monthly on day (1st of month)
                             onClicked: customRecurrenceLayout.setOccurrence()
@@ -584,7 +583,7 @@ Kirigami.ScrollablePage {
                             property int weekOfMonth: Math.ceil((incidenceStartDateCombo.dateFromText.getDate() + 6 - incidenceStartDateCombo.dateFromText.getDay())/7);
                             property string dayOfWeekString: Qt.locale().dayName(incidenceStartDateCombo.dateFromText.getDay())
 
-                            text: i18nc("the weekOfMonth dayOfWeekString of each month", "The %1 %2 of each month", LabelUtils.numberToString(weekOfMonth), dayOfWeekString)
+                            text: i18nc("the weekOfMonth dayOfWeekString of each month", "The %1 %2 of each month", Calendar.LabelUtils.numberToString(weekOfMonth), dayOfWeekString)
                             checked: root.incidenceWrapper.recurrenceData.type === 5 // Monthly on position
                             onTextChanged: if(checked) { root.incidenceWrapper.setMonthlyPosRecurrence(weekOfMonth, dayOfWeek); }
                             onClicked: root.incidenceWrapper.setMonthlyPosRecurrence(weekOfMonth, dayOfWeek)
@@ -619,7 +618,7 @@ Kirigami.ScrollablePage {
                             }
                             popup.z: 1000
                         }
-                        DateCombo {
+                        Calendar.DateCombo {
                             id: recurEndDateCombo
 
                             Layout.fillWidth: true
@@ -808,7 +807,7 @@ Kirigami.ScrollablePage {
                         asynchronous: true
                         active: visible
 
-                        sourceComponent: LocationMap {
+                        sourceComponent: Calendar.LocationMap {
                             id: map
                             selectMode: true
                             query: root.incidenceWrapper.location
