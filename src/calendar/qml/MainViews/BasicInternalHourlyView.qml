@@ -326,8 +326,6 @@ Column {
                             spacing: viewColumn.gridLineWidth
 
                             Item {
-                                id: dayDelegate
-
                                 readonly property date startDate: weekDelegate.periodStartDate
 
                                 Layout.fillWidth: true

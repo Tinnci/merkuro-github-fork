@@ -1,6 +1,8 @@
 // SPDX-FileCopyrightText: 2024 Claudio Cambra <claudio.cambra@kde.org>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
+pragma ComponentBehavior: Bound
+
 import QtQuick
 import QtQuick.Layouts
 import QtQuick.Controls as QQC2
@@ -46,7 +48,7 @@ Column {
 
         function onShowHolidaysInCalendarViewsChanged(): void {
             if (Calendar.Config.showHolidaysInCalendarViews) {
-                Calendar.HolidayModel.loadDateRange(startDate, daysToShow)
+                Calendar.HolidayModel.loadDateRange(root.startDate, root.daysToShow)
             }
         }
     }
@@ -169,24 +171,26 @@ Column {
                                         id: incidenceDropArea
                                         anchors.fill: parent
                                         z: 9999
-                                        onDropped: if (root.isCurrentView) {
-                                            if (DateUtils.sameDay(gridItem.date, drop.source.occurrenceDate)) {
-                                                return;
+                                        onDropped: drop => {
+                                            if (root.isCurrentView) {
+                                                if (Calendar.DateUtils.sameDay(gridItem.date, drop.source.occurrenceDate)) {
+                                                    return;
+                                                }
+                                                const pos = mapToItem(parentGridView, backgroundRectangle.x, backgroundRectangle.y);
+                                                drop.source.caughtX = pos.x + root.listViewSpacing;
+                                                drop.source.caughtY = root.showDayIndicator ?
+                                                    pos.y + Kirigami.Units.gridUnit + Kirigami.Units.largeSpacing * 1.5 :
+                                                    pos.y;
+                                                drop.source.caught = true;
+
+                                                const incidenceWrapper = Calendar.CalendarManager.createIncidenceWrapper();
+                                                incidenceWrapper.incidenceItem = Calendar.CalendarManager.incidenceItem(drop.source.incidencePtr);
+
+                                                let sameTimeOnDate = new Date(gridItem.date);
+                                                sameTimeOnDate = new Date(sameTimeOnDate.setHours(drop.source.occurrenceDate.getHours(), drop.source.occurrenceDate.getMinutes()));
+                                                const offset = sameTimeOnDate.getTime() - drop.source.occurrenceDate.getTime();
+                                                CalendarUiUtils.setUpIncidenceDateChange(incidenceWrapper, offset, offset, drop.source.occurrenceDate, drop.source)
                                             }
-                                            const pos = mapToItem(parentGridView, backgroundRectangle.x, backgroundRectangle.y);
-                                            drop.source.caughtX = pos.x + root.listViewSpacing;
-                                            drop.source.caughtY = root.showDayIndicator ?
-                                                pos.y + Kirigami.Units.gridUnit + Kirigami.Units.largeSpacing * 1.5 :
-                                                pos.y;
-                                            drop.source.caught = true;
-
-                                            const incidenceWrapper = Calendar.CalendarManager.createIncidenceWrapper();
-                                            incidenceWrapper.incidenceItem = Calendar.CalendarManager.incidenceItem(drop.source.incidencePtr);
-
-                                            let sameTimeOnDate = new Date(gridItem.date);
-                                            sameTimeOnDate = new Date(sameTimeOnDate.setHours(drop.source.occurrenceDate.getHours(), drop.source.occurrenceDate.getMinutes()));
-                                            const offset = sameTimeOnDate.getTime() - drop.source.occurrenceDate.getTime();
-                                            CalendarUiUtils.setUpIncidenceDateChange(incidenceWrapper, offset, offset, drop.source.occurrenceDate, drop.source)
                                         }
                                     }
                                 }
@@ -198,8 +202,8 @@ Column {
                                     flat: true
                                     visible: root.showDayIndicator
                                     enabled: root.daysToShow > 1
-                                    onClicked: CalendarUiUtils.openDayLayer(gridItem.date)
-                                    activeFocusOnTab: isCurrentView
+                                    onClicked: Calendar.CalendarUiUtils.openDayLayer(gridItem.date)
+                                    activeFocusOnTab: root.isCurrentView
 
                                     anchors {
                                         top: parent.top

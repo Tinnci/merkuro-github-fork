@@ -1,6 +1,8 @@
 // SPDX-FileCopyrightText: 2021 Claudio Cambra <claudio.cambra@gmail.com>
 // SPDX-License-Identifier: LGPL-2.1-or-later
 
+pragma ComponentBehavior: Bound
+
 import QtCore
 import QtQuick
 import QtQuick.Controls as QQC2
@@ -20,7 +22,7 @@ import org.kde.akonadi as Akonadi
 Kirigami.ScrollablePage {
     id: root
 
-    signal cancel()
+    signal cancel
 
     // Setting the incidenceWrapper here and now causes some *really* weird behaviour.
     // Set it after this component has already been instantiated.
@@ -63,23 +65,23 @@ Kirigami.ScrollablePage {
         standardButtons: QQC2.DialogButtonBox.Cancel
 
         QQC2.Button {
-            icon.name: editMode ? "document-save" : "list-add"
-            text: editMode ? i18n("Save") : i18n("Add")
-            enabled: root.validDates && incidenceWrapper.summary && incidenceWrapper.collectionId
+            icon.name: root.editMode ? "document-save" : "list-add"
+            text: root.editMode ? i18n("Save") : i18n("Add")
+            enabled: root.validDates && root.incidenceWrapper.summary && incidenceWrapper.collectionId
             QQC2.DialogButtonBox.buttonRole: QQC2.DialogButtonBox.AcceptRole
         }
 
-        onRejected: cancel()
+        onRejected: root.cancel()
         onAccepted: submitAction.trigger()
     }
 
     QQC2.Action {
         id: submitAction
-        enabled: root.validDates && incidenceWrapper.summary && incidenceWrapper.collectionId
+        enabled: root.validDates && root.incidenceWrapper.summary && incidenceWrapper.collectionId
         shortcut: "Return"
         onTriggered: {
-            if (editMode) {
-                Calendar.CalendarManager.editIncidence(incidenceWrapper);
+            if (root.editMode) {
+                Calendar.CalendarManager.editIncidence(root.incidenceWrapper);
             } else if (root.validDates) {
                 if(root.incidenceWrapper.collectionId < 0) {
                     root.incidenceWrapper.collectionId = editorLoader.item.calendarCombo.currentValue;
@@ -122,7 +124,7 @@ Kirigami.ScrollablePage {
         Layout.fillWidth: true
         Layout.fillHeight: true
 
-        active: incidenceWrapper !== undefined
+        active: root.incidenceWrapper !== undefined
         sourceComponent: ColumnLayout {
 
             Layout.fillWidth: true
@@ -134,7 +136,7 @@ Kirigami.ScrollablePage {
             property bool validEndDate: incidenceForm.isTodo ?
                 incidenceEndDateCombo.validDate || !incidenceEndCheckBox.checked :
                 incidenceEndDateCombo.validDate
-            property bool validFormDates: validStartDate && (validEndDate || incidenceWrapper.allDay)
+            property bool validFormDates: validStartDate && (validEndDate || root.incidenceWrapper.allDay)
 
             property alias attendeesColumnY: attendeesColumn.y
 
@@ -179,7 +181,7 @@ Kirigami.ScrollablePage {
                     id: summaryField
 
                     Kirigami.FormData.label: i18n("Summary:")
-                    placeholderText: switch (incidenceWrapper.incidenceType) {
+                    placeholderText: switch (root.incidenceWrapper.incidenceType) {
                     case Calendar.IncidenceWrapper.TypeTodo:
                         return i18n("Add a title for your task")
                     case Calendar.IncidenceWrapper.TypeEvent:
@@ -435,7 +437,7 @@ Kirigami.ScrollablePage {
                     function setOccurrence() {
                         root.incidenceWrapper.setRegularRecurrence(recurScaleRuleCombobox.currentValue, recurFreqRuleSpinbox.value);
 
-                        if(recurScaleRuleCombobox.currentValue === IncidenceWrapper.Weekly) {
+                        if(recurScaleRuleCombobox.currentValue === Calendar.IncidenceWrapper.Weekly) {
                             weekdayCheckboxRepeater.setWeekdaysRepeat();
                         }
                     }
@@ -518,6 +520,7 @@ Kirigami.ScrollablePage {
                         Repeater {
                             model: 7
                             delegate: QQC2.Label {
+                                required property int index
                                 Layout.fillWidth: true
                                 horizontalAlignment: Text.AlignHCenter
                                 text: Qt.locale().dayName(Qt.locale().firstDayOfWeek + index, Locale.ShortFormat)
@@ -539,6 +542,7 @@ Kirigami.ScrollablePage {
 
                             model: 7
                             delegate: QQC2.CheckBox {
+                                required property int index
                                 Layout.alignment: Qt.AlignHCenter
                                 // We make sure we get dayNumber per the day of the week number used by C++ Qt
                                 property int dayNumber: Qt.locale().firstDayOfWeek + index > 7 ?
@@ -613,8 +617,10 @@ Kirigami.ScrollablePage {
                                 {display: i18n("After"), duration: 1}
                             ]
                             delegate: Delegates.RoundedItemDelegate {
-                                text: modelData.display
-                                onClicked: root.incidenceWrapper.setRecurrenceDataItem("duration", modelData.duration)
+                                required property string display
+                                required property int duration
+                                text: display
+                                onClicked: root.incidenceWrapper.setRecurrenceDataItem("duration", duration)
                             }
                             popup.z: 1000
                         }
@@ -776,6 +782,7 @@ Kirigami.ScrollablePage {
                             onLocationsChanged: locationField.openOrCloseLocationsPopup()
                         }
                         delegate: Delegates.RoundedItemDelegate {
+                            required property var locationData
                             text: locationData.address.text
                             onClicked: root.incidenceWrapper.location = locationData.address.text
                         }

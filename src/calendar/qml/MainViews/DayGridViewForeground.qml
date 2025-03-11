@@ -1,6 +1,8 @@
 // SPDX-FileCopyrightText: 2024 Claudio Cambra <claudio.cambra@kde.org>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
+pragma ComponentBehavior: Bound
+
 import QtQuick
 import QtQuick.Layouts
 import QtQuick.Controls as QQC2
