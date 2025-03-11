@@ -3,6 +3,8 @@
 // SPDX-FileCopyrightText: 2021 Claudio Cambra <claudio.cambra@gmail.com>
 // SPDX-License-Identifier: GPL-2.0-or-later
 
+pragma ComponentBehavior: Bound
+
 import QtQuick
 import QtQuick.Layouts
 import QtQuick.Controls as QQC2
@@ -81,7 +83,7 @@ Kirigami.Page {
             anchors.fill: parent
 
             firstDayOfMonth: Calendar.DateTimeState.firstDayOfMonth
-            startDate: DateUtils.getFirstDayOfWeek(firstDayOfMonth)
+            startDate: Calendar.DateUtils.getFirstDayOfWeek(firstDayOfMonth)
 
             dragDropEnabled: root.dragDropEnabled
             openOccurrence: root.openOccurrence

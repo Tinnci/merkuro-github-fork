@@ -2,6 +2,8 @@
 
 // SPDX-License-Identifier: GPL-2.0-or-later
 
+pragma ComponentBehavior: Bound
+
 import QtQuick
 import QtQuick.Layouts
 import QtQuick.Controls as QQC2
@@ -90,7 +92,7 @@ ListView {
                     elide: Text.ElideRight
 
                     font.weight: Font.Bold
-                    color: isOverdue ? Kirigami.Theme.negativeTextColor : isToday ? Kirigami.Theme.highlightColor : Kirigami.Theme.textColor
+                    color: listSection.isOverdue ? Kirigami.Theme.negativeTextColor : listSection.isToday ? Kirigami.Theme.highlightColor : Kirigami.Theme.textColor
                 }
 
                 Kirigami.Separator {
@@ -189,10 +191,10 @@ ListView {
 
         Kirigami.Theme.inherit: false
         Kirigami.Theme.colorSet: Kirigami.Theme.View
-        Kirigami.Theme.highlightColor: LabelUtils.getIncidenceDelegateBackgroundColor(color, root.isDark)
+        Kirigami.Theme.highlightColor: Calendar.LabelUtils.getIncidenceDelegateBackgroundColor(color, root.isDark)
 
         Behavior on x {
-            enabled: repositionAnimationEnabled
+            enabled: listItem.repositionAnimationEnabled
             NumberAnimation {
                 duration: Kirigami.Units.shortDuration
                 easing.type: Easing.OutCubic
@@ -200,7 +202,7 @@ ListView {
         }
 
         Behavior on y {
-            enabled: repositionAnimationEnabled
+            enabled: listItem.repositionAnimationEnabled
             NumberAnimation {
                 duration: Kirigami.Units.shortDuration
                 easing.type: Easing.OutCubic
@@ -312,7 +314,7 @@ ListView {
                         id: tagsRepeater
                         model: listItem.todoCategories // From todoModel
 
-                        Calendar.Tag {
+                        delegate: Calendar.Tag {
                             width: implicitWidth > tagFlow.width ? tagFlow.width : implicitWidth
                             text: modelData
                             showAction: false
