@@ -97,6 +97,9 @@ ecm_add_qml_module(merkuro_calendar_static GENERATE_PLUGIN_SOURCE
     DEPENDENCIES
         QtLocation
         org.kde.merkuro.components
+        org.kde.akonadi
+        QtCore
+        QtGui
     QML_FILES
         qml/incidenceeditor/ReminderDelegate.qml
         qml/incidenceeditor/PriorityComboBox.qml
