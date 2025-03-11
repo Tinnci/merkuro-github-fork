@@ -83,6 +83,7 @@ Item {
             listViewSpacing: root.listViewSpacing
             isCurrentView: root.isCurrentView
             showDayIndicator: root.showDayIndicator
+            weekHeaderWidth: root.weekHeaderWidth
         }
     }
 

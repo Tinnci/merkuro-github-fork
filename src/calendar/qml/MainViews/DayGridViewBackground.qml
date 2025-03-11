@@ -37,6 +37,8 @@ Column {
     required property bool isCurrentView
     required property bool showDayIndicator
 
+    required property double weekHeaderWidth
+
     Component.onCompleted: {
         if (Calendar.Config.showHolidaysInCalendarViews) {
             Calendar.HolidayModel.loadDateRange(startDate, daysToShow)
@@ -65,7 +67,7 @@ Column {
         spacing: root.spacing
 
         anchors {
-            leftMargin: Calendar.Config.showWeekNumbers ? weekHeaderWidth + root.spacing : 0
+            leftMargin: Calendar.Config.showWeekNumbers ? root.weekHeaderWidth + root.spacing : 0
             left: parent.left
             right: parent.right
         }
@@ -92,20 +94,20 @@ Column {
                 Loader {
                     id: weekHeader
 
-                    property date startDate: Calendar.Utils.addDaysToDate(root.startDate, index * 7)
+                    property date startDate: Calendar.Utils.addDaysToDate(root.startDate, weekRow.index * 7)
 
                     sourceComponent: root.weekHeaderDelegate
                     active: Calendar.Config.showWeekNumbers
                     visible: Calendar.Config.showWeekNumbers
 
-                    Layout.preferredWidth: weekHeaderWidth
+                    Layout.preferredWidth: root.weekHeaderWidth
                     Layout.fillHeight: true
                 }
 
                 Item {
                     id: dayDelegate
 
-                    property date startDate: Calendar.Utils.addDaysToDate(root.startDate, index * 7)
+                    property date startDate: Calendar.Utils.addDaysToDate(root.startDate, weekRow.index * 7)
 
                     Layout.fillWidth: true
                     Layout.fillHeight: true
@@ -122,6 +124,8 @@ Column {
 
                             Item {
                                 id: gridItem
+
+                                Kirigami.Theme.colorSet: Kirigami.Theme.View
 
                                 required property var modelData
 
