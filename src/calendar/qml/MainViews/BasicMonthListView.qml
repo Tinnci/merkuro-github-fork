@@ -97,8 +97,12 @@ QQC2.ScrollView {
         delegate: Rectangle {
             id: backgroundRectangle
 
+            required property var incidences
+            required property var periodStartDate
+            required property int index
+
             width: dayColumn.width
-            height: model.index === scheduleListView.count - 1 ? dayColumn.height + Kirigami.Units.largeSpacing : dayColumn.height
+            height: index === scheduleListView.count - 1 ? dayColumn.height + Kirigami.Units.largeSpacing : dayColumn.height
             Kirigami.Theme.colorSet: Kirigami.Theme.View
             color: incidenceDropArea.containsDrag ? Kirigami.Theme.positiveBackgroundColor :
                 dayGrid.isToday ? Kirigami.Theme.activeBackgroundColor :
@@ -106,7 +110,7 @@ QQC2.ScrollView {
 
             Calendar.DayTapHandler {
                 id: dayTapHandler
-                addDate: periodStartDate
+                addDate: backgroundRectangle.periodStartDate
                 onDeselect: Calendar.CalendarUiUtils.appMain.incidenceInfoViewer.close()
             }
 
@@ -114,24 +118,26 @@ QQC2.ScrollView {
                 id: incidenceDropArea
                 anchors.fill: parent
                 z: 9999
-                onDropped: if(scrollView.isCurrentItem) {
-                    if (Calendar.DateUtils.sameDay(dayTapHandler.addDate, drop.source.occurrenceDate)) {
-                        return;
+                onDropped: drop => {
+                    if(scrollView.isCurrentItem) {
+                        if (Calendar.DateUtils.sameDay(dayTapHandler.addDate, drop.source.occurrenceDate)) {
+                            return;
+                        }
+                        scrollView.savedYScrollPos = scrollView.QQC2.ScrollBar.vertical.visualPosition;
+
+                        const pos = mapToItem(scrollView, backgroundRectangle.x, backgroundRectangle.y);
+                        drop.source.caughtX = pos.x + dayGrid.dayLabelWidth + Kirigami.Units.largeSpacing;
+                        drop.source.caughtY = pos.y + dayColumn.spacing + Kirigami.Units.largeSpacing;
+                        drop.source.caught = true;
+
+                        const incidenceWrapper = Calendar.CalendarManager.createIncidenceWrapper();
+                        incidenceWrapper.incidenceItem = Calendar.CalendarManager.incidenceItem(drop.source.incidencePtr);
+
+                        let sameTimeOnDate = new Date(dayTapHandler.addDate);
+                        sameTimeOnDate = new Date(sameTimeOnDate.setHours(drop.source.occurrenceDate.getHours(), drop.source.occurrenceDate.getMinutes()));
+                        const offset = sameTimeOnDate.getTime() - drop.source.occurrenceDate.getTime();
+                        scrollView.moveIncidence(offset, drop.source.occurrenceDate, incidenceWrapper, drop.source);
                     }
-                    scrollView.savedYScrollPos = scrollView.QQC2.ScrollBar.vertical.visualPosition;
-
-                    const pos = mapToItem(scrollView, backgroundRectangle.x, backgroundRectangle.y);
-                    drop.source.caughtX = pos.x + dayGrid.dayLabelWidth + Kirigami.Units.largeSpacing;
-                    drop.source.caughtY = pos.y + dayColumn.spacing + Kirigami.Units.largeSpacing;
-                    drop.source.caught = true;
-
-                    const incidenceWrapper = Calendar.CalendarManager.createIncidenceWrapper();
-                    incidenceWrapper.incidenceItem = Calendar.CalendarManager.incidenceItem(drop.source.incidencePtr);
-
-                    let sameTimeOnDate = new Date(dayTapHandler.addDate);
-                    sameTimeOnDate = new Date(sameTimeOnDate.setHours(drop.source.occurrenceDate.getHours(), drop.source.occurrenceDate.getMinutes()));
-                    const offset = sameTimeOnDate.getTime() - drop.source.occurrenceDate.getTime();
-                    scrollView.moveIncidence(offset, drop.source.occurrenceDate, incidenceWrapper, drop.source);
                 }
             }
 
@@ -151,17 +157,17 @@ QQC2.ScrollView {
                     text: {
                         const daysToWeekEnd = 6;
 
-                        const nextDayMaxDiff = (periodStartDate.getDate() - (model.index + 1)) + daysToWeekEnd;
-                        const nextDayMaxDate = periodStartDate.getDate() + nextDayMaxDiff;
+                        const nextDayMaxDiff = (backgroundRectangle.periodStartDate.getDate() - (backgroundRectangle.index + 1)) + daysToWeekEnd;
+                        const nextDayMaxDate = backgroundRectangle.periodStartDate.getDate() + nextDayMaxDiff;
                         const nextDayDate = Math.min(nextDayMaxDate, scrollView.daysInMonth);
 
-                        const nextDay = new Date(periodStartDate.getFullYear(), periodStartDate.getMonth(), nextDayDate);
-                        return periodStartDate.toLocaleDateString(Qt.locale(), "dddd <b>dd</b>") + "–" + nextDay.toLocaleDateString(Qt.locale(), "dddd <b>dd</b> MMMM");
+                        const nextDay = new Date(backgroundRectangle.periodStartDate.getFullYear(), backgroundRectangle.periodStartDate.getMonth(), nextDayDate);
+                        return backgroundRectangle.periodStartDate.toLocaleDateString(Qt.locale(), "dddd <b>dd</b>") + "–" + nextDay.toLocaleDateString(Qt.locale(), "dddd <b>dd</b> MMMM");
                     }
                     Accessible.name: text.replace(/<\/?b>/g, '')
                     visible: Calendar.Config.showWeekHeaders &&
-                        periodStartDate !== undefined &&
-                        (periodStartDate.getDay() === Qt.locale().firstDayOfWeek || index === 0)
+                        backgroundRectangle.periodStartDate !== undefined &&
+                        (backgroundRectangle.periodStartDate.getDay() === Qt.locale().firstDayOfWeek || backgroundRectangle.index === 0)
                 }
 
                 Kirigami.Separator {
@@ -182,7 +188,7 @@ QQC2.ScrollView {
                     Layout.bottomMargin: Kirigami.Units.smallSpacing
 
                     property real dayLabelWidth: Kirigami.Units.gridUnit * 4
-                    property bool isToday: new Date(periodStartDate).setHours(0,0,0,0) === new Date().setHours(0,0,0,0)
+                    property bool isToday: new Date(backgroundRectangle.periodStartDate).setHours(0,0,0,0) === new Date().setHours(0,0,0,0)
 
                     QQC2.Button {
                         id: dayButton
@@ -193,7 +199,7 @@ QQC2.ScrollView {
                         rightPadding: Kirigami.Units.largeSpacing
 
                         flat: true
-                        onClicked: Calendar.CalendarUiUtils.openDayLayer(periodStartDate)
+                        onClicked: Calendar.CalendarUiUtils.openDayLayer(backgroundRectangle.periodStartDate)
 
                         property Item smallDayLabel: QQC2.Label {
                             id: smallDayLabel
@@ -205,7 +211,7 @@ QQC2.ScrollView {
 
                             visible: !cardsColumn.visible
                             wrapMode: Text.Wrap
-                            text: periodStartDate.toLocaleDateString(Qt.locale(), "ddd <b>dd</b>")
+                            text: backgroundRectangle.periodStartDate.toLocaleDateString(Qt.locale(), "ddd <b>dd</b>")
                             color: Kirigami.Theme.disabledTextColor
                         }
 
@@ -222,11 +228,11 @@ QQC2.ScrollView {
                             textFormat: Text.StyledText
                             wrapMode: Text.Wrap
                             color: dayGrid.isToday ? Kirigami.Theme.highlightColor : Kirigami.Theme.textColor
-                            text: periodStartDate.toLocaleDateString(Qt.locale(), "ddd<br><b>dd</b>")
+                            text: backgroundRectangle.periodStartDate.toLocaleDateString(Qt.locale(), "ddd<br><b>dd</b>")
                         }
 
 
-                        contentItem: incidences.length || dayGrid.isToday ? largeDayLabel : smallDayLabel
+                        contentItem: backgroundRectangle.incidences.length || dayGrid.isToday ? largeDayLabel : smallDayLabel
                     }
 
                     QQC2.Label {
@@ -242,7 +248,7 @@ QQC2.ScrollView {
                         id: cardsColumn
 
                         Layout.fillWidth: true
-                        visible: incidences.length || dayGrid.isToday
+                        visible: backgroundRectangle.incidences.length || dayGrid.isToday
 
                         Kirigami.AbstractCard {
                             id: suggestCard
@@ -250,7 +256,7 @@ QQC2.ScrollView {
                             Layout.fillWidth: true
 
                             showClickFeedback: true
-                            visible: !incidences.length && dayGrid.isToday
+                            visible: !backgroundRectangle.incidences.length && dayGrid.isToday
 
                             contentItem: QQC2.Label {
                                 property string selectMethod: Kirigami.Settings.isMobile ? i18n("Tap") : i18n("Click")
@@ -258,17 +264,22 @@ QQC2.ScrollView {
                                 wrapMode: Text.Wrap
                             }
 
-                            onClicked: scrollView.addIncidence(Calendar.IncidenceWrapper.TypeEvent, periodStartDate)
+                            onClicked: scrollView.addIncidence(Calendar.IncidenceWrapper.TypeEvent, backgroundRectangle.periodStartDate)
                         }
 
                         Repeater {
-                            model: incidences
-                            Repeater {
+                            model: backgroundRectangle.incidences
+                            delegate: Repeater {
                                 id: incidencesRepeater
+
+                                required property var modelData
+
                                 model: modelData
 
-                                Kirigami.AbstractCard {
+                                delegate: Kirigami.AbstractCard {
                                     id: incidenceCard
+
+                                    required property var modelData
 
                                     property real paddingSize: Kirigami.Settings.isMobile ?
                                         Kirigami.Units.largeSpacing : Kirigami.Units.smallSpacing
@@ -346,12 +357,12 @@ QQC2.ScrollView {
                                         columns: scrollView.isLarge ? 3 : 2
                                         rows: scrollView.isLarge ? 1 : 2
 
-                                        property color textColor: Calendar.LabelUtils.getIncidenceLabelColor(modelData.color, scrollView.isDark)
+                                        property color textColor: Calendar.LabelUtils.getIncidenceLabelColor(incidenceCard.modelData.color, scrollView.isDark)
 
                                         RowLayout {
                                             Kirigami.Icon {
                                                 Layout.fillHeight: true
-                                                source: modelData.incidenceTypeIcon
+                                                source: incidenceCard.modelData.incidenceTypeIcon
                                                 isMask: true
                                                 Layout.preferredHeight: Kirigami.Units.iconSizes.medium
                                                 Layout.preferredWidth: Kirigami.Units.iconSizes.medium
@@ -359,7 +370,7 @@ QQC2.ScrollView {
                                                 Layout.maximumHeight: Kirigami.Units.iconSizes.medium
 
                                                 color: incidenceCard.isOpenOccurrence ?
-                                                    (Calendar.LabelUtils.isDarkColor(modelData.color) ? "white" : "black") :
+                                                    (Calendar.LabelUtils.isDarkColor(incidenceCard.modelData.color) ? "white" : "black") :
                                                     cardContents.textColor
                                                 Behavior on color { ColorAnimation { duration: Kirigami.Units.shortDuration; easing.type: Easing.OutCubic } }
                                             }
@@ -372,19 +383,19 @@ QQC2.ScrollView {
                                                 Layout.columnSpan: scrollView.isLarge ? 2 : 1
 
                                                 color: incidenceCard.isOpenOccurrence ?
-                                                    (Calendar.LabelUtils.isDarkColor(modelData.color) ? "white" : "black") :
+                                                    (Calendar.LabelUtils.isDarkColor(incidenceCard.modelData.color) ? "white" : "black") :
                                                     cardContents.textColor
                                                 Behavior on color { ColorAnimation { duration: Kirigami.Units.shortDuration; easing.type: Easing.OutCubic } }
                                                 text: {
                                                     if(incidenceCard.multiday) {
-                                                        return i18nc("%1 is the name of the event", "%1 (Day %2 of %3)", modelData.text, incidenceCard.dayOfMultidayIncidence, incidenceCard.incidenceDays);
+                                                        return i18nc("%1 is the name of the event", "%1 (Day %2 of %3)", incidenceCard.modelData.text, incidenceCard.dayOfMultidayIncidence, incidenceCard.incidenceDays);
                                                     } else {
                                                         return modelData.text;
                                                     }
                                                 }
                                                 elide: Text.ElideRight
                                                 font.weight: Font.Medium
-                                                font.strikeout: modelData.todoCompleted
+                                                font.strikeout: incidenceCard.modelData.todoCompleted
                                             }
                                         }
 
@@ -394,27 +405,27 @@ QQC2.ScrollView {
                                             Layout.column: 1
                                             Layout.row: 0
 
-                                            visible: modelData.hasReminders || modelData.recurs
+                                            visible: incidenceCard.modelData.hasReminders || modelData.recurs
 
                                             Kirigami.Icon {
                                                 id: recurringIcon
                                                 Layout.fillHeight: true
                                                 source: "appointment-recurring"
                                                 isMask: true
-                                                color: incidenceCard.isOpenOccurrence ? (Calendar.LabelUtils.isDarkColor(modelData.color) ? "white" : "black") :
+                                                color: incidenceCard.isOpenOccurrence ? (Calendar.LabelUtils.isDarkColor(incidenceCard.modelData.color) ? "white" : "black") :
                                                     cardContents.textColor
                                                 Behavior on color { ColorAnimation { duration: Kirigami.Units.shortDuration; easing.type: Easing.OutCubic } }
-                                                visible: modelData.recurs
+                                                visible: incidenceCard.modelData.recurs
                                             }
                                             Kirigami.Icon {
                                                 id: reminderIcon
                                                 Layout.fillHeight: true
                                                 source: "appointment-reminder"
                                                 isMask: true
-                                                color: incidenceCard.isOpenOccurrence ? (Calendar.LabelUtils.isDarkColor(modelData.color) ? "white" : "black") :
+                                                color: incidenceCard.isOpenOccurrence ? (Calendar.LabelUtils.isDarkColor(incidenceCard.modelData.color) ? "white" : "black") :
                                                     cardContents.textColor
                                                 Behavior on color { ColorAnimation { duration: Kirigami.Units.shortDuration; easing.type: Easing.OutCubic } }
-                                                visible: modelData.hasReminders
+                                                visible: incidenceCard.modelData.hasReminders
                                             }
                                         }
 
@@ -428,11 +439,11 @@ QQC2.ScrollView {
                                             Layout.row: scrollView.isLarge ? 0 : 1
 
                                             horizontalAlignment: scrollView.isLarge ? Text.AlignRight : Text.AlignLeft
-                                            color: incidenceCard.isOpenOccurrence ? (Calendar.LabelUtils.isDarkColor(modelData.color) ? "white" : "black") :
+                                            color: incidenceCard.isOpenOccurrence ? (Calendar.LabelUtils.isDarkColor(incidenceCard.modelData.color) ? "white" : "black") :
                                                 cardContents.textColor
                                             Behavior on color { ColorAnimation { duration: Kirigami.Units.shortDuration; easing.type: Easing.OutCubic } }
                                             text: {
-                                                if (modelData.allDay) {
+                                                if (incidenceCard.modelData.allDay) {
                                                     i18n("Runs all day")
                                                 } else if (modelData.startTime.getTime() === modelData.endTime.getTime()) {
                                                     modelData.startTime.toLocaleTimeString(Qt.locale(), Locale.ShortFormat);
@@ -455,15 +466,15 @@ QQC2.ScrollView {
                                         id: incidenceMouseArea
 
                                         preventStealing: !Kirigami.Settings.tabletMode && !Kirigami.Settings.isMobile
-                                        incidenceData: modelData
-                                        collectionId: modelData.collectionId
+                                        incidenceData: incidenceCard.modelData
+                                        collectionId: incidenceCard.modelData.collectionId
 
-                                        drag.target: !Kirigami.Settings.isMobile && !modelData.isReadOnly && scrollView.dragDropEnabled ? incidenceCard : undefined
+                                        drag.target: !Kirigami.Settings.isMobile && !incidenceCard.modelData.isReadOnly && scrollView.dragDropEnabled ? incidenceCard : undefined
                                         onReleased: incidenceCard.Drag.drop()
 
-                                        onViewClicked: scrollView.viewIncidence(modelData, incidenceCard)
-                                        onDeleteClicked: scrollView.deleteIncidence(incidencePtr, deleteDate)
-                                        onTodoCompletedClicked: scrollView.completeTodo(incidencePtr)
+                                        onViewClicked: scrollView.viewIncidence(incidenceCard.modelData, incidenceCard)
+                                        onDeleteClicked: (incidencePtr, deleteDate) => scrollView.deleteIncidence(incidenceCard.incidencePtr, deleteDate)
+                                        onTodoCompletedClicked: scrollView.completeTodo(incidenceCard.incidencePtr)
                                     }
                                 }
                             }
