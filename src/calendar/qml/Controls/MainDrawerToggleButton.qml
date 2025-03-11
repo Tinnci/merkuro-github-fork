@@ -5,7 +5,6 @@ import QtQuick
 import QtQuick.Controls as QQC2
 import org.kde.kirigami as Kirigami
 import org.kde.merkuro.calendar
-import org.kde.merkuro.utils
 
 QQC2.ToolButton {
     property var mainDrawer: CalendarUiUtils.appMain.mainDrawer

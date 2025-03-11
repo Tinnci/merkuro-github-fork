@@ -30,7 +30,7 @@ Components.ConvergentContextMenu {
             Layout.fillWidth: true
         }
 
-        ColoredCheckbox {
+        Calendar.ColoredCheckbox {
             id: collectionCheckbox
 
             implicitWidth: Kirigami.Units.gridUnit * 2

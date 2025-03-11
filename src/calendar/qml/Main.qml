@@ -11,12 +11,8 @@ import QtQuick.Layouts
 import QtQml.Models 2.15
 import Qt.labs.platform
 
-import "dateutils.js" as DateUtils
-import "labelutils.js" as LabelUtils
 import org.kde.merkuro.calendar
-import org.kde.merkuro.utils
 import org.kde.merkuro.components
-import org.kde.merkuro.calendar.private 1.0
 
 BaseApplication {
     id: root
@@ -145,19 +141,19 @@ BaseApplication {
 
         function onOpenWeekView(): void {
             if(pageStack.currentItem.mode !== CalendarApplication.Week || root.ignoreCurrentPage) {
-                root.switchView("qrc:/HourlyView.qml", { createEventAction: createAction} );
+                root.switchView(hourlyViewComponent, { createEventAction: createAction} );
             }
         }
 
         function onOpenThreeDayView(): void {
             if(pageStack.currentItem.mode !== CalendarApplication.ThreeDay || root.ignoreCurrentPage) {
-                root.switchView("qrc:/HourlyView.qml", { daysToShow: 3, createEventAction: createAction });
+                root.switchView(hourlyViewComponent, { daysToShow: 3, createEventAction: createAction });
             }
         }
 
         function onOpenDayView(): void {
             if(pageStack.currentItem.mode !== CalendarApplication.Day || root.ignoreCurrentPage) {
-                root.switchView("qrc:/HourlyView.qml", { daysToShow: 1, createEventAction: createAction });
+                root.switchView(hourlyViewComponent, { daysToShow: 1, createEventAction: createAction });
             }
         }
 
@@ -170,7 +166,7 @@ BaseApplication {
         function onOpenTodoView(): void {
             if(pageStack.currentItem.mode !== CalendarApplication.Todo) {
                 filterHeaderBar.active = true;
-                root.switchView("qrc:/TodoView.qml");
+                root.switchView(todoViewComponent);
             }
         }
 
@@ -672,6 +668,18 @@ BaseApplication {
     }
 
     Component {
+        id: hourlyViewComponent
+
+        HourlyView {
+            id: monthView
+            objectName: "hourlyView"
+
+            createEventAction: createAction
+        }
+    }
+
+
+    Component {
         id: scheduleViewComponent
 
         ScheduleView {
@@ -680,6 +688,15 @@ BaseApplication {
 
             openOccurrence: root.openOccurrence
             createEventAction: createAction
+        }
+    }
+
+    Component {
+        id: todoViewComponent
+
+        TodoView {
+            id: todoView
+            objectName: "todoView"
         }
     }
 

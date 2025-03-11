@@ -7,10 +7,6 @@ import QtQuick.Controls as QQC2
 import org.kde.kirigami as Kirigami
 
 import org.kde.merkuro.calendar as Calendar
-import org.kde.merkuro.utils
-import "dateutils.js" as DateUtils
-import "labelutils.js" as LabelUtils
-
 
 Column {
     id: root
@@ -57,7 +53,7 @@ Column {
 
     anchors.fill: parent
 
-    DayLabelsBar {
+    Calendar.DayLabelsBar {
         id: dayLabelsBarComponent
 
         delegate: root.dayHeaderDelegate
@@ -128,7 +124,7 @@ Column {
                                 required property var modelData
 
                                 readonly property date gridSquareDate: date
-                                readonly property date date: DateUtils.addDaysToDate(dayDelegate.startDate, modelData)
+                                readonly property date date: Calendar.DateUtils.addDaysToDate(dayDelegate.startDate, modelData)
                                 readonly property int day: date.getDate()
                                 readonly property int month: date.getMonth()
                                 readonly property int year: date.getFullYear()

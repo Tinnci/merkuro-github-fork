@@ -10,7 +10,6 @@ import org.kde.kirigamiaddons.statefulapp as StatefulApp
 
 import org.kde.merkuro.calendar as Calendar
 import org.kde.merkuro.components
-import org.kde.merkuro.utils
 
 Kirigami.Page {
     id: root
@@ -91,7 +90,7 @@ Kirigami.Page {
 
     padding: 0
 
-    titleDelegate: ViewTitleDelegate {
+    titleDelegate: Calendar.ViewTitleDelegate {
         titleDateButton {
             range: true
             lastDate: Calendar.Utils.addDaysToDate(Calendar.DateTimeState.selectedDate, root.daysToShow - 1)
