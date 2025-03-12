@@ -213,7 +213,7 @@ Item {
         onReleased: parent.Drag.drop()
 
         onViewClicked: Calendar.CalendarUiUtils.setUpView(modelData, incidenceDelegate)
-        onDeleteClicked: Calendar.CalendarUiUtils.setUpDelete(modelData.incidencePtr, deleteDate)
-        onTodoCompletedClicked: Calendar.CalendarUiUtils.completeTodo(incidencePtr)
+        onDeleteClicked: Calendar.CalendarUiUtils.setUpDelete(incidenceDelegate.incidencePtr, deleteDate)
+        onTodoCompletedClicked: Calendar.CalendarUiUtils.completeTodo(incidenceDelegate.incidencePtr)
     }
 }

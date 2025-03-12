@@ -6,6 +6,7 @@
 #pragma once
 
 #include "calendarconfig.h"
+#include "hourlyincidencemodel.h"
 
 #include <Akonadi/ETMCalendar>
 #include <QActionGroup>
@@ -76,7 +77,7 @@ Q_SIGNALS:
     void todoViewShowCompleted();
     void todoViewShowCurrentDayOnly();
     void refreshAll();
-    void openIncidence(const QVariantMap incidenceData, const QDateTime occurrence);
+    void openIncidence(const IncidenceData incidenceData, const QDateTime occurrence);
     void calendarChanged();
     void showMenubarChanged(bool state);
 
