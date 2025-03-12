@@ -300,7 +300,7 @@ QQC2.ScrollView {
                             id: incidenceDropArea
                             anchors.fill: parent
                             z: 9999
-                            enabled: tapHandler.collectionDetails.canCreate
+                            enabled: collectionSourceItem.collection.rights & Akonadi.Collection.CanCreateCollection
                             onDropped: if(drop.source.objectName === "taskDelegate") {
                                 CalendarManager.changeIncidenceCollection(drop.source.incidencePtr, model.collectionId);
 
@@ -323,6 +323,7 @@ QQC2.ScrollView {
                         required property var model
                         required property var decoration
                         required property var collectionId
+                        required property Akonadi.collection collection
                         required property bool kDescendantExpanded
                         required property int kDescendantLevel
                         required property color collectionColor
@@ -404,7 +405,7 @@ QQC2.ScrollView {
                             id: incidenceDropArea
                             anchors.fill: parent
                             z: 9999
-                            enabled: tapHandler.collectionDetails.canCreate
+                            enabled: collectionItem.collection.rights & Akonadi.Collection.CanCreateCollection
                             onDropped: if(drop.source.objectName === "taskDelegate") {
                                 CalendarManager.changeIncidenceCollection(drop.source.incidencePtr, model.collectionId);
 
