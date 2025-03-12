@@ -457,9 +457,9 @@ Column {
                                                          */
                                                         if (drop.source.objectName === 'hourlyIncidenceDelegateBackgroundBackground') {
                                                             // This is conversion from non-multiday to multiday
-                                                            CalendarUiUtils.setUpIncidenceDateChange(incidenceWrapper, offset, offset, drop.source.occurrenceDate, drop.source, true)
+                                                            Calendar.CalendarUiUtils.setUpIncidenceDateChange(incidenceWrapper, offset, offset, drop.source.occurrenceDate, drop.source, true)
                                                         } else {
-                                                            CalendarUiUtils.setUpIncidenceDateChange(incidenceWrapper, offset, offset, drop.source.occurrenceDate, drop.source)
+                                                            Calendar.CalendarUiUtils.setUpIncidenceDateChange(incidenceWrapper, offset, offset, drop.source.occurrenceDate, drop.source)
                                                         }
                                                     }
                                                 }
@@ -763,7 +763,7 @@ Column {
                                                                 return;
                                                             }
 
-                                                            CalendarUiUtils.setUpIncidenceDateChange(incidenceWrapper, startOffset, startOffset, drop.source.occurrenceDate, drop.source);
+                                                            Calendar.CalendarUiUtils.setUpIncidenceDateChange(incidenceWrapper, startOffset, startOffset, drop.source.occurrenceDate, drop.source);
                                                         } else if(drop.source.objectName === "multiDayIncidenceDelegateBackgroundBackground") {
                                                             incidenceWrapper.incidenceItem = Calendar.CalendarManager.incidenceItem(drop.source.incidencePtr);
 
@@ -780,7 +780,7 @@ Column {
                                                             const startOffset = startPosDate.getTime() - drop.source.occurrenceDate.getTime();
                                                             const endOffset = endPosDate.getTime() - drop.source.occurrenceEndDate.getTime();
 
-                                                            CalendarUiUtils.setUpIncidenceDateChange(incidenceWrapper, startOffset, endOffset, drop.source.occurrenceDate, drop.source);
+                                                            Calendar.CalendarUiUtils.setUpIncidenceDateChange(incidenceWrapper, startOffset, endOffset, drop.source.occurrenceDate, drop.source);
 
                                                         } else { // The resize affects the end time
                                                             incidenceWrapper.incidenceItem = Calendar.CalendarManager.incidenceItem(drop.source.resizerSeparator.parent.incidencePtr);
@@ -798,7 +798,7 @@ Column {
 
                                                             const endOffset = posDate.getTime() - drop.source.resizerSeparator.parent.occurrenceEndDate.getTime();
 
-                                                            CalendarUiUtils.setUpIncidenceDateChange(incidenceWrapper, 0, endOffset, drop.source.resizerSeparator.parent.occurrenceDate, drop.source.resizerSeparator.parent);
+                                                            Calendar.CalendarUiUtils.setUpIncidenceDateChange(incidenceWrapper, 0, endOffset, drop.source.resizerSeparator.parent.occurrenceDate, drop.source.resizerSeparator.parent);
                                                         }
                                                     }
 
@@ -985,9 +985,9 @@ Column {
                                             drag.target: !Kirigami.Settings.isMobile && !modelData.isReadOnly && viewColumn.dragDropEnabled ? parent : undefined
                                             onReleased: parent.Drag.drop()
 
-                                            onViewClicked: CalendarUiUtils.setUpView(modelData, hourlyIncidenceDelegateBackgroundBackground)
-                                            onDeleteClicked: CalendarUiUtils.setUpDelete(incidencePtr, deleteDate)
-                                            onTodoCompletedClicked: CalendarUiUtils.completeTodo(incidencePtr)
+                                            onViewClicked: Calendar.CalendarUiUtils.setUpView(modelData, hourlyIncidenceDelegateBackgroundBackground)
+                                            onDeleteClicked: Calendar.CalendarUiUtils.setUpDelete(incidencePtr, deleteDate)
+                                            onTodoCompletedClicked: Calendar.CalendarUiUtils.completeTodo(incidencePtr)
                                         }
 
                                         Calendar.ResizerSeparator {

@@ -193,7 +193,7 @@ Column {
                                                 let sameTimeOnDate = new Date(gridItem.date);
                                                 sameTimeOnDate = new Date(sameTimeOnDate.setHours(drop.source.occurrenceDate.getHours(), drop.source.occurrenceDate.getMinutes()));
                                                 const offset = sameTimeOnDate.getTime() - drop.source.occurrenceDate.getTime();
-                                                CalendarUiUtils.setUpIncidenceDateChange(incidenceWrapper, offset, offset, drop.source.occurrenceDate, drop.source)
+                                                Calendar.CalendarUiUtils.setUpIncidenceDateChange(incidenceWrapper, offset, offset, drop.source.occurrenceDate, drop.source)
                                             }
                                         }
                                     }
