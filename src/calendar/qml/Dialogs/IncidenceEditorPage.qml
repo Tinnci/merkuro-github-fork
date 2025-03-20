@@ -105,14 +105,25 @@ Kirigami.ScrollablePage {
 
     Component {
         id: contactsPage
+
         ContactChooserPage {
+            id: contactChooserPage
+
+            Connections {
+                target: root.incidenceWrapper.attendeesModel
+
+                function onAttendeeDeleted(itemId: int): void {
+                    contactChooserPage.removeAttendeeByItemId(itemId);
+                }
+            }
+
             attendeeAkonadiIds: root.incidenceWrapper.attendeesModel.attendeesAkonadiIds
 
-            onAddAttendee: {
+            onAddAttendee: (itemId, email) => {
                 root.incidenceWrapper.attendeesModel.addAttendee(itemId, email);
                 root.flickable.contentY = editorLoader.item.attendeesColumnY;
             }
-            onRemoveAttendee: {
+            onRemoveAttendee: (itemId) => {
                 root.incidenceWrapper.attendeesModel.deleteAttendeeFromAkonadiId(itemId)
                 root.flickable.contentY = editorLoader.item.attendeesColumnY;
             }
@@ -979,6 +990,13 @@ Kirigami.ScrollablePage {
                         Layout.fillWidth: true
 
                         delegate: Kirigami.AbstractCard {
+                            id: attendeeDelegate
+
+                            required property int index
+                            required property string email
+                            required property string name
+                            required property bool rsvp
+                            required property int status
 
                             topPadding: Kirigami.Units.smallSpacing
                             bottomPadding: Kirigami.Units.smallSpacing
@@ -1011,8 +1029,8 @@ Kirigami.ScrollablePage {
                                         Layout.column: 1
                                         Layout.columnSpan: 4
                                         placeholderText: i18n("Optional")
-                                        text: model.name
-                                        onTextChanged: root.incidenceWrapper.attendeesModel.setData(root.incidenceWrapper.attendeesModel.index(index, 0),
+                                        text: attendeeDelegate.name
+                                        onTextChanged: root.incidenceWrapper.attendeesModel.setData(root.incidenceWrapper.attendeesModel.index(attendeeDelegate.index, 0),
                                                                                                     text,
                                                                                                     Calendar.AttendeesModel.NameRole)
                                     }
@@ -1022,7 +1040,10 @@ Kirigami.ScrollablePage {
                                         Layout.column: 5
                                         Layout.row: 0
                                         icon.name: "edit-delete-remove"
-                                        onClicked: root.incidenceWrapper.attendeesModel.deleteAttendee(index);
+                                        onClicked: {
+                                            root.incidenceWrapper.attendeesModel.deleteAttendee(attendeeDelegate.index);
+                                            root
+                                        }
                                     }
 
                                     QQC2.Label {
@@ -1036,8 +1057,8 @@ Kirigami.ScrollablePage {
                                         Layout.column: 1
                                         Layout.columnSpan: 4
                                         placeholderText: i18n("Required")
-                                        text: model.email
-                                        onTextChanged: root.incidenceWrapper.attendeesModel.setData(root.incidenceWrapper.attendeesModel.index(index, 0),
+                                        text: attendeeDelegate.email
+                                        onTextChanged: root.incidenceWrapper.attendeesModel.setData(root.incidenceWrapper.attendeesModel.index(attendeeDelegate.index, 0),
                                                                                                     text,
                                                                                                     Calendar.AttendeesModel.EmailRole)
                                     }
@@ -1055,7 +1076,7 @@ Kirigami.ScrollablePage {
                                         model: root.incidenceWrapper.attendeesModel.attendeeStatusModel
                                         textRole: "display"
                                         valueRole: "value"
-                                        currentIndex: status // role of parent
+                                        currentIndex: attendeeDelegate.status // role of parent
                                         onCurrentValueChanged: root.incidenceWrapper.attendeesModel.setData(root.incidenceWrapper.attendeesModel.index(index, 0),
                                                                                                             currentValue,
                                                                                                             Calendar.AttendeesModel.StatusRole)
@@ -1069,8 +1090,8 @@ Kirigami.ScrollablePage {
                                         Layout.column: 3
                                         Layout.columnSpan: 2
                                         text: i18n("Request RSVP")
-                                        checked: model.rsvp
-                                        onCheckedChanged: root.incidenceWrapper.attendeesModel.setData(root.incidenceWrapper.attendeesModel.index(index, 0),
+                                        checked: attendeeDelegate.rsvp
+                                        onCheckedChanged: root.incidenceWrapper.attendeesModel.setData(root.incidenceWrapper.attendeesModel.index(attendeeDelegate.index, 0),
                                                                                                        checked,
                                                                                                        Calendar.AttendeesModel.RSVPRole)
                                         visible: root.editMode
