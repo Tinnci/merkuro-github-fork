@@ -13,6 +13,7 @@
 #include <QPointer>
 
 using namespace Akonadi;
+using namespace Qt::Literals::StringLiterals;
 
 AgentConfiguration::AgentConfiguration(QObject *parent)
     : QObject(parent)
@@ -168,6 +169,12 @@ void AgentConfiguration::setMimetypes(const QStringList &mimetypes)
         m_availableAgents = nullptr;
         Q_EMIT availableAgentsChanged();
     }
+}
+
+bool AgentConfiguration::isRemovable(int index)
+{
+    return m_runningAgents->data(m_runningAgents->index(index, 0), AgentInstanceModel::InstanceRole).value<AgentInstance>().type().identifier()
+        != "akonadi_maildir_resource"_L1;
 }
 
 #include "moc_agentconfiguration.cpp"
