@@ -7,6 +7,7 @@
 #include "merkuro_mail_debug.h"
 
 #include "mailkernel.h"
+#include "mailmodel.h"
 #include "sortedcollectionproxymodel.h"
 
 #include <Akonadi/AgentManager>
