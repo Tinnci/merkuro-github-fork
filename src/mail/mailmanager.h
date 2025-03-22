@@ -3,7 +3,6 @@
 
 #pragma once
 
-#include "mailmodel.h"
 #include <Akonadi/CollectionFilterProxyModel>
 #include <MailCommon/EntityCollectionOrderProxyModel>
 #include <QObject>
