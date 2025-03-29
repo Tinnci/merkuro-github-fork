@@ -361,6 +361,16 @@ FormCard.FormCardPage {
                 visible: Config.hourlyViewMode === Config.SwipeableInternalHourlyView
             }
         }
+        FormCard.FormDelegateSeparator { above: enable24hourViewDelegate }
+        FormCard.FormSwitchDelegate {
+            id: enable24hourViewDelegate
+            text: i18n("Enable 24 hour view")
+            checked: Config.enable24hourView
+            onClicked: {
+                Config.enable24hourView = !Config.enable24hourView;
+                Config.save();
+            }
+        }
     }
 
     FormCard.FormHeader {
