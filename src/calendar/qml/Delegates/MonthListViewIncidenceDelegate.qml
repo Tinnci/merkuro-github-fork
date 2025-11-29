@@ -213,6 +213,25 @@ Kirigami.AbstractCard {
                 visible: incidenceCard.modelData.hasReminders
             }
         }
+
+        Calendar.TodoCheckBox {
+            // Type 1 is todo item.
+            // TODO: Avoid using magic numbers!
+            visible: incidenceCard.modelData.incidenceType === 1
+
+            todoCompleted: incidenceCard.modelData.todoCompleted
+            todoPtr: incidenceCard.modelData.incidencePtr
+            color: incidenceCard.isOpenOccurrence ?
+                (Calendar.LabelUtils.isDarkColor(incidenceCard.modelData.color) ? "white" : "black") :
+                cardContents.textColor
+
+            Layout.preferredHeight: Kirigami.Units.iconSizes.small
+            Layout.preferredWidth: Kirigami.Units.iconSizes.small
+            Layout.maximumWidth: Kirigami.Units.iconSizes.small
+            Layout.maximumHeight: Kirigami.Units.iconSizes.small
+
+            Layout.alignment: Qt.AlignTop
+        }
     }
 
     Calendar.IncidenceMouseArea {
