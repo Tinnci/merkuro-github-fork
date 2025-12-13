@@ -5,9 +5,7 @@ pragma ComponentBehavior: Bound
 
 import QtQuick
 import Qt.labs.platform
-import QtQuick.Controls as QQC2
 
-import org.kde.kirigami as Kirigami
 import org.kde.kirigamiaddons.formcard as FormCard
 import org.kde.coreaddons
 
@@ -20,12 +18,11 @@ FormCard.FormCardPage {
 
     title: i18nc("@title", "Edit Calendar")
 
-    property int collectionId
-    property var collection: Calendar.CalendarManager.getCollection(collectionId)
+    required property Akonadi.collection collection
 
     Akonadi.CollectionEditorController {
         id: editor
-        collectionId: root.collectionId
+        collectionId: root.collection.id
     }
 
     FormCard.FormHeader {
