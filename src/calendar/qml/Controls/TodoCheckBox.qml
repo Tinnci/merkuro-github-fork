@@ -7,6 +7,7 @@ import QtQuick.Layouts
 import QtQuick.Controls as QQC2
 import org.kde.kirigami as Kirigami
 import org.kde.merkuro.calendar as Calendar
+import org.kde.merkuro.components
 
 ColoredCheckbox {
     id: todoCheckbox

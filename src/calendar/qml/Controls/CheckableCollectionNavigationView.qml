@@ -9,6 +9,7 @@ import org.kde.kirigami as Kirigami
 import org.kde.kirigamiaddons.delegates as Delegates
 import org.kde.merkuro.calendar
 import org.kde.merkuro.contact
+import org.kde.merkuro.components
 import org.kde.akonadi as Akonadi
 import Qt.labs.qmlmodels
 import org.kde.kitemmodels
