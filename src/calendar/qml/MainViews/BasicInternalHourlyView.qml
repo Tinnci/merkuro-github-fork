@@ -34,7 +34,8 @@ Column {
     readonly property real gridLineWidth: 1.0
     readonly property real hourLabelWidth: hourLabelMetrics.boundingRect(new Date(0,0,0,0,0,0,0).toLocaleTimeString(Qt.locale(), Locale.NarrowFormat)).width +
         Kirigami.Units.largeSpacing * 2.5
-    readonly property real periodHeight: Kirigami.Units.gridUnit
+    property real periodHeight: Kirigami.Units.gridUnit / heightScaleFactor
+    property int heightScaleFactor: Calendar.Config.enable24hourView ? 2 : 1
 
     property int multiDayLinesShown: 0
     property bool isCurrentItem: true

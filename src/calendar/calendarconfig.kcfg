@@ -179,6 +179,11 @@ SPDX-License-Identifier: LGPL-2.0-or-later
             <label>Set the height of the all-day header at the top of the week view."</label>
             <default>-1</default>
         </entry>
+
+        <entry name="enable24hourView" type="Bool">
+            <label>Enable 24 hour View.</label>
+            <default>false</default>
+        </entry>
     </group>
 
     <group name="ScheduleView">
