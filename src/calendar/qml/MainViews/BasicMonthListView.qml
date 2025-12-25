@@ -194,8 +194,7 @@ QQC2.ScrollView {
                     QQC2.Button {
                         id: dayButton
                         Layout.fillHeight: true
-                        Layout.maximumWidth: dayGrid.dayLabelWidth
-                        Layout.minimumWidth: dayGrid.dayLabelWidth
+                        width: dayGrid.dayLabelWidth
                         padding: Kirigami.Units.smallSpacing
                         rightPadding: Kirigami.Units.largeSpacing
 
