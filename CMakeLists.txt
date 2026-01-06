@@ -72,6 +72,9 @@ add_definitions(-DQT_DISABLE_DEPRECATED_BEFORE=0x050f02)
 
 add_subdirectory(src/core)
 
+# Build local ICS file backend
+add_subdirectory(src/backends/local)
+
 # Build core-only tests
 find_package(GTest)
 if(GTest_FOUND)

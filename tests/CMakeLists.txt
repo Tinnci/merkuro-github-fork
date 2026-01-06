@@ -26,8 +26,23 @@ target_link_libraries(core-unit-tests
 
 add_test(NAME CoreUnitTests COMMAND core-unit-tests)
 
+# 本地文件后端测试
+add_executable(local-backend-tests
+    unit/ICSFileBackendTest.cpp
+)
+
+target_link_libraries(local-backend-tests
+    personalcalendar-core
+    personalcalendar-local
+    GTest::GTest
+    GTest::Main
+    Qt5::Core
+)
+
+add_test(NAME LocalBackendTests COMMAND local-backend-tests)
+
 # 输出测试结果
 add_custom_target(test-verbose
     COMMAND ${CMAKE_CTEST_COMMAND} --verbose
-    DEPENDS core-unit-tests
+    DEPENDS core-unit-tests local-backend-tests
 )
