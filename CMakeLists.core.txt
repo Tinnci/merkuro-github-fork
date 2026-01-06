@@ -1,0 +1,19 @@
+cmake_minimum_required(VERSION 3.16)
+project(PersonalCalendarCore VERSION 1.0.0 LANGUAGES CXX)
+
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_AUTOMOC ON)
+
+find_package(Qt5 REQUIRED COMPONENTS Core)
+
+# 核心库
+add_subdirectory(src/core)
+
+# 测试
+find_package(GTest)
+if(GTest_FOUND)
+    add_subdirectory(tests)
+else()
+    message(STATUS "Google Test not found, skipping tests")
+endif()

@@ -1,0 +1,58 @@
+cmake_minimum_required(VERSION 3.16)
+project(PersonalCalendarCore VERSION 1.0.0 LANGUAGES CXX)
+
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_AUTOMOC ON)
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra")
+
+find_package(Qt5 REQUIRED COMPONENTS Core)
+
+# 核心库
+add_library(personalcalendar-core STATIC
+    src/core/models/CalendarEvent.cpp
+    src/core/models/CalendarEvent.h
+    src/core/models/TodoItem.cpp
+    src/core/models/TodoItem.h
+    src/core/data/ICalendarStorage.h
+    src/core/operations/EventOperations.cpp
+    src/core/operations/EventOperations.h
+    src/core/utils/RecurrenceCalculator.cpp
+    src/core/utils/RecurrenceCalculator.h
+    src/core/utils/DateTimeUtils.cpp
+    src/core/utils/DateTimeUtils.h
+    src/core/ServiceContainer.cpp
+    src/core/ServiceContainer.h
+)
+
+target_include_directories(personalcalendar-core PUBLIC
+    ${CMAKE_CURRENT_SOURCE_DIR}/src
+)
+
+target_link_libraries(personalcalendar-core PUBLIC
+    Qt5::Core
+)
+
+# 测试
+find_package(GTest)
+if(GTest_FOUND)
+    enable_testing()
+    
+    add_executable(calendar-event-test tests/unit/CalendarEventTest.cpp)
+    target_link_libraries(calendar-event-test personalcalendar-core GTest::GTest GTest::Main)
+    add_test(NAME CalendarEventTest COMMAND calendar-event-test)
+    
+    add_executable(todoitem-test tests/unit/TodoItemTest.cpp)
+    target_link_libraries(todoitem-test personalcalendar-core GTest::GTest GTest::Main)
+    add_test(NAME TodoItemTest COMMAND todoitem-test)
+    
+    add_executable(recurrence-datetime-test tests/unit/RecurrenceAndDateTimeTest.cpp)
+    target_link_libraries(recurrence-datetime-test personalcalendar-core GTest::GTest GTest::Main)
+    add_test(NAME RecurrenceAndDateTimeTest COMMAND recurrence-datetime-test)
+    
+    add_executable(service-container-test tests/unit/ServiceContainerTest.cpp)
+    target_link_libraries(service-container-test personalcalendar-core GTest::GTest GTest::Main)
+    add_test(NAME ServiceContainerTest COMMAND service-container-test)
+else()
+    message(STATUS "Google Test not found, skipping tests")
+endif()
