@@ -1,0 +1,17 @@
+/home/drie/下载/merkuro-github-fork/verify-build/CMakeFiles/test.dir
+/home/drie/下载/merkuro-github-fork/verify-build/CMakeFiles/edit_cache.dir
+/home/drie/下载/merkuro-github-fork/verify-build/CMakeFiles/rebuild_cache.dir
+/home/drie/下载/merkuro-github-fork/verify-build/src/core/CMakeFiles/personalcalendar-core.dir
+/home/drie/下载/merkuro-github-fork/verify-build/src/core/CMakeFiles/test.dir
+/home/drie/下载/merkuro-github-fork/verify-build/src/core/CMakeFiles/edit_cache.dir
+/home/drie/下载/merkuro-github-fork/verify-build/src/core/CMakeFiles/rebuild_cache.dir
+/home/drie/下载/merkuro-github-fork/verify-build/src/backends/local/CMakeFiles/personalcalendar-local.dir
+/home/drie/下载/merkuro-github-fork/verify-build/src/backends/local/CMakeFiles/test.dir
+/home/drie/下载/merkuro-github-fork/verify-build/src/backends/local/CMakeFiles/edit_cache.dir
+/home/drie/下载/merkuro-github-fork/verify-build/src/backends/local/CMakeFiles/rebuild_cache.dir
+/home/drie/下载/merkuro-github-fork/verify-build/tests/CMakeFiles/core-unit-tests.dir
+/home/drie/下载/merkuro-github-fork/verify-build/tests/CMakeFiles/local-backend-tests.dir
+/home/drie/下载/merkuro-github-fork/verify-build/tests/CMakeFiles/test-verbose.dir
+/home/drie/下载/merkuro-github-fork/verify-build/tests/CMakeFiles/test.dir
+/home/drie/下载/merkuro-github-fork/verify-build/tests/CMakeFiles/edit_cache.dir
+/home/drie/下载/merkuro-github-fork/verify-build/tests/CMakeFiles/rebuild_cache.dir

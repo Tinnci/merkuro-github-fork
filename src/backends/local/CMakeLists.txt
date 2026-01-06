@@ -7,6 +7,8 @@ cmake_minimum_required(VERSION 3.16)
 add_library(personalcalendar-local
     ICSFileBackend.cpp
     ICSFileBackend.h
+    DirectoryBackend.cpp
+    DirectoryBackend.h
 )
 
 target_include_directories(personalcalendar-local PUBLIC

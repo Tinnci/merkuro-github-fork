@@ -29,6 +29,7 @@ add_test(NAME CoreUnitTests COMMAND core-unit-tests)
 # 本地文件后端测试
 add_executable(local-backend-tests
     unit/ICSFileBackendTest.cpp
+    unit/DirectoryBackendTest.cpp
 )
 
 target_link_libraries(local-backend-tests

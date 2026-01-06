@@ -1,0 +1,2 @@
+/usr/bin/ar qc libpersonalcalendar-core.a "CMakeFiles/personalcalendar-core.dir/models/CalendarEvent.cpp.o" "CMakeFiles/personalcalendar-core.dir/models/TodoItem.cpp.o" "CMakeFiles/personalcalendar-core.dir/operations/EventOperations.cpp.o" "CMakeFiles/personalcalendar-core.dir/utils/RecurrenceCalculator.cpp.o" "CMakeFiles/personalcalendar-core.dir/utils/DateTimeUtils.cpp.o" "CMakeFiles/personalcalendar-core.dir/ServiceContainer.cpp.o"
+/usr/bin/ranlib libpersonalcalendar-core.a
