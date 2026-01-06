@@ -127,6 +127,17 @@ ApplicationWindow {
                     delegate: ItemDelegate {
                         width: parent.width
 
+                        // Edit Event on Click
+                        onClicked: {
+                            editorDialog.isEditMode = true
+                            editorDialog.eventUid = model.uid
+                            editorDialog.title = model.title
+                            editorDialog.eventDate = model.startDate
+                            editorDialog.allDay = model.isAllDay
+                            editorDialog.setTimes(model.startDate, model.endDate)
+                            editorDialog.open()
+                        }
+
                         contentItem: ColumnLayout {
                             spacing: 2
 
@@ -177,47 +188,31 @@ ApplicationWindow {
                 text: "+"
                 font.pixelSize: 24
 
-                onClicked: addEventDialog.open()
+                onClicked: {
+                    editorDialog.isEditMode = false
+                    editorDialog.eventUid = ""
+                    editorDialog.title = ""
+                    editorDialog.eventDate = CalendarApp.eventsModel.selectedDate
+                    editorDialog.allDay = false
+
+                    // Default times: 12:00 - 13:00
+                    var start = new Date(CalendarApp.eventsModel.selectedDate)
+                    start.setHours(12)
+                    start.setMinutes(0)
+                    var end = new Date(start)
+                    end.setHours(13)
+                    end.setMinutes(0)
+                    editorDialog.setTimes(start, end)
+
+                    editorDialog.open()
+                }
             }
         }
     }
 
-    // Add Event Dialog
-    Dialog {
-        id: addEventDialog
-        title: "New Event"
-        x: (parent.width - width) / 2
-        y: (parent.height - height) / 2
-        modal: true
-        focus: true
-        standardButtons: Dialog.Ok | Dialog.Cancel
-
-        property alias eventTitle: titleField.text
-
-        onAccepted: {
-            // Default to 1 hour event starting now
-            var start = new Date(CalendarApp.eventsModel.selectedDate)
-            start.setHours(12) // Default noon
-
-            var end = new Date(start)
-            end.setHours(13)
-
-            CalendarApp.createEvent(titleField.text, start, end, false)
-            titleField.text = "" // Reset
-        }
-
-        ColumnLayout {
-            spacing: 20
-
-            TextField {
-                id: titleField
-                placeholderText: "Event Title"
-                Layout.preferredWidth: 300
-                focus: true
-            }
-
-            // Add more fields later (time picker, etc)
-        }
+    // Event Editor Dialog
+    EventEditorDialog {
+        id: editorDialog
     }
 
     Menu {

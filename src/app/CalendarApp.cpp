@@ -64,6 +64,29 @@ void CalendarApp::createEvent(const QString &title, const QDateTime &start, cons
     }
 }
 
+void CalendarApp::updateEvent(const QString &uid, const QString &title, const QDateTime &start, const QDateTime &end, bool allDay)
+{
+    if (!m_storage) return;
+
+    auto event = m_storage->getEvent(uid);
+    if (!event) {
+        qWarning() << "Event not found for update:" << uid;
+        return;
+    }
+
+    event->title = title;
+    event->startDateTime = start;
+    event->endDateTime = end;
+    event->isAllDay = allDay;
+
+    if (m_storage->updateEvent(event)) {
+        qDebug() << "Event updated:" << uid;
+        m_eventsModel->refresh();
+    } else {
+        qWarning() << "Failed to update event";
+    }
+}
+
 void CalendarApp::deleteEvent(const QString &uid)
 {
     if (!m_storage) return;

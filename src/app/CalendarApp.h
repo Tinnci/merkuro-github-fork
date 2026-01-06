@@ -20,6 +20,7 @@ public:
 
     // QML Invokables
     Q_INVOKABLE void createEvent(const QString &title, const QDateTime &start, const QDateTime &end, bool allDay);
+    Q_INVOKABLE void updateEvent(const QString &uid, const QString &title, const QDateTime &start, const QDateTime &end, bool allDay);
     Q_INVOKABLE void deleteEvent(const QString &uid);
     Q_INVOKABLE void createCalendar(const QString &name);
     Q_INVOKABLE QStringList getCalendarNames();
