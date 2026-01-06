@@ -1,14 +1,12 @@
 <!--
-SPDX-FileCopyrightText: 2021 Carl Schwan <carl@carlschwan.eu>
-SPDX-FileCopyrightText: 2021 Claudio Cambra <claudio.cambra@gmail.com>
-SPDX-License-Identifier: CC0-1.0
+SPDX-License-Identifier: GPL-3.0-only
 -->
 
-# Kalendar
+# Personal Calendar
 
-Kalendar is a Kirigami-based calendar application that uses Akonadi. It lets you add, edit and delete events from local and remote accounts of your choice, while keeping changes synchronised across your Plasma desktop or phone.
+A personal calendar application built on the Merkuro codebase. This is an independent fork utilizing the original Merkuro code as a foundation for a personal calendar management project.
 
-**Kalendar is still under heavy development, and has no stable releases yet.** We do, however, welcome suggestions! Get involved and join our Matrix channel: #kalendar:kde.org
+**This is a personal project** - not affiliated with the original Merkuro/Kalendar project.
 
 ## Screenshots
 
@@ -47,6 +45,6 @@ ninja
 
 ## License
 
-This project is licensed under GPL-3.0-or-later. Some files are licensed under
-more permissive licenses. New contributions are expected to be under the
-LGPL-2.1-or-later license.
+This project is licensed under **GPL-3.0-only**. This is a stricter license than the original project to ensure the code remains free and open source.
+
+Based on the original Merkuro/Kalendar project code.

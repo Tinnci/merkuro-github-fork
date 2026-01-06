@@ -1,126 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <component type="desktop-application">
   <!--
-  SPDX-FileCopyrightText: 2021 Carl Schwan <carl@carlschwan.eu>
-  SPDX-FileCopyrightText: 2021 Claudio Cambra <claudio.cambra@gmail.com>
-  SPDX-License-Identifier: CC0-1.0
+  SPDX-License-Identifier: GPL-3.0-only
   -->
   <id>org.kde.kalendar</id>
-  <name>Kalendar</name>
-  <name xml:lang="ca">Kalendar</name>
-  <name xml:lang="ca-valencia">Kalendar</name>
-  <name xml:lang="cs">Kalendar</name>
-  <name xml:lang="de">Kalendar</name>
-  <name xml:lang="el">Kalendar</name>
-  <name xml:lang="en-GB">Kalendar</name>
-  <name xml:lang="es">Kalendar</name>
-  <name xml:lang="fi">Kalendar</name>
-  <name xml:lang="fr">Kalendar</name>
-  <name xml:lang="it">Kalendar</name>
-  <name xml:lang="ko">Kalendar</name>
-  <name xml:lang="nl">Kalendar</name>
-  <name xml:lang="pl">Kalendarz</name>
-  <name xml:lang="pt">Kalendar</name>
-  <name xml:lang="pt-BR">Kalendar</name>
-  <name xml:lang="sk">Kalendar</name>
-  <name xml:lang="sl">Kalendar</name>
-  <name xml:lang="sv">Kalendar</name>
-  <name xml:lang="uk">Kalendar</name>
-  <name xml:lang="x-test">xxKalendarxx</name>
-  <name xml:lang="zh-CN">Kalendar</name>
-  <summary>Manage your tasks and events with speed and ease</summary>
-  <summary xml:lang="ca">Gestioneu les tasques i esdeveniments amb rapidesa i facilitat</summary>
-  <summary xml:lang="ca-valencia">Gestioneu les tasques i esdeveniments amb rapidesa i facilitat</summary>
-  <summary xml:lang="el">Διαχειριστείτε εργασίες και γεγονότα με ταχύτητα και ευκολία</summary>
-  <summary xml:lang="en-GB">Manage your tasks and events with speed and ease</summary>
-  <summary xml:lang="es">Gestione tareas y eventos con rapidez y facilidad</summary>
-  <summary xml:lang="fr">Gérer vos tâches et vos évènements avec efficacité et facilité</summary>
-  <summary xml:lang="it">Gestisci le tue attività e gli eventi con velocità e facilità</summary>
-  <summary xml:lang="nl">Uw taken en afspraken beheren met snelheid en gemak</summary>
-  <summary xml:lang="pt">Faça a gestão das suas tarefas e eventos rápida e facilmente</summary>
-  <summary xml:lang="sl">Upravljajte vaše naloge in dogodke hitro in enostavno</summary>
-  <summary xml:lang="sv">Hantera dina uppgifter och händelser snabbt och lätt</summary>
-  <summary xml:lang="uk">Швидко і ефективно керуйте вашими записами завдань і подій</summary>
-  <summary xml:lang="x-test">xxManage your tasks and events with speed and easexx</summary>
+  <name>Personal Calendar</name>
+  <summary>Personal calendar for managing your tasks and events</summary>
   <metadata_license>CC0-1.0</metadata_license>
-  <project_license>GPL-3.0-or-later</project_license>
-  <developer_name>KDE Community, Clau Cambra and Carl Schwan</developer_name>
-  <developer_name xml:lang="ca">Comunitat KDE, Clau Cambra i Carl Schwan</developer_name>
-  <developer_name xml:lang="ca-valencia">Comunitat KDE, Clau Cambra i Carl Schwan</developer_name>
-  <developer_name xml:lang="cs">Komunita KDE, Clau Cambra a Carl Schwan</developer_name>
-  <developer_name xml:lang="el">Η Κοινότητα του KDE, Clau Cambra και Carl Schwan</developer_name>
-  <developer_name xml:lang="en-GB">KDE Community, Clau Cambra and Carl Schwan</developer_name>
-  <developer_name xml:lang="es">La Comunidad de KDE, Clau Cambra y Carl Schwan</developer_name>
-  <developer_name xml:lang="fi">KDE-yhteisö, Clau Cambra ja Carl Schwan</developer_name>
-  <developer_name xml:lang="fr">Communauté KDE, Clau Cambra et Carl Schwan</developer_name>
-  <developer_name xml:lang="it">Comunità KDE, Clau Cambra e Carl Schwan</developer_name>
-  <developer_name xml:lang="ko">KDE 커뮤니티, Clau Cambra, Carl Schwan</developer_name>
-  <developer_name xml:lang="nl">KDE-gemeenschap, Clau Cambra en Carl Schwan</developer_name>
-  <developer_name xml:lang="pl">Społeczność KDE, Clau Cambra oraz Carl Schwan</developer_name>
-  <developer_name xml:lang="pt">Comunidade do KDE, Clau Cambra e Carl Schwan</developer_name>
-  <developer_name xml:lang="pt-BR">Comunidade KDE, Clau Cambra e Carl Schwan</developer_name>
-  <developer_name xml:lang="sl">Skupnost KDE, Clau Cambra in Carl Schwan</developer_name>
-  <developer_name xml:lang="sv">KDE-gemenskapen, Clau Cambra och Carl Schwan</developer_name>
-  <developer_name xml:lang="uk">Спільнота KDE, Clau Cambra і Carl Schwan</developer_name>
-  <developer_name xml:lang="x-test">xxKDE Community, Clau Cambra and Carl Schwanxx</developer_name>
-  <developer_name xml:lang="zh-CN">KDE 社区、Clau Cambra 和 Carl Schwan</developer_name>
+  <project_license>GPL-3.0-only</project_license>
+  <developer_name>Personal Project (Based on Merkuro)</developer_name>
   <description>
-    <p>Kalendar is a calendar application that allows you to manage your tasks and events. Kalendar supports both local calendars as well as a multitude of online calendars: Nextcloud, Google® Calendar, Outlook®, Caldav, and many more.</p>
-    <p xml:lang="ca">El Kalendar és una aplicació de calendari que permet gestionar les tasques i esdeveniments. Dona suport a dos calendaris locals, així com una multitud de calendaris en línia: NextCloud, Google® Calendar, Outlook®, Caldav i molts més.</p>
-    <p xml:lang="ca-valencia">El Kalendar és una aplicació de calendari que permet gestionar les tasques i esdeveniments. Dona suport a dos calendaris locals, així com una multitud de calendaris en línia: NextCloud, Google® Calendar, Outlook®, Caldav i molts més.</p>
-    <p xml:lang="el">Το Kalendar είναι μια εφαρμογή ημερολογίου που σας επιτρέπει να διαχειρίζεστε εργασίες και γεγονότα. Το Kalendar υποστηρίζει τοπικά ημερολόγια καθώς επίσης και μαι πληθώρα επιγραμμικών (online) ημερολογίων: Nextcloud, Google® Calendar, Outlook®, Caldav, και πολλά άλλα.</p>
-    <p xml:lang="en-GB">Kalendar is a calendar application that allows you to manage your tasks and events. Kalendar supports both local calendars as well as a multitude of online calendars: Nextcloud, Google® Calendar, Outlook®, Caldav, and many more.</p>
-    <p xml:lang="es">Kalendar es una aplicación de calendarios que permite la gestión de tareas y eventos. Kalendar puede usar calendarios locales y muchos tipos de calendarios en línea: Nextcloud, Google® Calendar, Outlook® y Caldav, entre otros.</p>
-    <p xml:lang="fr">Kalendar est une application d'agendas, vous permettant de gérer vos tâches et vos événements. Kalendar prend en charge les calendriers locaux ainsi qu'une multitude de calendriers en ligne comme Nextcloud, Google® Calendar, Outlook®, Caldav, et bien d'autres.</p>
-    <p xml:lang="it">Kalendar è un'applicazione di calendario che ti consente di gestire le tue attività e gli eventi. Kalendar supporta sia i calendari locali che una moltitudine di calendari in linea: Nextcloud, Google® Calendar, Outlook®, Caldav e molti altri.</p>
-    <p xml:lang="nl">Kalendar is een agenda-toepassing die u uw taken en afspraken laat beheren. Kalendar ondersteunt zowel lokale agenda's alsook een veelheid aan online agenda's: Nextcloud, Google® Calendar, Outlook®, Caldav en vele anderen.</p>
-    <p xml:lang="pt">O Kalendar é uma aplicação de calendário que lhe permite gerir as suas tarefas e eventos. O Kalendar suporta tanto os calendários locais como uma variedade de calendários 'online': Nextcloud, Google® Calendar, Outlook®, Caldav e muitos outros.</p>
-    <p xml:lang="sl">Kalendar je aplikacija koledarja, ki vam dovoljuje upravljati vaše naloge in dogodke. Kalendar podpira tako lokalne koledarje kakor tudi različne spletne koledarje: Nextcloud, Google® Calendar, Outlook®, Caldav, in več drugih,</p>
-    <p xml:lang="sv">Kalendar är ett kalenderprogram som tillåter dig att hantera dina uppgifter och händelser. Kalendar stöder både lokala kalendrar samt en mängd nätkalendrar: Nextcloud, Google® Calendar, Outlook®, Caldav, och många fler.</p>
-    <p xml:lang="uk">Kalendar — програма-календар, за допомогою якої ви можете керувати вашими записами завдань і подій. У Kalendar передбачено підтримку локальних календарів, а також цілого спектру інтернет-календарів: Nextcloud, Google® Calendar, Outlook®, Caldav та багатьох інших.</p>
-    <p xml:lang="x-test">xxKalendar is a calendar application that allows you to manage your tasks and events. Kalendar supports both local calendars as well as a multitude of online calendars: Nextcloud, Google® Calendar, Outlook®, Caldav, and many more.xx</p>
+    <p>Personal Calendar is an independent calendar application built on the Merkuro codebase. It allows you to manage your tasks and events with support for local and online calendars: Nextcloud, Google® Calendar, Outlook®, Caldav, and many more.</p>
     <p>Kalendar gives you many ways to interact with your events. The month view provides an overview of the entire month; the week view presents a detailed hour-by-hour overview of your week; and the schedule view lists all of your upcoming events so that you can easily and quickly plan ahead.</p>
-    <p xml:lang="ca">El Kalendar ofereix moltes maneres d'interactuar amb els esdeveniments. La vista mensual proporciona una visió general de tot el mes. La vista setmanal presenta una visió general detallada de la vostra setmana. I la vista de llista enumera tots els propers esdeveniments de manera que pugueu planificar amb facilitat i rapidesa.</p>
-    <p xml:lang="ca-valencia">El Kalendar ofereix moltes maneres d'interactuar amb els esdeveniments. La vista mensual proporciona una visió general de tot el mes. La vista setmanal presenta una visió general detallada de la vostra setmana. I la vista de llista enumera tots els propers esdeveniments de manera que pugueu planificar amb facilitat i rapidesa.</p>
-    <p xml:lang="el">Το Kalendar δίνει πολλούς τρόπους αλληλεπίδρασης με γεγονότα. Η προβολή του μήνα παρέχει μια επισκόπηση όλου του μήνα. Η προβολή της εβδομάδας παρουσιάζει μια λεπτομερή ανά ώρα επισκόπηση της εβδομάδας. Και η προβολή χρονοπρογραμματισμού εμφανίζει όλα τα επερχόμενα γεγονότα έτσι ώστε εύκολα και γρήγορα να οργανώνετε το χρόνο σας.</p>
-    <p xml:lang="en-GB">Kalendar gives you many ways to interact with your events. The month view provides an overview of the entire month; the week view presents a detailed hour-by-hour overview of your week; and the schedule view lists all of your upcoming events so that you can easily and quickly plan ahead.</p>
-    <p xml:lang="es">Kalendar le proporciona muchos modos de interactuar con los eventos. La vista mensual muestra un resumen de todo el mes; la vista semanal presenta un detallado resumen de la semana por horas; y la vista de planificación lista todos los eventos futuros para que pueda programarlos con antelación de una forma fácil y rápida.</p>
-    <p xml:lang="fr">Kalendar vous offre de nombreuses façons d'interagir avec vos évènements. L'affichage par mois vous donne un aperçu de l'ensemble du mois. L'affichage par semaines vous présente un aperçu détaillé heure par heure de votre semaine. L'affichage en calendrier vous présente une liste de tous vos événements à venir afin que vous puissiez facilement et rapidement les planifier.</p>
-    <p xml:lang="it">Kalendar ti offre molti modi per interagire con i tuoi eventi. La vista mensile fornisce una panoramica dell'intero mese; la vista settimanale presenta una panoramica dettagliata ora per ora della tua settimana e la visualizzazione delle pianificazioni elenca tutti i tuoi eventi imminenti in modo da poter pianificare in anticipo in modo facile e veloce.</p>
-    <p xml:lang="nl">Kalendar geeft u veel manieren om te interageren met uw afspraken. De maandweergave biedt een overzicht over de gehele maand; de weekweergave presenteert een gedetailleerde uur-voor-uur overzicht van uw week; en de planningweergavelijsten al uw komende afspraken zodat u gemakkelijk en snel vooruit kunt plannen.</p>
-    <p xml:lang="pt">O Kalendar oferece-lhe várias formas de interagir com os seus eventos. A vista mensal dá-lhe uma visão geral sobre todo o mês; a vista semanal apresenta-lhe uma visão geral hora-a-hora da sua semana e a área do horário mostra todos os seus próximos eventos, para que possa planear antecipadamente de forma rápida e simples.</p>
-    <p xml:lang="sl">Kalendar vam nudi veliko načinov za interakcijo z vašimi dogodki. Mesečni pogled zagotavlja pregled celotnega meseca; tedenski pogled predstavlja podrobni pregled uro po uro vašega tedna; in časovni pogled pogled navaja vse vaše prihajajoče dogodke, tako da lahko enostavno in hitro načrtujete plan za naprej.</p>
-    <p xml:lang="sv">Kalendar ger dig många sätt att interagera med dina händelser. Månadsvyn tillhandahåller en översikt av hela månaden, veckovyn presenterar en detaljerad översikt av veckan timme för timme, och schemaläggningsvyn listar alla dina kommande händelser så att du enkelt och snabbt kan planera framåt.</p>
-    <p xml:lang="uk">За допомогою Kalendar ви зможете працювати із вашими записами подій у багато способів. На панелі перегляду місяця буде показано загальний огляд подій місяця; на панелі перегляду тижня ви зможете побачити погодинних розклад подій тижня; а на панелі розкладу буде показано список усіх наступних подій, який надасть вам змогу без проблем швидко спланувати свої дії.</p>
-    <p xml:lang="x-test">xxKalendar gives you many ways to interact with your events. The month view provides an overview of the entire month; the week view presents a detailed hour-by-hour overview of your week; and the schedule view lists all of your upcoming events so that you can easily and quickly plan ahead.xx</p>
     <p>A tasks view is also available, making it possible for you to manage your tasks and subtasks with Kalendar's powerful tree view and its customisable filtering capabilities.</p>
-    <p xml:lang="ca">També hi ha disponible una vista de tasques, la qual permet gestionar les tasques i subtasques amb la potent vista en arbre del Kalendar i les seves capacitats personalitzables de filtratge.</p>
-    <p xml:lang="ca-valencia">També hi ha disponible una vista de tasques, la qual permet gestionar les tasques i subtasques amb la potent vista en arbre del Kalendar i les seues capacitats personalitzables de filtratge.</p>
-    <p xml:lang="el">Μια προβολή εργασιών είναι επίσης διαθέσιμη, ώστε να να διαχειρίζεστε εργασίες και υπο-εργασίες με την ισχυρή δενδρική προβολή του Kalendar και τις προσαρμόσιμες δυνατότητες φιλτραρίσματος που διαθέτει.</p>
-    <p xml:lang="en-GB">A tasks view is also available, making it possible for you to manage your tasks and subtasks with Kalendar's powerful tree view and its customisable filtering capabilities.</p>
-    <p xml:lang="es">También dispone de una vista de tareas, haciendo posible la gestión de tareas y subtareas con la potente vista de árbol de Kalendar y sus personalizables capacidades de filtrado.</p>
-    <p xml:lang="fr">Un affichage par tâches est aussi disponible. Il vous permet ainsi de gérer vos tâches et sous-tâches avec l'affichage très efficace en arborescence et des capacités de filtrage personnalisé.</p>
-    <p xml:lang="it">È inoltre disponibile una visualizzazione delle attività, che consente di gestire le attività e le sottoattività con la potente visualizzazione ad albero di Kalendar e le sue capacità di filtraggio personalizzabili.</p>
-    <p xml:lang="nl">Een takenweergave is ook beschikbaar, waarmee u uw taken en subtaken met de krachtige boomstructuur weergave van Kalendar en zijn aanpasbare mogelijkheden voor filtering kunt beheren.</p>
-    <p xml:lang="pt">Também está disponível uma área de tarefas, tornando possível para si gerir as suas tarefas e sub-tarefas com a vista em árvore do Kalendar, bem como as suas capacidades personalizadas de filtragem.</p>
-    <p xml:lang="sl">Na voljo je tudi pogled nalog, kar vam omogoča upravljanje nalog in podnalog z močnim drevesnim pogledom Kalendarja in njegovo prilagodljivo zmogljivost filtriranja.</p>
-    <p xml:lang="sv">En uppgiftsvy är också tillgänglig, vilket gör det möjligt för dig att hantera dina uppgifter och deluppgifter med Kalendars kraftfulla trädvy och dess anpassningsbara filtreringsmöjligheter.</p>
-    <p xml:lang="uk">Також доступна панель перегляду завдань, за допомогою якої ви можете керувати записами завдань і підзавдань у потужній ієрархічній структурі записів Kalendar із гнучкими можливостями фільтрування.</p>
-    <p xml:lang="x-test">xxA tasks view is also available, making it possible for you to manage your tasks and subtasks with Kalendar's powerful tree view and its customisable filtering capabilities.xx</p>
     <p>Kalendar was built with the idea to be usable on desktop, on mobile and everything in between.</p>
-    <p xml:lang="ca">El Kalendar s'ha construït amb la idea de ser usable a l'escriptori, al mòbil i tot el que hi ha entre ells.</p>
-    <p xml:lang="ca-valencia">El Kalendar s'ha construït amb la idea de ser usable a l'escriptori, al mòbil i tot el que hi ha entre ells.</p>
-    <p xml:lang="el">το Kalendar κατασκευάστηκε με την ιδέα της χρηστικότητας στην επιφάνεια εργασίας, στο κινητό και σε οτιδήποτε ενδιάμεσα.</p>
-    <p xml:lang="en-GB">Kalendar was built with the idea to be usable on desktop, on mobile and everything in between.</p>
-    <p xml:lang="es">Kalendar se ha creado con la idea de que se pueda usar en el escritorio, en el móvil y en cualquier dispositivo entre ambos.</p>
-    <p xml:lang="fr">Kalendar a été conçu avec l'idée d'être utilisable sur un ordinateur de bureau, sur un téléphone portable et dans tous les périphériques intermédiaires.</p>
-    <p xml:lang="it">Kalendar è stato creato con l'idea di essere utilizzabile su desktop, mobile e tutto il resto.</p>
-    <p xml:lang="nl">Kalendar is gebouwd met het idee om bruikbaar te zijn op een bureaublad, op een mobiel en alles er tussenin.</p>
-    <p xml:lang="pt">O Kalendar foi compilado com a ideia de ser útil em computadores pessoais, dispositivos móveis, entre outros.</p>
-    <p xml:lang="sl">Kalendar je bil izdelan z idejo, da je uporaben na namizju, na mobilnem telefonu in vse vmes.</p>
-    <p xml:lang="sv">Kalender är byggd med idén att vara användbar på skrivbordsdatorer eller mobiler och allting däremellan.</p>
-    <p xml:lang="uk">Kalendar побудовано так, що програмою можна користуватися на звичайному комп'ютері, на мобільному телефоні і на усіх проміжних пристроях.</p>
-    <p xml:lang="x-test">xxKalendar was built with the idea to be usable on desktop, on mobile and everything in between.xx</p>
   </description>
   <requires>
     <display_length compare="ge">360</display_length>
@@ -223,10 +116,9 @@
       <caption xml:lang="x-test">xxMobilexx</caption>
     </screenshot>
   </screenshots>
-  <value key="KDE::matrix">#kalendar:kde.org</value>
   <provides>
     <binary>kalendar</binary>
   </provides>
-  <url type="homepage">https://apps.kde.org/kalendar/</url>
-  <url type="bugtracker">https://invent.kde.org/pim/kalendar/-/issues</url>
+  <url type="homepage">https://github.com/Tinnci/merkuro-github-fork</url>
+  <url type="bugtracker">https://github.com/Tinnci/merkuro-github-fork/issues</url>
 </component>

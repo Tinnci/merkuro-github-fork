@@ -1,57 +1,22 @@
-# SPDX-FileCopyrightText: 2021 Carl Schwan <carl@carlschwan.eu>
-# SPDX-FileCopyrightText: 2021 Claudio Cambra <claudio.cambra@gmail.com>
-# SPDX-License-Identifier: CC0-1.0
+# SPDX-License-Identifier: GPL-3.0-only
 
 [Desktop Entry]
-Name=Kalendar
-Name[ca]=Kalendar
-Name[ca@valencia]=Kalendar
-Name[cs]=Kalendar
-Name[de]=Kalendar
-Name[el]=Kalendar
-Name[en_GB]=Kalendar
-Name[es]=Kalendar
-Name[fi]=Kalendar
-Name[fr]=Kalendar
-Name[it]=Kalendar
-Name[ko]=Kalendar
-Name[nl]=Kalendar
-Name[pl]=Kalendarz
-Name[pt]=Kalendar
-Name[pt_BR]=Kalendar
-Name[sl]=Kalendar
-Name[sv]=Kalendar
-Name[uk]=Kalendar
-Name[x-test]=xxKalendarxx
-Name[zh_CN]=Kalendar
-GenericName=Calendar application
-GenericName[ca]=Aplicació de calendari
-GenericName[ca@valencia]=Aplicació de calendari
-GenericName[el]=Εφαρμογή ημερολογίου
-GenericName[en_GB]=Calendar application
-GenericName[es]=Aplicación de calendarios
-GenericName[fr]=Une application d'agenda
-GenericName[it]=Applicazione di calendario
-GenericName[nl]=Agenda-toepassing
-GenericName[pt]=Aplicação de calendários
-GenericName[sl]=Aplikacija koledarja
-GenericName[sv]=Kalenderprogram
-GenericName[uk]=Програма-календар
-GenericName[x-test]=xxCalendar applicationxx
-Comment=Manage your tasks and events with Kalendar
-Comment[ca]=Gestioneu les tasques i esdeveniments amb el Kalendar
-Comment[ca@valencia]=Gestioneu les tasques i esdeveniments amb el Kalendar
-Comment[el]=Διαχείριση εργασιών και γεγονότων με το Kalendar
-Comment[en_GB]=Manage your tasks and events with Kalendar
-Comment[es]=Gestione tareas y eventos con Kalendar
-Comment[fr]=Gérer vos tâches et vos évènements avec Kalendar
-Comment[it]=Gestisci le tue attività e gli eventi con Kalendar
-Comment[nl]=Uw taken en afspraken beheren met Kalendar
-Comment[pt]=Gerir as suas tarefas e eventos com o Kalendar
-Comment[sl]=Upravljajte vaše naloge in dogodke s programom Kalendar
-Comment[sv]=Hantera dina uppgifter och händelser med Kalendar
-Comment[uk]=Керуйте вашими записами завдань і подій за допомогою Kalendar
-Comment[x-test]=xxManage your tasks and events with Kalendarxx
+Name=Personal Calendar
+GenericName=Personal Calendar Application
+GenericName[ca]=Aplicació de calendari personal
+GenericName[ca@valencia]=Aplicació de calendari personal
+GenericName[el]=Εφαρμογή προσωπικού ημερολογίου
+GenericName[en_GB]=Personal Calendar Application
+GenericName[es]=Aplicación de calendario personal
+GenericName[fr]=Application de calendrier personnel
+GenericName[it]=Applicazione di calendario personale
+GenericName[nl]=Persoonlijke kalender toepassing
+GenericName[pt]=Aplicação de Calendário Pessoal
+GenericName[sl]=Osebna aplikacija koledarja
+GenericName[sv]=Personlig kalenderprogram
+GenericName[uk]=Програма особистого календаря
+GenericName[x-test]=xxPersonal Calendar Applicationxx
+Comment=Manage your personal calendar, tasks and events
 Version=1.0
 Exec=kalendar
 Categories=Qt;KDE;Office;Calendar;
