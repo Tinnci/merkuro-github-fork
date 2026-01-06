@@ -3,11 +3,7 @@
 
 using namespace PersonalCalendar::Core;
 
-EventsModel::EventsModel(QObject *parent)
-    : QAbstractListModel(parent)
-    , m_selectedDate(QDate::currentDate())
-{
-}
+EventsModel::EventsModel(QObject *parent) : QAbstractListModel(parent), m_selectedDate(QDate::currentDate()) {}
 
 void EventsModel::setStorage(ICalendarStoragePtr storage)
 {
@@ -30,22 +26,22 @@ QVariant EventsModel::data(const QModelIndex &index, int role) const
     const auto &event = m_events[index.row()];
 
     switch (role) {
-    case UidRole:
-        return event->uid;
-    case TitleRole:
-        return event->title;
-    case DescriptionRole:
-        return event->description;
-    case StartDateRole:
-        return event->startDateTime;
-    case EndDateRole:
-        return event->endDateTime;
-    case IsAllDayRole:
-        return event->isAllDay;
-    case LocationRole:
-        return event->location;
-    case CalendarIdRole:
-        return event->calendarId;
+        case UidRole:
+            return event->uid;
+        case TitleRole:
+            return event->title;
+        case DescriptionRole:
+            return event->description;
+        case StartDateRole:
+            return event->startDateTime;
+        case EndDateRole:
+            return event->endDateTime;
+        case IsAllDayRole:
+            return event->isAllDay;
+        case LocationRole:
+            return event->location;
+        case CalendarIdRole:
+            return event->calendarId;
     }
 
     return QVariant();
@@ -86,19 +82,19 @@ void EventsModel::refresh()
 
 void EventsModel::updateEvents()
 {
-    if (!m_storage) return;
+    if (!m_storage)
+        return;
 
     beginResetModel();
     // Fetch events for the selected date
     // Note: getEventsByDate returns events that occur on this date (including spanning events)
     m_events = m_storage->getEventsByDate(m_selectedDate);
-    
+
     // Sort by start time
-    std::sort(m_events.begin(), m_events.end(), [](const CalendarEventPtr &a, const CalendarEventPtr &b) {
-        return a->startDateTime < b->startDateTime;
-    });
-    
+    std::sort(m_events.begin(), m_events.end(),
+              [](const CalendarEventPtr &a, const CalendarEventPtr &b) { return a->startDateTime < b->startDateTime; });
+
     endResetModel();
-    
+
     qDebug() << "Loaded" << m_events.size() << "events for" << m_selectedDate;
 }

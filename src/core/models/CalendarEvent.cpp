@@ -4,7 +4,8 @@
 #include "CalendarEvent.h"
 #include <QUuid>
 
-namespace PersonalCalendar::Core {
+namespace PersonalCalendar::Core
+{
 
 bool CalendarEvent::isValid() const
 {
@@ -18,7 +19,7 @@ QString CalendarEvent::toICalString() const
     if (!isValid()) {
         return QString();
     }
-    
+
     QString ical = QLatin1String("BEGIN:VEVENT\n");
     ical += QLatin1String("UID:") + uid + QLatin1String("\n");
     ical += QLatin1String("SUMMARY:") + title + QLatin1String("\n");
@@ -28,44 +29,43 @@ QString CalendarEvent::toICalString() const
         ical += QLatin1String("LOCATION:") + location + QLatin1String("\n");
     }
     ical += QLatin1String("END:VEVENT\n");
-    
+
     return ical;
 }
 
-CalendarEvent CalendarEvent::fromICalString(const QString& ical)
+CalendarEvent CalendarEvent::fromICalString(const QString &ical)
 {
     // 基础 iCalendar 格式导入
     // TODO: 完整实现时需要使用 RFC 5545 解析
     CalendarEvent event;
-    
+
     if (ical.contains(QLatin1String("SUMMARY:"))) {
         int start = ical.indexOf(QLatin1String("SUMMARY:")) + 8;
         int end = ical.indexOf(QLatin1Char('\n'), start);
         event.title = ical.mid(start, end - start).trimmed();
     }
-    
+
     return event;
 }
 
-bool CalendarEvent::hasStarted(const QDateTime& now) const
+bool CalendarEvent::hasStarted(const QDateTime &now) const
 {
     return startDateTime <= now;
 }
 
-bool CalendarEvent::hasEnded(const QDateTime& now) const
+bool CalendarEvent::hasEnded(const QDateTime &now) const
 {
     return endDateTime <= now;
 }
 
-bool CalendarEvent::occurredOn(const QDate& date) const
+bool CalendarEvent::occurredOn(const QDate &date) const
 {
     return startDateTime.date() <= date && endDateTime.date() >= date;
 }
 
-bool CalendarEvent::operator==(const CalendarEvent& other) const
+bool CalendarEvent::operator==(const CalendarEvent &other) const
 {
-    return uid == other.uid && title == other.title && 
-           startDateTime == other.startDateTime && 
+    return uid == other.uid && title == other.title && startDateTime == other.startDateTime &&
            endDateTime == other.endDateTime;
 }
 

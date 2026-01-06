@@ -1,10 +1,10 @@
 #pragma once
 
-#include <QAbstractListModel>
-#include <QList>
-#include <QDateTime>
-#include "core/models/CalendarEvent.h"
 #include "core/data/ICalendarStorage.h"
+#include "core/models/CalendarEvent.h"
+#include <QAbstractListModel>
+#include <QDateTime>
+#include <QList>
 
 class EventsModel : public QAbstractListModel
 {

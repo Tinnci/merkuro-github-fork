@@ -4,16 +4,17 @@
 #include "ServiceContainer.h"
 #include <QDebug>
 
-namespace PersonalCalendar::Core {
+namespace PersonalCalendar::Core
+{
 
-ServiceContainer* ServiceContainer::s_instance = nullptr;
+ServiceContainer *ServiceContainer::s_instance = nullptr;
 
 ServiceContainer::ServiceContainer()
 {
     qDebug() << "ServiceContainer: Created";
 }
 
-ServiceContainer& ServiceContainer::instance()
+ServiceContainer &ServiceContainer::instance()
 {
     if (!s_instance) {
         s_instance = new ServiceContainer();
@@ -27,10 +28,10 @@ void ServiceContainer::registerCalendarStorage(ICalendarStoragePtr storage)
         qWarning() << QLatin1String("ServiceContainer: Attempting to register null calendar storage");
         return;
     }
-    
+
     m_calendarStorage = storage;
     qDebug() << "ServiceContainer: Calendar storage registered";
-    
+
     // 如果已有事件操作服务，更新其存储实现
     if (m_eventOperations) {
         // 创建新的 EventOperations 实例
@@ -44,7 +45,7 @@ void ServiceContainer::registerEventOperations(std::shared_ptr<EventOperations> 
         qWarning() << QLatin1String("ServiceContainer: Attempting to register null event operations");
         return;
     }
-    
+
     m_eventOperations = operations;
     qDebug() << "ServiceContainer: Event operations registered";
 }
