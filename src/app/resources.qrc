@@ -2,5 +2,6 @@
     <qresource prefix="/">
         <file>qml/main.qml</file>
         <file>qml/EventEditorDialog.qml</file>
+        <file>qml/CalendarManagerDialog.qml</file>
     </qresource>
 </RCC>

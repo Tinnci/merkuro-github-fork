@@ -98,6 +98,13 @@ ApplicationWindow {
                         }
                     }
                 }
+
+                Button {
+                    text: "Manage Calendars"
+                    Layout.alignment: Qt.AlignHCenter
+                    Layout.bottomMargin: 10
+                    onClicked: calendarManagerDialog.open()
+                }
             }
         }
 
@@ -213,6 +220,11 @@ ApplicationWindow {
     // Event Editor Dialog
     EventEditorDialog {
         id: editorDialog
+    }
+
+    // Calendar Manager Dialog
+    CalendarManagerDialog {
+        id: calendarManagerDialog
     }
 
     Menu {

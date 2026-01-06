@@ -23,8 +23,15 @@ public:
     Q_INVOKABLE void updateEvent(const QString &uid, const QString &title, const QDateTime &start, const QDateTime &end,
                                  bool allDay);
     Q_INVOKABLE void deleteEvent(const QString &uid);
-    Q_INVOKABLE void createCalendar(const QString &name);
-    Q_INVOKABLE QStringList getCalendarNames();
+    
+    // Calendar Management
+    Q_INVOKABLE void createCalendar(const QString &name, const QString &color);
+    Q_INVOKABLE void deleteCalendar(const QString &id);
+    Q_INVOKABLE void setCalendarColor(const QString &id, const QString &color);
+    Q_INVOKABLE void setCalendarVisibility(const QString &id, bool visible);
+    Q_INVOKABLE QVariantList getCalendars();
+    
+    Q_INVOKABLE QStringList getCalendarNames(); // Legacy, keep for now
 
 private:
     PersonalCalendar::Core::ICalendarStoragePtr m_storage;
