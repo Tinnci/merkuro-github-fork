@@ -52,9 +52,10 @@ endif()
 
 ################# Find dependencies #################
 find_package(Qt5 ${QT_MIN_VERSION} REQUIRED COMPONENTS Core)
+find_package(Qt5 ${QT_MIN_VERSION} REQUIRED COMPONENTS Gui Qml Quick)
 
 if(NOT BUILD_CORE_ONLY)
-    find_package(Qt5 ${QT_MIN_VERSION} REQUIRED COMPONENTS Gui Qml QuickControls2 Svg Location)
+    find_package(Qt5 ${QT_MIN_VERSION} REQUIRED COMPONENTS Svg Location QuickControls2)
     find_package(KF5 ${KF5_MIN_VERSION} REQUIRED COMPONENTS Kirigami2 I18n CalendarCore ConfigWidgets WindowSystem CoreAddons People Contacts ItemModels XmlGui)
     find_package(KF5Akonadi ${AKONADI_VERSION} CONFIG REQUIRED)
     find_package(KF5AkonadiContact ${AKONADI_CONTACT_VERSION} CONFIG REQUIRED)
@@ -71,9 +72,8 @@ add_definitions(-DQT_NO_NARROWING_CONVERSIONS_IN_CONNECT)
 add_definitions(-DQT_DISABLE_DEPRECATED_BEFORE=0x050f02)
 
 add_subdirectory(src/core)
-
-# Build local ICS file backend
 add_subdirectory(src/backends/local)
+add_subdirectory(src/app)
 
 # Build core-only tests
 find_package(GTest)
