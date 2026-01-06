@@ -55,14 +55,24 @@ find_package(Qt5 ${QT_MIN_VERSION} REQUIRED COMPONENTS Core)
 find_package(Qt5 ${QT_MIN_VERSION} REQUIRED COMPONENTS Gui Qml Quick)
 
 if(NOT BUILD_CORE_ONLY)
-    find_package(Qt5 ${QT_MIN_VERSION} REQUIRED COMPONENTS Svg Location QuickControls2)
-    find_package(KF5 ${KF5_MIN_VERSION} REQUIRED COMPONENTS Kirigami2 I18n CalendarCore ConfigWidgets WindowSystem CoreAddons People Contacts ItemModels XmlGui)
-    find_package(KF5Akonadi ${AKONADI_VERSION} CONFIG REQUIRED)
-    find_package(KF5AkonadiContact ${AKONADI_CONTACT_VERSION} CONFIG REQUIRED)
-    find_package(KF5CalendarSupport ${CALENDARSUPPORT_LIB_VERSION} CONFIG REQUIRED)
-    find_package(KF5EventViews ${EVENTVIEW_LIB_VERSION} CONFIG REQUIRED)
-endif()
+    # Qt5 Dependencies
+    find_package(Qt5 ${QT_MIN_VERSION} COMPONENTS Svg Location QuickControls2) # All optional
 
+    # KDE Dependencies for Akonadi Backend
+    # Only check for core components needed for backend
+    find_package(KF5 ${KF5_MIN_VERSION} COMPONENTS I18n CalendarCore CoreAddons ItemModels)
+
+    find_package(KF5Akonadi ${AKONADI_VERSION} CONFIG)
+    find_package(KF5AkonadiContact ${AKONADI_CONTACT_VERSION} CONFIG)
+
+    # Check if we have enough to build the backend
+    if(KF5Akonadi_FOUND AND KF5CalendarCore_FOUND)
+        set(AKONADI_BACKEND_AVAILABLE ON)
+        message(STATUS "Akonadi found: Enabling Akonadi Backend")
+    else()
+        message(STATUS "Akonadi NOT found: Disabling Akonadi Backend")
+    endif()
+endif()
 
 ################# build and install #################
 
@@ -74,6 +84,10 @@ add_definitions(-DQT_DISABLE_DEPRECATED_BEFORE=0x050f02)
 add_subdirectory(src/core)
 add_subdirectory(src/backends/local)
 add_subdirectory(src/app)
+
+if(AKONADI_BACKEND_AVAILABLE)
+    add_subdirectory(src/backends/akonadi)
+endif()
 
 # Build core-only tests
 find_package(GTest)

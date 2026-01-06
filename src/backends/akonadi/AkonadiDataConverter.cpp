@@ -2,156 +2,187 @@
 // SPDX-License-Identifier: LGPL-2.1-or-later
 
 #include "AkonadiDataConverter.h"
-#include <QDebug>
 
-// Note: 完整实现需要链接 KCalendarCore
-// #include <KCalendarCore/Event>
-// #include <KCalendarCore/Todo>
-// #include <KCalendarCore/Recurrence>
-// #include <KCalendarCore/Attendee>
+// Note: These headers are only available when KDE dependencies are installed
+#if __has_include(<KCalendarCore/Event>)
+#include <KCalendarCore/Event>
+#include <KCalendarCore/Todo>
+#include <KCalendarCore/Attendee>
+#include <KCalendarCore/Alarm>
+#include <KCalendarCore/Recurrence>
+#else
+// Stub headers or errors would happen here if we forced compilation
+// But CMake protects us.
+#endif
+
+#include <QDebug>
 
 namespace PersonalCalendar::Akonadi {
 
-KCalendarCore::IncidencePtr AkonadiDataConverter::toAkonadiIncidence(
-    const Core::CalendarEventPtr& event)
+using namespace KCalendarCore;
+
+IncidencePtr AkonadiDataConverter::toAkonadiIncidence(const Core::CalendarEventPtr& event)
 {
-    if (!event) {
-        qWarning() << "AkonadiDataConverter: Event is nullptr";
-        return nullptr;
+#if defined(KCALENDARCORE_FOUND) || defined(KF5CalendarCore_FOUND)
+    if (!event) return nullptr;
+
+    IncidencePtr incidence;
+
+    // Factory based on type
+    if (event->type == Core::EventType::Todo) {
+        incidence = IncidencePtr(new Todo());
+    } else {
+        incidence = IncidencePtr(new Event());
     }
+
+    incidence->setUid(event->uid);
+    incidence->setSummary(event->title);
+    incidence->setDescription(event->description);
+    incidence->setLocation(event->location);
+    incidence->setAllDay(event->isAllDay);
+    incidence->setDtStart(event->startDateTime);
     
-    // TODO: 完整实现需要 KCalendarCore
-    // 根据事件类型创建对应的 Incidence
-    // 
-    // if (event->type == Core::EventType::Todo) {
-    //     auto todo = std::make_shared<KCalendarCore::Todo>();
-    //     // 转换 Todo 特定字段
-    // } else {
-    //     auto eventObj = std::make_shared<KCalendarCore::Event>();
-    //     // 转换 Event 特定字段
-    // }
-    
-    qDebug() << "AkonadiDataConverter::toAkonadiIncidence:" << event->title;
+    // For Events, we set dtEnd. For Todos, it might be due date.
+    if (event->type == Core::EventType::Event) {
+        std::static_pointer_cast<Event>(incidence)->setDtEnd(event->endDateTime);
+    } else if (event->type == Core::EventType::Todo) {
+        std::static_pointer_cast<Todo>(incidence)->setDtDue(event->endDateTime);
+    }
+
+    // Convert Recurrence
+    convertRecurrenceRule(event->recurrence, incidence.get());
+
+    return incidence;
+#else
+    Q_UNUSED(event);
+    qWarning() << "KCalendarCore not available, returning nullptr";
     return nullptr;
+#endif
 }
 
-Core::CalendarEventPtr AkonadiDataConverter::fromAkonadiIncidence(
-    const KCalendarCore::IncidencePtr& incidence)
+Core::CalendarEventPtr AkonadiDataConverter::fromAkonadiIncidence(const IncidencePtr& incidence)
 {
-    if (!incidence) {
-        qWarning() << "AkonadiDataConverter: Incidence is nullptr";
-        return nullptr;
+#if defined(KCALENDARCORE_FOUND) || defined(KF5CalendarCore_FOUND)
+    if (!incidence) return nullptr;
+
+    auto event = std::make_shared<Core::CalendarEvent>();
+
+    event->uid = incidence->uid();
+    event->title = incidence->summary();
+    event->description = incidence->description();
+    event->location = incidence->location();
+    event->isAllDay = incidence->allDay();
+    event->startDateTime = incidence->dtStart();
+
+    if (incidence->type() == Incidence::TypeTodo) {
+        event->type = Core::EventType::Todo;
+        event->endDateTime = std::static_pointer_cast<Todo>(incidence)->dtDue();
+    } else {
+        event->type = Core::EventType::Event;
+        event->endDateTime = std::static_pointer_cast<Event>(incidence)->dtEnd();
     }
-    
-    // TODO: 完整实现需要 KCalendarCore
-    // 从 Akonadi incidence 提取所有字段
-    // 并填充 Core::CalendarEvent
-    //
-    // auto event = std::make_shared<Core::CalendarEvent>();
-    // event->uid = incidence->uid();
-    // event->title = incidence->summary();
-    // event->description = incidence->description();
-    // event->location = incidence->location();
-    // ... 更多字段
-    
-    qDebug() << "AkonadiDataConverter::fromAkonadiIncidence";
+
+    // Convert Recurrence
+    event->recurrence = convertRecurrenceRule(incidence.get());
+
+    return event;
+#else
+    Q_UNUSED(incidence);
+    qWarning() << "KCalendarCore not available, returning nullptr";
     return nullptr;
+#endif
 }
 
-void AkonadiDataConverter::convertRecurrenceRule(
-    const Core::Recurrence& coreRecurrence,
-    KCalendarCore::Incidence* akonadiIncidence)
+void AkonadiDataConverter::convertRecurrenceRule(const Core::Recurrence& coreRec, Incidence* incidence)
 {
-    if (!akonadiIncidence) {
+#if defined(KCALENDARCORE_FOUND) || defined(KF5CalendarCore_FOUND)
+    if (coreRec.pattern == Core::Recurrence::Pattern::None) {
         return;
     }
-    
-    // TODO: 转换递归规则
-    // 将 Core::Recurrence 转换为 KCalendarCore::Recurrence
-    // 设置到 akonadiIncidence->recurrence()
-    
-    qDebug() << "AkonadiDataConverter::convertRecurrenceRule";
+
+    Recurrence* r = incidence->recurrence();
+    switch (coreRec.pattern) {
+        case Core::Recurrence::Pattern::Daily:
+            r->setDaily(coreRec.interval);
+            break;
+        case Core::Recurrence::Pattern::Weekly:
+            r->setWeekly(coreRec.interval);
+            break;
+        case Core::Recurrence::Pattern::Monthly:
+            r->setMonthly(coreRec.interval);
+            break;
+        case Core::Recurrence::Pattern::Yearly:
+            r->setYearly(coreRec.interval);
+            break;
+        default:
+            break;
+    }
+
+    if (coreRec.endDate.isValid()) {
+        r->setEndDate(coreRec.endDate);
+    }
+#else
+    Q_UNUSED(coreRec);
+    Q_UNUSED(incidence);
+#endif
 }
 
-Core::Recurrence AkonadiDataConverter::convertRecurrenceRule(
-    const KCalendarCore::Incidence* akonadiIncidence)
+Core::Recurrence AkonadiDataConverter::convertRecurrenceRule(const Incidence* incidence)
 {
-    Core::Recurrence recurrence;
-    
-    if (!akonadiIncidence) {
-        return recurrence;
+    Core::Recurrence rec;
+#if defined(KCALENDARCORE_FOUND) || defined(KF5CalendarCore_FOUND)
+    Recurrence* r = incidence->recurrence();
+    if (!r || r->recurrenceType() == Recurrence::rNone) {
+        return rec;
     }
+
+    rec.interval = r->frequency();
     
-    // TODO: 从 Akonadi incidence 提取递归规则
-    // const auto& akonadiRecurrence = akonadiIncidence->recurrence();
-    // 根据 RRULE 填充 Core::Recurrence
-    
-    qDebug() << "AkonadiDataConverter::convertRecurrenceRule (read)";
-    return recurrence;
+    switch (r->recurrenceType()) {
+        case Recurrence::rDaily:
+            rec.pattern = Core::Recurrence::Pattern::Daily;
+            break;
+        case Recurrence::rWeekly:
+            rec.pattern = Core::Recurrence::Pattern::Weekly;
+            break;
+        case Recurrence::rMonthly:
+            rec.pattern = Core::Recurrence::Pattern::Monthly;
+            break;
+        case Recurrence::rYearly:
+            rec.pattern = Core::Recurrence::Pattern::Yearly;
+            break;
+        default:
+            rec.pattern = Core::Recurrence::Pattern::None;
+            break;
+    }
+
+    rec.endDate = r->endDate();
+#else
+    Q_UNUSED(incidence);
+#endif
+    return rec;
 }
 
-void AkonadiDataConverter::convertAttendees(
-    const QList<Core::Attendee>& coreAttendees,
-    KCalendarCore::Incidence* akonadiIncidence)
+// ... Implement attendees/alarms similarly
+
+void AkonadiDataConverter::convertAttendees(const QList<Core::Attendee>& coreAttendees, KCalendarCore::Incidence* akonadiIncidence)
 {
-    if (!akonadiIncidence) {
-        return;
-    }
-    
-    // TODO: 转换参与者列表
-    // 将 Core::Attendee 转换为 KCalendarCore::Attendee
-    // 添加到 akonadiIncidence
-    
-    qDebug() << "AkonadiDataConverter::convertAttendees:" << coreAttendees.size();
+    // Implementation placeholder
 }
 
-QList<Core::Attendee> AkonadiDataConverter::convertAttendees(
-    const KCalendarCore::Incidence* akonadiIncidence)
+QList<Core::Attendee> AkonadiDataConverter::convertAttendees(const KCalendarCore::Incidence* akonadiIncidence)
 {
-    QList<Core::Attendee> attendees;
-    
-    if (!akonadiIncidence) {
-        return attendees;
-    }
-    
-    // TODO: 从 Akonadi incidence 提取参与者列表
-    // const auto& akonadiAttendees = akonadiIncidence->attendees();
-    // 转换每个 KCalendarCore::Attendee 到 Core::Attendee
-    
-    qDebug() << "AkonadiDataConverter::convertAttendees (read)";
-    return attendees;
+    return QList<Core::Attendee>();
 }
 
-void AkonadiDataConverter::convertAlarms(
-    const QList<Core::Alarm>& coreAlarms,
-    KCalendarCore::Incidence* akonadiIncidence)
+void AkonadiDataConverter::convertAlarms(const QList<Core::Alarm>& coreAlarms, KCalendarCore::Incidence* akonadiIncidence)
 {
-    if (!akonadiIncidence) {
-        return;
-    }
-    
-    // TODO: 转换提醒列表
-    // 将 Core::Alarm 转换为 KCalendarCore::Alarm
-    // 添加到 akonadiIncidence
-    
-    qDebug() << "AkonadiDataConverter::convertAlarms:" << coreAlarms.size();
+    // Implementation placeholder
 }
 
-QList<Core::Alarm> AkonadiDataConverter::convertAlarms(
-    const KCalendarCore::Incidence* akonadiIncidence)
+QList<Core::Alarm> AkonadiDataConverter::convertAlarms(const KCalendarCore::Incidence* akonadiIncidence)
 {
-    QList<Core::Alarm> alarms;
-    
-    if (!akonadiIncidence) {
-        return alarms;
-    }
-    
-    // TODO: 从 Akonadi incidence 提取提醒列表
-    // const auto& akonadiAlarms = akonadiIncidence->alarms();
-    // 转换每个 KCalendarCore::Alarm 到 Core::Alarm
-    
-    qDebug() << "AkonadiDataConverter::convertAlarms (read)";
-    return alarms;
+    return QList<Core::Alarm>();
 }
 
 } // namespace PersonalCalendar::Akonadi
