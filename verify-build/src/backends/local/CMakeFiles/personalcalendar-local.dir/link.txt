@@ -1,2 +1,0 @@
-/usr/bin/ar qc libpersonalcalendar-local.a "CMakeFiles/personalcalendar-local.dir/ICSFileBackend.cpp.o"
-/usr/bin/ranlib libpersonalcalendar-local.a

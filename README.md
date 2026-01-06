@@ -43,6 +43,28 @@ cmake .. -DCMAKE_INSTALL_PREFIX=~/.local/kde -GNinja
 ninja
 ```
 
+## Project Documentation
+
+The project documentation is organized into the following categories:
+
+### 🚀 Guides
+- [**Quick Start**](docs/guides/quick-start.md): Get up and running in 30 seconds.
+- [**Build Instructions**](docs/guides/build-instructions.md): Detailed compilation and requirements guide.
+- [**Implementation Guide**](docs/guides/implementation-guide.md): API reference and coding patterns.
+
+### 📅 Planning
+- [**Project Status**](docs/planning/project-status.md): Current progress dashboard.
+- [**Milestone Plan**](docs/planning/detailed-milestone-plan.md): Detailed weekly execution plan.
+- [**Feasibility Review**](docs/planning/feasibility-review.md): Initial refactoring analysis.
+
+### 🔍 Analysis
+- [**Architecture Analysis**](docs/analysis/architecture-analysis.md): System design and decoupling strategy.
+
+### 📊 Progress Reports
+- [Phase 5B Complete (Multi-Calendar)](docs/reports/phase-5b-complete.md)
+- [Phase 5 Complete (Local Backend)](docs/reports/phase-5-complete.md)
+- [Phase 0-3 Complete (Core)](docs/reports/phase-0-3-complete.md)
+
 ## License
 
 This project is licensed under **GPL-3.0-only**. This is a stricter license than the original project to ensure the code remains free and open source.
