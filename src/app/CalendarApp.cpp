@@ -29,6 +29,7 @@ void CalendarApp::initialize(const QString &storagePath)
         m_storage = std::make_shared<PersonalCalendar::Akonadi::AkonadiCalendarBackend>(this);
         m_eventsModel->setStorage(m_storage);
         m_monthModel->setStorage(m_storage);
+        m_backendName = QStringLiteral("Akonadi");
         return;
     }
 #endif
@@ -56,6 +57,7 @@ void CalendarApp::initialize(const QString &storagePath)
 
     m_eventsModel->setStorage(m_storage);
     m_monthModel->setStorage(m_storage);
+    m_backendName = QStringLiteral("Local");
 }
 
 EventsModel *CalendarApp::eventsModel() const
@@ -66,6 +68,11 @@ EventsModel *CalendarApp::eventsModel() const
 MonthModel *CalendarApp::monthModel() const
 {
     return m_monthModel;
+}
+
+QString CalendarApp::backendName() const
+{
+    return m_backendName;
 }
 
 void CalendarApp::createEvent(const QString &title, const QDateTime &start, const QDateTime &end, bool allDay,
@@ -190,4 +197,43 @@ QStringList CalendarApp::getCalendarNames()
         }
     }
     return names;
+}
+
+void CalendarApp::sync()
+{
+    if (m_storage) {
+        qDebug() << "Syncing...";
+        m_storage->sync();
+        m_eventsModel->refresh();
+    }
+}
+
+void CalendarApp::switchBackend(const QString &backend)
+{
+#ifdef AKONADI_BACKEND_AVAILABLE
+    if (backend == QLatin1String("akonadi")) {
+        qDebug() << "Switching to Akonadi backend";
+        m_storage = std::make_shared<PersonalCalendar::Akonadi::AkonadiCalendarBackend>(this);
+        m_eventsModel->setStorage(m_storage);
+        m_monthModel->setStorage(m_storage);
+        m_backendName = QStringLiteral("Akonadi");
+        Q_EMIT backendChanged();
+        m_eventsModel->refresh();
+        return;
+    }
+#endif
+    if (backend == QLatin1String("local")) {
+        QString path = QStandardPaths::writableLocation(QStandardPaths::AppDataLocation) + QStringLiteral("/calendars");
+        QDir dir(path);
+        if (!dir.exists()) {
+            dir.mkpath(QStringLiteral("."));
+        }
+        qDebug() << "Switching to Local backend at:" << path;
+        m_storage = std::make_shared<DirectoryBackend>(path);
+        m_eventsModel->setStorage(m_storage);
+        m_monthModel->setStorage(m_storage);
+        m_backendName = QStringLiteral("Local");
+        Q_EMIT backendChanged();
+        m_eventsModel->refresh();
+    }
 }

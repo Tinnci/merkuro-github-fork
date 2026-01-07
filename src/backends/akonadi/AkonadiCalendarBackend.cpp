@@ -3,7 +3,12 @@
 
 #include "AkonadiCalendarBackend.h"
 #include "AkonadiDataConverter.h"
+#include <Akonadi/AttributeFactory>
+#include <Akonadi/Collection>
+#include <Akonadi/CollectionColorAttribute>
+#include <Akonadi/CollectionModifyJob>
 #include <Akonadi/ETMCalendar>
+#include <Akonadi/EntityDisplayAttribute>
 #include <Akonadi/IncidenceChanger>
 #include <KCalendarCore/Event>
 #include <KCalendarCore/Todo>
@@ -169,14 +174,25 @@ QList<Core::CalendarEventPtr> AkonadiCalendarBackend::getEventsByCollection(cons
 QList<QString> AkonadiCalendarBackend::getCalendarIds()
 {
     QList<QString> ids;
-    // Iterate ETMCalendar model to find collections
-    // TODO: access the model directly via m_akonadiCalendar->model()
+    if (!m_akonadiCalendar)
+        return ids;
+
+    const auto collections = m_akonadiCalendar->collections();
+    for (const auto &collection : collections) {
+        ids.append(QString::number(collection.id()));
+    }
     return ids;
 }
 
 QString AkonadiCalendarBackend::getCalendarName(const QString &id)
 {
-    // Need model access
+    if (!m_akonadiCalendar)
+        return QString();
+
+    const auto collection = m_akonadiCalendar->collection(id.toLongLong());
+    if (collection.isValid()) {
+        return collection.name();
+    }
     return QString();
 }
 
@@ -198,25 +214,65 @@ bool AkonadiCalendarBackend::deleteCalendar(const QString &id)
 
 QString AkonadiCalendarBackend::getCalendarColor(const QString &id)
 {
-    // Akonadi stores colors in attributes
+    if (!m_akonadiCalendar)
+        return QLatin1String("#9C27B0");
+
+    const auto collection = m_akonadiCalendar->collection(id.toLongLong());
+    if (collection.isValid()) {
+        if (collection.hasAttribute<::Akonadi::CollectionColorAttribute>()) {
+            const auto attr = collection.attribute<::Akonadi::CollectionColorAttribute>();
+            if (attr->color().isValid()) {
+                return attr->color().name();
+            }
+        }
+        if (collection.hasAttribute<::Akonadi::EntityDisplayAttribute>()) {
+            const auto attr = collection.attribute<::Akonadi::EntityDisplayAttribute>();
+            if (attr->color().isValid()) {
+                return attr->color().name();
+            }
+        }
+    }
     return QLatin1String("#9C27B0"); // Default Purple for Akonadi
 }
 
 void AkonadiCalendarBackend::setCalendarColor(const QString &id, const QString &color)
 {
-    Q_UNUSED(id);
-    Q_UNUSED(color);
+    if (!m_akonadiCalendar)
+        return;
+
+    auto collection = m_akonadiCalendar->collection(id.toLongLong());
+    if (collection.isValid()) {
+        auto attr = collection.getMutableAttribute<::Akonadi::CollectionColorAttribute>();
+        attr->setColor(QColor(color));
+        new ::Akonadi::CollectionModifyJob(collection, this);
+    }
 }
 
 bool AkonadiCalendarBackend::getCalendarVisibility(const QString &id)
 {
+    if (!m_akonadiCalendar)
+        return true;
+
+    const auto collection = m_akonadiCalendar->collection(id.toLongLong());
+    if (collection.isValid()) {
+        if (collection.hasAttribute<::Akonadi::EntityDisplayAttribute>()) {
+            return collection.attribute<::Akonadi::EntityDisplayAttribute>()->isVisible();
+        }
+    }
     return true;
 }
 
 void AkonadiCalendarBackend::setCalendarVisibility(const QString &id, bool visible)
 {
-    Q_UNUSED(id);
-    Q_UNUSED(visible);
+    if (!m_akonadiCalendar)
+        return;
+
+    auto collection = m_akonadiCalendar->collection(id.toLongLong());
+    if (collection.isValid()) {
+        auto attr = collection.getMutableAttribute<::Akonadi::EntityDisplayAttribute>();
+        attr->setVisible(visible);
+        new ::Akonadi::CollectionModifyJob(collection, this);
+    }
 }
 
 bool AkonadiCalendarBackend::sync()

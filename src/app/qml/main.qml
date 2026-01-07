@@ -13,11 +13,77 @@ ApplicationWindow {
     Material.theme: Material.Light
     Material.accent: Material.Purple
 
-    RowLayout {
+    ColumnLayout {
         anchors.fill: parent
         spacing: 0
 
-        // Left Panel: Calendar Picker
+        // Header Bar
+        Pane {
+            Layout.fillWidth: true
+            Material.elevation: 2
+            padding: 8
+
+            RowLayout {
+                anchors.fill: parent
+                spacing: 10
+
+                Label {
+                    text: "Personal Calendar"
+                    font.pixelSize: 20
+                    font.bold: true
+                }
+
+                Label {
+                    text: "(" + CalendarApp.backendName + ")"
+                    color: Material.secondaryTextColor
+                    font.pixelSize: 14
+                }
+
+                Item { Layout.fillWidth: true }
+
+                Button {
+                    text: "⟳ Sync"
+                    flat: true
+                    onClicked: CalendarApp.sync()
+                }
+
+                ToolButton {
+                    text: "⚙"
+                    font.pixelSize: 20
+                    onClicked: settingsMenu.open()
+
+                    Menu {
+                        id: settingsMenu
+                        y: parent.height
+
+                        MenuItem {
+                            text: "Use Local Backend"
+                            checkable: true
+                            checked: CalendarApp.backendName === "Local"
+                            onTriggered: CalendarApp.switchBackend("local")
+                        }
+                        MenuItem {
+                            text: "Use Akonadi Backend"
+                            checkable: true
+                            checked: CalendarApp.backendName === "Akonadi"
+                            onTriggered: CalendarApp.switchBackend("akonadi")
+                        }
+                        MenuSeparator {}
+                        MenuItem {
+                            text: "Manage Calendars..."
+                            onTriggered: calendarManagerDialog.open()
+                        }
+                    }
+                }
+            }
+        }
+
+        RowLayout {
+            Layout.fillWidth: true
+            Layout.fillHeight: true
+            spacing: 0
+
+            // Left Panel: Calendar Picker
         Pane {
             Layout.preferredWidth: 300
             Layout.fillHeight: true
@@ -125,12 +191,6 @@ ApplicationWindow {
                     }
                 }
 
-                Button {
-                    text: "Manage Calendars"
-                    Layout.alignment: Qt.AlignHCenter
-                    Layout.bottomMargin: 10
-                    onClicked: calendarManagerDialog.open()
-                }
             }
         }
 
@@ -263,6 +323,7 @@ ApplicationWindow {
                     editorDialog.open()
                 }
             }
+        }
         }
     }
 

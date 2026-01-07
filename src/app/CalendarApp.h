@@ -11,6 +11,7 @@ class CalendarApp : public QObject
     Q_OBJECT
     Q_PROPERTY(EventsModel *eventsModel READ eventsModel CONSTANT)
     Q_PROPERTY(MonthModel *monthModel READ monthModel CONSTANT)
+    Q_PROPERTY(QString backendName READ backendName NOTIFY backendChanged)
 
 public:
     explicit CalendarApp(QObject *parent = nullptr);
@@ -20,6 +21,7 @@ public:
 
     EventsModel *eventsModel() const;
     MonthModel *monthModel() const;
+    QString backendName() const;
 
     // QML Invokables
     Q_INVOKABLE void createEvent(const QString &title, const QDateTime &start, const QDateTime &end, bool allDay,
@@ -39,8 +41,16 @@ public:
     
     Q_INVOKABLE QStringList getCalendarNames(); // Legacy, keep for now
 
+    // Sync and Backend
+    Q_INVOKABLE void sync();
+    Q_INVOKABLE void switchBackend(const QString &backend);
+
+Q_SIGNALS:
+    void backendChanged();
+
 private:
     PersonalCalendar::Core::ICalendarStoragePtr m_storage;
     EventsModel *m_eventsModel;
     MonthModel *m_monthModel;
+    QString m_backendName;
 };

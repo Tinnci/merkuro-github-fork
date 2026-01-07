@@ -118,6 +118,11 @@ public:
         return QDateTime::currentDateTime().toString(Qt::ISODate);
     }
 
+    QString getCalendarColor(const QString &id) override { return QLatin1String(""); }
+    void setCalendarColor(const QString &id, const QString &color) override {}
+    bool getCalendarVisibility(const QString &id) override { return true; }
+    void setCalendarVisibility(const QString &id, bool visible) override {}
+
 private:
     QMap<QString, CalendarEventPtr> m_events;
     QMap<QString, QString> m_calendarNames;
