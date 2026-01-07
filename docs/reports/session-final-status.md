@@ -56,6 +56,7 @@ The Akonadi backend now uses the standard KDE PIM stack:
 
 ## Next Steps
 
-1.  **Run Application**: Launch `./bin/personal-calendar` on a system with a display.
-2.  **Verify Akonadi**: Test if events created in `personal-calendar` appear in KOrganizer (and vice-versa).
+1.  **UI Polish**: Replace the QML placeholder labels (`Calendar Grid`, `Days Header`) with a custom grid implementation or by ensuring `QtQuick.Calendar` is available.
+2.  **Run Application**: Launch `./bin/personal-calendar` on a system with a display.
+3.  **Verify Akonadi**: Test if events created in `personal-calendar` appear in KOrganizer (and vice-versa).
 3.  **Package**: Prepare Flatpak/AppImage.
