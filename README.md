@@ -5,42 +5,44 @@ SPDX-License-Identifier: GPL-3.0-only
 # Personal Calendar
 
 A personal calendar application built on the Merkuro codebase. This is an independent fork utilizing the original Merkuro code as a foundation for a personal calendar management project.
+**Now fully migrated to Qt 6 and KDE Frameworks 6.**
 
 **This is a personal project** - not affiliated with the original Merkuro/Kalendar project.
 
-## Screenshots
-
-![Screenshot of Kalendar's month view](https://cdn.kde.org/screenshots/kalendar/month_view.png)
-![Screenshot of Kalendar's task view](https://cdn.kde.org/screenshots/kalendar/task_view.png)
-![Screenshot of Kalendar's week view](https://cdn.kde.org/screenshots/kalendar/week_view.png)
-![Screenshot of Kalendar's schedule view](https://cdn.kde.org/screenshots/kalendar/schedule_view.png)
-![Screenshot of Kalendar's schedule view on mobile](https://cdn.kde.org/screenshots/kalendar/mobile_view.png)
-
-## Get it
-
-Kalendar is available in the Arch AUR and with openSUSE tumbleweed using
-the following two OBS repositories: https://build.opensuse.org/project/show/home:KaratekHD:kirigami
-and https://build.opensuse.org/project/show/home:andresbs:plasma-mobile
-
-Please note that this is pre-release software and that you may encounter bugs, crashes, or errors.
-
 ## Build
 
-**Kalendar requires KFrameworks 5.86 to be installed.** This package version is fairly recent and may not yet be available in your distribution of choice, meaning Kalendar might not work.
+**Prerequisites:**
+*   **Qt 6** (6.6+)
+*   **KDE Frameworks 6** (6.0+)
+*   **Akonadi** (Qt6 version / KPim6)
+*   **Google Test**
+*   **CMake** (3.16+)
+*   **C++20 Compiler**
 
-**We also strongly recommend you install the `kdepim-runtime` package before starting Kalendar** -- this will provide you with the ability to add calendars from online resources. Having this package will also let Kalendar's backend automatically create a default local calendar. 
-
-If you have already installed and started Kalendar and are now installing `kdepim-runtime`, make sure to run `akonadictl restart`; this will enable online resources and the local calendar after installing `kdepim-runtime`.
-
-KDE Neon dependencies:
+### Arch Linux Dependencies
+```bash
+paru -S qt6-base qt6-declarative qt6-svg qt6-location extra-cmake-modules \
+        kf6-i18n kf6-kcalendarcore kf6-kcoreaddons kf6-kitemmodels \
+        akonadi kdepim-runtime gtest
 ```
-git cmake build-essential gettext extra-cmake-modules qtbase5-dev qtdeclarative5-dev libqt5svg5-dev qtquickcontrols2-5-dev qml-module-org-kde-kirigami2 kirigami2-dev libkf5i18n-dev gettext libkf5coreaddons-dev qml-module-qtquick-layouts qml-module-qtlocation qml-module-qt-labs-qmlmodels qtlocation5-dev qml-module-qtpositioning qtpositioning5-dev libkf5mime-dev libkf5calendarsupport-dev libkf5akonadicontact-dev libkf5akonadi-dev libkf5windowsystem-dev libkf5package-dev libkf5calendarcore-dev libkf5configwidgets-dev libkf5contacts-dev libkf5people-dev libkf5eventviews-dev kdepim-runtime ninja-build
-```
 
-```
+### Build Instructions
+
+```bash
 mkdir build && cd build
-cmake .. -DCMAKE_INSTALL_PREFIX=~/.local/kde -GNinja
-ninja
+
+# Full build (Recommended)
+cmake .. -DCMAKE_BUILD_TYPE=Debug
+
+# Build
+cmake --build . --parallel 4
+
+# Run Tests
+./bin/core-unit-tests
+./bin/local-backend-tests
+
+# Run Application
+./bin/personal-calendar
 ```
 
 ## Project Documentation
@@ -55,12 +57,9 @@ The project documentation is organized into the following categories:
 ### 📅 Planning
 - [**Project Status**](docs/planning/project-status.md): Current progress dashboard.
 - [**Milestone Plan**](docs/planning/detailed-milestone-plan.md): Detailed weekly execution plan.
-- [**Feasibility Review**](docs/planning/feasibility-review.md): Initial refactoring analysis.
-
-### 🔍 Analysis
-- [**Architecture Analysis**](docs/analysis/architecture-analysis.md): System design and decoupling strategy.
 
 ### 📊 Progress Reports
+- [Qt6 Migration Complete](docs/reports/qt6-migration-complete.md)
 - [Phase 5B Complete (Multi-Calendar)](docs/reports/phase-5b-complete.md)
 - [Phase 5 Complete (Local Backend)](docs/reports/phase-5-complete.md)
 - [Phase 0-3 Complete (Core)](docs/reports/phase-0-3-complete.md)

@@ -24,8 +24,8 @@ target_include_directories(personalcalendar-core PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}/..
 )
 
-target_link_libraries(personalcalendar-core PUBLIC
-    Qt5::Core
+target_link_libraries(personalcalendar-core
+    Qt6::Core
 )
 
 # 不链接任何 KDE 库

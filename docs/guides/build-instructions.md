@@ -1,22 +1,22 @@
 # Build Instructions
 
-**Merkuro Calendar - Phase 0-3 Core Library**
+**Merkuro Calendar - Qt6/KF6 Core Library**
 
 This guide covers the build process for the independent core library and its backends.
 
 ## 🛠 System Requirements
 
-*   **Compiler**: GCC/Clang with C++17 support
-*   **Qt**: Qt5 development libraries (minimum 5.15.2)
+*   **Compiler**: GCC/Clang with C++20 support
+*   **Qt**: Qt6 development libraries (minimum 6.6.0)
 *   **CMake**: Version 3.16 or later
-*   **Testing**: Google Test (`libgtest-dev`) for unit tests
-*   **Optional**: KDE development packages (only for full Akonadi integration)
+*   **Testing**: Google Test (`gtest`) for unit tests
+*   **Akonadi**: KPim6 (Qt6 version) for Akonadi backend
 
 ---
 
 ## 🚀 Quick Build (Recommended)
 
-This builds the core library and local backends without requiring any KDE dependencies.
+This builds the core library and local backends.
 
 ```bash
 # Navigate to project root
@@ -25,14 +25,14 @@ cd /path/to/merkuro-github-fork
 # Create build directory
 mkdir build && cd build
 
-# Configure (Core Only mode)
-cmake -DCMAKE_BUILD_TYPE=Debug -DBUILD_CORE_ONLY=ON ..
+# Configure
+cmake -DCMAKE_BUILD_TYPE=Debug ..
 
 # Build
-make -j4
+cmake --build . --parallel 4
 
 # Run Verification Tests
-./tests/core-unit-tests
+./bin/core-unit-tests
 ```
 
 **Expected Result:**
@@ -48,7 +48,7 @@ You can configure the build using CMake flags:
 ### 1. Core-Only Build (Default)
 **Ideal for**: Development, CI, Non-KDE environments.
 *   **Flag**: `-DBUILD_CORE_ONLY=ON`
-*   **Dependencies**: Qt5::Core only.
+*   **Dependencies**: Qt6::Core only.
 *   **Output**: `libpersonalcalendar-core.a` (Static Library)
 
 ```bash
@@ -56,9 +56,9 @@ cmake -DCMAKE_BUILD_TYPE=Debug -DBUILD_CORE_ONLY=ON ..
 ```
 
 ### 2. Full Build
-**Ideal for**: Production KDE integration.
+**Ideal for**: Production KDE integration (Akonadi).
 *   **Flag**: `-DBUILD_CORE_ONLY=OFF` (or omit the flag)
-*   **Dependencies**: Full KDE Frameworks stack (Akonadi, KCalendarCore, etc.).
+*   **Dependencies**: Full KDE Frameworks 6 stack (Akonadi, KCalendarCore, etc.).
 *   **Note**: Requires `extra-cmake-modules` and KDE dev packages installed.
 
 ```bash
@@ -79,19 +79,19 @@ The project uses Google Test for unit testing.
 ### Running Tests
 ```bash
 # Run all tests
-./tests/core-unit-tests
+./bin/core-unit-tests
 
 # Run specific backend tests (if built)
-./tests/local-backend-tests
+./bin/local-backend-tests
 ```
 
 ### Advanced Test Options
 ```bash
 # Run specific test suite
-./tests/core-unit-tests --gtest_filter=CalendarEventTest.*
+./bin/core-unit-tests --gtest_filter=CalendarEventTest.*
 
 # Run with execution time
-./tests/core-unit-tests --gtest_print_time=true
+./bin/core-unit-tests --gtest_print_time=true
 ```
 
 ---
@@ -102,23 +102,20 @@ The project uses Google Test for unit testing.
 
 1.  **"Could not find ECM" error**
     *   *Cause*: Missing KDE Extra CMake Modules.
-    *   *Solution*: Use the core-only flag:
+    *   *Solution*: Install `extra-cmake-modules` or use the core-only flag:
         ```bash
         cmake -DCMAKE_BUILD_TYPE=Debug -DBUILD_CORE_ONLY=ON ..
         ```
 
-2.  **"Qt5 not found" error**
-    *   *Solution*: Install Qt5 development packages.
-        *   Ubuntu: `sudo apt install qt5-qmake qt5-default`
-        *   Fedora: `sudo dnf install qt5-qtbase-devel`
+2.  **"Qt6 not found" error**
+    *   *Solution*: Install Qt6 development packages (`qt6-base`, `qt6-declarative`).
 
 3.  **"GTest not found" error**
     *   *Solution*: Install Google Test.
-        *   Ubuntu: `sudo apt install libgtest-dev`
-        *   Fedora: `sudo dnf install gtest-devel`
 
-4.  **Tests won't run**
-    *   *Check*: Ensure `libpersonalcalendar-core.a` compiled successfully. Look for "Built target personalcalendar-core" in the make output.
+4.  **Akonadi Backend Missing**
+    *   *Cause*: Missing `KPim6Akonadi` or `KPim6AkonadiCalendar` packages.
+    *   *Solution*: Install `libkf6akonadi-dev` or equivalent.
 
 ---
 

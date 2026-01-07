@@ -40,7 +40,7 @@ public:
     // Invokable methods for QML
     Q_INVOKABLE void refresh();
 
-signals:
+Q_SIGNALS:
     void selectedDateChanged();
 
 private:

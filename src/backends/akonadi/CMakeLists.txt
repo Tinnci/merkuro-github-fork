@@ -17,11 +17,10 @@ target_include_directories(personalcalendar-akonadi-backend PUBLIC
 
 target_link_libraries(personalcalendar-akonadi-backend PUBLIC
     personalcalendar-core
-    Qt5::Core
-    # 注意: 完整实现需要链接以下库
-    # KF5::AkonadiCore
-    # KF5::AkonadiCalendar
-    # KF5::CalendarCore
+    Qt6::Core
+    KPim6::AkonadiCore
+    KF6::CalendarCore
+    KPim6::AkonadiCalendar
 )
 
 # 这个后端是可选的，只有在需要 Akonadi 集成时才编译

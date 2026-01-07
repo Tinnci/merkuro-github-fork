@@ -21,7 +21,7 @@ target_link_libraries(core-unit-tests
     personalcalendar-core
     GTest::GTest
     GTest::Main
-    Qt5::Core
+    Qt6::Core
 )
 
 add_test(NAME CoreUnitTests COMMAND core-unit-tests)
@@ -37,7 +37,7 @@ target_link_libraries(local-backend-tests
     personalcalendar-local
     GTest::GTest
     GTest::Main
-    Qt5::Core
+    Qt6::Core
 )
 
 add_test(NAME LocalBackendTests COMMAND local-backend-tests)

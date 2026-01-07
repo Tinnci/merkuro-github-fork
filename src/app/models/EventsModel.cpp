@@ -70,7 +70,7 @@ void EventsModel::setSelectedDate(const QDate &date)
 {
     if (m_selectedDate != date) {
         m_selectedDate = date;
-        emit selectedDateChanged();
+        Q_EMIT selectedDateChanged();
         updateEvents();
     }
 }

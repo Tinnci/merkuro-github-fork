@@ -6,9 +6,9 @@
 #include <QDebug>
 #include <QFile>
 #include <QFileInfo>
+#include <QJsonArray>
 #include <QJsonDocument>
 #include <QJsonObject>
-#include <QJsonArray>
 
 namespace PersonalCalendar::Local
 {
@@ -194,7 +194,8 @@ bool DirectoryBackend::deleteEvent(const QString &uid)
 QList<Core::CalendarEventPtr> DirectoryBackend::getEventsByDate(const QDate &date)
 {
     QList<Core::CalendarEventPtr> result;
-    if (!date.isValid()) return result;
+    if (!date.isValid())
+        return result;
 
     for (auto it = m_calendars.begin(); it != m_calendars.end(); ++it) {
         // Check visibility
@@ -208,7 +209,8 @@ QList<Core::CalendarEventPtr> DirectoryBackend::getEventsByDate(const QDate &dat
 QList<Core::CalendarEventPtr> DirectoryBackend::getEventsByDateRange(const QDate &start, const QDate &end)
 {
     QList<Core::CalendarEventPtr> result;
-    if (!start.isValid() || !end.isValid()) return result;
+    if (!start.isValid() || !end.isValid())
+        return result;
 
     for (auto it = m_calendars.begin(); it != m_calendars.end(); ++it) {
         if (getCalendarVisibility(it.key())) {
@@ -240,14 +242,15 @@ QString DirectoryBackend::getCalendarName(const QString &id)
 
 bool DirectoryBackend::createCalendar(const QString &id, const QString &name)
 {
-    if (id.isEmpty() || m_calendars.contains(id)) return false;
+    if (id.isEmpty() || m_calendars.contains(id))
+        return false;
 
     QString filepath = m_directory.filePath(id + QLatin1String(".ics"));
     auto backend = std::make_shared<ICSFileBackend>(filepath);
 
     m_calendars[id] = backend;
     m_metadata[id] = CalendarMetadata{name, QString(), true};
-    
+
     saveCalendarMetadata();
     qDebug() << "DirectoryBackend: Created calendar:" << id;
     return true;
@@ -255,7 +258,8 @@ bool DirectoryBackend::createCalendar(const QString &id, const QString &name)
 
 bool DirectoryBackend::deleteCalendar(const QString &id)
 {
-    if (id.isEmpty() || !m_calendars.contains(id)) return false;
+    if (id.isEmpty() || !m_calendars.contains(id))
+        return false;
 
     // Remove events mapping
     for (auto it = m_eventToCalendar.begin(); it != m_eventToCalendar.end();) {
@@ -271,7 +275,7 @@ bool DirectoryBackend::deleteCalendar(const QString &id)
 
     m_calendars.remove(id);
     m_metadata.remove(id);
-    
+
     saveCalendarMetadata();
     return true;
 }
@@ -307,14 +311,19 @@ bool DirectoryBackend::getCalendarVisibility(const QString &id)
 
 bool DirectoryBackend::sync()
 {
-    if (!discoverCalendars()) return false;
+    if (!discoverCalendars())
+        return false;
     for (auto it = m_calendars.begin(); it != m_calendars.end(); ++it) {
-        if (!it.value()->sync()) return false;
+        if (!it.value()->sync())
+            return false;
     }
     return true;
 }
 
-bool DirectoryBackend::isOnline() const { return true; }
+bool DirectoryBackend::isOnline() const
+{
+    return true;
+}
 
 QString DirectoryBackend::getLastSyncTime(const QString &collectionId)
 {
@@ -326,13 +335,15 @@ bool DirectoryBackend::loadCalendarMetadata()
 {
     QString path = m_directory.filePath(QLatin1String(".calendars.json"));
     QFile file(path);
-    if (!file.open(QIODevice::ReadOnly)) return false;
+    if (!file.open(QIODevice::ReadOnly))
+        return false;
 
     QByteArray data = file.readAll();
     file.close();
 
     QJsonDocument doc = QJsonDocument::fromJson(data);
-    if (doc.isNull()) return false;
+    if (doc.isNull())
+        return false;
 
     QJsonObject root = doc.object();
     QJsonObject calendars = root.value(QLatin1String("calendars")).toObject();
@@ -340,7 +351,7 @@ bool DirectoryBackend::loadCalendarMetadata()
     for (auto it = calendars.begin(); it != calendars.end(); ++it) {
         QString id = it.key();
         QJsonObject meta = it.value().toObject();
-        
+
         if (m_calendars.contains(id)) {
             m_metadata[id].name = meta.value(QLatin1String("name")).toString();
             m_metadata[id].color = meta.value(QLatin1String("color")).toString();
@@ -354,7 +365,8 @@ bool DirectoryBackend::saveCalendarMetadata()
 {
     QString path = m_directory.filePath(QLatin1String(".calendars.json"));
     QFile file(path);
-    if (!file.open(QIODevice::WriteOnly)) return false;
+    if (!file.open(QIODevice::WriteOnly))
+        return false;
 
     QJsonObject calendars;
     for (auto it = m_metadata.begin(); it != m_metadata.end(); ++it) {

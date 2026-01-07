@@ -10,10 +10,10 @@ add_executable(personal-calendar
 
 target_link_libraries(personal-calendar
     PRIVATE
-    Qt5::Core
-    Qt5::Gui
-    Qt5::Qml
-    Qt5::Quick
+    Qt6::Core
+    Qt6::Gui
+    Qt6::Qml
+    Qt6::Quick
     personalcalendar-core
     personalcalendar-local
 )

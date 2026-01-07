@@ -4,7 +4,7 @@
 cmake_minimum_required(VERSION 3.16)
 
 # Local ICS File Backend
-add_library(personalcalendar-local
+add_library(personalcalendar-local STATIC
     ICSFileBackend.cpp
     ICSFileBackend.h
     DirectoryBackend.cpp
@@ -17,5 +17,5 @@ target_include_directories(personalcalendar-local PUBLIC
 
 target_link_libraries(personalcalendar-local PUBLIC
     personalcalendar-core
-    Qt5::Core
+    Qt6::Core
 )
