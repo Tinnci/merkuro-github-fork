@@ -56,7 +56,9 @@ The project documentation is organized into the following categories:
 
 ### 📅 Planning
 - [**Project Status**](docs/planning/project-status.md): Current progress dashboard.
-- [**Milestone Plan**](docs/planning/detailed-milestone-plan.md): Detailed weekly execution plan.
+
+### 🔍 Analysis
+- [**Architecture Analysis**](docs/analysis/architecture-analysis.md): System design and decoupling strategy.
 
 ### 📊 Progress Reports
 - [Qt6 Migration Complete](docs/reports/qt6-migration-complete.md)
