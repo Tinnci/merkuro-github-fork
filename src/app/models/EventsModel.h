@@ -20,7 +20,8 @@ public:
         EndDateRole,
         IsAllDayRole,
         LocationRole,
-        CalendarIdRole
+        CalendarIdRole,
+        ColorRole
     };
 
     explicit EventsModel(QObject *parent = nullptr);

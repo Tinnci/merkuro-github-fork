@@ -44,10 +44,10 @@ public:
     bool deleteCalendar(const QString &id) override;
 
     // Extended Metadata Support
-    void setCalendarColor(const QString &id, const QString &color);
-    QString getCalendarColor(const QString &id);
-    void setCalendarVisibility(const QString &id, bool visible);
-    bool getCalendarVisibility(const QString &id);
+    void setCalendarColor(const QString &id, const QString &color) override;
+    QString getCalendarColor(const QString &id) override;
+    void setCalendarVisibility(const QString &id, bool visible) override;
+    bool getCalendarVisibility(const QString &id) override;
 
     bool sync() override;
     bool isOnline() const override;

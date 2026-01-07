@@ -67,7 +67,7 @@ TEST_F(DirectoryBackendTest, CreateEventInFirstCalendar)
 {
     Local::DirectoryBackend backend(dirPath);
 
-    backend.createCalendar(QLatin1String("default"), QLatin1String("Default"));
+    backend.createCalendar(QLatin1String("personal"), QLatin1String("Personal"));
     auto event = createTestEvent(QLatin1String("event-1"), QLatin1String("Meeting"));
 
     EXPECT_TRUE(backend.createEvent(event));
@@ -87,7 +87,7 @@ TEST_F(DirectoryBackendTest, CreateEventInDefaultCalendar)
 
     auto ids = backend.getCalendarIds();
     EXPECT_EQ(ids.size(), 1);
-    EXPECT_EQ(ids[0], QLatin1String("default"));
+    EXPECT_EQ(ids[0], QLatin1String("personal"));
 }
 
 TEST_F(DirectoryBackendTest, MultipleCalendars)

@@ -5,6 +5,7 @@ add_executable(personal-calendar
     main.cpp
     CalendarApp.cpp
     models/EventsModel.cpp
+    models/MonthModel.cpp
     resources.qrc
 )
 

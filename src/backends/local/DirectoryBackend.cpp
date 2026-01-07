@@ -89,13 +89,17 @@ bool DirectoryBackend::createEvent(const Core::CalendarEventPtr &event)
         return false;
     }
 
-    QString calendarId = m_eventToCalendar.value(event->uid);
+    QString calendarId = event->calendarId;
+    if (calendarId.isEmpty() || !m_calendars.contains(calendarId)) {
+        calendarId = m_eventToCalendar.value(event->uid);
+    }
+
     if (calendarId.isEmpty()) {
         if (m_calendars.isEmpty()) {
-            if (!createCalendar(QLatin1String("default"), QLatin1String("Default"))) {
+            if (!createCalendar(QLatin1String("personal"), QLatin1String("Personal"))) {
                 return false;
             }
-            calendarId = QLatin1String("default");
+            calendarId = QLatin1String("personal");
         } else {
             calendarId = m_calendars.keys().first();
         }

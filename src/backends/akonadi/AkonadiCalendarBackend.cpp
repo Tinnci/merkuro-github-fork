@@ -196,6 +196,29 @@ bool AkonadiCalendarBackend::deleteCalendar(const QString &id)
     return false;
 }
 
+QString AkonadiCalendarBackend::getCalendarColor(const QString &id)
+{
+    // Akonadi stores colors in attributes
+    return QLatin1String("#9C27B0"); // Default Purple for Akonadi
+}
+
+void AkonadiCalendarBackend::setCalendarColor(const QString &id, const QString &color)
+{
+    Q_UNUSED(id);
+    Q_UNUSED(color);
+}
+
+bool AkonadiCalendarBackend::getCalendarVisibility(const QString &id)
+{
+    return true;
+}
+
+void AkonadiCalendarBackend::setCalendarVisibility(const QString &id, bool visible)
+{
+    Q_UNUSED(id);
+    Q_UNUSED(visible);
+}
+
 bool AkonadiCalendarBackend::sync()
 {
     // Akonadi handles sync automatically

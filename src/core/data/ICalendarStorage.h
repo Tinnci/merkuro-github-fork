@@ -107,6 +107,34 @@ public:
      */
     virtual bool deleteCalendar(const QString &id) = 0;
 
+    /**
+     * @brief 获取日历颜色
+     * @param id 日历 ID
+     * @return 日历颜色的十六进制字符串 (例如 "#FF0000")
+     */
+    virtual QString getCalendarColor(const QString &id) = 0;
+
+    /**
+     * @brief 设置日历颜色
+     * @param id 日历 ID
+     * @param color 十六进制颜色字符串
+     */
+    virtual void setCalendarColor(const QString &id, const QString &color) = 0;
+
+    /**
+     * @brief 获取日历可见性
+     * @param id 日历 ID
+     * @return 如果日历可见返回 true
+     */
+    virtual bool getCalendarVisibility(const QString &id) = 0;
+
+    /**
+     * @brief 设置日历可见性
+     * @param id 日历 ID
+     * @param visible 可见性
+     */
+    virtual void setCalendarVisibility(const QString &id, bool visible) = 0;
+
     // ===== 同步 =====
 
     /**

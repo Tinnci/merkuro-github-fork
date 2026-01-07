@@ -51,7 +51,7 @@ We have successfully migrated to Qt6, implemented the Akonadi backend, and verif
 *   **Data Conversion**: Robust mapping between `Core::CalendarEvent` and `KCalendarCore::Incidence`.
 
 ### 🚧 Phase 6: Polish & Distribution (Current)
-*   [ ] **UI Polish**: Restore Calendar Grid (currently using placeholders due to missing `QtQuick.Calendar` module).
+*   [x] **UI Polish**: Restore Calendar Grid (Implemented via custom `MonthModel`).
 *   [ ] **Packaging**: Create `AppImage` or `Flatpak` for easy distribution.
 *   [ ] **Integration Tests**: Verify Akonadi sync with KOrganizer on a full desktop session.
 

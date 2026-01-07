@@ -164,6 +164,26 @@ bool ICSFileBackend::deleteCalendar(const QString &id)
     return false;
 }
 
+QString ICSFileBackend::getCalendarColor(const QString &id)
+{
+    return QLatin1String("#2196F3"); // Default Blue
+}
+
+void ICSFileBackend::setCalendarColor(const QString &id, const QString &color)
+{
+    // Not supported
+}
+
+bool ICSFileBackend::getCalendarVisibility(const QString &id)
+{
+    return true;
+}
+
+void ICSFileBackend::setCalendarVisibility(const QString &id, bool visible)
+{
+    // Not supported
+}
+
 bool ICSFileBackend::sync()
 {
     // Reload from file and save

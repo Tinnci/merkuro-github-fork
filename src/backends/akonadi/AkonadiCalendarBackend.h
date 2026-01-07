@@ -49,6 +49,11 @@ public:
     bool createCalendar(const QString &id, const QString &name) override;
     bool deleteCalendar(const QString &id) override;
 
+    QString getCalendarColor(const QString &id) override;
+    void setCalendarColor(const QString &id, const QString &color) override;
+    bool getCalendarVisibility(const QString &id) override;
+    void setCalendarVisibility(const QString &id, bool visible) override;
+
     bool sync() override;
     bool isOnline() const override;
     QString getLastSyncTime(const QString &collectionId) override;

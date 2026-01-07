@@ -42,6 +42,8 @@ QVariant EventsModel::data(const QModelIndex &index, int role) const
             return event->location;
         case CalendarIdRole:
             return event->calendarId;
+        case ColorRole:
+            return m_storage ? m_storage->getCalendarColor(event->calendarId) : QVariant();
     }
 
     return QVariant();
@@ -58,6 +60,7 @@ QHash<int, QByteArray> EventsModel::roleNames() const
     roles[IsAllDayRole] = QByteArrayLiteral("isAllDay");
     roles[LocationRole] = QByteArrayLiteral("location");
     roles[CalendarIdRole] = QByteArrayLiteral("calendarId");
+    roles[ColorRole] = QByteArrayLiteral("color");
     return roles;
 }
 

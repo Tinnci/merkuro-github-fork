@@ -10,7 +10,16 @@
 using namespace PersonalCalendar::Core;
 using namespace PersonalCalendar::Local;
 
-CalendarApp::CalendarApp(QObject *parent) : QObject(parent), m_eventsModel(new EventsModel(this)) {}
+CalendarApp::CalendarApp(QObject *parent)
+    : QObject(parent), m_eventsModel(new EventsModel(this)), m_monthModel(new MonthModel(this))
+{
+    // Sync models
+    connect(m_monthModel, &MonthModel::selectedChanged, this,
+            [this]() { m_eventsModel->setSelectedDate(m_monthModel->selected()); });
+
+    // Initial sync
+    m_eventsModel->setSelectedDate(m_monthModel->selected());
+}
 
 void CalendarApp::initialize(const QString &storagePath)
 {
@@ -19,6 +28,7 @@ void CalendarApp::initialize(const QString &storagePath)
         qDebug() << "Initializing AkonadiBackend";
         m_storage = std::make_shared<PersonalCalendar::Akonadi::AkonadiCalendarBackend>(this);
         m_eventsModel->setStorage(m_storage);
+        m_monthModel->setStorage(m_storage);
         return;
     }
 #endif
@@ -45,6 +55,7 @@ void CalendarApp::initialize(const QString &storagePath)
     }
 
     m_eventsModel->setStorage(m_storage);
+    m_monthModel->setStorage(m_storage);
 }
 
 EventsModel *CalendarApp::eventsModel() const
@@ -52,15 +63,24 @@ EventsModel *CalendarApp::eventsModel() const
     return m_eventsModel;
 }
 
-void CalendarApp::createEvent(const QString &title, const QDateTime &start, const QDateTime &end, bool allDay)
+MonthModel *CalendarApp::monthModel() const
+{
+    return m_monthModel;
+}
+
+void CalendarApp::createEvent(const QString &title, const QDateTime &start, const QDateTime &end, bool allDay,
+                              const QString &description, const QString &location, const QString &calendarId)
 {
     if (!m_storage) return;
 
     auto event = std::make_shared<CalendarEvent>();
     event->title = title;
+    event->description = description;
+    event->location = location;
     event->startDateTime = start;
     event->endDateTime = end;
     event->isAllDay = allDay;
+    event->calendarId = calendarId;
     event->uid = QString::number(QDateTime::currentMSecsSinceEpoch());
 
     if (m_storage->createEvent(event)) {
@@ -72,7 +92,7 @@ void CalendarApp::createEvent(const QString &title, const QDateTime &start, cons
 }
 
 void CalendarApp::updateEvent(const QString &uid, const QString &title, const QDateTime &start, const QDateTime &end,
-                              bool allDay)
+                              bool allDay, const QString &description, const QString &location)
 {
     if (!m_storage) return;
 
@@ -80,6 +100,8 @@ void CalendarApp::updateEvent(const QString &uid, const QString &title, const QD
     if (!event) return;
 
     event->title = title;
+    event->description = description;
+    event->location = location;
     event->startDateTime = start;
     event->endDateTime = end;
     event->isAllDay = allDay;

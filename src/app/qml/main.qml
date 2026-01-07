@@ -35,40 +35,93 @@ ApplicationWindow {
 
                     ToolButton {
                         text: "<"
-                        onClicked: console.log("Prev Month") // calendar.month -= 1
+                        onClicked: CalendarApp.monthModel.previous()
                     }
 
                     Label {
                         Layout.fillWidth: true
                         horizontalAlignment: Text.AlignHCenter
-                        text: "January 2026" // calendar.title
+                        text: {
+                            var date = new Date(CalendarApp.monthModel.year, CalendarApp.monthModel.month - 1, 1);
+                            return Qt.formatDate(date, "MMMM yyyy");
+                        }
                         font.pixelSize: 18
                         font.bold: true
                     }
 
                     ToolButton {
                         text: ">"
-                        onClicked: console.log("Next Month") // calendar.month += 1
+                        onClicked: CalendarApp.monthModel.next()
+                    }
+
+                    ToolButton {
+                        text: "Today"
+                        onClicked: CalendarApp.monthModel.goToday()
+                        flat: true
                     }
                 }
 
-                // Days Header
-                Label {
-                    text: "S M T W T F S"
-                    horizontalAlignment: Text.AlignHCenter
-                    font.bold: true
+                RowLayout {
                     Layout.fillWidth: true
+                    spacing: 0
+                    Repeater {
+                        model: CalendarApp.monthModel.weekDays
+                        delegate: Label {
+                            Layout.fillWidth: true
+                            text: modelData
+                            horizontalAlignment: Text.AlignHCenter
+                            font.bold: true
+                            font.pixelSize: 12
+                            color: Material.secondaryTextColor
+                        }
+                    }
                 }
 
-                // Calendar Grid Placeholder
-                Rectangle {
+                GridView {
+                    id: monthGrid
                     Layout.fillWidth: true
                     Layout.fillHeight: true
-                    color: "#f0f0f0"
+                    cellWidth: width / 7
+                    cellHeight: height / 6
+                    clip: true
+                    model: CalendarApp.monthModel
 
-                    Label {
-                        anchors.centerIn: parent
-                        text: "Calendar Grid (Placeholder)"
+                    delegate: Item {
+                        width: monthGrid.cellWidth
+                        height: monthGrid.cellHeight
+
+                        Rectangle {
+                            anchors.fill: parent
+                            anchors.margins: 2
+                            radius: width / 2
+                            color: model.isSelected ? Material.accent : (model.isToday ? Material.color(Material.Grey, Material.Shade200) : "transparent")
+                            visible: model.isSelected || model.isToday
+                        }
+
+                        Label {
+                            anchors.centerIn: parent
+                            text: model.dayNumber
+                            opacity: model.sameMonth ? 1.0 : 0.3
+                            color: model.isSelected ? "white" : Material.foreground
+                            font.bold: model.isToday
+                        }
+
+                        // Event indicator dot
+                        Rectangle {
+                            anchors.bottom: parent.bottom
+                            anchors.bottomMargin: 4
+                            anchors.horizontalCenter: parent.horizontalCenter
+                            width: 4
+                            height: 4
+                            radius: 2
+                            color: model.isSelected ? "white" : Material.accent
+                            visible: model.hasEvents
+                        }
+
+                        MouseArea {
+                            anchors.fill: parent
+                            onClicked: CalendarApp.monthModel.selected = model.date
+                        }
                     }
                 }
 
@@ -112,28 +165,48 @@ ApplicationWindow {
                             editorDialog.isEditMode = true
                             editorDialog.eventUid = model.uid
                             editorDialog.eventTitle = model.title
+                            editorDialog.eventDescription = model.description || ""
+                            editorDialog.eventLocation = model.location || ""
+                            editorDialog.eventCalendarId = model.calendarId || ""
                             editorDialog.eventDate = model.startDate
                             editorDialog.allDay = model.isAllDay
                             editorDialog.setTimes(model.startDate, model.endDate)
                             editorDialog.open()
                         }
 
-                        contentItem: ColumnLayout {
-                            spacing: 2
-
-                            Label {
-                                text: model.title
-                                font.bold: true
-                                font.pixelSize: 16
+                        contentItem: RowLayout {
+                            spacing: 12
+                            
+                            Rectangle {
+                                Layout.preferredWidth: 4
+                                Layout.fillHeight: true
+                                color: model.color || Material.accent
+                                radius: 2
                             }
+                            
+                            ColumnLayout {
+                                Layout.fillWidth: true
+                                spacing: 2
 
-                            Label {
-                                text: {
-                                    if (model.isAllDay) return "All Day";
-                                    return Qt.formatTime(model.startDate, "hh:mm") + " - " +
-                                           Qt.formatTime(model.endDate, "hh:mm");
+                                Label {
+                                    text: model.title
+                                    font.bold: true
+                                    font.pixelSize: 16
+                                    elide: Text.ElideRight
                                 }
-                                color: Material.secondaryTextColor
+
+                                Label {
+                                    text: {
+                                        var timeStr = model.isAllDay ? "All Day" : 
+                                            Qt.formatTime(model.startDate, "hh:mm") + " - " + Qt.formatTime(model.endDate, "hh:mm");
+                                        if (model.location) {
+                                            return timeStr + " • " + model.location;
+                                        }
+                                        return timeStr;
+                                    }
+                                    color: Material.secondaryTextColor
+                                    elide: Text.ElideRight
+                                }
                             }
                         }
 
@@ -172,6 +245,9 @@ ApplicationWindow {
                     editorDialog.isEditMode = false
                     editorDialog.eventUid = ""
                     editorDialog.eventTitle = ""
+                    editorDialog.eventDescription = ""
+                    editorDialog.eventLocation = ""
+                    editorDialog.eventCalendarId = ""
                     editorDialog.eventDate = CalendarApp.eventsModel.selectedDate
                     editorDialog.allDay = false
 
