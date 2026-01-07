@@ -2,7 +2,6 @@ import QtQuick 2.15
 import QtQuick.Controls 2.15
 import QtQuick.Layouts 1.15
 import QtQuick.Controls.Material 2.15
-import Qt.labs.calendar 1.0
 
 ApplicationWindow {
     id: window
@@ -36,66 +35,40 @@ ApplicationWindow {
 
                     ToolButton {
                         text: "<"
-                        onClicked: calendar.month -= 1
+                        onClicked: console.log("Prev Month") // calendar.month -= 1
                     }
 
                     Label {
                         Layout.fillWidth: true
                         horizontalAlignment: Text.AlignHCenter
-                        text: calendar.title
+                        text: "January 2026" // calendar.title
                         font.pixelSize: 18
                         font.bold: true
                     }
 
                     ToolButton {
                         text: ">"
-                        onClicked: calendar.month += 1
+                        onClicked: console.log("Next Month") // calendar.month += 1
                     }
                 }
 
                 // Days Header
-                DayOfWeekRow {
-                    locale: calendar.locale
+                Label {
+                    text: "S M T W T F S"
+                    horizontalAlignment: Text.AlignHCenter
+                    font.bold: true
                     Layout.fillWidth: true
-                    delegate: Label {
-                        text: model.shortName
-                        horizontalAlignment: Text.AlignHCenter
-                        font.bold: true
-                    }
                 }
 
-                // Calendar Grid
-                MonthGrid {
-                    id: calendar
+                // Calendar Grid Placeholder
+                Rectangle {
                     Layout.fillWidth: true
                     Layout.fillHeight: true
+                    color: "#f0f0f0"
 
-                    month: new Date().getMonth()
-                    year: new Date().getFullYear()
-
-                    delegate: Item {
-                        readonly property bool isSelected:
-                            model.date.getTime() === CalendarApp.eventsModel.selectedDate.getTime()
-
-                        Rectangle {
-                            anchors.fill: parent
-                            anchors.margins: 2
-                            radius: width / 2
-                            color: isSelected ? Material.accent : "transparent"
-
-                            Label {
-                                anchors.centerIn: parent
-                                text: model.day
-                                color: isSelected ? "white" : "black"
-                            }
-                        }
-
-                        MouseArea {
-                            anchors.fill: parent
-                            onClicked: {
-                                CalendarApp.eventsModel.selectedDate = model.date
-                            }
-                        }
+                    Label {
+                        anchors.centerIn: parent
+                        text: "Calendar Grid (Placeholder)"
                     }
                 }
 
@@ -138,7 +111,7 @@ ApplicationWindow {
                         onClicked: {
                             editorDialog.isEditMode = true
                             editorDialog.eventUid = model.uid
-                            editorDialog.title = model.title
+                            editorDialog.eventTitle = model.title
                             editorDialog.eventDate = model.startDate
                             editorDialog.allDay = model.isAllDay
                             editorDialog.setTimes(model.startDate, model.endDate)
@@ -198,7 +171,7 @@ ApplicationWindow {
                 onClicked: {
                     editorDialog.isEditMode = false
                     editorDialog.eventUid = ""
-                    editorDialog.title = ""
+                    editorDialog.eventTitle = ""
                     editorDialog.eventDate = CalendarApp.eventsModel.selectedDate
                     editorDialog.allDay = false
 

@@ -17,7 +17,7 @@ Dialog {
     property date eventDate: new Date()
 
     // Properties to hold current values
-    property alias title: titleField.text
+    property alias eventTitle: titleField.text
     property bool allDay: allDaySwitch.checked
 
     // Helper function to get full Date objects from UI

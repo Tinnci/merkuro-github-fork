@@ -1,5 +1,8 @@
 #include "CalendarApp.h"
 #include "backends/local/DirectoryBackend.h"
+#ifdef AKONADI_BACKEND_AVAILABLE
+#include "backends/akonadi/AkonadiCalendarBackend.h"
+#endif
 #include <QDebug>
 #include <QDir>
 #include <QStandardPaths>
@@ -11,6 +14,15 @@ CalendarApp::CalendarApp(QObject *parent) : QObject(parent), m_eventsModel(new E
 
 void CalendarApp::initialize(const QString &storagePath)
 {
+#ifdef AKONADI_BACKEND_AVAILABLE
+    if (qEnvironmentVariable("PERSONAL_CALENDAR_BACKEND") == QLatin1String("akonadi")) {
+        qDebug() << "Initializing AkonadiBackend";
+        m_storage = std::make_shared<PersonalCalendar::Akonadi::AkonadiCalendarBackend>(this);
+        m_eventsModel->setStorage(m_storage);
+        return;
+    }
+#endif
+
     QString path = storagePath;
     if (path.isEmpty()) {
         path = QStandardPaths::writableLocation(QStandardPaths::AppDataLocation) + QStringLiteral("/calendars");

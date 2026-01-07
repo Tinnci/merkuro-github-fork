@@ -18,6 +18,11 @@ target_link_libraries(personal-calendar
     personalcalendar-local
 )
 
+if(AKONADI_BACKEND_AVAILABLE)
+    target_link_libraries(personal-calendar PRIVATE personalcalendar-akonadi-backend)
+    target_compile_definitions(personal-calendar PRIVATE AKONADI_BACKEND_AVAILABLE)
+endif()
+
 target_include_directories(personal-calendar PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}
     ${CMAKE_SOURCE_DIR}/src
