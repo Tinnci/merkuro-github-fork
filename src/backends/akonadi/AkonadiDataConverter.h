@@ -7,10 +7,12 @@
 #include <QString>
 #include <memory>
 
+#include <QSharedPointer>
+
 // Forward declarations
 namespace KCalendarCore {
 class Incidence;
-using IncidencePtr = std::shared_ptr<Incidence>;
+using IncidencePtr = QSharedPointer<Incidence>;
 }
 
 namespace PersonalCalendar::Akonadi {

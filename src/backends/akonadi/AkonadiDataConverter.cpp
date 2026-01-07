@@ -44,9 +44,9 @@ IncidencePtr AkonadiDataConverter::toAkonadiIncidence(const Core::CalendarEventP
     
     // For Events, we set dtEnd. For Todos, it might be due date.
     if (event->type == Core::EventType::Event) {
-        std::static_pointer_cast<Event>(incidence)->setDtEnd(event->endDateTime);
+        qSharedPointerCast<Event>(incidence)->setDtEnd(event->endDateTime);
     } else if (event->type == Core::EventType::Todo) {
-        std::static_pointer_cast<Todo>(incidence)->setDtDue(event->endDateTime);
+        qSharedPointerCast<Todo>(incidence)->setDtDue(event->endDateTime);
     }
 
     // Convert Recurrence
@@ -76,10 +76,10 @@ Core::CalendarEventPtr AkonadiDataConverter::fromAkonadiIncidence(const Incidenc
 
     if (incidence->type() == Incidence::TypeTodo) {
         event->type = Core::EventType::Todo;
-        event->endDateTime = std::static_pointer_cast<Todo>(incidence)->dtDue();
+        event->endDateTime = qSharedPointerCast<Todo>(incidence)->dtDue();
     } else {
         event->type = Core::EventType::Event;
-        event->endDateTime = std::static_pointer_cast<Event>(incidence)->dtEnd();
+        event->endDateTime = qSharedPointerCast<Event>(incidence)->dtEnd();
     }
 
     // Convert Recurrence
